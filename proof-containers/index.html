@@ -729,7 +729,10 @@
 .grid-split-partition:has(> div > button.rounded-lg) > div.w-full{align-self:stretch}
 .grid-split-partition:has(.proof-results){align-items:stretch}
 .grid-split-partition:has(.proof-results) > *{height:100%;align-self:stretch}
-.proof-results{height:100%;width:100%;overflow:auto;-webkit-overflow-scrolling:touch;padding:4px 6px;box-sizing:border-box;text-align:left}
+.proof-results{height:100%;width:100%;display:flex;flex-direction:column;overflow:hidden;padding:4px 6px;box-sizing:border-box;text-align:left}
+.proof-results .proof-list{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;border-top:1px solid #1e3a5f;padding-top:6px}
+.proof-results .proof-hint{color:#64748b;font-size:13px}
+#proof-kbpad{width:100%;pointer-events:none}
 .proof-results .proof-count{font-size:11px;color:#94a3b8;margin:2px 0 4px}
 .proof-results .proof-hit{display:block;width:100%;text-align:left;margin:0 0 6px;padding:8px 10px;border-radius:8px;border:1px solid #234d82;background:#0c1a2e;color:#e2e8f0;font-size:14px}
 .proof-results .proof-hit span{display:block;font-size:12px;color:#94a3b8}
@@ -794,6 +797,7 @@ body.proof-autofill-mode > *:not(#proof-autofill){display:none !important}
 #proof-autofill .af-face{flex:1 1 auto;min-height:44px;display:flex;align-items:center;box-sizing:border-box;border-radius:8px;border:1px solid #2b4f7e;background:#07111f;padding:0 9px}
 #proof-autofill .af-face:focus-within{outline:2px solid #22d3ee;border-color:#22d3ee}
 #proof-autofill .af-box{width:100%;border:0;outline:none;background:transparent;color:#e2e8f0;font-size:14px;padding:9px 0}
+#proof-autofill .af-h2{font-size:14px;color:#93c5fd;margin:18px 0 4px}
 #proof-autofill .af-key{color:#94a3b8;font-size:12px;margin-top:16px}
 #proof-autofill a{color:#67e8f9}
 /* round 5 (4): one message line, pinned under the top buttons, kept on the visible screen */
@@ -3563,7 +3567,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.7.0', stamp: '{{STAMP}}', name: '{{BUILD_NAME}}' };
+    const ENGINE_BUILD = { version: 'proof-0.8.0', stamp: '{{STAMP}}', name: '{{BUILD_NAME}}' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8197,7 +8201,7 @@ body.light-theme .proof-box{color:#0f172a}
     // =========================================================
     function syncLiveClass() { document.body.classList.toggle('live-mode', Boolean(isLiveInteraction) || IS_VISITOR_MODE); }
   </script>
-<script>window.PROOF_BUILTIN_CSV = "Screen,Row,Container,Stack,Cell,Weight,Type,Content,Slot,Font size,Align,Visible when,Label,Id,Sub label,Sub label size,Sub label place,Wrap,Pad X,Pad Y,V align,Nudge X,Nudge Y,Accent,Icon,Press style,Min size,Max size,Column width,Freeze,Line height\nall,Header,1,1,1,1,button,set-view:entry,,11,center,always,Entry,hdr.entry,,,,no,2,,,,,,,,,,,,5\nall,Header,1,1,2,1,button,set-view:report,,11,center,always,Report,hdr.report,,,,no,2,,,,,,,,,,,,\nall,Header,1,1,3,1,button,reload-layout,,11,center,always,Reload,hdr.reload,,,,no,2,,,,,,,,,,,,\nall,Header,1,1,4,1,button,toggle-tray,,11,center,always,Tools,hdr.tools,,,,no,2,,,,,,settings,,,,,,\nall,Header,1,1,5,1,button,set-view:find,,11,center,always,New,hdr.newcall,,,,no,2,,,,,,,,,,,,\nall,Header,1,1,6,1,button,set-view:find,,11,center,always,Find,hdr.find,,,,no,2,,,,,,,,,,,,\nall,Header,1,2,2,1,button,proof-badge,,10,center,always,,badge,,,,no,,0,,,,,,,,,,,\ntray,Tools,1,1,1,2,button,proof-profile,,12,center,always,Profile,tools.profile,,,,no,4,,,,,,,,,,,,\ntray,Tools,1,1,2,1,button,proof-adjust,,12,center,always,Adjust,tools.adjust,,,,no,4,,,,,,,,,,,,\ntray,Tools,1,1,3,1,button,toggle-inspector,,12,center,always,Advanced,tools.inspector,,,,no,4,,,,,,,,,,,,\ntray,Tools,1,2,1,1,button,proof-save-tweaks,,12,center,always,Save tweaks,tools.save,,,,no,4,,,,,,,,,,,,\ntray,Tools,1,2,2,1,button,proof-clear-tweaks,,12,center,always,Clear mine,tools.clear,,,,no,4,,,,,,,,,,,,\ntray,Tools,1,2,3,1,button,toggle-live,,12,center,always,Edit,tools.mode,,,,no,4,,,,,,,,,,,,\nentry,Job details,1,1,1,1,text,JOB DETAILS,,13,left,always,,job.title,,,,no,,,,,,amber,,,,,,,\nentry,Job details,1,2,1,1,text,Date,,12,left,always,,job.date.label,,,,no,,,,,,,,,,,,,\nentry,Job details,1,2,2,2,text,f:date,box,14,left,always,,job.date,,,,no,,,,,,,,,,,,,\nentry,Job details,1,3,1,1,text,Customer,,12,left,always,,job.customer.label,,,,no,,,,,,,,,,,,,\nentry,Job details,1,3,2,5,text,f:customer,box,14,left,always,,job.customer,,,,no,,,,,,,,,,,,,\nentry,Job details,1,4,1,1,text,Address,,12,left,always,,job.address.label,,,,no,,,,,,,,,,,,,\nentry,Job details,1,4,2,2,text,f:address,box,14,left,always,,job.address,,,,no,,,,,,,,,,,,,\nentry,Job details,1,5,1,1,text,Phone,,12,left,always,,job.phone.label,,,,no,,,,,,,,,,,,,\nentry,Job details,1,5,2,2,text,f:phone,box,14,left,always,,job.phone,,,,no,,,,,,,,,,,,,\nentry,Job details,1,6,1,1,text,Condenser model,,12,left,always,,job.model.label,,,,yes,,,,,,,,,,,,,\nentry,Job details,1,6,2,2,text,f:outdoorModel,box,14,left,always,,job.model,,,,no,,,,,,,,,,,,,\nentry,Job details,1,7,1,1,text,Suction pressure,,12,left,always,,job.suction.label,,,,no,,,,,,,,,,,,,\nentry,Job details,1,7,2,2,text,f:suctionPressure,box,14,left,always,,job.suction,PSIG,10,middle-right,no,,,,,,,,,,,,,\nentry,Job details,1,8,1,0,text,BAD ROW on purpose (weight 0): the page refuses it and says so. Delete this row on the tab to clear the message.,,12,left,always,,job.bad,,,,yes,,,,,,,,,,,,,\nreport,Report,1,1,1,1,text,Report page (empty in this proof),,13,center,always,,report.text,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,1,1,3,text,Find the customer,,15,left,always,,find.title,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,1,2,1,button,set-view:entry,,12,center,always,Back,find.back,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,2,1,1,text,Name,,12,left,always,,find.name.label,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,2,2,3,text,find.name,box,14,left,always,,find.name,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,3,1,1,text,Address,,12,left,always,,find.address.label,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,3,2,3,text,find.address,box,14,left,always,,find.address,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,4,1,1,text,Phone,,12,left,always,,find.phone.label,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,4,2,3,text,find.phone,box,14,left,always,,find.phone,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,5,1,1,button,proof-find,,13,center,always,Find,find.find,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,5,2,1,button,proof-cancel,,13,center,always,Cancel,find.cancel,,,,no,,,,,,,,none,,,,,\nfind,Find the customer,1,6,1,1,text,houses,results,13,left,always,,find.results,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,7,1,1,text,Each letter you type narrows the list. Tap a house to fill the call.,,11,left,always,,find.hint,,,,yes,,,,,,,,,,,,,\nall,Header,1,2,1,1,text,,,10,center,always,,hdr.spacer1,,,,no,,,,,,,,,,,,,2\nall,Header,1,2,3,1,text,,,10,center,always,,hdr.spacer2,,,,no,,,,,,,,,,,,,\ntray,Tools,1,3,1,1,button,refresh-page,,12,center,always,Refresh page,tools.refresh,,,,no,4,,,,,,,,,,,,\n";</script>
+<script>window.PROOF_BUILTIN_CSV = "Screen,Row,Container,Stack,Cell,Weight,Type,Content,Slot,Font size,Align,Visible when,Label,Id,Sub label,Sub label size,Sub label place,Wrap,Pad X,Pad Y,V align,Nudge X,Nudge Y,Accent,Icon,Press style,Min size,Max size,Column width,Freeze,Line height\nall,Header,1,1,1,1,button,set-view:entry,,11,center,always,Entry,hdr.entry,,,,no,2,,,,,,,,,,,,5\nall,Header,1,1,2,1,button,set-view:report,,11,center,always,Report,hdr.report,,,,no,2,,,,,,,,,,,,\nall,Header,1,1,3,1,button,reload-layout,,11,center,always,Reload,hdr.reload,,,,no,2,,,,,,,,,,,,\nall,Header,1,1,4,1,button,toggle-tray,,11,center,always,Tools,hdr.tools,,,,no,2,,,,,,settings,,,,,,\nall,Header,1,1,5,1,button,set-view:find,,11,center,always,New,hdr.newcall,,,,no,2,,,,,,,,,,,,\nall,Header,1,1,6,1,button,set-view:find,,11,center,always,Find,hdr.find,,,,no,2,,,,,,,,,,,,\nall,Header,1,2,2,1,button,proof-badge,,10,center,always,,badge,,,,no,,0,,,,,,,,,,,\ntray,Tools,1,1,1,2,button,proof-profile,,12,center,always,Profile,tools.profile,,,,no,4,,,,,,,,,,,,\ntray,Tools,1,1,2,1,button,proof-adjust,,12,center,always,Adjust,tools.adjust,,,,no,4,,,,,,,,,,,,\ntray,Tools,1,1,3,1,button,toggle-inspector,,12,center,always,Advanced,tools.inspector,,,,no,4,,,,,,,,,,,,\ntray,Tools,1,2,1,1,button,proof-save-tweaks,,12,center,always,Save tweaks,tools.save,,,,no,4,,,,,,,,,,,,\ntray,Tools,1,2,2,1,button,proof-clear-tweaks,,12,center,always,Clear mine,tools.clear,,,,no,4,,,,,,,,,,,,\ntray,Tools,1,2,3,1,button,toggle-live,,12,center,always,Edit,tools.mode,,,,no,4,,,,,,,,,,,,\nentry,Job details,1,1,1,1,text,JOB DETAILS,,13,left,always,,job.title,,,,no,,,,,,amber,,,,,,,\nentry,Job details,1,2,1,1,text,Date,,12,left,always,,job.date.label,,,,no,,,,,,,,,,,,,\nentry,Job details,1,2,2,2,text,f:date,box,14,left,always,,job.date,,,,no,,,,,,,,,,,,,\nentry,Job details,1,3,1,1,text,Customer,,12,left,always,,job.customer.label,,,,no,,,,,,,,,,,,,\nentry,Job details,1,3,2,2,text,f:customer,box,14,left,always,,job.customer,,,,no,,,,,,,,,,,,,\nentry,Job details,1,4,1,1,text,Address,,12,left,always,,job.address.label,,,,no,,,,,,,,,,,,,\nentry,Job details,1,4,2,2,text,f:address,box,14,left,always,,job.address,,,,no,,,,,,,,,,,,,\nentry,Job details,1,5,1,1,text,Phone,,12,left,always,,job.phone.label,,,,no,,,,,,,,,,,,,\nentry,Job details,1,5,2,2,text,f:phone,box,14,left,always,,job.phone,,,,no,,,,,,,,,,,,,\nentry,Job details,1,6,1,1,text,Condenser model,,12,left,always,,job.model.label,,,,yes,,,,,,,,,,,,,\nentry,Job details,1,6,2,2,text,f:outdoorModel,box,14,left,always,,job.model,,,,no,,,,,,,,,,,,,\nentry,Job details,1,7,1,1,text,Suction pressure,,12,left,always,,job.suction.label,,,,no,,,,,,,,,,,,,\nentry,Job details,1,7,2,2,text,f:suctionPressure,box,14,left,always,,job.suction,PSIG,10,middle-right,no,,,,,,,,,,,,,\nentry,Job details,1,8,1,0,text,BAD ROW on purpose (weight 0): the page refuses it and says so. Delete this row on the tab to clear the message.,,12,left,always,,job.bad,,,,yes,,,,,,,,,,,,,\nreport,Report,1,1,1,1,text,Report page (empty in this proof),,13,center,always,,report.text,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,1,1,3,text,Find the customer,,15,left,always,,find.title,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,1,2,1,button,set-view:entry,,12,center,always,Back,find.back,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,2,1,1,text,Name,,12,left,always,,find.name.label,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,2,2,3,text,find.name,box,14,left,always,,find.name,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,3,1,1,text,Address,,12,left,always,,find.address.label,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,3,2,3,text,find.address,box,14,left,always,,find.address,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,4,1,1,text,Phone,,12,left,always,,find.phone.label,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,4,2,3,text,find.phone,box,14,left,always,,find.phone,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,5,1,1,button,proof-find,,13,center,always,Find,find.find,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,5,2,1,button,proof-cancel,,13,center,always,Cancel,find.cancel,,,,no,,,,,,,,none,,,,,\nfind,Find the customer,1,6,1,1,text,houses,results,13,left,always,,find.results,,,,no,,,,,,,,,,,,,6\nfind,Find the customer,1,7,1,1,text,Each letter you type narrows the list. Tap a house to fill the call.,,11,left,always,,find.hint,,,,yes,,,,,,,,,,,,,\nall,Header,1,2,1,1,text,,,10,center,always,,hdr.spacer1,,,,no,,,,,,,,,,,,,2\nall,Header,1,2,3,1,text,,,10,center,always,,hdr.spacer2,,,,no,,,,,,,,,,,,,\ntray,Tools,1,3,1,1,button,refresh-page,,12,center,always,Refresh page,tools.refresh,,,,no,4,,,,,,,,,,,,\n";</script>
 <script>
 // =====================================================================================================
 // PROOF PAGE (throwaway sandbox). Round 1: Prompts no. 95. Round 2: Prompts no. 96. Read DESIGN.md first.
@@ -8216,11 +8220,15 @@ body.light-theme .proof-box{color:#0f172a}
 // Round 6: Min size / Max size from the tab (no 16 floor), Done acts on finger lift, the badge is an ordinary header cell (Id
 // 'badge', own narrow column via 'Column width'), 'Freeze' column with stacked frozen sections, an autofill test page (?autofill=1),
 // and 'Saved: N changed, M total'.
+// Round 7: autofill fix C on every value box, header in two lines ('Line height'), Refresh page in the Tools tray.
+// Round 8: the Find list waits for typing and stays in ONE place (a small box under Find / Cancel that scrolls inside itself,
+// height from the results line's 'Line height'); the tapped value box is scrolled under the header and above the keyboard;
+// neutral placeholders on the Find boxes; Name / Address rows on the autofill test page.
 // Repaint rule (round 1, unchanged): renderCanvas is NEVER called while a text box has focus; typing repaints only the
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.7.0';
+  const PROOF_VERSION = '0.8.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8325,7 +8333,7 @@ body.light-theme .proof-box{color:#0f172a}
     // round 7 (1): autofill fix C (Danny's Android test, 0.6.0): each value box sits in its own form with autocomplete off and has
     // autocomplete one-time-code; the form takes no space (display:contents) and never submits (Enter is stopped, see below).
     return '<div class="proof-cell"><div class="proof-face" style="align-items:' + va + '"><form class="proof-form" autocomplete="off" onsubmit="return false"><input class="proof-box" data-key="' + esc(k) + '" value="' + esc(valOf(k)) + '"' +
-      (tel ? ' inputmode="tel"' : num ? ' inputmode="decimal"' : '') + ' placeholder="' + esc(FIELDS[k] || k.replace('find.', '')) + '"' + boxAttrs(p) + ' style="font-size:' + boxSize(p) + 'px;text-align:' + (p.align || 'left') + '"></form></div></div>';
+      (tel ? ' inputmode="tel"' : num ? ' inputmode="decimal"' : '') + ' placeholder="' + esc(FIELDS[k] || 'Search') + '"' + boxAttrs(p) + ' style="font-size:' + boxSize(p) + 'px;text-align:' + (p.align || 'left') + '"></form></div></div>';
   } };
   // Enter in a value box: never submit or reload (the form also says onsubmit return false); focus and caret stay
   document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target && e.target.classList && e.target.classList.contains('proof-box')) e.preventDefault(); }, true);
@@ -8338,15 +8346,21 @@ body.light-theme .proof-box{color:#0f172a}
   function boxAttrs(p) { const c = 'pcb-' + shortCode(p.proofId || p.proofKey || ''), words = /customer|address|name/.test(p.proofKey || '') && !/phone/.test(p.proofKey || '');
     return ' id="' + c + '" name="' + c + '" autocomplete="one-time-code" autocorrect="off" spellcheck="false" autocapitalize="' + (words ? 'words' : 'off') + '" data-lpignore="true" data-form-type="other"'; }
   window.EngineSlots['results'] = { render() { return '<div class="proof-results">' + resultsHtml() + '</div>'; } };
+  // round 8: nothing is listed until something is typed; every typed word must appear (any order); at most LIST_MAX are drawn
+  const LIST_MAX = 50;
+  const typed = () => ['find.name', 'find.address', 'find.phone'].map(k => String(find[k] || '').trim().toLowerCase());
   function matches() {
-    const q = ['find.name', 'find.address', 'find.phone'].map(k => find[k].trim().toLowerCase());
-    if (!q.some(Boolean)) return HOUSES.slice();
-    return HOUSES.filter(h => (!q[0] || h.name.toLowerCase().includes(q[0])) && (!q[1] || h.address.toLowerCase().includes(q[1])) && (!q[2] || h.phone.replace(/\D/g, '').includes(q[2].replace(/\D/g, '') || q[2])));
+    const q = typed(); if (!q.some(Boolean)) return null;
+    const has = (text, words) => words.split(/\s+/).filter(Boolean).every(w => text.includes(w));
+    return HOUSES.filter(h => (!q[0] || has(h.name.toLowerCase(), q[0])) && (!q[1] || has(h.address.toLowerCase(), q[1])) && (!q[2] || h.phone.replace(/\D/g, '').includes(q[2].replace(/\D/g, '') || q[2])));
   }
   function resultsHtml() {
-    const m = matches();
-    if (!m.length) return '<div class="proof-empty">No match. Change what you typed.</div>';
-    return '<div class="proof-count">' + m.length + ' of ' + HOUSES.length + '</div>' + m.map(h => '<button type="button" class="proof-hit" data-i="' + HOUSES.indexOf(h) + '"><b>' + esc(h.name) + '</b><span>' + esc(h.address) + ' · ' + esc(h.phone) + '</span></button>').join('');
+    const all = matches();
+    if (!all) return '<div class="proof-count proof-hint">Type to find</div>';
+    if (!all.length) return '<div class="proof-empty">No match. Change what you typed.</div>';
+    const m = all.slice(0, LIST_MAX);
+    const count = all.length > LIST_MAX ? LIST_MAX + ' of ' + all.length + ': keep typing' : all.length + (all.length === 1 ? ' match' : ' matches');
+    return '<div class="proof-count">' + count + '</div><div class="proof-list">' + m.map(h => '<button type="button" class="proof-hit" data-i="' + HOUSES.indexOf(h) + '"><b>' + esc(h.name) + '</b><span>' + esc(h.address) + ' · ' + esc(h.phone) + '</span></button>').join('') + '</div>';
   }
   const paintResults = () => document.querySelectorAll('.proof-results').forEach(el => { el.innerHTML = resultsHtml(); });
   window.__proofRepaints = 0;
@@ -8369,36 +8383,39 @@ body.light-theme .proof-box{color:#0f172a}
   function blurNow() { try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (e) {} }
   function goView(v) { blurNow(); resetTypingOrder(); setView(v); }
 
-  // ---------- results above the keyboard (item 6): while a Find box has focus, its results stack moves right under that box
-  // (CSS order only, nothing is redrawn, so the keyboard stays up) and the page scrolls that box to the top of what is visible.
-  function stacksOf(box) { const st = box.closest('.grid-stack-row'); const cont = st && st.parentElement; return st && cont ? { st, cont, all: Array.from(cont.children).filter(x => x.classList.contains('grid-stack-row')) } : null; }
-  function placeResultsUnder(box) {
-    const s = stacksOf(box); if (!s) return;
-    const res = s.cont.querySelector('.proof-results'); const rs = res && res.closest('.grid-stack-row'); if (!rs) return;
-    const at = s.all.indexOf(s.st);
-    s.all.forEach((x, i) => { x.style.order = String(i * 2); });
-    rs.style.order = String(at * 2 + 1);
-    document.body.classList.add('proof-typing');
-    scrollBoxToTop(box);
+  // ---------- round 8: the tapped value box stays in view (replaces round 2's 'results under the box', which moved the list
+  // between the boxes with CSS order and left it there while the box kept focus after the keyboard closed: Danny's 13:00 screenshot).
+  // The list never moves now. A value box that gets focus is scrolled to sit just under the frozen header and above the keyboard
+  // (visual viewport); near the bottom of the page a spacer gives the page room to scroll. Nothing is redrawn.
+  const isBox = el => !!(el && el.classList && el.classList.contains('proof-box'));
+  function scroller() { const sc = document.getElementById('viewport-outer-scroller'); return sc && sc.scrollHeight > sc.clientHeight + 2 ? sc : null; }
+  function kbPad(px) {
+    let pad = document.getElementById('proof-kbpad'); const fr = document.getElementById('viewport-canvas-frame');
+    if (!px) { if (pad) pad.remove(); return; }
+    if (!pad && fr) { pad = document.createElement('div'); pad.id = 'proof-kbpad'; pad.setAttribute('aria-hidden', 'true'); fr.appendChild(pad); }
+    if (pad) pad.style.height = Math.ceil(px) + 'px';
   }
-  function scrollBoxToTop(box) {
+  function keepInView(box) {
     const go = () => {
       if (document.activeElement !== box) return;
-      const sticky = Array.from(document.querySelectorAll('.row-sticky')).reduce((m, el) => Math.max(m, el.getBoundingClientRect().bottom), 0);
-      const top = box.getBoundingClientRect().top, want = Math.max(0, sticky) + 6, dy = top - want;
-      if (Math.abs(dy) < 4) return;
-      const sc = document.getElementById('viewport-outer-scroller');
-      if (sc && sc.scrollHeight > sc.clientHeight + 2) sc.scrollTop += dy; else window.scrollBy(0, dy);
+      const hdr = Array.from(document.querySelectorAll('#viewport-canvas-frame .row-sticky')).reduce((m, el) => Math.max(m, el.getBoundingClientRect().bottom), 0);
+      const vv = window.visualViewport, visTop = vv ? vv.offsetTop : 0, visBot = vv ? vv.offsetTop + vv.height : window.innerHeight;
+      const top = Math.max(hdr, visTop) + 6, r = box.getBoundingClientRect();
+      const dy = r.top - top;   // put it just under the header
+      if (Math.abs(dy) < 2 && r.bottom <= visBot) return;
+      const sc = scroller(), el = sc || document.scrollingElement || document.documentElement;
+      const room = el.scrollHeight - el.clientHeight - el.scrollTop;   // how far the page can still scroll down
+      if (dy > room) kbPad((parseFloat((document.getElementById('proof-kbpad') || {}).style ? document.getElementById('proof-kbpad').style.height : 0) || 0) + dy - room + 2);
+      if (sc) sc.scrollTop += dy; else window.scrollBy(0, dy);
     };
-    requestAnimationFrame(go); setTimeout(go, 350);   // again once the keyboard has opened
+    requestAnimationFrame(go); setTimeout(go, 350); setTimeout(go, 750);   // again once the keyboard has opened
   }
-  function resetTypingOrder() {
-    document.querySelectorAll('.grid-stack-row').forEach(x => { if (x.style.order) x.style.order = ''; });
-    document.body.classList.remove('proof-typing');
+  function resetTypingOrder() {   // name kept for goView(); round 8 has no reordering, only the typing state and the spacer
+    document.body.classList.remove('proof-typing'); kbPad(0);
   }
-  document.addEventListener('focusin', e => { const b = e.target; if (b && b.classList && b.classList.contains('proof-box') && b.dataset.key in find) placeResultsUnder(b); });
-  document.addEventListener('focusout', () => { setTimeout(() => { const a = document.activeElement; if (!(a && a.classList && a.classList.contains('proof-box') && a.dataset.key in find)) resetTypingOrder(); }, 300); });
-  if (window.visualViewport) window.visualViewport.addEventListener('resize', () => { const a = document.activeElement; if (a && a.classList && a.classList.contains('proof-box') && a.dataset.key in find) scrollBoxToTop(a); });
+  document.addEventListener('focusin', e => { const b = e.target; if (isBox(b)) { if (b.dataset.key in find) document.body.classList.add('proof-typing'); keepInView(b); } });
+  document.addEventListener('focusout', () => { setTimeout(() => { if (!isBox(document.activeElement)) resetTypingOrder(); }, 300); });
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', () => { const a = document.activeElement; if (isBox(a)) keepInView(a); });
 
   // ---------- rows of a tab -> engine layout ----------
   const COLS = ['Screen', 'Row', 'Container', 'Stack', 'Cell', 'Weight', 'Type', 'Content', 'Slot', 'Font size', 'Align', 'Visible when', 'Label', 'Id'];
@@ -8473,12 +8490,14 @@ body.light-theme .proof-box{color:#0f172a}
       let tall = 0;
       const containers = num(R.cont).map(ci => {
         const stacks = num(R.cont[ci]).map(si => { const cells = num(R.cont[ci][si]).map(pi => R.cont[ci][si][pi]); const big = cells.some(c => c.slot === 'results'); const lh = lineH[R.key + '\u0002' + ci + '\u0002' + si];
-          return { id: 'S' + si, weight: big ? 7 : (lh ? lh.v : 1), splits: cells, _big: big }; });
+          return { id: 'S' + si, weight: big ? (lh ? lh.v : 7) : (lh ? lh.v : 1), splits: cells, _big: big, _lh: !!lh }; });
         // section height: as before when a line holds the results list (330 + 50 per other line); otherwise the heaviest line gets
         // 50 px and the others their share (round 7 'Line height'; all 1 = 50 per line, the old height)
         const ws = stacks.map(s => s.weight), wMax = Math.max(...ws);
-        tall = Math.max(tall, stacks.some(s => s._big) ? stacks.reduce((a, s) => a + (s._big ? 330 : 50), 0) : Math.round(50 * ws.reduce((a, x) => a + x, 0) / wMax));
-        stacks.forEach(s => { delete s._big; });
+        // round 8: a results line WITH 'Line height' makes every line 50 px per weight (results 6 = 300 px); without it, as before (330 + 50 each)
+        const bigLh = stacks.some(s => s._big && s._lh);
+        tall = Math.max(tall, bigLh ? Math.round(50 * ws.reduce((a, x) => a + x, 0)) : stacks.some(s => s._big) ? stacks.reduce((a, s) => a + (s._big ? 330 : 50), 0) : Math.round(50 * ws.reduce((a, x) => a + x, 0) / wMax));
+        stacks.forEach(s => { delete s._big; delete s._lh; });
         return { id: 'C' + ci, weight: colW[R.key + '\u0002' + ci] || 1, stacks };   // round 6: 'Column width' (default 1)
       });
       const row = { id: 'PR' + (ri + 1), name: R.name, heightPx: Math.max(56, tall), isAutoHeight: false, containers };
@@ -9110,14 +9129,20 @@ body.light-theme .proof-box{color:#0f172a}
   function autofillPage() {
     document.body.classList.add('proof-autofill-mode');
     const pg = document.createElement('div'); pg.id = 'proof-autofill';
-    const v = { A: { ph: 'Phone', tel: true }, B: { ph: 'Type here' }, C: { ph: 'Phone', tel: true, otc: true }, D: { ph: 'Phone', tel: true, ro: true }, E: { ph: 'Type here', otc: true, ro: true } };
-    const box = L => { const o = v[L], id = 'afb-' + L.toLowerCase();
+    // round 6: Phone rows A to E. Round 8: the same variants for a Name box and an Address box, plus F = neutral 'Search' hint,
+    // neutral id / name, one-time-code inside a form with autocomplete off (what the real Find boxes now have).
+    const V = word => ({ A: { ph: word, tel: word === 'Phone' }, B: { ph: 'Type here' }, C: { ph: word, tel: word === 'Phone', otc: true }, D: { ph: word, tel: word === 'Phone', ro: true },
+      E: { ph: 'Type here', otc: true, ro: true }, F: { ph: 'Search', otc: true } });
+    const PREFIX = { Phone: 'afb-', Name: 'afn-', Address: 'afa-' };
+    const box = (word, L) => { const o = V(word)[L], id = PREFIX[word] + L.toLowerCase();
       const input = '<input id="' + id + '" name="' + id + '" data-variant="' + L + '" class="af-box" type="text" placeholder="' + o.ph + '"' + (o.tel ? ' inputmode="tel"' : '') +
         ' autocomplete="' + (o.otc ? 'one-time-code' : 'off') + '" autocorrect="off" spellcheck="false" autocapitalize="off"' + (o.ro ? ' readonly data-ro="1"' : '') + '>';
       const face = '<div class="af-face">' + input + '</div>';
-      return '<div class="af-row"><label for="' + id + '" class="af-label"><b>' + L + '</b> Phone</label>' + (o.otc ? '<form autocomplete="off" onsubmit="return false" class="af-form">' + face + '</form>' : face) + '</div>'; };
+      return '<div class="af-row"><label for="' + id + '" class="af-label"><b>' + L + '</b> ' + word + '</label>' + (o.otc ? '<form autocomplete="off" onsubmit="return false" class="af-form">' + face + '</form>' : face) + '</div>'; };
+    const group = (word, letters, head) => '<h2 class="af-h2">' + head + '</h2>' + letters.map(L => box(word, L)).join('');
     pg.innerHTML = '<h1>Autofill test (proof ' + PROOF_VERSION + ')</h1><p class="af-note">Tap each box. Does a saved phone or address bar appear? Tell Chat 03 the letters.</p><p class="af-note af-chosen">C is the chosen fix (round 7: now on every value box of the real page).</p>' +
-      ['A', 'B', 'C', 'D', 'E'].map(box).join('') + '<p class="af-key">A today\'s Phone box · B plain hint, normal keypad · C one-time-code in a form · D read-only until tapped · E B + C + D</p>' +
+      group('Name', ['A', 'B', 'C', 'D', 'E', 'F'], 'Name boxes (round 8)') + group('Address', ['A', 'B', 'C', 'D', 'E', 'F'], 'Address boxes (round 8)') + group('Phone', ['A', 'B', 'C', 'D', 'E'], 'Phone boxes (round 6)') +
+      '<p class="af-key">A plain box (the old way) · B hint "Type here", normal keypad · C one-time-code in a form · D read-only until tapped · E B + C + D · F hint "Search", one-time-code in a form (the real Find boxes now)</p>' +
       '<p><a href="' + location.pathname + '">Back to the proof page</a></p>';
     document.body.appendChild(pg);
     pg.querySelectorAll('input[data-ro]').forEach(i => { i.addEventListener('focus', () => i.removeAttribute('readonly')); i.addEventListener('blur', () => i.setAttribute('readonly', '')); });
