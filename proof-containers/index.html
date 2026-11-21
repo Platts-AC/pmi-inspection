@@ -3567,7 +3567,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.8.0', stamp: '{{STAMP}}', name: '{{BUILD_NAME}}' };
+    const ENGINE_BUILD = { version: 'proof-0.9.0', stamp: '{{STAMP}}', name: '{{BUILD_NAME}}' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8201,7 +8201,7 @@ body.light-theme .proof-box{color:#0f172a}
     // =========================================================
     function syncLiveClass() { document.body.classList.toggle('live-mode', Boolean(isLiveInteraction) || IS_VISITOR_MODE); }
   </script>
-<script>window.PROOF_BUILTIN_CSV = "Screen,Row,Container,Stack,Cell,Weight,Type,Content,Slot,Font size,Align,Visible when,Label,Id,Sub label,Sub label size,Sub label place,Wrap,Pad X,Pad Y,V align,Nudge X,Nudge Y,Accent,Icon,Press style,Min size,Max size,Column width,Freeze,Line height\nall,Header,1,1,1,1,button,set-view:entry,,11,center,always,Entry,hdr.entry,,,,no,2,,,,,,,,,,,,5\nall,Header,1,1,2,1,button,set-view:report,,11,center,always,Report,hdr.report,,,,no,2,,,,,,,,,,,,\nall,Header,1,1,3,1,button,reload-layout,,11,center,always,Reload,hdr.reload,,,,no,2,,,,,,,,,,,,\nall,Header,1,1,4,1,button,toggle-tray,,11,center,always,Tools,hdr.tools,,,,no,2,,,,,,settings,,,,,,\nall,Header,1,1,5,1,button,set-view:find,,11,center,always,New,hdr.newcall,,,,no,2,,,,,,,,,,,,\nall,Header,1,1,6,1,button,set-view:find,,11,center,always,Find,hdr.find,,,,no,2,,,,,,,,,,,,\nall,Header,1,2,2,1,button,proof-badge,,10,center,always,,badge,,,,no,,0,,,,,,,,,,,\ntray,Tools,1,1,1,2,button,proof-profile,,12,center,always,Profile,tools.profile,,,,no,4,,,,,,,,,,,,\ntray,Tools,1,1,2,1,button,proof-adjust,,12,center,always,Adjust,tools.adjust,,,,no,4,,,,,,,,,,,,\ntray,Tools,1,1,3,1,button,toggle-inspector,,12,center,always,Advanced,tools.inspector,,,,no,4,,,,,,,,,,,,\ntray,Tools,1,2,1,1,button,proof-save-tweaks,,12,center,always,Save tweaks,tools.save,,,,no,4,,,,,,,,,,,,\ntray,Tools,1,2,2,1,button,proof-clear-tweaks,,12,center,always,Clear mine,tools.clear,,,,no,4,,,,,,,,,,,,\ntray,Tools,1,2,3,1,button,toggle-live,,12,center,always,Edit,tools.mode,,,,no,4,,,,,,,,,,,,\nentry,Job details,1,1,1,1,text,JOB DETAILS,,13,left,always,,job.title,,,,no,,,,,,amber,,,,,,,\nentry,Job details,1,2,1,1,text,Date,,12,left,always,,job.date.label,,,,no,,,,,,,,,,,,,\nentry,Job details,1,2,2,2,text,f:date,box,14,left,always,,job.date,,,,no,,,,,,,,,,,,,\nentry,Job details,1,3,1,1,text,Customer,,12,left,always,,job.customer.label,,,,no,,,,,,,,,,,,,\nentry,Job details,1,3,2,2,text,f:customer,box,14,left,always,,job.customer,,,,no,,,,,,,,,,,,,\nentry,Job details,1,4,1,1,text,Address,,12,left,always,,job.address.label,,,,no,,,,,,,,,,,,,\nentry,Job details,1,4,2,2,text,f:address,box,14,left,always,,job.address,,,,no,,,,,,,,,,,,,\nentry,Job details,1,5,1,1,text,Phone,,12,left,always,,job.phone.label,,,,no,,,,,,,,,,,,,\nentry,Job details,1,5,2,2,text,f:phone,box,14,left,always,,job.phone,,,,no,,,,,,,,,,,,,\nentry,Job details,1,6,1,1,text,Condenser model,,12,left,always,,job.model.label,,,,yes,,,,,,,,,,,,,\nentry,Job details,1,6,2,2,text,f:outdoorModel,box,14,left,always,,job.model,,,,no,,,,,,,,,,,,,\nentry,Job details,1,7,1,1,text,Suction pressure,,12,left,always,,job.suction.label,,,,no,,,,,,,,,,,,,\nentry,Job details,1,7,2,2,text,f:suctionPressure,box,14,left,always,,job.suction,PSIG,10,middle-right,no,,,,,,,,,,,,,\nentry,Job details,1,8,1,0,text,BAD ROW on purpose (weight 0): the page refuses it and says so. Delete this row on the tab to clear the message.,,12,left,always,,job.bad,,,,yes,,,,,,,,,,,,,\nreport,Report,1,1,1,1,text,Report page (empty in this proof),,13,center,always,,report.text,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,1,1,3,text,Find the customer,,15,left,always,,find.title,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,1,2,1,button,set-view:entry,,12,center,always,Back,find.back,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,2,1,1,text,Name,,12,left,always,,find.name.label,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,2,2,3,text,find.name,box,14,left,always,,find.name,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,3,1,1,text,Address,,12,left,always,,find.address.label,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,3,2,3,text,find.address,box,14,left,always,,find.address,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,4,1,1,text,Phone,,12,left,always,,find.phone.label,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,4,2,3,text,find.phone,box,14,left,always,,find.phone,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,5,1,1,button,proof-find,,13,center,always,Find,find.find,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,5,2,1,button,proof-cancel,,13,center,always,Cancel,find.cancel,,,,no,,,,,,,,none,,,,,\nfind,Find the customer,1,6,1,1,text,houses,results,13,left,always,,find.results,,,,no,,,,,,,,,,,,,6\nfind,Find the customer,1,7,1,1,text,Each letter you type narrows the list. Tap a house to fill the call.,,11,left,always,,find.hint,,,,yes,,,,,,,,,,,,,\nall,Header,1,2,1,1,text,,,10,center,always,,hdr.spacer1,,,,no,,,,,,,,,,,,,2\nall,Header,1,2,3,1,text,,,10,center,always,,hdr.spacer2,,,,no,,,,,,,,,,,,,\ntray,Tools,1,3,1,1,button,refresh-page,,12,center,always,Refresh page,tools.refresh,,,,no,4,,,,,,,,,,,,\n";</script>
+<script>window.PROOF_BUILTIN_CSV = "Screen,Row,Container,Stack,Cell,Weight,Type,Content,Slot,Font size,Align,Visible when,Label,Id,Sub label,Sub label size,Sub label place,Wrap,Pad X,Pad Y,V align,Nudge X,Nudge Y,Accent,Icon,Press style,Min size,Max size,Column width,Freeze,Line height\nall,Header,1,1,1,1,button,set-view:entry,,11,center,always,Entry,hdr.entry,,,,no,2,,,,,,,,,,,,5\nall,Header,1,1,2,1,button,set-view:report,,11,center,always,Report,hdr.report,,,,no,2,,,,,,,,,,,,\nall,Header,1,1,3,1,button,reload-layout,,11,center,always,Reload,hdr.reload,,,,no,2,,,,,,,,,,,,\nall,Header,1,1,4,1,button,toggle-tray,,11,center,always,Tools,hdr.tools,,,,no,2,,,,,,settings,,,,,,\nall,Header,1,1,5,1,button,new-call,,11,center,always,New,hdr.newcall,,,,no,2,,,,,,,,,,,,\nall,Header,1,1,6,1,button,set-view:find,,11,center,always,Find,hdr.find,,,,no,2,,,,,,,,,,,,\nall,Header,1,2,2,1,button,proof-badge,,10,center,always,,badge,,,,no,,0,,,,,,,,,,,\ntray,Tools,1,1,1,2,button,proof-profile,,12,center,always,Profile,tools.profile,,,,no,4,,,,,,,,,,,,\ntray,Tools,1,1,2,1,button,proof-adjust,,12,center,always,Adjust,tools.adjust,,,,no,4,,,,,,,,,,,,\ntray,Tools,1,1,3,1,button,toggle-inspector,,12,center,always,Advanced,tools.inspector,,,,no,4,,,,,,,,,,,,\ntray,Tools,1,2,1,1,button,proof-save-tweaks,,12,center,always,Save tweaks,tools.save,,,,no,4,,,,,,,,,,,,\ntray,Tools,1,2,2,1,button,proof-clear-tweaks,,12,center,always,Clear mine,tools.clear,,,,no,4,,,,,,,,,,,,\ntray,Tools,1,2,3,1,button,toggle-live,,12,center,always,Edit,tools.mode,,,,no,4,,,,,,,,,,,,\nentry,Job details,1,1,1,1,text,JOB DETAILS,,13,left,always,,job.title,,,,no,,,,,,amber,,,,,,,\nentry,Job details,1,2,1,1,text,Date,,12,left,always,,job.date.label,,,,no,,,,,,,,,,,,,\nentry,Job details,1,2,2,2,text,f:date,box,14,left,always,,job.date,,,,no,,,,,,,,,,,,,\nentry,Job details,1,3,1,1,text,Customer,,12,left,always,,job.customer.label,,,,no,,,,,,,,,,,,,\nentry,Job details,1,3,2,2,text,f:customer,box,14,left,always,,job.customer,,,,no,,,,,,,,,,,,,\nentry,Job details,1,4,1,1,text,Address,,12,left,always,,job.address.label,,,,no,,,,,,,,,,,,,\nentry,Job details,1,4,2,2,text,f:address,box,14,left,always,,job.address,,,,no,,,,,,,,,,,,,\nentry,Job details,1,5,1,1,text,Phone,,12,left,always,,job.phone.label,,,,no,,,,,,,,,,,,,\nentry,Job details,1,5,2,2,text,f:phone,box,14,left,always,,job.phone,,,,no,,,,,,,,,,,,,\nentry,Job details,1,6,1,1,text,Condenser model,,12,left,always,,job.model.label,,,,yes,,,,,,,,,,,,,\nentry,Job details,1,6,2,2,text,f:outdoorModel,box,14,left,always,,job.model,,,,no,,,,,,,,,,,,,\nentry,Job details,1,7,1,1,text,Suction pressure,,12,left,always,,job.suction.label,,,,no,,,,,,,,,,,,,\nentry,Job details,1,7,2,2,text,f:suctionPressure,box,14,left,always,,job.suction,PSIG,10,middle-right,no,,,,,,,,,,,,,\nentry,Job details,1,8,1,0,text,BAD ROW on purpose (weight 0): the page refuses it and says so. Delete this row on the tab to clear the message.,,12,left,always,,job.bad,,,,yes,,,,,,,,,,,,,\nreport,Report,1,1,1,1,text,Report page (empty in this proof),,13,center,always,,report.text,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,1,1,3,text,Find the customer,,15,left,always,,find.title,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,1,2,1,button,set-view:entry,,12,center,always,Back,find.back,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,2,1,1,text,Name,,12,left,always,,find.name.label,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,2,2,3,text,find.name,box,14,left,always,,find.name,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,3,1,1,text,Address,,12,left,always,,find.address.label,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,3,2,3,text,find.address,box,14,left,always,,find.address,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,4,1,1,text,Phone,,12,left,always,,find.phone.label,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,4,2,3,text,find.phone,box,14,left,always,,find.phone,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,5,1,1,button,proof-find,,13,center,always,Find,find.find,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,5,2,1,button,proof-cancel,,13,center,always,Cancel,find.cancel,,,,no,,,,,,,,none,,,,,\nfind,Find the customer,1,6,1,1,text,houses,results,13,left,always,,find.results,,,,no,,,,,,,,,,,,,6\nfind,Find the customer,1,7,1,1,text,Each letter you type narrows the list. Tap a house to fill the call.,,11,left,always,,find.hint,,,,yes,,,,,,,,,,,,,\nall,Header,1,2,1,1,text,,,10,center,always,,hdr.spacer1,,,,no,,,,,,,,,,,,,2\nall,Header,1,2,3,1,text,,,10,center,always,,hdr.spacer2,,,,no,,,,,,,,,,,,,\ntray,Tools,1,3,1,1,button,refresh-page,,12,center,always,Refresh page,tools.refresh,,,,no,4,,,,,,,,,,,,\n";</script>
 <script>
 // =====================================================================================================
 // PROOF PAGE (throwaway sandbox). Round 1: Prompts no. 95. Round 2: Prompts no. 96. Read DESIGN.md first.
@@ -8224,11 +8224,14 @@ body.light-theme .proof-box{color:#0f172a}
 // Round 8: the Find list waits for typing and stays in ONE place (a small box under Find / Cancel that scrolls inside itself,
 // height from the results line's 'Line height'); the tapped value box is scrolled under the header and above the keyboard;
 // neutral placeholders on the Find boxes; Name / Address rows on the autofill test page.
+// Round 9: the page stays still when a value box is tapped (it scrolls only if the box is hidden behind the header or the
+// keyboard, and only as far as needed); New clears the call (Entry boxes and the saved draft), asking for a second tap when
+// something is typed.
 // Repaint rule (round 1, unchanged): renderCanvas is NEVER called while a text box has focus; typing repaints only the
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.8.0';
+  const PROOF_VERSION = '0.9.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8239,7 +8242,7 @@ body.light-theme .proof-box{color:#0f172a}
   const FIND_KEYS = { 'find.name': 1, 'find.address': 1, 'find.phone': 1 };
   const TYPES = { button: 1, text: 1, logo: 1, badge: 1 };
   const TOOL_ACTIONS = { 'reload-layout': 1, 'proof-save-tweaks': 1, 'proof-clear-tweaks': 1, 'proof-profile': 1, 'toggle-tray': 1, 'proof-adjust': 1, 'refresh-page': 1 };
-  const ACTIONS = Object.assign({ 'proof-badge': 1, 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1 }, TOOL_ACTIONS);
+  const ACTIONS = Object.assign({ 'proof-badge': 1, 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1, 'new-call': 1 }, TOOL_ACTIONS);
   // What a tweak can change (DESIGN.md). Each rule turns a value into its normal text form, or returns an error.
   const PLACES = { 'top-left': ['left', 'top'], 'top-center': ['center', 'top'], 'top-right': ['right', 'top'], 'middle-left': ['left', 'middle'], 'middle': ['center', 'middle'],
     'middle-right': ['right', 'middle'], 'bottom-left': ['left', 'bottom'], 'bottom-center': ['center', 'bottom'], 'bottom-right': ['right', 'bottom'] };
@@ -8395,17 +8398,23 @@ body.light-theme .proof-box{color:#0f172a}
     if (!pad && fr) { pad = document.createElement('div'); pad.id = 'proof-kbpad'; pad.setAttribute('aria-hidden', 'true'); fr.appendChild(pad); }
     if (pad) pad.style.height = Math.ceil(px) + 'px';
   }
+  // round 9 (Danny's rule): the page stays exactly where it is when the tapped box is fully visible (below the frozen header and
+  // above the keyboard). Only a box that is partly or fully hidden is brought just into view (6 px gap), the shortest way.
+  const VIEW_GAP = 6;
   function keepInView(box) {
     const go = () => {
       if (document.activeElement !== box) return;
+      const face = box.closest('.proof-face') || box;
       const hdr = Array.from(document.querySelectorAll('#viewport-canvas-frame .row-sticky')).reduce((m, el) => Math.max(m, el.getBoundingClientRect().bottom), 0);
-      const vv = window.visualViewport, visTop = vv ? vv.offsetTop : 0, visBot = vv ? vv.offsetTop + vv.height : window.innerHeight;
-      const top = Math.max(hdr, visTop) + 6, r = box.getBoundingClientRect();
-      const dy = r.top - top;   // put it just under the header
-      if (Math.abs(dy) < 2 && r.bottom <= visBot) return;
+      const vv = window.visualViewport, visTop = Math.max(hdr, vv ? vv.offsetTop : 0), visBot = vv ? vv.offsetTop + vv.height : window.innerHeight;
+      const r = face.getBoundingClientRect();
+      let dy = 0;
+      if (r.top < visTop - 0.5) dy = r.top - (visTop + VIEW_GAP);                                       // behind the header: move it down
+      else if (r.bottom > visBot + 0.5) dy = Math.min(r.bottom - (visBot - VIEW_GAP), r.top - (visTop + VIEW_GAP));   // behind the keyboard: move it up, never past the header
+      if (!dy) return;
       const sc = scroller(), el = sc || document.scrollingElement || document.documentElement;
       const room = el.scrollHeight - el.clientHeight - el.scrollTop;   // how far the page can still scroll down
-      if (dy > room) kbPad((parseFloat((document.getElementById('proof-kbpad') || {}).style ? document.getElementById('proof-kbpad').style.height : 0) || 0) + dy - room + 2);
+      if (dy > room) { const pad = document.getElementById('proof-kbpad'); kbPad((pad ? parseFloat(pad.style.height) || 0 : 0) + dy - room + 1); }   // only for the lowest boxes
       if (sc) sc.scrollTop += dy; else window.scrollBy(0, dy);
     };
     requestAnimationFrame(go); setTimeout(go, 350); setTimeout(go, 750);   // again once the keyboard has opened
@@ -8480,7 +8489,9 @@ body.light-theme .proof-box{color:#0f172a}
         else if (have.v !== Number(lh)) warned.push('Tab row ' + n + ': Line height ' + lh + ' not used (tab row ' + have.n + ' set this line to ' + have.v + ' first).'); }
       if (slot === 'box') { cell.slot = 'box'; cell.proofKey = content; cell.label = ''; }
       else if (slot === 'results') { cell.slot = 'results'; cell.label = ''; }
-      else if (type === 'button') { cell.label = g('Label') || content; cell.clickAction = content; }
+      else if (type === 'button') { cell.label = g('Label') || content;
+        // round 9 migration: on older tabs New (Id hdr.newcall) only opened Find (set-view:find); it now clears the call first
+        cell.clickAction = (id === 'hdr.newcall' && content === 'set-view:find') ? 'new-call' : content; }
       else cell.label = type === 'logo' ? (g('Label') || content || 'Logo') : content;
       if (S[pi]) { refused.push('Tab row ' + n + ' refused: cell ' + ci + '.' + si + '.' + pi + ' of "' + rowName + '" is already used.'); delete ids[id]; }
       else { S[pi] = cell; used++; }
@@ -8765,6 +8776,14 @@ body.light-theme .proof-box{color:#0f172a}
   window.EngineActions['proof-profile'] = () => { nextProfile(); };
   window.EngineActions['proof-badge'] = () => { if (staleV) reloadTo(staleV); };   // no newer version: nothing happens
   window.EngineActions['proof-adjust'] = () => { if (barOpen) closeBar(); else openBar(); };
+  // round 9: New starts an empty call: every Entry value box and the saved draft are cleared, then Find opens (as before).
+  // When something is typed, the first tap only asks; a second tap within 5 s clears.
+  let newArmed = 0;
+  window.EngineActions['new-call'] = () => {
+    const typedSomething = Object.keys(call).some(k => String(call[k] == null ? '' : call[k]).trim());
+    if (typedSomething && Date.now() - newArmed > 5000) { newArmed = Date.now(); say('Tap New again to clear this call', 'warn', 5000); return; }
+    newArmed = 0; call = {}; lsSet(K.call, call); clearFind(); goView('find');
+  };
   // round 7 (3): Refresh page = reload the whole page past the browser's copy (new ?v=, other switches dropped). With unsaved
   // tweaks the first tap only warns; a second tap within 5 s reloads anyway.
   let refreshArmed = 0;
