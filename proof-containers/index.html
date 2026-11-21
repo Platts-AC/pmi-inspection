@@ -731,6 +731,32 @@
 #proof-notes.small{max-height:1.5em;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 body.proof-typing #proof-notes{display:none}
 #viewport-outer-scroller{padding-bottom:70px}
+#proof-notes .proof-warn{color:#fda4af;font-weight:600}
+/* round 3 (B): buttons on the page stay one line, same height; long text is cut off with ... */
+#viewport-canvas-frame .grid-split-partition button.rounded-lg{height:36px;min-width:0;max-width:100%;white-space:nowrap;overflow:hidden}
+#viewport-canvas-frame .grid-split-partition button.rounded-lg>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+#viewport-canvas-frame .row-sticky .grid-split-partition button.rounded-lg{width:100%}
+/* round 3 (A): the engine's sub label layer uses z-[6], which the compiled Tailwind file lacks (only the CDN made it); without it the sub label hides under a text box */
+.z-\[6\]{z-index:6}
+/* round 3 (C): phone Adjust bar */
+#proof-bar{display:none;position:fixed;left:0;right:0;top:0;z-index:70;background:#0b1626;border-top:2px solid #f59e0b;color:#e2e8f0;font:14px/1.3 system-ui,sans-serif;padding:6px 8px 8px;box-shadow:0 -6px 18px rgba(0,0,0,.5)}
+#proof-bar button{min-height:44px;min-width:44px;border-radius:10px;border:1px solid #1e3e68;background:#0e1c31;color:#e2e8f0;font:600 15px system-ui,sans-serif;padding:0 12px}
+#proof-bar button.on{background:#155e75;border-color:#22d3ee;color:#fff}
+#proof-bar .pb-top{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:#94a3b8}
+#proof-bar .pb-top span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#proof-bar .pb-groups{display:flex;gap:4px;margin:4px 0}
+#proof-bar .pb-groups button{flex:1 1 0;padding:0 2px;font-size:13px}
+#proof-bar .pb-body{display:flex;align-items:center;gap:8px;min-height:48px}
+#proof-bar .pb-body button{flex:1 1 0}
+#proof-bar .pb-val{flex:1 1 0;text-align:center;font-weight:600}
+#proof-bar .pb-hint{color:#94a3b8;font-size:13px}
+#proof-bar #pb-label{flex:3 1 0;min-width:0;height:44px;border-radius:10px;border:1px solid #22d3ee;background:#060c16;color:#fff;font-size:16px;padding:0 10px}
+#proof-bar .pb-foot{display:flex;align-items:center;gap:8px;margin-top:4px}
+#proof-bar #pb-status{flex:1 1 auto;font-size:12px;color:#94a3b8;text-align:center;overflow:hidden}
+#proof-bar #pb-status.warn{color:#fda4af}
+#proof-bar .pb-save{background:#78350f;border-color:#f59e0b}
+body.proof-adjusting #proof-notes{display:none}
+body.proof-adjusting #viewport-outer-scroller{padding-bottom:300px}
 body.light-theme .proof-box{background:#fff;color:#0f172a}
 </style>
 </head>
@@ -3483,7 +3509,7 @@ body.light-theme .proof-box{background:#fff;color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.2.0', stamp: '2026-11-20 23:40:43', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.3.0', stamp: '2026-11-21 06:24:47', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8117,7 +8143,7 @@ body.light-theme .proof-box{background:#fff;color:#0f172a}
     // =========================================================
     function syncLiveClass() { document.body.classList.toggle('live-mode', Boolean(isLiveInteraction) || IS_VISITOR_MODE); }
   </script>
-<script>window.PROOF_BUILTIN_CSV = "Screen,Row,Container,Stack,Cell,Weight,Type,Content,Slot,Font size,Align,Visible when,Label,Id\nall,Header,1,1,1,1,button,set-view:entry,,12,center,always,Entry,hdr.entry\nall,Header,1,1,2,1,button,set-view:report,,12,center,always,Report,hdr.report\nall,Header,2,1,1,1,button,reload-layout,,12,center,always,Reload,hdr.reload\nall,Header,2,1,2,1,button,toggle-tray,,12,center,always,Tools,hdr.tools\nall,Header,3,1,1,1,button,set-view:find,,12,center,always,New call,hdr.newcall\nall,Header,3,1,2,1,button,set-view:find,,12,center,always,Find,hdr.find\ntray,Tools,1,1,1,2,button,proof-profile,,12,center,always,Profile,tools.profile\ntray,Tools,1,1,2,1,button,toggle-inspector,,12,center,always,Inspector,tools.inspector\ntray,Tools,1,1,3,1,button,toggle-live,,12,center,always,Edit,tools.mode\ntray,Tools,1,2,1,1,button,proof-save-tweaks,,12,center,always,Save tweaks,tools.save\ntray,Tools,1,2,2,1,button,proof-clear-tweaks,,12,center,always,Clear my tweaks,tools.clear\nentry,Job details,1,1,1,1,text,JOB DETAILS,,13,left,always,,job.title\nentry,Job details,1,2,1,1,text,Date,,12,left,always,,job.date.label\nentry,Job details,1,2,2,2,text,f:date,box,14,left,always,,job.date\nentry,Job details,1,3,1,1,text,Customer,,12,left,always,,job.customer.label\nentry,Job details,1,3,2,5,text,f:customer,box,14,left,always,,job.customer\nentry,Job details,1,4,1,1,text,Address,,12,left,always,,job.address.label\nentry,Job details,1,4,2,2,text,f:address,box,14,left,always,,job.address\nentry,Job details,1,5,1,1,text,Phone,,12,left,always,,job.phone.label\nentry,Job details,1,5,2,2,text,f:phone,box,14,left,always,,job.phone\nentry,Job details,1,6,1,1,text,Condenser model,,12,left,always,,job.model.label\nentry,Job details,1,6,2,2,text,f:outdoorModel,box,14,left,always,,job.model\nentry,Job details,1,7,1,1,text,Suction pressure,,12,left,always,,job.suction.label\nentry,Job details,1,7,2,2,text,f:suctionPressure,box,14,left,always,,job.suction\nentry,Job details,1,8,1,0,text,BAD ROW on purpose (weight 0): the page refuses it and says so. Delete this row on the tab to clear the message.,,12,left,always,,job.bad\nreport,Report,1,1,1,1,text,Report page (empty in this proof),,13,center,always,,report.text\nfind,Find the customer,1,1,1,3,text,Find the customer,,15,left,always,,find.title\nfind,Find the customer,1,1,2,1,button,set-view:entry,,12,center,always,Back,find.back\nfind,Find the customer,1,2,1,1,text,Name,,12,left,always,,find.name.label\nfind,Find the customer,1,2,2,3,text,find.name,box,14,left,always,,find.name\nfind,Find the customer,1,3,1,1,text,Address,,12,left,always,,find.address.label\nfind,Find the customer,1,3,2,3,text,find.address,box,14,left,always,,find.address\nfind,Find the customer,1,4,1,1,text,Phone,,12,left,always,,find.phone.label\nfind,Find the customer,1,4,2,3,text,find.phone,box,14,left,always,,find.phone\nfind,Find the customer,1,5,1,1,button,proof-find,,13,center,always,Find,find.find\nfind,Find the customer,1,5,2,1,button,proof-cancel,,13,center,always,Cancel,find.cancel\nfind,Find the customer,1,6,1,1,text,houses,results,13,left,always,,find.results\nfind,Find the customer,1,7,1,1,text,Each letter you type narrows the list. Tap a house to fill the call.,,11,left,always,,find.hint\n";</script>
+<script>window.PROOF_BUILTIN_CSV = "Screen,Row,Container,Stack,Cell,Weight,Type,Content,Slot,Font size,Align,Visible when,Label,Id,Sub label,Sub label size,Sub label place,Wrap,Pad X,Pad Y,V align,Nudge X,Nudge Y,Accent,Icon\nall,Header,1,1,1,1,button,set-view:entry,,11,center,always,Entry,hdr.entry,,,,no,4,,,,,,\nall,Header,1,1,2,1,button,set-view:report,,11,center,always,Report,hdr.report,,,,no,4,,,,,,\nall,Header,2,1,1,1,button,reload-layout,,11,center,always,Reload,hdr.reload,,,,no,4,,,,,,\nall,Header,2,1,2,1,button,toggle-tray,,11,center,always,Tools,hdr.tools,,,,no,4,,,,,,settings\nall,Header,3,1,1,1,button,set-view:find,,11,center,always,New,hdr.newcall,,,,no,4,,,,,,\nall,Header,3,1,2,1,button,set-view:find,,11,center,always,Find,hdr.find,,,,no,4,,,,,,\ntray,Tools,1,1,1,2,button,proof-profile,,12,center,always,Profile,tools.profile,,,,no,4,,,,,,\ntray,Tools,1,1,2,1,button,proof-adjust,,12,center,always,Adjust,tools.adjust,,,,no,4,,,,,,\ntray,Tools,1,1,3,1,button,toggle-inspector,,12,center,always,Advanced,tools.inspector,,,,no,4,,,,,,\ntray,Tools,1,2,1,1,button,proof-save-tweaks,,12,center,always,Save tweaks,tools.save,,,,no,4,,,,,,\ntray,Tools,1,2,2,1,button,proof-clear-tweaks,,12,center,always,Clear mine,tools.clear,,,,no,4,,,,,,\ntray,Tools,1,2,3,1,button,toggle-live,,12,center,always,Edit,tools.mode,,,,no,4,,,,,,\nentry,Job details,1,1,1,1,text,JOB DETAILS,,13,left,always,,job.title,,,,no,,,,,,amber,\nentry,Job details,1,2,1,1,text,Date,,12,left,always,,job.date.label,,,,no,,,,,,,\nentry,Job details,1,2,2,2,text,f:date,box,14,left,always,,job.date,,,,no,,,,,,,\nentry,Job details,1,3,1,1,text,Customer,,12,left,always,,job.customer.label,,,,no,,,,,,,\nentry,Job details,1,3,2,5,text,f:customer,box,14,left,always,,job.customer,,,,no,,,,,,,\nentry,Job details,1,4,1,1,text,Address,,12,left,always,,job.address.label,,,,no,,,,,,,\nentry,Job details,1,4,2,2,text,f:address,box,14,left,always,,job.address,,,,no,,,,,,,\nentry,Job details,1,5,1,1,text,Phone,,12,left,always,,job.phone.label,,,,no,,,,,,,\nentry,Job details,1,5,2,2,text,f:phone,box,14,left,always,,job.phone,,,,no,,,,,,,\nentry,Job details,1,6,1,1,text,Condenser model,,12,left,always,,job.model.label,,,,yes,,,,,,,\nentry,Job details,1,6,2,2,text,f:outdoorModel,box,14,left,always,,job.model,,,,no,,,,,,,\nentry,Job details,1,7,1,1,text,Suction pressure,,12,left,always,,job.suction.label,,,,no,,,,,,,\nentry,Job details,1,7,2,2,text,f:suctionPressure,box,14,left,always,,job.suction,PSIG,10,middle-right,no,,,,,,,\nentry,Job details,1,8,1,0,text,BAD ROW on purpose (weight 0): the page refuses it and says so. Delete this row on the tab to clear the message.,,12,left,always,,job.bad,,,,yes,,,,,,,\nreport,Report,1,1,1,1,text,Report page (empty in this proof),,13,center,always,,report.text,,,,no,,,,,,,\nfind,Find the customer,1,1,1,3,text,Find the customer,,15,left,always,,find.title,,,,no,,,,,,,\nfind,Find the customer,1,1,2,1,button,set-view:entry,,12,center,always,Back,find.back,,,,no,,,,,,,\nfind,Find the customer,1,2,1,1,text,Name,,12,left,always,,find.name.label,,,,no,,,,,,,\nfind,Find the customer,1,2,2,3,text,find.name,box,14,left,always,,find.name,,,,no,,,,,,,\nfind,Find the customer,1,3,1,1,text,Address,,12,left,always,,find.address.label,,,,no,,,,,,,\nfind,Find the customer,1,3,2,3,text,find.address,box,14,left,always,,find.address,,,,no,,,,,,,\nfind,Find the customer,1,4,1,1,text,Phone,,12,left,always,,find.phone.label,,,,no,,,,,,,\nfind,Find the customer,1,4,2,3,text,find.phone,box,14,left,always,,find.phone,,,,no,,,,,,,\nfind,Find the customer,1,5,1,1,button,proof-find,,13,center,always,Find,find.find,,,,no,,,,,,,\nfind,Find the customer,1,5,2,1,button,proof-cancel,,13,center,always,Cancel,find.cancel,,,,no,,,,,,,\nfind,Find the customer,1,6,1,1,text,houses,results,13,left,always,,find.results,,,,no,,,,,,,\nfind,Find the customer,1,7,1,1,text,Each letter you type narrows the list. Tap a house to fill the call.,,11,left,always,,find.hint,,,,yes,,,,,,,\n";</script>
 <script>
 // =====================================================================================================
 // PROOF PAGE (throwaway sandbox). Round 1: Prompts no. 95. Round 2: Prompts no. 96. Read DESIGN.md first.
@@ -8127,11 +8153,13 @@ body.light-theme .proof-box{background:#fff;color:#0f172a}
 // (one layout tab each), the engine's own INSPECTOR in the page, SAVE TWEAKS (this device's changes go to the 'Tweaks'
 // tab through a small test Apps Script), tweaks applied over the profile's layout on every load, and the Find results
 // placed under the box being typed in.
+// Round 3 adds: more cell properties from the tab and in Save tweaks (sub label, wrap, padding, v align, nudge, accent),
+// header buttons on one line, a phone Adjust bar, and a plain warning for inspector edits that Save tweaks does not keep.
 // Repaint rule (round 1, unchanged): renderCanvas is NEVER called while a text box has focus; typing repaints only the
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.2.0';
+  const PROOF_VERSION = '0.3.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8141,9 +8169,46 @@ body.light-theme .proof-box{background:#fff;color:#0f172a}
   const FIELDS = { 'f:date': 'Date', 'f:customer': 'Customer', 'f:address': 'Address', 'f:phone': 'Phone', 'f:outdoorModel': 'Condenser model', 'f:suctionPressure': 'Suction pressure' };
   const FIND_KEYS = { 'find.name': 1, 'find.address': 1, 'find.phone': 1 };
   const TYPES = { button: 1, text: 1, logo: 1, badge: 1 };
-  const TOOL_ACTIONS = { 'reload-layout': 1, 'proof-save-tweaks': 1, 'proof-clear-tweaks': 1, 'proof-profile': 1, 'toggle-tray': 1 };
+  const TOOL_ACTIONS = { 'reload-layout': 1, 'proof-save-tweaks': 1, 'proof-clear-tweaks': 1, 'proof-profile': 1, 'toggle-tray': 1, 'proof-adjust': 1 };
   const ACTIONS = Object.assign({ 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1 }, TOOL_ACTIONS);
-  const PROPS = ['weight', 'fontSize', 'label', 'align'];   // what a tweak can change (DESIGN.md)
+  // What a tweak can change (DESIGN.md). Each rule turns a value into its normal text form, or returns an error.
+  const PLACES = { 'top-left': ['left', 'top'], 'top-center': ['center', 'top'], 'top-right': ['right', 'top'], 'middle-left': ['left', 'middle'], 'middle': ['center', 'middle'],
+    'middle-right': ['right', 'middle'], 'bottom-left': ['left', 'bottom'], 'bottom-center': ['center', 'bottom'], 'bottom-right': ['right', 'bottom'] };
+  const ACCENTS = { '': 1, cyan: 1, emerald: 1, amber: 1, purple: 1, rose: 1 };   // the engine's own accent names (engine/4e-cell-accent.js)
+  const ICONS = { pencil: 1, report: 1, copy: 1, bell: 1, mic: 1, help: 1, undo: 1, settings: 1, fullscreen: 1, eye: 1, 'grid-borders': 1, sun: 1, moon: 1 };   // engine/40 getActionIconSvg
+  const num = (lo, hi, what) => v => { const n = Number(v); return (String(v).trim() !== '' && isFinite(n) && n >= lo && n <= hi) ? { v: String(n) } : { err: what + ' must be a number from ' + lo + ' to ' + hi }; };
+  const oneOf = (set, what) => v => { const x = String(v).trim().toLowerCase(); return set[x] ? { v: x } : { err: what + ' must be one of: ' + Object.keys(set).filter(Boolean).join(', ') }; };
+  const RULES = {
+    weight: v => { const n = Number(v); return n > 0 && n <= 100 ? { v: String(n) } : { err: 'Weight must be more than 0 (it is ' + (String(v).trim() || 'empty') + ')' }; },
+    fontSize: num(6, 48, 'Font size'),
+    label: v => String(v).length <= 120 ? { v: String(v) } : { err: 'Label is longer than 120 letters' },
+    align: oneOf({ left: 1, center: 1, right: 1 }, 'Align'),
+    wrap: oneOf({ yes: 1, no: 1 }, 'Wrap'),
+    padX: num(0, 40, 'Pad X'), padY: num(0, 40, 'Pad Y'),
+    vAlign: oneOf({ top: 1, middle: 1, bottom: 1 }, 'V align'),
+    nudgeX: num(-60, 60, 'Nudge X'), nudgeY: num(-60, 60, 'Nudge Y'),
+    accent: v => { const x = String(v).trim().toLowerCase(); return ACCENTS[x] ? { v: x } : { err: 'Accent must be one of: cyan, emerald, amber, purple, rose (or empty)' }; },
+    subLabel: v => String(v).length <= 40 ? { v: String(v).trim() } : { err: 'Sub label is longer than 40 letters' },
+    subLabelSize: num(6, 24, 'Sub label size'),
+    subLabelPlace: oneOf(PLACES, 'Sub label place')
+  };
+  const PROPS = Object.keys(RULES);
+  const COLPROP = { 'Sub label': 'subLabel', 'Sub label size': 'subLabelSize', 'Sub label place': 'subLabelPlace', 'Wrap': 'wrap', 'Pad X': 'padX', 'Pad Y': 'padY',
+    'V align': 'vAlign', 'Nudge X': 'nudgeX', 'Nudge Y': 'nudgeY', 'Accent': 'accent' };   // round 3 tab columns (all optional)
+  const placeOf = (a, v) => Object.keys(PLACES).find(k => PLACES[k][0] === a && PLACES[k][1] === (v === 'center' ? 'middle' : v)) || 'top-left';
+  function sub(p) { if (!p.subLabel || typeof p.subLabel !== 'object') p.subLabel = { enabled: false, text: '', fontSize: 9, align: 'left', vAlign: 'top', nudgeX: 0, nudgeY: 0 }; return p.subLabel; }
+  function setProp(p, k, v) {   // v is already checked by RULES
+    if (k === 'weight' || k === 'fontSize' || k === 'padX' || k === 'padY' || k === 'nudgeX' || k === 'nudgeY') p[k] = Number(v);
+    else if (k === 'label') p.label = v;
+    else if (k === 'align') p.align = v;
+    else if (k === 'wrap') p.wrap = v === 'yes';
+    else if (k === 'vAlign') p.vAlign = v === 'middle' ? 'center' : v;
+    else if (k === 'accent') { if (v) p.accent = v; else delete p.accent; }
+    else if (k === 'subLabel') { const s = sub(p); s.text = v; s.enabled = !!v; }
+    else if (k === 'subLabelSize') sub(p).fontSize = Number(v);
+    else if (k === 'subLabelPlace') { const s = sub(p); s.align = PLACES[v][0]; s.vAlign = PLACES[v][1]; }
+  }
+  const noLabel = p => !!p.slot || p.clickAction === 'proof-profile';
   const HOUSES = [   // made-up places only
     { name: 'Test House 1', address: '123 Test St', phone: '555-0101' }, { name: 'Test House 2', address: '125 Test St', phone: '555-0102' },
     { name: 'Sample Condo A', address: '400 Sample Ave #12', phone: '555-0103' }, { name: 'Sample Condo B', address: '400 Sample Ave #14', phone: '555-0104' },
@@ -8260,6 +8325,12 @@ body.light-theme .proof-box{background:#fff;color:#0f172a}
       const screen = g('Screen').toLowerCase(), rowName = g('Row'), ci = +g('Container'), si = +g('Stack'), pi = +g('Cell'), w = Number(g('Weight'));
       const type = g('Type').toLowerCase() || 'text', content = g('Content'), slot = g('Slot').toLowerCase(), fs = Number(g('Font size')) || 12, align = g('Align').toLowerCase() || 'center';
       const vis = g('Visible when').toLowerCase() || 'always';
+      const extra = {};   // round 3 columns: missing column = the old default; a bad value refuses the row
+      Object.keys(COLPROP).forEach(col => { if (!(col in r)) return; const raw = g(col); if (raw === '' && col !== 'Wrap') return;
+        if (col === 'Wrap' && raw === '') { extra.wrap = 'no'; return; }
+        const k = COLPROP[col], t = RULES[k](raw); if (t.err) why.push(t.err.replace(/^\w[\w ]*? must/, col + ' "' + raw + '" must')); else extra[k] = t.v; });
+      const icon = g('Icon').toLowerCase();
+      if (icon && !ICONS[icon]) why.push('Icon "' + icon + '" must be one of: ' + Object.keys(ICONS).join(', '));
       const id = g('Id') || (screen + '/' + rowName + '/' + ci + '.' + si + '.' + pi);
       if (!screen) why.push('no Screen');
       if (!rowName) why.push('no Row');
@@ -8279,6 +8350,8 @@ body.light-theme .proof-box{background:#fff;color:#0f172a}
       let R = byRow[key]; if (!R) { R = byRow[key] = { screen, name: rowName, cont: {} }; out.push(R); }
       const C = R.cont[ci] = R.cont[ci] || {}; const S = C[si] = C[si] || {};
       const cell = { id: 'P' + pi, proofId: id, weight: w, type, fontSize: fs, align: align === 'left' || align === 'right' ? align : 'center', vAlign: 'center', nudgeX: 0, nudgeY: 0, isDisabled: false, wrap: true };
+      Object.keys(extra).forEach(k => setProp(cell, k, extra[k]));
+      if (icon && type === 'button') cell.icon = icon;
       if (slot === 'box') { cell.slot = 'box'; cell.proofKey = content; cell.label = ''; }
       else if (slot === 'results') { cell.slot = 'results'; cell.label = ''; }
       else if (type === 'button') { cell.label = g('Label') || content; cell.clickAction = content; }
@@ -8301,7 +8374,23 @@ body.light-theme .proof-box{background:#fff;color:#0f172a}
     return { state, refused, used };
   }
   function eachCell(state, fn) { (state.rows || []).forEach(r => (r.containers || []).forEach(c => (c.stacks || []).forEach(s => (s.splits || []).forEach(p => fn(p, r))))); }
-  function propsOf(p) { return { weight: Number(p.weight) || 1, fontSize: Number(p.fontSize) || 12, label: p.slot || p.clickAction === 'proof-profile' ? null : String(p.label == null ? '' : p.label), align: p.align || 'center' }; }
+  function propsOf(p) {   // every saveable property as text, engine defaults filled in (null = does not apply to this cell)
+    const s = p.subLabel && typeof p.subLabel === 'object' ? p.subLabel : null;
+    return { weight: String(Number(p.weight) || 1), fontSize: String(Number(p.fontSize) || 12), label: noLabel(p) ? null : String(p.label == null ? '' : p.label), align: p.align || 'center',
+      wrap: p.slot ? null : (p.wrap ? 'yes' : 'no'), padX: String(p.padX !== undefined ? Number(p.padX) : 10), padY: String(p.padY !== undefined ? Number(p.padY) : 4),
+      vAlign: p.vAlign === 'top' ? 'top' : p.vAlign === 'bottom' ? 'bottom' : 'middle', nudgeX: String(Number(p.nudgeX) || 0), nudgeY: String(Number(p.nudgeY) || 0), accent: p.accent || '',
+      subLabel: s && s.enabled && s.text ? String(s.text) : '', subLabelSize: String((s && Number(s.fontSize)) || 9), subLabelPlace: placeOf((s && s.align) || 'left', (s && s.vAlign) || 'top') };
+  }
+  // Everything else the inspector can change (row heights, stack and container weights, moving / adding cells, row colors,
+  // cell type or action, sub label nudge): Save tweaks does NOT keep it, so the page warns when it changes (round 3, D).
+  function structSig(state) {
+    return JSON.stringify((state.rows || []).map(r => [r.name, r.heightPx, !!r.isAutoHeight, r.accent || '', !!r.sticky, !!r.isTray, r.view || '', !!r.isCollapsible, r.hideHeaderCount || 0,
+      (r.containers || []).map(c => [Number(c.weight) || 1, (c.stacks || []).map(s => [Number(s.weight) || 1, !!s.isHeader, (s.splits || []).map(p => [p.proofId || '?', p.type || '', p.clickAction || '', p.slot || '',
+        p.proofKey || '', p.icon || '', !!p.isDisabled, p.badgeCount || 0, (p.subLabel && (p.subLabel.nudgeX || 0)) || 0, (p.subLabel && (p.subLabel.nudgeY || 0)) || 0])])])]));
+  }
+  let baseSig = '';
+  const NOT_KEPT = 'This change will not be kept after Reload (not saved by Save tweaks).';
+  const structChanged = () => !!baseSig && structSig(engineState) !== baseSig;
 
   // ---------- reading: Google's gviz answer (JSONP, no key; needs the test sheet shared 'Anyone with the link: Viewer') ----------
   function gviz(tab, timeoutMs) {
@@ -8388,14 +8477,13 @@ body.light-theme .proof-box{background:#fff;color:#0f172a}
     const byId = {}; eachCell(state, p => { if (p.proofId) byId[p.proofId] = p; });
     let n = 0;
     rows.forEach(t => {
-      const p = byId[t.cell], v = t.value;
+      const p = byId[t.cell];
       if (!p) { notes.push('Tweak for "' + t.cell + '" ignored: no such cell in this profile.'); return; }
-      if (t.prop === 'weight') { const w = Number(v); if (!(w > 0 && w <= 100)) return notes.push('Tweak ' + t.cell + ' weight "' + v + '" ignored: must be more than 0.'); p.weight = w; }
-      else if (t.prop === 'fontSize') { const f = Number(v); if (!(f >= 6 && f <= 48)) return notes.push('Tweak ' + t.cell + ' font size "' + v + '" ignored: must be 6 to 48.'); p.fontSize = f; }
-      else if (t.prop === 'align') { if (!/^(left|center|right)$/.test(v)) return notes.push('Tweak ' + t.cell + ' align "' + v + '" ignored.'); p.align = v; }
-      else if (t.prop === 'label') { if (p.slot || p.clickAction === 'proof-profile') return notes.push('Tweak ' + t.cell + ' label ignored: this cell has no label.'); p.label = v; }
-      else return notes.push('Tweak ' + t.cell + ' "' + t.prop + '" ignored: unknown property.');
-      n++;
+      if (!RULES[t.prop]) { notes.push('Tweak ' + t.cell + ' "' + t.prop + '" ignored: unknown property.'); return; }
+      if (propsOf(p)[t.prop] === null) { notes.push('Tweak ' + t.cell + ' ' + t.prop + ' ignored: this cell has no ' + t.prop + '.'); return; }
+      const r = RULES[t.prop](t.value);
+      if (r.err) { notes.push('Tweak ' + t.cell + ' ' + t.prop + ' "' + t.value + '" ignored: ' + r.err.replace(/^.*? must/, 'must') + '.'); return; }
+      setProp(p, t.prop, r.v); n++;
     });
     return n;
   }
@@ -8439,7 +8527,7 @@ body.light-theme .proof-box{background:#fff;color:#0f172a}
     try { updateHistoryButtons(); } catch (e) {}
     currentView = b.state.rows.some(r => r.view === keepView) ? keepView : 'entry';
     try { renderCanvas(); if (wasEdit) syncInspectorUI(); } catch (e) {}
-    applied = snapshot();
+    applied = snapshot(); baseSig = structSig(engineState);
     info = { profile: L.profile, fellBack: L.profile !== wanted, rows: b.used, refused: b.refused.length, tweaks: nt, readAt: new Date(), source: L.source, sourceText: L.sourceText, tweaksFrom: T.from, pending: !!T.pending };
     notes = n.concat(b.refused);
     if (T.pending) notes.push(T.rows.length + ' tweak(s) on this device are not saved to the sheet yet: press Save tweaks.');
@@ -8468,7 +8556,7 @@ body.light-theme .proof-box{background:#fff;color:#0f172a}
       setLocal(profile, { rows, state: 'saved', at: Date.now() });
       applied = snapshot(); info.tweaks = rows.length; info.pending = false;
       notes = notes.filter(x => !/not saved to the sheet yet/.test(x));
-      lastAction = 'Saved ' + d.saved + ' tweak(s) to the sheet at ' + hhmm() + ' (' + DEVICE + ', profile ' + profile + '). Only weight, font size, label and alignment are saved.';
+      lastAction = 'Saved ' + d.saved + ' tweak(s) to the sheet at ' + hhmm() + ' (' + DEVICE + ', profile ' + profile + '). Saved: width, text size, label, align, wrap, padding, v align, nudge, accent, sub label.';
     } catch (e) {
       info.pending = true;
       lastAction = 'NOT saved to the sheet: ' + e.message + '. The ' + rows.length + ' tweak(s) stay on this device and are used here; press Save tweaks again later.';
@@ -8496,6 +8584,7 @@ body.light-theme .proof-box{background:#fff;color:#0f172a}
   window.EngineActions['proof-save-tweaks'] = () => { saveTweaks(); };
   window.EngineActions['proof-clear-tweaks'] = () => { clearTweaks(); };
   window.EngineActions['proof-profile'] = () => { nextProfile(); };
+  window.EngineActions['proof-adjust'] = () => { if (barOpen) closeBar(); else openBar(); };
   // In Edit mode a tap selects a cell; the proof's tool buttons (Reload, Tools, Profile, Save, Clear) must still work there,
   // like the engine's own control cells do.
   { const hs = handleSplitClick; handleSplitClick = function (rIdx, cIdx, sIdx, pIdx, e) {
@@ -8507,19 +8596,139 @@ body.light-theme .proof-box{background:#fff;color:#0f172a}
         window.EngineActions[cell.clickAction](cell, row, e); return;
       }
     }
-    return hs.apply(this, arguments);
+    const r = hs.apply(this, arguments);
+    if (barOpen) { barSync(); keepSelectedVisible(); }
+    return r;
   }; }
 
   // Opening the inspector switches to Edit (so a tap selects a cell); closing it goes back to Live. On a phone it opens compact.
   { const oi = openInspectorWindow, ci = closeInspectorWindow;
     let firstOpen = true;
-    openInspectorWindow = function () { const r = oi.apply(this, arguments); if (isLiveInteraction) toggleInteractionState();
+    openInspectorWindow = function () { if (barOpen) closeBar(true); const r = oi.apply(this, arguments); if (isLiveInteraction) toggleInteractionState();
       if (firstOpen) { firstOpen = false; try { setActiveInspectorTab('layout'); } catch (e) {} } return r; };
     closeInspectorWindow = function () { const r = ci.apply(this, arguments); if (!isLiveInteraction) { toggleInteractionState(); } return r; }; }
 
   // every inspector change ends in saveStateToStorage: count the changes not saved to the sheet yet and show it
   { const ss = saveStateToStorage; let t = null; saveStateToStorage = function () { const r = ss.apply(this, arguments);
-      clearTimeout(t); t = setTimeout(() => { if (info.readAt) paintNotes(); }, 150); return r; }; }
+      clearTimeout(t); t = setTimeout(() => { if (info.readAt) { paintNotes(); if (barOpen) barStatus(); } }, 150); return r; }; }
+
+  // ---------- PHONE ADJUST BAR (round 3, C): tap a box, change ONE thing at a time with big buttons ----------
+  // Same properties and the same Save tweaks path as the tab columns. While the Label box has focus only the selected cell's
+  // text is changed in place (no renderCanvas), so the phone keyboard stays up. The bar sits on the visible screen above the keyboard.
+  let barOpen = false, barGroup = 'width', bar = null;
+  const GROUPS = [['width', 'Width'], ['size', 'Size'], ['align', 'Align'], ['wrap', 'Wrap'], ['label', 'Label']];
+  function selCell() {
+    const sel = engineState.activeSelection; if (!sel || sel.tier !== 'split') return null;
+    const p = engineState.rows[sel.rowIndex]?.containers[sel.containerIndex]?.stacks[sel.stackIndex]?.splits[sel.splitIndex];
+    return p && p.proofId ? p : null;
+  }
+  function makeBar() {
+    if (bar) return bar;
+    bar = document.createElement('div'); bar.id = 'proof-bar';
+    bar.innerHTML = '<div class="pb-top"><span id="pb-sel"></span><button type="button" data-pb="close" aria-label="Close">✕</button></div>' +
+      '<div class="pb-groups">' + GROUPS.map(g => '<button type="button" data-pb="group" data-g="' + g[0] + '">' + g[1] + '</button>').join('') + '</div>' +
+      '<div class="pb-body" id="pb-body"></div>' +
+      '<div class="pb-foot"><button type="button" data-pb="revert">Revert</button><span id="pb-status"></span><button type="button" data-pb="save" class="pb-save">Save</button></div>';
+    bar.addEventListener('mousedown', e => { if (e.target.closest('button')) e.preventDefault(); });   // a bar button never steals focus from the Label box
+    bar.addEventListener('click', e => {
+      const b = e.target.closest('button[data-pb]'); if (!b) return; e.stopPropagation();
+      const a = b.dataset.pb, p = selCell();
+      if (a === 'close') return closeBar();
+      if (a === 'group') { barGroup = b.dataset.g; return barSync(); }
+      if (a === 'save') { commitLabel(); return saveTweaks().then(barSync); }
+      if (a === 'revert') { commitLabel(); lastAction = 'Reverted to the saved layout ' + hhmm() + '.'; return load('revert').then(() => { barSync(); }); }
+      if (!p) return;
+      if (a === 'w-') edit(q => { q.weight = Math.max(0.25, +((Number(q.weight) || 1) - 0.25).toFixed(2)); });
+      if (a === 'w+') edit(q => { q.weight = Math.min(100, +((Number(q.weight) || 1) + 0.25).toFixed(2)); });
+      if (a === 's-') edit(q => { q.fontSize = Math.max(6, (Number(q.fontSize) || 12) - 1); });
+      if (a === 's+') edit(q => { q.fontSize = Math.min(48, (Number(q.fontSize) || 12) + 1); });
+      if (a === 'al') edit(q => { q.align = b.dataset.v; });
+      if (a === 'wr') edit(q => { q.wrap = b.dataset.v === 'yes'; });
+      if (a === 'done') { commitLabel(); }
+    });
+    bar.addEventListener('input', e => { if (e.target.id === 'pb-label') typeLabel(e.target.value); });
+    bar.addEventListener('keydown', e => { if (e.target.id === 'pb-label' && e.key === 'Enter') { e.preventDefault(); commitLabel(); } });
+    bar.addEventListener('focusout', e => { if (e.target.id === 'pb-label') setTimeout(commitLabel, 0); });
+    document.body.appendChild(bar);
+    if (window.visualViewport) { visualViewport.addEventListener('resize', placeBar); visualViewport.addEventListener('scroll', placeBar); }
+    window.addEventListener('resize', placeBar);
+    return bar;
+  }
+  function edit(fn) { const p = selCell(); if (!p) return; fn(p); try { recordHistorySnapshot(); } catch (e) {} saveStateToStorage(); renderCanvas(); barSync(); keepSelectedVisible(); }
+  let labelDirty = false;
+  function selectedTextEl() {
+    const el = document.querySelector('#viewport-canvas-frame .grid-split-partition.selected-target'); if (!el) return null;
+    return el.querySelector('button > span') || el.querySelector('span.font-medium') || el.querySelector('.flex span:last-child');
+  }
+  function typeLabel(v) {   // while typing: change the cell's text in place only; no redraw
+    const p = selCell(); if (!p || noLabel(p)) return;
+    p.label = v; labelDirty = true;
+    const t = selectedTextEl(); if (t) t.textContent = v;
+    barStatus();
+  }
+  function commitLabel() {
+    if (!labelDirty) return; labelDirty = false;
+    const a = document.activeElement; if (a && a.id === 'pb-label') a.blur();
+    try { recordHistorySnapshot(); } catch (e) {} saveStateToStorage(); renderCanvas(); keepSelectedVisible(); barStatus();
+  }
+  function openBar() {
+    makeBar(); barOpen = true; document.body.classList.add('proof-adjusting');
+    try { if (inspectorWindowState !== 'closed') closeInspectorWindow(); } catch (e) {}
+    if (isLiveInteraction) toggleInteractionState();
+    bar.style.display = 'block'; barSync(); placeBar();
+    lastAction = 'Adjust: tap a box, then pick Width, Size, Align, Wrap or Label.';
+  }
+  function closeBar(keepEdit) {
+    commitLabel(); barOpen = false; document.body.classList.remove('proof-adjusting');
+    if (bar) bar.style.display = 'none';
+    if (!keepEdit) { engineState.activeSelection = null; if (!isLiveInteraction) toggleInteractionState(); else renderCanvas(); }
+    paintNotes();
+  }
+  function barSync() {
+    if (!bar || !barOpen) return;
+    const p = selCell(), pr = p ? propsOf(p) : null;
+    document.getElementById('pb-sel').textContent = p ? 'Selected: ' + p.proofId + (p.label && !p.slot ? ' (' + p.label + ')' : '') : 'Tap a box to adjust it';
+    bar.querySelectorAll('[data-pb="group"]').forEach(b => b.classList.toggle('on', b.dataset.g === barGroup));
+    const body = document.getElementById('pb-body');
+    if (!p) body.innerHTML = '<div class="pb-hint">Tap any box, label or button on the page.</div>';
+    else if (barGroup === 'width') body.innerHTML = '<button type="button" data-pb="w-">−</button><span class="pb-val">Width ' + pr.weight + '</span><button type="button" data-pb="w+">+</button>';
+    else if (barGroup === 'size') body.innerHTML = '<button type="button" data-pb="s-">−</button><span class="pb-val">Text ' + pr.fontSize + '</span><button type="button" data-pb="s+">+</button>';
+    else if (barGroup === 'align') body.innerHTML = ['left', 'center', 'right'].map(v => '<button type="button" data-pb="al" data-v="' + v + '" class="' + (pr.align === v ? 'on' : '') + '">' + v[0].toUpperCase() + '</button>').join('');
+    else if (barGroup === 'wrap') body.innerHTML = pr.wrap === null ? '<div class="pb-hint">A text box has no wrap.</div>' : ['yes', 'no'].map(v => '<button type="button" data-pb="wr" data-v="' + v + '" class="' + (pr.wrap === v ? 'on' : '') + '">' + (v === 'yes' ? 'Wrap on' : 'Wrap off') + '</button>').join('');
+    else if (barGroup === 'label') {
+      const cur = document.getElementById('pb-label');
+      if (cur && document.activeElement === cur) { barStatus(); return; }   // never rebuild the box being typed in
+      body.innerHTML = pr.label === null ? '<div class="pb-hint">This cell has no label.</div>' : '<input id="pb-label" type="text" autocomplete="off" value="' + esc(pr.label) + '"><button type="button" data-pb="done">Done</button>';
+    }
+    barStatus(); placeBar();
+  }
+  function barStatus() {
+    const st = bar && document.getElementById('pb-status'); if (!st) return;
+    const n = info.readAt ? changedFrom(applied).length : 0;
+    st.textContent = structChanged() ? NOT_KEPT : n ? n + ' not saved' : (lastAction && /Saved|NOT saved|Reverted/.test(lastAction) ? lastAction : 'All saved');
+    st.className = structChanged() || /NOT saved/.test(st.textContent) ? 'warn' : '';
+  }
+  function placeBar() {
+    if (!bar || !barOpen) return;
+    const vv = window.visualViewport, h = bar.offsetHeight;
+    const bottom = vv ? vv.offsetTop + vv.height : window.innerHeight;
+    bar.style.top = Math.max(0, bottom - h) + 'px';
+    keepSelectedVisible();
+  }
+  function keepSelectedVisible() {
+    if (!barOpen) return;
+    requestAnimationFrame(() => {
+      const el = document.querySelector('#viewport-canvas-frame .grid-split-partition.selected-target'); if (!el || !bar) return;
+      const r = el.getBoundingClientRect(), barTop = bar.getBoundingClientRect().top;
+      const sticky = Array.from(document.querySelectorAll('.row-sticky')).reduce((m, x) => Math.max(m, x.getBoundingClientRect().bottom), 0);
+      let dy = 0;
+      if (r.bottom > barTop - 8) dy = r.bottom - (barTop - 8);
+      else if (r.top < sticky + 4) dy = r.top - (sticky + 4);
+      if (!dy) return;
+      const sc = document.getElementById('viewport-outer-scroller');
+      if (sc && sc.scrollHeight > sc.clientHeight + 2) sc.scrollTop += dy; else window.scrollBy(0, dy);
+    });
+  }
 
   // ---------- the bottom line ----------
   function paintNotes() {
@@ -8530,10 +8739,12 @@ body.light-theme .proof-box{background:#fff;color:#0f172a}
     const head = 'proof ' + PROOF_VERSION + ' · profile ' + (info.profile || '?') + (chosenProfile() === 'auto' ? ' (auto)' : '') + ' · ' + DEVICE +
       ' · read ' + (info.readAt ? hhmm(info.readAt) : '-') + ' · ' + info.rows + ' rows, ' + info.refused + ' refused · ' + info.tweaks + ' tweaks applied' + (info.pending ? ' (not saved yet)' : '');
     const unsaved = info.readAt ? changedFrom(applied).length : 0;
-    n.innerHTML = '<b>' + esc(head) + '</b>' + (unsaved ? '<br><span class="proof-last">' + unsaved + ' change(s) not saved yet.</span> <button type="button" id="proof-save-now">Save tweaks</button>' : '') + (info.sourceText ? '<br>' + esc(info.sourceText) : '') + (lastAction ? '<br><span class="proof-last">' + esc(lastAction) + '</span>' : '') + notes.map(x => '<br>' + esc(x)).join('');
+    const lost = info.readAt && structChanged();
+    n.innerHTML = '<b>' + esc(head) + '</b>' + (unsaved ? '<br><span class="proof-last">' + unsaved + ' change(s) not saved yet.</span> <button type="button" id="proof-save-now">Save tweaks</button>' : '') + (lost ? '<br><span class="proof-warn">' + esc(NOT_KEPT) + '</span>' : '') + (info.sourceText ? '<br>' + esc(info.sourceText) : '') + (lastAction ? '<br><span class="proof-last">' + esc(lastAction) + '</span>' : '') + notes.map(x => '<br>' + esc(x)).join('');
   }
 
-  window.PMIProof = { build, fromCsv, load, reload, saveTweaks, clearTweaks, nextProfile, changedFrom: () => changedFrom(base), info: () => info, device: DEVICE, PROFILES, HOUSES, version: PROOF_VERSION };
+  window.PMIProof = { build, fromCsv, load, reload, saveTweaks, clearTweaks, nextProfile, changedFrom: () => changedFrom(base), info: () => info, device: DEVICE, PROFILES, HOUSES, version: PROOF_VERSION,
+    openBar, closeBar, structChanged, propsOf };
   window.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       try { if (window.innerWidth < 700) lastOpenInspectorState = 'compact'; if (inspectorWindowState !== 'closed') closeInspectorWindow(); } catch (e) {}   // the page opens in Live with the inspector shut

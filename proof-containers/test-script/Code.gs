@@ -1,6 +1,6 @@
 // =====================================================================================================
 // PMI container proof (TEST) - Apps Script web app for the TEST sheet 'PMI container proof (test)' ONLY.
-// Proof page round 2 (Prompts no. 96). NOT the live PMI script; never paste this into the Smart PMI sheet.
+// Proof page round 2 (Prompts no. 96); round 3 (no. 100) adds the new tweak properties. NOT the live PMI script; never paste this into the Smart PMI sheet.
 //
 // What it can do, and nothing else:
 //   - doPost: replace (or clear) the rows of ONE Device name + ONE Profile on the tab 'Tweaks'.
@@ -13,11 +13,13 @@ var TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';
 var TAB = 'Tweaks';
 var HEAD = ['Device name', 'Profile', 'Cell id', 'Property', 'Value', 'Saved at'];
 var PROFILES = { phone: 1, wide: 1, android: 1, iphone: 1 };
-var PROPS = { weight: 1, fontSize: 1, label: 1, align: 1 };
+var PROPS = { weight: 1, fontSize: 1, label: 1, align: 1, wrap: 1, padX: 1, padY: 1, vAlign: 1, nudgeX: 1, nudgeY: 1, accent: 1, subLabel: 1, subLabelSize: 1, subLabelPlace: 1 };
+var PLACES = { 'top-left': 1, 'top-center': 1, 'top-right': 1, 'middle-left': 1, 'middle': 1, 'middle-right': 1, 'bottom-left': 1, 'bottom-center': 1, 'bottom-right': 1 };
+var ACCENTS = { '': 1, cyan: 1, emerald: 1, amber: 1, purple: 1, rose: 1 };
 var MAX_BODY = 20000;          // characters in one save
 var MAX_ROWS_PER_SAVE = 100;   // tweak rows in one save
 var MAX_TOTAL_ROWS = 2000;     // tweak rows on the whole tab
-var SCRIPT_VERSION = 'proof-test-1';
+var SCRIPT_VERSION = 'proof-test-2';
 
 function out_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
 function now_() { return Utilities.formatDate(new Date(), 'America/New_York', 'yyyy-MM-dd HH:mm:ss'); }
@@ -46,6 +48,15 @@ function checkRow_(r) {   // returns an error text, or '' when the row is fine
   if (prop === 'weight' && !(Number(v) > 0 && Number(v) <= 100)) return 'weight must be more than 0 and at most 100 (' + cell + ')';
   if (prop === 'fontSize' && !(Number(v) >= 6 && Number(v) <= 48)) return 'font size must be 6 to 48 (' + cell + ')';
   if (prop === 'align' && !/^(left|center|right)$/.test(v)) return 'align must be left, center or right (' + cell + ')';
+  var inRange = function (lo, hi) { var n = Number(v); return v.trim() !== '' && isFinite(n) && n >= lo && n <= hi; };
+  if (prop === 'wrap' && !/^(yes|no)$/.test(v)) return 'wrap must be yes or no (' + cell + ')';
+  if ((prop === 'padX' || prop === 'padY') && !inRange(0, 40)) return prop + ' must be 0 to 40 (' + cell + ')';
+  if ((prop === 'nudgeX' || prop === 'nudgeY') && !inRange(-60, 60)) return prop + ' must be -60 to 60 (' + cell + ')';
+  if (prop === 'vAlign' && !/^(top|middle|bottom)$/.test(v)) return 'vAlign must be top, middle or bottom (' + cell + ')';
+  if (prop === 'accent' && !ACCENTS[v]) return 'accent must be cyan, emerald, amber, purple, rose or empty (' + cell + ')';
+  if (prop === 'subLabel' && v.length > 40) return 'sub label longer than 40 letters (' + cell + ')';
+  if (prop === 'subLabelSize' && !inRange(6, 24)) return 'sub label size must be 6 to 24 (' + cell + ')';
+  if (prop === 'subLabelPlace' && !PLACES[v]) return 'unknown sub label place (' + cell + ')';
   return '';
 }
 
