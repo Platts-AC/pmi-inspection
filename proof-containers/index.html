@@ -776,12 +776,25 @@ button.proof-busy{opacity:.55;cursor:progress}
 button.proof-done{animation:proofDone .9s ease-out}
 @keyframes proofDone{0%{box-shadow:0 0 0 3px #34d399;border-color:#34d399}100%{box-shadow:none}}
 /* round 4 (9): version badge and stale-page bar */
-#proof-badge{position:fixed;top:2px;z-index:80;font:600 10px/1.4 ui-monospace,monospace;color:#94a3b8;background:rgba(15,23,42,.85);border:1px solid #334155;border-radius:6px;padding:0 5px;margin:0;cursor:default;max-width:calc(100vw - 8px);white-space:nowrap;overflow:hidden}
-/* round 5 (2): the badge glows orange (calm pulse) when a newer version is published; tap = reload */
-#proof-badge.stale{color:#fff;background:#b45309;border-color:#f59e0b;cursor:pointer;animation:proofGlow 2.4s ease-in-out infinite}
+/* round 6: the badge is a header CELL (layout row Id 'badge'); it sits at its Align inside its own cell, never stretched, never moved on press */
+#viewport-canvas-frame .grid-split-partition button#proof-badge{flex:0 0 auto;align-self:center;width:auto;height:auto;min-height:0;margin:0;padding:1px 4px;font-family:ui-monospace,monospace;color:#94a3b8;background:rgba(15,23,42,.85);border:1px solid #334155;border-radius:6px;transform:none !important;animation:none}
+/* the badge glows orange (calm pulse) when a newer version is published; tap = reload */
+#viewport-canvas-frame .grid-split-partition button#proof-badge.stale{color:#fff;background:#b45309;border-color:#f59e0b;cursor:pointer;animation:proofGlow 2.4s ease-in-out infinite}
 @keyframes proofGlow{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.0)}50%{box-shadow:0 0 10px 3px rgba(245,158,11,.75)}}
-#proof-badge.picked{outline:2px solid #22d3ee;outline-offset:1px}
-body.proof-adjusting #proof-badge{cursor:pointer}
+/* round 6 (6): the autofill test page (?autofill=1) hides everything else */
+body.proof-autofill-mode > *:not(#proof-autofill){display:none !important}
+#proof-autofill{max-width:520px;margin:0 auto;padding:16px 14px 60px;color:#e2e8f0;font:15px/1.4 system-ui,sans-serif}
+#proof-autofill h1{font-size:18px;margin:0 0 6px}
+#proof-autofill .af-note{color:#fde68a;font-weight:600;margin:0 0 14px}
+#proof-autofill .af-row{display:flex;align-items:center;gap:10px;margin:10px 0}
+#proof-autofill .af-label{flex:0 0 86px;font-size:13px;color:#cbd5e1}
+#proof-autofill .af-label b{display:inline-block;width:20px;color:#fbbf24}
+#proof-autofill .af-form{flex:1 1 auto;margin:0}
+#proof-autofill .af-face{flex:1 1 auto;min-height:44px;display:flex;align-items:center;box-sizing:border-box;border-radius:8px;border:1px solid #2b4f7e;background:#07111f;padding:0 9px}
+#proof-autofill .af-face:focus-within{outline:2px solid #22d3ee;border-color:#22d3ee}
+#proof-autofill .af-box{width:100%;border:0;outline:none;background:transparent;color:#e2e8f0;font-size:14px;padding:9px 0}
+#proof-autofill .af-key{color:#94a3b8;font-size:12px;margin-top:16px}
+#proof-autofill a{color:#67e8f9}
 /* round 5 (4): one message line, pinned under the top buttons, kept on the visible screen */
 #proof-status{display:none;position:fixed;left:8px;right:8px;z-index:75;font:600 12px/20px system-ui,sans-serif;height:20px;padding:0 8px;border-radius:6px;background:rgba(15,23,42,.92);border:1px solid #334155;color:#cbd5e1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;text-align:center}
 #proof-status.done{color:#6ee7b7;border-color:#065f46}
@@ -3549,7 +3562,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.5.0', stamp: '{{STAMP}}', name: '{{BUILD_NAME}}' };
+    const ENGINE_BUILD = { version: 'proof-0.6.0', stamp: '{{STAMP}}', name: '{{BUILD_NAME}}' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8183,7 +8196,7 @@ body.light-theme .proof-box{color:#0f172a}
     // =========================================================
     function syncLiveClass() { document.body.classList.toggle('live-mode', Boolean(isLiveInteraction) || IS_VISITOR_MODE); }
   </script>
-<script>window.PROOF_BUILTIN_CSV = "Screen,Row,Container,Stack,Cell,Weight,Type,Content,Slot,Font size,Align,Visible when,Label,Id,Sub label,Sub label size,Sub label place,Wrap,Pad X,Pad Y,V align,Nudge X,Nudge Y,Accent,Icon,Press style\nall,Header,1,1,1,1,button,set-view:entry,,11,center,always,Entry,hdr.entry,,,,no,4,,,,,,,\nall,Header,1,1,2,1,button,set-view:report,,11,center,always,Report,hdr.report,,,,no,4,,,,,,,\nall,Header,2,1,1,1,button,reload-layout,,11,center,always,Reload,hdr.reload,,,,no,4,,,,,,,\nall,Header,2,1,2,1,button,toggle-tray,,11,center,always,Tools,hdr.tools,,,,no,4,,,,,,settings,\nall,Header,3,1,1,1,button,set-view:find,,11,center,always,New,hdr.newcall,,,,no,4,,,,,,,\nall,Header,3,1,2,1,button,set-view:find,,11,center,always,Find,hdr.find,,,,no,4,,,,,,,\ntray,Tools,1,1,1,2,button,proof-profile,,12,center,always,Profile,tools.profile,,,,no,4,,,,,,,\ntray,Tools,1,1,2,1,button,proof-adjust,,12,center,always,Adjust,tools.adjust,,,,no,4,,,,,,,\ntray,Tools,1,1,3,1,button,toggle-inspector,,12,center,always,Advanced,tools.inspector,,,,no,4,,,,,,,\ntray,Tools,1,2,1,1,button,proof-save-tweaks,,12,center,always,Save tweaks,tools.save,,,,no,4,,,,,,,\ntray,Tools,1,2,2,1,button,proof-clear-tweaks,,12,center,always,Clear mine,tools.clear,,,,no,4,,,,,,,\ntray,Tools,1,2,3,1,button,toggle-live,,12,center,always,Edit,tools.mode,,,,no,4,,,,,,,\nentry,Job details,1,1,1,1,text,JOB DETAILS,,13,left,always,,job.title,,,,no,,,,,,amber,,\nentry,Job details,1,2,1,1,text,Date,,12,left,always,,job.date.label,,,,no,,,,,,,,\nentry,Job details,1,2,2,2,text,f:date,box,14,left,always,,job.date,,,,no,,,,,,,,\nentry,Job details,1,3,1,1,text,Customer,,12,left,always,,job.customer.label,,,,no,,,,,,,,\nentry,Job details,1,3,2,5,text,f:customer,box,14,left,always,,job.customer,,,,no,,,,,,,,\nentry,Job details,1,4,1,1,text,Address,,12,left,always,,job.address.label,,,,no,,,,,,,,\nentry,Job details,1,4,2,2,text,f:address,box,14,left,always,,job.address,,,,no,,,,,,,,\nentry,Job details,1,5,1,1,text,Phone,,12,left,always,,job.phone.label,,,,no,,,,,,,,\nentry,Job details,1,5,2,2,text,f:phone,box,14,left,always,,job.phone,,,,no,,,,,,,,\nentry,Job details,1,6,1,1,text,Condenser model,,12,left,always,,job.model.label,,,,yes,,,,,,,,\nentry,Job details,1,6,2,2,text,f:outdoorModel,box,14,left,always,,job.model,,,,no,,,,,,,,\nentry,Job details,1,7,1,1,text,Suction pressure,,12,left,always,,job.suction.label,,,,no,,,,,,,,\nentry,Job details,1,7,2,2,text,f:suctionPressure,box,14,left,always,,job.suction,PSIG,10,middle-right,no,,,,,,,,\nentry,Job details,1,8,1,0,text,BAD ROW on purpose (weight 0): the page refuses it and says so. Delete this row on the tab to clear the message.,,12,left,always,,job.bad,,,,yes,,,,,,,,\nreport,Report,1,1,1,1,text,Report page (empty in this proof),,13,center,always,,report.text,,,,no,,,,,,,,\nfind,Find the customer,1,1,1,3,text,Find the customer,,15,left,always,,find.title,,,,no,,,,,,,,\nfind,Find the customer,1,1,2,1,button,set-view:entry,,12,center,always,Back,find.back,,,,no,,,,,,,,\nfind,Find the customer,1,2,1,1,text,Name,,12,left,always,,find.name.label,,,,no,,,,,,,,\nfind,Find the customer,1,2,2,3,text,find.name,box,14,left,always,,find.name,,,,no,,,,,,,,\nfind,Find the customer,1,3,1,1,text,Address,,12,left,always,,find.address.label,,,,no,,,,,,,,\nfind,Find the customer,1,3,2,3,text,find.address,box,14,left,always,,find.address,,,,no,,,,,,,,\nfind,Find the customer,1,4,1,1,text,Phone,,12,left,always,,find.phone.label,,,,no,,,,,,,,\nfind,Find the customer,1,4,2,3,text,find.phone,box,14,left,always,,find.phone,,,,no,,,,,,,,\nfind,Find the customer,1,5,1,1,button,proof-find,,13,center,always,Find,find.find,,,,no,,,,,,,,\nfind,Find the customer,1,5,2,1,button,proof-cancel,,13,center,always,Cancel,find.cancel,,,,no,,,,,,,,none\nfind,Find the customer,1,6,1,1,text,houses,results,13,left,always,,find.results,,,,no,,,,,,,,\nfind,Find the customer,1,7,1,1,text,Each letter you type narrows the list. Tap a house to fill the call.,,11,left,always,,find.hint,,,,yes,,,,,,,,\n";</script>
+<script>window.PROOF_BUILTIN_CSV = "Screen,Row,Container,Stack,Cell,Weight,Type,Content,Slot,Font size,Align,Visible when,Label,Id,Sub label,Sub label size,Sub label place,Wrap,Pad X,Pad Y,V align,Nudge X,Nudge Y,Accent,Icon,Press style,Min size,Max size,Column width,Freeze\nall,Header,1,1,1,1,button,set-view:entry,,11,center,always,Entry,hdr.entry,,,,no,4,,,,,,,,,,,\nall,Header,1,1,2,1,button,set-view:report,,11,center,always,Report,hdr.report,,,,no,4,,,,,,,,,,,\nall,Header,2,1,1,1,button,reload-layout,,11,center,always,Reload,hdr.reload,,,,no,4,,,,,,,,,,,\nall,Header,2,1,2,1,button,toggle-tray,,11,center,always,Tools,hdr.tools,,,,no,4,,,,,,settings,,,,,\nall,Header,3,1,1,1,button,set-view:find,,11,center,always,New,hdr.newcall,,,,no,4,,,,,,,,,,,\nall,Header,3,1,2,1,button,set-view:find,,11,center,always,Find,hdr.find,,,,no,4,,,,,,,,,,,\nall,Header,4,1,1,1,button,proof-badge,,10,right,always,,badge,,,,no,,,,,,,,,,,0.6,\ntray,Tools,1,1,1,2,button,proof-profile,,12,center,always,Profile,tools.profile,,,,no,4,,,,,,,,,,,\ntray,Tools,1,1,2,1,button,proof-adjust,,12,center,always,Adjust,tools.adjust,,,,no,4,,,,,,,,,,,\ntray,Tools,1,1,3,1,button,toggle-inspector,,12,center,always,Advanced,tools.inspector,,,,no,4,,,,,,,,,,,\ntray,Tools,1,2,1,1,button,proof-save-tweaks,,12,center,always,Save tweaks,tools.save,,,,no,4,,,,,,,,,,,\ntray,Tools,1,2,2,1,button,proof-clear-tweaks,,12,center,always,Clear mine,tools.clear,,,,no,4,,,,,,,,,,,\ntray,Tools,1,2,3,1,button,toggle-live,,12,center,always,Edit,tools.mode,,,,no,4,,,,,,,,,,,\nentry,Job details,1,1,1,1,text,JOB DETAILS,,13,left,always,,job.title,,,,no,,,,,,amber,,,,,,\nentry,Job details,1,2,1,1,text,Date,,12,left,always,,job.date.label,,,,no,,,,,,,,,,,,\nentry,Job details,1,2,2,2,text,f:date,box,14,left,always,,job.date,,,,no,,,,,,,,,,,,\nentry,Job details,1,3,1,1,text,Customer,,12,left,always,,job.customer.label,,,,no,,,,,,,,,,,,\nentry,Job details,1,3,2,5,text,f:customer,box,14,left,always,,job.customer,,,,no,,,,,,,,,,,,\nentry,Job details,1,4,1,1,text,Address,,12,left,always,,job.address.label,,,,no,,,,,,,,,,,,\nentry,Job details,1,4,2,2,text,f:address,box,14,left,always,,job.address,,,,no,,,,,,,,,,,,\nentry,Job details,1,5,1,1,text,Phone,,12,left,always,,job.phone.label,,,,no,,,,,,,,,,,,\nentry,Job details,1,5,2,2,text,f:phone,box,14,left,always,,job.phone,,,,no,,,,,,,,,,,,\nentry,Job details,1,6,1,1,text,Condenser model,,12,left,always,,job.model.label,,,,yes,,,,,,,,,,,,\nentry,Job details,1,6,2,2,text,f:outdoorModel,box,14,left,always,,job.model,,,,no,,,,,,,,,,,,\nentry,Job details,1,7,1,1,text,Suction pressure,,12,left,always,,job.suction.label,,,,no,,,,,,,,,,,,\nentry,Job details,1,7,2,2,text,f:suctionPressure,box,14,left,always,,job.suction,PSIG,10,middle-right,no,,,,,,,,,,,,\nentry,Job details,1,8,1,0,text,BAD ROW on purpose (weight 0): the page refuses it and says so. Delete this row on the tab to clear the message.,,12,left,always,,job.bad,,,,yes,,,,,,,,,,,,\nreport,Report,1,1,1,1,text,Report page (empty in this proof),,13,center,always,,report.text,,,,no,,,,,,,,,,,,\nfind,Find the customer,1,1,1,3,text,Find the customer,,15,left,always,,find.title,,,,no,,,,,,,,,,,,\nfind,Find the customer,1,1,2,1,button,set-view:entry,,12,center,always,Back,find.back,,,,no,,,,,,,,,,,,\nfind,Find the customer,1,2,1,1,text,Name,,12,left,always,,find.name.label,,,,no,,,,,,,,,,,,\nfind,Find the customer,1,2,2,3,text,find.name,box,14,left,always,,find.name,,,,no,,,,,,,,,,,,\nfind,Find the customer,1,3,1,1,text,Address,,12,left,always,,find.address.label,,,,no,,,,,,,,,,,,\nfind,Find the customer,1,3,2,3,text,find.address,box,14,left,always,,find.address,,,,no,,,,,,,,,,,,\nfind,Find the customer,1,4,1,1,text,Phone,,12,left,always,,find.phone.label,,,,no,,,,,,,,,,,,\nfind,Find the customer,1,4,2,3,text,find.phone,box,14,left,always,,find.phone,,,,no,,,,,,,,,,,,\nfind,Find the customer,1,5,1,1,button,proof-find,,13,center,always,Find,find.find,,,,no,,,,,,,,,,,,\nfind,Find the customer,1,5,2,1,button,proof-cancel,,13,center,always,Cancel,find.cancel,,,,no,,,,,,,,none,,,,\nfind,Find the customer,1,6,1,1,text,houses,results,13,left,always,,find.results,,,,no,,,,,,,,,,,,\nfind,Find the customer,1,7,1,1,text,Each letter you type narrows the list. Tap a house to fill the call.,,11,left,always,,find.hint,,,,yes,,,,,,,,,,,,\n";</script>
 <script>
 // =====================================================================================================
 // PROOF PAGE (throwaway sandbox). Round 1: Prompts no. 95. Round 2: Prompts no. 96. Read DESIGN.md first.
@@ -8199,11 +8212,14 @@ body.light-theme .proof-box{color:#0f172a}
 // Clear mine, short bar messages, shared button feedback (+ 'Press style' column), a version badge and a stale-page check.
 // Round 5: middle reset button on number controls and a reset dot on choices, the version badge as an editable cell that glows
 // when stale (safe self-reload), autofill off on value boxes, one always-visible message line, plain names (Section, Column, Line, Cell).
+// Round 6: Min size / Max size from the tab (no 16 floor), Done acts on finger lift, the badge is an ordinary header cell (Id
+// 'badge', own narrow column via 'Column width'), 'Freeze' column with stacked frozen sections, an autofill test page (?autofill=1),
+// and 'Saved: N changed, M total'.
 // Repaint rule (round 1, unchanged): renderCanvas is NEVER called while a text box has focus; typing repaints only the
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.5.0';
+  const PROOF_VERSION = '0.6.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8214,7 +8230,7 @@ body.light-theme .proof-box{color:#0f172a}
   const FIND_KEYS = { 'find.name': 1, 'find.address': 1, 'find.phone': 1 };
   const TYPES = { button: 1, text: 1, logo: 1, badge: 1 };
   const TOOL_ACTIONS = { 'reload-layout': 1, 'proof-save-tweaks': 1, 'proof-clear-tweaks': 1, 'proof-profile': 1, 'toggle-tray': 1, 'proof-adjust': 1 };
-  const ACTIONS = Object.assign({ 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1 }, TOOL_ACTIONS);
+  const ACTIONS = Object.assign({ 'proof-badge': 1, 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1 }, TOOL_ACTIONS);
   // What a tweak can change (DESIGN.md). Each rule turns a value into its normal text form, or returns an error.
   const PLACES = { 'top-left': ['left', 'top'], 'top-center': ['center', 'top'], 'top-right': ['right', 'top'], 'middle-left': ['left', 'middle'], 'middle': ['center', 'middle'],
     'middle-right': ['right', 'middle'], 'bottom-left': ['left', 'bottom'], 'bottom-center': ['center', 'bottom'], 'bottom-right': ['right', 'bottom'] };
@@ -8252,12 +8268,17 @@ body.light-theme .proof-box{color:#0f172a}
     else if (k === 'subLabelSize') sub(p).fontSize = Number(v);
     else if (k === 'subLabelPlace') { const s = sub(p); s.align = PLACES[v][0]; s.vAlign = PLACES[v][1]; }
   }
-  const noLabel = p => !!p.slot || p.clickAction === 'proof-profile' || !!p.isBadge;
-  const BOX_FLOOR = 16;   // typing boxes never go under 16 px: iPhone zooms the page into a smaller box
-  const boxSize = p => Math.max(BOX_FLOOR, Number(p.fontSize) || 14);
+  const isBadge = p => !!p && p.clickAction === 'proof-badge';
+  const noLabel = p => !!p.slot || p.clickAction === 'proof-profile' || isBadge(p);
+  // Round 6: NO 16 px floor any more (Danny: the same everywhere). Text size limits come from the optional tab columns
+  // 'Min size' / 'Max size'; empty = 6 to 48 (the badge 9 to 24).
+  const SIZE_LO = 6, SIZE_HI = 48, BADGE_MIN = 9, BADGE_MAX = 24;
+  const boxSize = p => Number(p.fontSize) || 14;
+  const limits = p => ({ lo: p.minSize != null ? p.minSize : (isBadge(p) ? BADGE_MIN : SIZE_LO), hi: p.maxSize != null ? p.maxSize : (isBadge(p) ? BADGE_MAX : SIZE_HI) });
   const PRESS = { flash: 1, stay: 1, busy: 1, none: 1 };   // round 4: the styles the CSS defines; the tab can only choose one
   function pressDefault(p) {
     const a = p.clickAction || '';
+    if (a === 'proof-badge') return 'none';   // the badge never flashes (a tap does something only when a newer version exists)
     if (/^set-view:/.test(a) || a === 'toggle-inspector' || a === 'toggle-live' || a === 'toggle-tray' || a === 'proof-adjust' || a === 'proof-profile') return 'stay';
     if (a === 'reload-layout' || a === 'proof-save-tweaks' || a === 'proof-clear-tweaks') return 'busy';
     return 'flash';
@@ -8377,27 +8398,28 @@ body.light-theme .proof-box{color:#0f172a}
   const COLS = ['Screen', 'Row', 'Container', 'Stack', 'Cell', 'Weight', 'Type', 'Content', 'Slot', 'Font size', 'Align', 'Visible when', 'Label', 'Id'];
   function build(rows) {
     const refused = [], screens = { entry: 1 }, ids = {};
-    rows.forEach(r => { const s = String(r['Screen'] || '').trim().toLowerCase(); if (s && s !== 'badge') screens[s] = 1; });
-    const out = []; const byRow = {}; let used = 0, badgeRow = null;
+    rows = withBadgeRow(rows);   // round 6: tabs from 0.4.0 / 0.5.0 have no badge row: add one in memory (migration)
+    rows.forEach(r => { const s = String(r['Screen'] || '').trim().toLowerCase(); if (s) screens[s] = 1; });
+    const out = []; const byRow = {}; let used = 0; const colW = {}, freezeOf = {};
     rows.forEach((r, i) => {
       const n = i + 2, g = c => String(r[c] == null ? '' : r[c]).trim();   // n = the row number on the tab (row 1 = headings)
       if (!COLS.slice(0, 8).some(c => g(c))) return;   // an empty row
       const why = [];
       const screen = g('Screen').toLowerCase(), rowName = g('Row'), ci = +g('Container'), si = +g('Stack'), pi = +g('Cell'), w = Number(g('Weight'));
-      if (screen === 'badge') {   // the version badge row (round 5): only Font size and Align count
-        const fsb = Number(g('Font size') || 10), alb = (g('Align') || 'right').toLowerCase();
-        if (!(fsb >= BADGE_MIN && fsb <= BADGE_MAX)) why.push('the badge Font size must be ' + BADGE_MIN + ' to ' + BADGE_MAX);
-        if (!/^(left|center|right)$/.test(alb)) why.push('the badge Align must be left, center or right');
-        if (g('Id') && g('Id') !== 'badge') why.push('the badge row Id must be badge');
-        if (why.length) { refused.push('Tab row ' + n + ' refused: ' + why.join(', ') + '.'); return; }
-        badgeRow = Object.assign(newBadge(), { fontSize: fsb, align: alb }); return;
-      }
       const type = g('Type').toLowerCase() || 'text', content = g('Content'), slot = g('Slot').toLowerCase(), fs = Number(g('Font size')) || 12, align = g('Align').toLowerCase() || 'center';
       const vis = g('Visible when').toLowerCase() || 'always';
       const extra = {};   // round 3 columns: missing column = the old default; a bad value refuses the row
       Object.keys(COLPROP).forEach(col => { if (!(col in r)) return; const raw = g(col); if (raw === '' && col !== 'Wrap') return;
         if (col === 'Wrap' && raw === '') { extra.wrap = 'no'; return; }
         const k = COLPROP[col], t = RULES[k](raw); if (t.err) why.push(t.err.replace(/^\w[\w ]*? must/, col + ' "' + raw + '" must')); else extra[k] = t.v; });
+      const minS = g('Min size'), maxS = g('Max size'), cw = g('Column width'), frz = g('Freeze').toLowerCase();
+      const sizeOk = v => v === '' || (isFinite(Number(v)) && Number(v) >= SIZE_LO && Number(v) <= SIZE_HI);
+      if (!sizeOk(minS)) why.push('Min size "' + minS + '" must be a number from ' + SIZE_LO + ' to ' + SIZE_HI);
+      if (!sizeOk(maxS)) why.push('Max size "' + maxS + '" must be a number from ' + SIZE_LO + ' to ' + SIZE_HI);
+      if (minS !== '' && maxS !== '' && sizeOk(minS) && sizeOk(maxS) && Number(minS) > Number(maxS)) why.push('Min size ' + minS + ' is above Max size ' + maxS);
+      if (cw !== '' && !(isFinite(Number(cw)) && Number(cw) >= 0.2 && Number(cw) <= 10)) why.push('Column width "' + cw + '" must be a number from 0.2 to 10');
+      if (frz && frz !== 'yes' && frz !== 'no') why.push('Freeze "' + frz + '" must be yes or no');
+      if (content === 'proof-badge' && vis === 'never') why.push('the version badge cannot be hidden');
       const press = g('Press style').toLowerCase();
       if (press && !PRESS[press]) why.push('Press style "' + press + '" must be one of: flash, stay, busy, none');
       const icon = g('Icon').toLowerCase();
@@ -8418,12 +8440,16 @@ body.light-theme .proof-box{color:#0f172a}
       ids[id] = n;
       if (vis === 'never') return;
       const key = screen + '\u0001' + rowName;
-      let R = byRow[key]; if (!R) { R = byRow[key] = { screen, name: rowName, cont: {} }; out.push(R); }
+      let R = byRow[key]; if (!R) { R = byRow[key] = { key, screen, name: rowName, cont: {} }; out.push(R); }
       const C = R.cont[ci] = R.cont[ci] || {}; const S = C[si] = C[si] || {};
       const cell = { id: 'P' + pi, proofId: id, weight: w, type, fontSize: fs, align: align === 'left' || align === 'right' ? align : 'center', vAlign: 'center', nudgeX: 0, nudgeY: 0, isDisabled: false, wrap: true };
       Object.keys(extra).forEach(k => setProp(cell, k, extra[k]));
       if (icon && type === 'button') cell.icon = icon;
       if (press) cell.pressStyle = press;
+      if (minS !== '') cell.minSize = Number(minS);
+      if (maxS !== '') cell.maxSize = Number(maxS);
+      if (cw !== '' && colW[key + '\u0002' + ci] == null) colW[key + '\u0002' + ci] = Number(cw);   // first value in a column wins
+      if (frz && freezeOf[key] == null) freezeOf[key] = frz;   // first value in a section wins
       if (slot === 'box') { cell.slot = 'box'; cell.proofKey = content; cell.label = ''; }
       else if (slot === 'results') { cell.slot = 'results'; cell.label = ''; }
       else if (type === 'button') { cell.label = g('Label') || content; cell.clickAction = content; }
@@ -8437,21 +8463,33 @@ body.light-theme .proof-box{color:#0f172a}
       const containers = num(R.cont).map(ci => {
         const stacks = num(R.cont[ci]).map(si => { const cells = num(R.cont[ci][si]).map(pi => R.cont[ci][si][pi]); const big = cells.some(c => c.slot === 'results'); return { id: 'S' + si, weight: big ? 7 : 1, splits: cells }; });
         tall = Math.max(tall, stacks.reduce((a, s) => a + (s.weight > 1 ? 330 : 50), 0));
-        return { id: 'C' + ci, weight: 1, stacks };
+        return { id: 'C' + ci, weight: colW[R.key + '\u0002' + ci] || 1, stacks };   // round 6: 'Column width' (default 1)
       });
       const row = { id: 'PR' + (ri + 1), name: R.name, heightPx: Math.max(56, tall), isAutoHeight: false, containers };
-      if (R.screen === 'all') row.sticky = true; else if (R.screen === 'tray') row.isTray = true; else row.view = R.screen;
+      const frozen = freezeOf[R.key] ? freezeOf[R.key] === 'yes' : R.screen === 'all';   // round 6: 'Freeze' (empty = Screen all is frozen)
+      if (frozen) row.sticky = true;
+      if (R.screen === 'tray') row.isTray = true; else if (R.screen !== 'all') row.view = R.screen;
       return row;
     }) };
-    state.badge = badgeRow || newBadge();
     return { state, refused, used };
   }
-  function eachCell(state, fn) { (state.rows || []).forEach(r => (r.containers || []).forEach(c => (c.stacks || []).forEach(s => (s.splits || []).forEach(p => fn(p, r))))); if (state.badge) fn(state.badge, null); }
-  // round 5 (2c): the version badge is a cell of its own (Id 'badge'), kept beside the engine's rows (the engine never draws it).
-  // Optional layout-tab row: Screen 'badge', Id 'badge', Font size (9 to 24), Align (left / center / right = top left / middle / right).
-  // A tab without that row (every 0.4.0 tab) gets today's badge: top right, 10 px.
-  const BADGE_MIN = 9, BADGE_MAX = 24;
-  const newBadge = () => ({ proofId: 'badge', isBadge: true, fontSize: 10, align: 'right', weight: 1, label: '' });
+  function eachCell(state, fn) { (state.rows || []).forEach(r => (r.containers || []).forEach(c => (c.stacks || []).forEach(s => (s.splits || []).forEach(p => fn(p, r))))); }
+  // Round 6 (4): the version badge is an ORDINARY cell: a layout-tab row (Id 'badge', Type button, Content proof-badge), by default
+  // its own narrow column (Column width 0.6) at the right end of the frozen Header section. Moving it = changing its Section / Line
+  // on the tab. A tab without a badge row (0.4.0, 0.5.0) gets that row added in memory; a 0.5.0-style row with Screen 'badge'
+  // gives its Font size and Align to it.
+  function withBadgeRow(rows) {
+    const g = (r, c) => String(r[c] == null ? '' : r[c]).trim();
+    if (rows.some(r => g(r, 'Id') === 'badge' && g(r, 'Screen').toLowerCase() !== 'badge')) return rows;
+    const old = rows.find(r => g(r, 'Screen').toLowerCase() === 'badge');
+    const rest = rows.filter(r => g(r, 'Screen').toLowerCase() !== 'badge');
+    const all = rest.filter(r => g(r, 'Screen').toLowerCase() === 'all');
+    const sec = (all.find(r => g(r, 'Row') === 'Header') || all[0] || {})['Row'] || 'Header';
+    const lastC = all.filter(r => g(r, 'Row') === sec).reduce((m, r) => Math.max(m, Number(g(r, 'Container')) || 0), 0);
+    const row = { 'Screen': 'all', 'Row': sec, 'Container': String(lastC + 1), 'Stack': '1', 'Cell': '1', 'Weight': '1', 'Type': 'button', 'Content': 'proof-badge',
+      'Slot': '', 'Font size': String((old && g(old, 'Font size')) || '10'), 'Align': (old && g(old, 'Align')) || 'right', 'Visible when': 'always', 'Label': '', 'Id': 'badge', 'Column width': '0.6' };
+    return rest.concat([row]);
+  }
   function propsOf(p) {   // every saveable property as text, engine defaults filled in (null = does not apply to this cell)
     const s = p.subLabel && typeof p.subLabel === 'object' ? p.subLabel : null;
     return { weight: String(Number(p.weight) || 1), fontSize: String(Number(p.fontSize) || 12), label: noLabel(p) ? null : String(p.label == null ? '' : p.label), align: p.align || 'center',
@@ -8511,7 +8549,7 @@ body.light-theme .proof-box{color:#0f172a}
       const g = await gviz(tab);
       if (!isRightTab(g.labels, tab)) throw Object.assign(new Error('missing'), { missing: true });
       if (!build(g.rows).used) throw Object.assign(new Error('empty'), { missing: true });
-      const known = COLS.concat(Object.keys(COLPROP), ['Icon', 'Press style']);   // round 4: say so when the tab is newer than this page
+      const known = COLS.concat(Object.keys(COLPROP), ['Icon', 'Press style', 'Min size', 'Max size', 'Column width', 'Freeze']);   // round 4: say so when the tab is newer than this page
       const unknown = g.labels.filter(l => l && known.indexOf(l) < 0 && !/^Layout /i.test(l));
       if (unknown.length) notes.push('The tab has column(s) this page does not know: ' + unknown.join(', ') + '. This page may be out of date: tap Reload, or refresh the browser.');
       lsSet(K.layout(profile), { at: Date.now(), rows: g.rows });
@@ -8561,7 +8599,7 @@ body.light-theme .proof-box{color:#0f172a}
       const p = byId[t.cell];
       if (!p) { notes.push('Tweak for "' + t.cell + '" ignored: no such cell in this profile.'); return; }
       if (!RULES[t.prop]) { notes.push('Tweak ' + t.cell + ' "' + t.prop + '" ignored: unknown property.'); return; }
-      if (p.isBadge && !((t.prop === 'fontSize' && Number(t.value) >= BADGE_MIN && Number(t.value) <= BADGE_MAX) || (t.prop === 'align' && /^(left|center|right)$/.test(t.value)))) { notes.push('Tweak badge ' + t.prop + ' "' + t.value + '" ignored: the badge takes only a text size of ' + BADGE_MIN + ' to ' + BADGE_MAX + ' and left, center or right.'); return; }
+      if (isBadge(p) && !((t.prop === 'fontSize' && Number(t.value) >= limits(p).lo && Number(t.value) <= limits(p).hi) || (t.prop === 'align' && /^(left|center|right)$/.test(t.value)))) { notes.push('Tweak badge ' + t.prop + ' "' + t.value + '" ignored: the badge takes only a text size of ' + limits(p).lo + ' to ' + limits(p).hi + ' and left, center or right.'); return; }
       if (propsOf(p)[t.prop] === null) { notes.push('Tweak ' + t.cell + ' ' + t.prop + ' ignored: this cell has no ' + t.prop + '.'); return; }
       const r = RULES[t.prop](t.value);
       if (r.err) { notes.push('Tweak ' + t.cell + ' ' + t.prop + ' "' + t.value + '" ignored: ' + r.err.replace(/^.*? must/, 'must') + '.'); return; }
@@ -8592,11 +8630,13 @@ body.light-theme .proof-box{color:#0f172a}
   function selectedId() { const sel = engineState.activeSelection; if (!sel || sel.tier !== 'split') return ''; const p = engineState.rows[sel.rowIndex]?.containers[sel.containerIndex]?.stacks[sel.stackIndex]?.splits[sel.splitIndex]; return (p && p.proofId) || ''; }
   function reselect(id) { if (!id) return; engineState.rows.forEach((r, ri) => r.containers.forEach((c, ci) => c.stacks.forEach((st, si) => st.splits.forEach((x, pi) => { if (x.proofId === id) engineState.activeSelection = { rowIndex: ri, containerIndex: ci, stackIndex: si, splitIndex: pi, tier: 'split' }; })))); }
   function show(L, T, n, reason, wanted) {   // build the page from a layout read + tweak rows and draw it (no network)
+    if (T.from === 'sheet' || T.from === 'script') savedMap[L.profile] = keyMap(T.rows);
+    else if (reason === 'clear') savedMap[L.profile] = {};
     const b = build(L.rows);
     if (!b.state.rows.length) { n.push('The layout had no usable rows.'); notes = n; paintNotes(); return false; }
     base = {}; eachCell(b.state, p => { if (p.proofId) base[p.proofId] = propsOf(p); });
     const nt = applyTweaks(b.state, T.rows, n);
-    eachCell(b.state, p => { if (p.clickAction === 'proof-profile') p.label = 'Profile: ' + L.profile + (chosenProfile() === 'auto' ? ' (auto)' : ''); });
+    eachCell(b.state, p => { if (p.clickAction === 'proof-profile') p.label = 'Profile: ' + L.profile + (chosenProfile() === 'auto' ? ' (auto)' : ''); if (isBadge(p)) p.label = badgeText(); });
     const keepView = currentView, wasEdit = !isLiveInteraction, keepSel = selectedId();
     engineState = b.state; reselect(keepSel);
     try { undoStack.length = 0; redoStack.length = 0; recordHistorySnapshot(); } catch (e) {}
@@ -8641,17 +8681,23 @@ body.light-theme .proof-box{color:#0f172a}
     return d;
   }
   function setLocal(profile, v) { const all = lsGet(K.tweaks, {}) || {}; if (v == null) delete all[profile]; else all[profile] = v; lsSet(K.tweaks, all); }
+  // Round 6: what this device last stored per profile, so Save can say how many tweaks changed (added, changed or removed).
+  const savedMap = {};
+  const keyMap = rows => { const m = {}; (rows || []).forEach(r => { m[r.cell + '\u0001' + r.prop] = String(r.value); }); return m; };
   async function saveTweaks() {
     const rows = changedFrom(base), profile = info.profile;
     setLocal(profile, { rows, state: 'pending', at: Date.now() });
     lastAction = 'Saving ' + rows.length + ' tweak(s) ...'; paintNotes();
     try {
       const d = await post({ op: 'replace', rows });
+      const now = keyMap(rows), was = savedMap[profile] || {};
+      const changed = Object.keys(now).filter(k => was[k] !== now[k]).length + Object.keys(was).filter(k => !(k in now)).length;
+      savedMap[profile] = now;
       setLocal(profile, { rows, state: 'saved', at: Date.now() });
       applied = snapshot(); info.tweaks = rows.length; info.pending = false;
       notes = notes.filter(x => !/not saved to the sheet yet/.test(x));
       lastAction = 'Saved ' + d.saved + ' tweak(s) to the sheet at ' + hhmm() + ' (' + DEVICE + ', profile ' + profile + '). Saved: width, text size, label, align, wrap, padding, v align, nudge, accent, sub label.';
-      paintNotes(); return { ok: true, short: 'Saved ' + d.saved + ' tweak' + (d.saved === 1 ? '' : 's') + ' ' + hhmm() };
+      paintNotes(); return { ok: true, short: 'Saved: ' + (changed ? changed + ' changed' : 'nothing new') + ', ' + d.saved + ' total ' + hhmm() };   // round 6
     } catch (e) {
       info.pending = true;
       lastAction = 'NOT saved to the sheet: ' + e.message + '. The ' + rows.length + ' tweak(s) stay on this device and are used here; press Save tweaks again later.';
@@ -8682,6 +8728,7 @@ body.light-theme .proof-box{color:#0f172a}
   window.EngineActions['proof-save-tweaks'] = () => runBusy('proof-save-tweaks', 'Saving...', () => saveTweaks());
   window.EngineActions['proof-clear-tweaks'] = () => runBusy('proof-clear-tweaks', 'Clearing...', () => clearTweaks());
   window.EngineActions['proof-profile'] = () => { nextProfile(); };
+  window.EngineActions['proof-badge'] = () => { if (staleV) reloadTo(staleV); };   // no newer version: nothing happens
   window.EngineActions['proof-adjust'] = () => { if (barOpen) closeBar(); else openBar(); };
   // In Edit mode a tap selects a cell; the proof's tool buttons (Reload, Tools, Profile, Save, Clear) must still work there,
   // like the engine's own control cells do.
@@ -8694,7 +8741,6 @@ body.light-theme .proof-box{color:#0f172a}
         window.EngineActions[cell.clickAction](cell, row, e); return;
       }
     }
-    badgeSelected = false;
     const r = hs.apply(this, arguments);
     if (barOpen) { barSync(); keepSelectedVisible(); }
     return r;
@@ -8716,9 +8762,7 @@ body.light-theme .proof-box{color:#0f172a}
   // text is changed in place (no renderCanvas), so the phone keyboard stays up. The bar sits on the visible screen above the keyboard.
   let barOpen = false, barGroup = 'width', bar = null;
   const GROUPS = [['width', 'Width'], ['size', 'Size'], ['align', 'Align'], ['wrap', 'Wrap'], ['label', 'Label']];
-  let badgeSelected = false;
   function selCell() {
-    if (badgeSelected && engineState.badge) return engineState.badge;
     const sel = engineState.activeSelection; if (!sel || sel.tier !== 'split') return null;
     const p = engineState.rows[sel.rowIndex]?.containers[sel.containerIndex]?.stacks[sel.stackIndex]?.splits[sel.splitIndex];
     return p && p.proofId ? p : null;
@@ -8733,7 +8777,12 @@ body.light-theme .proof-box{color:#0f172a}
     // Round 4: a bar button acts on PRESS (pointerdown). On phones the keyboard closing moved the bar before a release
     // landed, so Done "did nothing". preventDefault also keeps the Label box from losing focus to the button.
     let lastPress = 0;
-    bar.addEventListener('pointerdown', e => { const b = e.target.closest('button[data-pb]'); if (!b || b.disabled) return; e.preventDefault(); lastPress = Date.now(); barAct(b); });
+    // Round 6: Done acts when the finger LIFTS (pointerup) and the bar stays where it is while a finger is down on it, so the
+    // keyboard closing cannot pull the bar away and leave the release over a box (tester F2). Other bar buttons still act on press.
+    bar.addEventListener('pointerdown', e => { const b = e.target.closest('button[data-pb]'); if (!b || b.disabled) return; e.preventDefault(); holdBar();
+      if (b.dataset.pb === 'done') { doneArmed = true; return; }
+      lastPress = Date.now(); barAct(b); });
+    bar.addEventListener('pointerup', e => { const b = e.target.closest('button[data-pb]'); if (b && b.dataset.pb === 'done' && doneArmed) { doneArmed = false; lastPress = Date.now(); labelDone(); } });
     bar.addEventListener('click', e => { const b = e.target.closest('button[data-pb]'); if (!b) return; e.stopPropagation(); if (Date.now() - lastPress < 800 || b.disabled) return; barAct(b); });
     bar.addEventListener('input', e => { if (e.target.id === 'pb-label') typeLabel(e.target.value); });
     bar.addEventListener('keydown', e => { if (e.target.id === 'pb-label' && e.key === 'Enter') { e.preventDefault(); labelDone(); } });
@@ -8751,7 +8800,7 @@ body.light-theme .proof-box{color:#0f172a}
     if (a === 'revert') { commitLabel(); lastAction = 'Reverted to the saved layout ' + hhmm() + '.'; barBusy(b, 'Reverting...'); return load('revert').then(() => { barBusy(b, null); barNote('Back to saved ' + hhmm(), 'done'); barSync(); }); }
     if (a === 'done') return labelDone();
     if (!p) return;
-    const box = p.slot === 'box', lo = p.isBadge ? BADGE_MIN : box ? BOX_FLOOR : 6, hi = p.isBadge ? BADGE_MAX : 48;
+    const box = p.slot === 'box', { lo, hi } = limits(p);
     if (a === 'mid') { const df = defOf(p); return edit(q => { if (barGroup === 'width') q.weight = Number(df.weight); else q.fontSize = Number(df.fontSize); }); }
     if (a === 'dot') { const df = defOf(p), k = b.dataset.prop; return edit(q => setProp(q, k, df[k])); }
     if (a === 'w-') edit(q => { q.weight = Math.max(0.25, +((Number(q.weight) || 1) - 0.25).toFixed(2)); });
@@ -8761,6 +8810,11 @@ body.light-theme .proof-box{color:#0f172a}
     if (a === 'al') edit(q => { q.align = b.dataset.v; });
     if (a === 'wr') edit(q => { q.wrap = b.dataset.v === 'yes'; });
   }
+  let barHold = false, holdTimer = null, doneArmed = false;
+  function holdBar() { barHold = true; clearTimeout(holdTimer); holdTimer = setTimeout(releaseBar, 1500); }
+  function releaseBar() { if (!barHold) return; barHold = false; clearTimeout(holdTimer); placeBar(); }
+  document.addEventListener('pointerup', () => { doneArmed = false; setTimeout(releaseBar, 0); });
+  document.addEventListener('pointercancel', () => { doneArmed = false; setTimeout(releaseBar, 0); });
   function labelDone() {   // commit the label, close the box (and the keyboard), back to the group buttons, say so
     const a = document.activeElement; if (a && a.id === 'pb-label') a.blur();
     commitLabel(); barGroup = ''; barNote('Label set', 'done'); barSync();
@@ -8796,7 +8850,7 @@ body.light-theme .proof-box{color:#0f172a}
     lastAction = 'Adjust: tap a box, then pick Width, Size, Align, Wrap or Label.';
   }
   function closeBar(keepEdit) {
-    commitLabel(); barOpen = false; badgeSelected = false; document.body.classList.remove('proof-adjusting');
+    commitLabel(); barOpen = false; document.body.classList.remove('proof-adjusting');
     if (bar) bar.style.display = 'none';
     if (!keepEdit) { engineState.activeSelection = null; if (!isLiveInteraction) toggleInteractionState(); else renderCanvas(); }
     decorate(); paintLine();
@@ -8821,17 +8875,17 @@ body.light-theme .proof-box{color:#0f172a}
   function barSync() {
     if (!bar || !barOpen) return;
     bar.classList.toggle('pb-change-only', MID_STYLE === 'change');
-    const p = selCell(), pr = p ? propsOf(p) : null, df = p ? defOf(p) : null, isB = !!(p && p.isBadge);
+    const p = selCell(), pr = p ? propsOf(p) : null, df = p ? defOf(p) : null, isB = isBadge(p);
     document.getElementById('pb-sel').textContent = !p ? 'Tap a box to adjust it' : isB ? 'Selected: version badge' : 'Selected: ' + p.proofId + (p.label && !p.slot ? ' (' + p.label + ')' : '');
     if (isB && !/^(size|align)$/.test(barGroup)) barGroup = 'size';
     bar.querySelectorAll('[data-pb="group"]').forEach(b => { b.classList.toggle('on', b.dataset.g === barGroup); b.disabled = isB && !/^(size|align)$/.test(b.dataset.g); });
     const boxCell = p && p.slot === 'box', size = p ? (boxCell ? boxSize(p) : Number(p.fontSize) || 12) : 0;
-    const lo = isB ? BADGE_MIN : boxCell ? BOX_FLOOR : 6, hi = isB ? BADGE_MAX : 48;
+    const { lo, hi } = p ? limits(p) : { lo: SIZE_LO, hi: SIZE_HI };
     const body = document.getElementById('pb-body');
     if (!p) body.innerHTML = '<div class="pb-hint">Tap any box, label or button on the page.</div>';
     else if (!barGroup) body.innerHTML = '<div class="pb-hint">Pick Width, Size, Align, Wrap or Label.</div>';
     else if (barGroup === 'width') body.innerHTML = midHtml('w-', 'w+', pr.weight, df.weight, Number(pr.weight) <= 0.25, Number(pr.weight) >= 100);
-    else if (barGroup === 'size') body.innerHTML = midHtml('s-', 's+', size, boxCell ? Math.max(BOX_FLOOR, Number(df.fontSize)) : df.fontSize, size <= lo, size >= hi);
+    else if (barGroup === 'size') body.innerHTML = midHtml('s-', 's+', size, df.fontSize, size <= lo, size >= hi);
     else if (barGroup === 'align') body.innerHTML = ['left', 'center', 'right'].map(v => '<button type="button" data-pb="al" data-v="' + v + '" class="' + (pr.align === v ? 'on' : '') + '">' + v[0].toUpperCase() + '</button>').join('') + (pr.align !== df.align ? dotHtml('align') : '');
     else if (barGroup === 'wrap') body.innerHTML = pr.wrap === null ? '<div class="pb-hint">A value box has no wrap.</div>' : ['yes', 'no'].map(v => '<button type="button" data-pb="wr" data-v="' + v + '" class="' + (pr.wrap === v ? 'on' : '') + '">' + (v === 'yes' ? 'Wrap on' : 'Wrap off') + '</button>').join('') + (pr.wrap !== df.wrap ? dotHtml('wrap') : '');
     else if (barGroup === 'label') {
@@ -8850,7 +8904,7 @@ body.light-theme .proof-box{color:#0f172a}
     st.textContent = n ? n + ' not saved' : 'All saved'; st.className = '';
   }
   function placeBar() {
-    if (!bar || !barOpen) return;
+    if (!bar || !barOpen || barHold) return;   // never move the bar while a finger is down on it
     const vv = window.visualViewport, h = bar.offsetHeight;
     const bottom = vv ? vv.offsetTop + vv.height : window.innerHeight;
     bar.style.top = Math.max(0, bottom - h) + 'px';
@@ -8890,7 +8944,16 @@ body.light-theme .proof-box{color:#0f172a}
       if (busy[a]) { const sp = btn.querySelector('span') || btn; if (!btn.dataset.orig) btn.dataset.orig = sp.textContent; sp.textContent = busy[a]; btn.classList.add('proof-busy'); }
       if (doneUntil[a] > Date.now()) btn.classList.add('proof-done');
     });
-    badge();
+    badge(); stackFrozen();
+  }
+  // Round 6: the engine pins every frozen section at top: 0 (engine/12-borders-and-frozen-region.css:38, shared with the main
+  // app, so not changed): here each visible frozen section gets its top from the heights of the frozen sections above it.
+  function stackFrozen() {
+    let top = 0, z = 40;
+    document.querySelectorAll('#viewport-canvas-frame .grid-row-band.row-sticky').forEach(el => {
+      if (!el.offsetParent && getComputedStyle(el).display === 'none') return;
+      el.style.top = top + 'px'; el.style.zIndex = String(z--); top += el.getBoundingClientRect().height;
+    });
   }
   function runBusy(action, label, fn) {
     if (busy[action]) return Promise.resolve();   // a second tap while it runs does nothing
@@ -8951,21 +9014,17 @@ body.light-theme .proof-box{color:#0f172a}
   const PRETEND = (() => { const v = new URLSearchParams(location.search).get('pretend'); return v && /^\d+\.\d+\.\d+$/.test(v) ? v : ''; })();   // test switch: act like an older page
   const newer = (a, b) => { const x = a.split('.').map(Number), y = b.split('.').map(Number); for (let i = 0; i < 3; i++) { if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0); } return false; };
   let staleV = '', loading = 0;
+  // Round 6: the badge is the layout cell Id 'badge' (a button cell drawn by the engine). This only marks its button (id, glow, title)
+  // after each redraw. Live tap: reload only when a newer version exists. In Adjust / Edit a tap selects it like any cell.
+  const badgeText = () => 'v' + PROOF_VERSION + (PRETEND ? ' (acting as ' + PRETEND + ')' : '');
   function badge() {
-    let e = document.getElementById('proof-badge');
-    if (!e) { e = document.createElement('button'); e.type = 'button'; e.id = 'proof-badge'; document.body.appendChild(e);
-      e.addEventListener('click', ev => { ev.stopPropagation();
-        if (barOpen) { badgeSelected = true; engineState.activeSelection = null; renderCanvas(); barSync(); return; }
-        if (staleV) reloadTo(staleV); }); }
-    const bd = (engineState && engineState.badge) || newBadge(), fs = Math.min(BADGE_MAX, Math.max(BADGE_MIN, Number(bd.fontSize) || 10));
-    e.textContent = 'v' + PROOF_VERSION + (PRETEND ? ' (acting as ' + PRETEND + ')' : '');
-    e.style.fontSize = fs + 'px';
-    e.style.left = bd.align === 'left' ? '4px' : bd.align === 'center' ? '50%' : 'auto';
-    e.style.right = bd.align === 'right' || !bd.align ? '4px' : 'auto';
-    e.style.transform = bd.align === 'center' ? 'translateX(-50%)' : 'none';
-    e.classList.toggle('stale', !!staleV); e.classList.toggle('picked', barOpen && badgeSelected);
+    const part = document.querySelector('#viewport-canvas-frame .grid-split-partition[data-pid="badge"]');
+    const e = part && part.querySelector('button.rounded-lg'); if (!e) return;
+    if (e.id !== 'proof-badge') e.id = 'proof-badge';
+    e.classList.toggle('stale', !!staleV);
     e.title = staleV ? 'A newer version (' + staleV + ') is available: tap to reload' : 'Version ' + PROOF_VERSION;
   }
+
   function reloadTo(v) { say('Reloading the newer version (' + v + ')...', 'warn'); location.replace(location.pathname + '?v=' + encodeURIComponent(v) + '&t=' + Date.now()); }
   function pendingOnPhone() { const t = lsGet(K.tweaks, {}) || {}; return Object.keys(t).some(k => t[k] && t[k].state === 'pending'); }
   function whyNotSafe() {
@@ -9014,6 +9073,27 @@ body.light-theme .proof-box{color:#0f172a}
     let q = false; new MutationObserver(() => { if (q) return; q = true; requestAnimationFrame(() => { q = false; plainTexts(w); }); }).observe(w, { subtree: true, childList: true, characterData: true });
   }
 
+  // ---------- AUTOFILL TEST PAGE (round 6, item 6): only with ?autofill=1; fake text only, no sheet data ----------
+  // Five value boxes in the look of the real Phone value box, each labelled with its letter and the same word 'Phone':
+  // A control (as the real Phone box today), B neutral placeholder and no tel keypad, C autocomplete one-time-code in a form with
+  // autocomplete off, D readonly until tapped (off on focus, back on blur), E = B + C + D. Nothing here is used by the real page.
+  const AUTOFILL = new URLSearchParams(location.search).get('autofill') === '1';
+  function autofillPage() {
+    document.body.classList.add('proof-autofill-mode');
+    const pg = document.createElement('div'); pg.id = 'proof-autofill';
+    const v = { A: { ph: 'Phone', tel: true }, B: { ph: 'Type here' }, C: { ph: 'Phone', tel: true, otc: true }, D: { ph: 'Phone', tel: true, ro: true }, E: { ph: 'Type here', otc: true, ro: true } };
+    const box = L => { const o = v[L], id = 'afb-' + L.toLowerCase();
+      const input = '<input id="' + id + '" name="' + id + '" data-variant="' + L + '" class="af-box" type="text" placeholder="' + o.ph + '"' + (o.tel ? ' inputmode="tel"' : '') +
+        ' autocomplete="' + (o.otc ? 'one-time-code' : 'off') + '" autocorrect="off" spellcheck="false" autocapitalize="off"' + (o.ro ? ' readonly data-ro="1"' : '') + '>';
+      const face = '<div class="af-face">' + input + '</div>';
+      return '<div class="af-row"><label for="' + id + '" class="af-label"><b>' + L + '</b> Phone</label>' + (o.otc ? '<form autocomplete="off" onsubmit="return false" class="af-form">' + face + '</form>' : face) + '</div>'; };
+    pg.innerHTML = '<h1>Autofill test (proof ' + PROOF_VERSION + ')</h1><p class="af-note">Tap each box. Does a saved phone or address bar appear? Tell Chat 03 the letters.</p>' +
+      ['A', 'B', 'C', 'D', 'E'].map(box).join('') + '<p class="af-key">A today\'s Phone box · B plain hint, normal keypad · C one-time-code in a form · D read-only until tapped · E B + C + D</p>' +
+      '<p><a href="' + location.pathname + '">Back to the proof page</a></p>';
+    document.body.appendChild(pg);
+    pg.querySelectorAll('input[data-ro]').forEach(i => { i.addEventListener('focus', () => i.removeAttribute('readonly')); i.addEventListener('blur', () => i.setAttribute('readonly', '')); });
+  }
+
   // ---------- the bottom line ----------
   function paintNotes() {
     let n = document.getElementById('proof-notes');
@@ -9028,8 +9108,9 @@ body.light-theme .proof-box{color:#0f172a}
   }
 
   window.PMIProof = { build, fromCsv, load, reload, saveTweaks, clearTweaks, nextProfile, changedFrom: () => changedFrom(base), info: () => info, device: DEVICE, PROFILES, HOUSES, version: PROOF_VERSION,
-    openBar, closeBar, structChanged, propsOf, checkVersion, say };
+    openBar, closeBar, structChanged, propsOf, checkVersion, say, barSync: () => barSync() };
   window.addEventListener('DOMContentLoaded', () => {
+    if (AUTOFILL) { setTimeout(autofillPage, 0); return; }   // the test page only: no layout read, no sheet calls
     setTimeout(() => {
       try { if (window.innerWidth < 700) lastOpenInspectorState = 'compact'; if (inspectorWindowState !== 'closed') closeInspectorWindow(); } catch (e) {}   // the page opens in Live with the inspector shut
       try { if (!isLiveInteraction) toggleInteractionState(); } catch (e) {}
