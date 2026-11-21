@@ -719,6 +719,7 @@
    V align places the text in the face (align-items), Align places it across (text-align on the text box). */
 #viewport-canvas-frame .proof-cell{height:100%;width:100%;box-sizing:border-box;padding:3px 6px;display:flex}
 #viewport-canvas-frame .proof-face{flex:1 1 auto;min-width:0;min-height:36px;display:flex;box-sizing:border-box;border-radius:8px;border:1px solid #2b4f7e;background:#07111f;padding:0 9px;cursor:text}
+#viewport-canvas-frame .proof-form{display:contents;margin:0}
 #viewport-canvas-frame .proof-face:focus-within{outline:2px solid #22d3ee;border-color:#22d3ee}
 #viewport-canvas-frame .proof-box{width:100%;min-width:0;box-sizing:border-box;border:0;outline:none;background:transparent;color:#e2e8f0;padding:7px 0;-webkit-user-select:text;user-select:text}
 .grid-split-partition:has(.proof-cell){align-items:stretch}
@@ -3562,7 +3563,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.6.0', stamp: '{{STAMP}}', name: '{{BUILD_NAME}}' };
+    const ENGINE_BUILD = { version: 'proof-0.7.0', stamp: '{{STAMP}}', name: '{{BUILD_NAME}}' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8196,7 +8197,7 @@ body.light-theme .proof-box{color:#0f172a}
     // =========================================================
     function syncLiveClass() { document.body.classList.toggle('live-mode', Boolean(isLiveInteraction) || IS_VISITOR_MODE); }
   </script>
-<script>window.PROOF_BUILTIN_CSV = "Screen,Row,Container,Stack,Cell,Weight,Type,Content,Slot,Font size,Align,Visible when,Label,Id,Sub label,Sub label size,Sub label place,Wrap,Pad X,Pad Y,V align,Nudge X,Nudge Y,Accent,Icon,Press style,Min size,Max size,Column width,Freeze\nall,Header,1,1,1,1,button,set-view:entry,,11,center,always,Entry,hdr.entry,,,,no,4,,,,,,,,,,,\nall,Header,1,1,2,1,button,set-view:report,,11,center,always,Report,hdr.report,,,,no,4,,,,,,,,,,,\nall,Header,2,1,1,1,button,reload-layout,,11,center,always,Reload,hdr.reload,,,,no,4,,,,,,,,,,,\nall,Header,2,1,2,1,button,toggle-tray,,11,center,always,Tools,hdr.tools,,,,no,4,,,,,,settings,,,,,\nall,Header,3,1,1,1,button,set-view:find,,11,center,always,New,hdr.newcall,,,,no,4,,,,,,,,,,,\nall,Header,3,1,2,1,button,set-view:find,,11,center,always,Find,hdr.find,,,,no,4,,,,,,,,,,,\nall,Header,4,1,1,1,button,proof-badge,,10,right,always,,badge,,,,no,,,,,,,,,,,0.6,\ntray,Tools,1,1,1,2,button,proof-profile,,12,center,always,Profile,tools.profile,,,,no,4,,,,,,,,,,,\ntray,Tools,1,1,2,1,button,proof-adjust,,12,center,always,Adjust,tools.adjust,,,,no,4,,,,,,,,,,,\ntray,Tools,1,1,3,1,button,toggle-inspector,,12,center,always,Advanced,tools.inspector,,,,no,4,,,,,,,,,,,\ntray,Tools,1,2,1,1,button,proof-save-tweaks,,12,center,always,Save tweaks,tools.save,,,,no,4,,,,,,,,,,,\ntray,Tools,1,2,2,1,button,proof-clear-tweaks,,12,center,always,Clear mine,tools.clear,,,,no,4,,,,,,,,,,,\ntray,Tools,1,2,3,1,button,toggle-live,,12,center,always,Edit,tools.mode,,,,no,4,,,,,,,,,,,\nentry,Job details,1,1,1,1,text,JOB DETAILS,,13,left,always,,job.title,,,,no,,,,,,amber,,,,,,\nentry,Job details,1,2,1,1,text,Date,,12,left,always,,job.date.label,,,,no,,,,,,,,,,,,\nentry,Job details,1,2,2,2,text,f:date,box,14,left,always,,job.date,,,,no,,,,,,,,,,,,\nentry,Job details,1,3,1,1,text,Customer,,12,left,always,,job.customer.label,,,,no,,,,,,,,,,,,\nentry,Job details,1,3,2,5,text,f:customer,box,14,left,always,,job.customer,,,,no,,,,,,,,,,,,\nentry,Job details,1,4,1,1,text,Address,,12,left,always,,job.address.label,,,,no,,,,,,,,,,,,\nentry,Job details,1,4,2,2,text,f:address,box,14,left,always,,job.address,,,,no,,,,,,,,,,,,\nentry,Job details,1,5,1,1,text,Phone,,12,left,always,,job.phone.label,,,,no,,,,,,,,,,,,\nentry,Job details,1,5,2,2,text,f:phone,box,14,left,always,,job.phone,,,,no,,,,,,,,,,,,\nentry,Job details,1,6,1,1,text,Condenser model,,12,left,always,,job.model.label,,,,yes,,,,,,,,,,,,\nentry,Job details,1,6,2,2,text,f:outdoorModel,box,14,left,always,,job.model,,,,no,,,,,,,,,,,,\nentry,Job details,1,7,1,1,text,Suction pressure,,12,left,always,,job.suction.label,,,,no,,,,,,,,,,,,\nentry,Job details,1,7,2,2,text,f:suctionPressure,box,14,left,always,,job.suction,PSIG,10,middle-right,no,,,,,,,,,,,,\nentry,Job details,1,8,1,0,text,BAD ROW on purpose (weight 0): the page refuses it and says so. Delete this row on the tab to clear the message.,,12,left,always,,job.bad,,,,yes,,,,,,,,,,,,\nreport,Report,1,1,1,1,text,Report page (empty in this proof),,13,center,always,,report.text,,,,no,,,,,,,,,,,,\nfind,Find the customer,1,1,1,3,text,Find the customer,,15,left,always,,find.title,,,,no,,,,,,,,,,,,\nfind,Find the customer,1,1,2,1,button,set-view:entry,,12,center,always,Back,find.back,,,,no,,,,,,,,,,,,\nfind,Find the customer,1,2,1,1,text,Name,,12,left,always,,find.name.label,,,,no,,,,,,,,,,,,\nfind,Find the customer,1,2,2,3,text,find.name,box,14,left,always,,find.name,,,,no,,,,,,,,,,,,\nfind,Find the customer,1,3,1,1,text,Address,,12,left,always,,find.address.label,,,,no,,,,,,,,,,,,\nfind,Find the customer,1,3,2,3,text,find.address,box,14,left,always,,find.address,,,,no,,,,,,,,,,,,\nfind,Find the customer,1,4,1,1,text,Phone,,12,left,always,,find.phone.label,,,,no,,,,,,,,,,,,\nfind,Find the customer,1,4,2,3,text,find.phone,box,14,left,always,,find.phone,,,,no,,,,,,,,,,,,\nfind,Find the customer,1,5,1,1,button,proof-find,,13,center,always,Find,find.find,,,,no,,,,,,,,,,,,\nfind,Find the customer,1,5,2,1,button,proof-cancel,,13,center,always,Cancel,find.cancel,,,,no,,,,,,,,none,,,,\nfind,Find the customer,1,6,1,1,text,houses,results,13,left,always,,find.results,,,,no,,,,,,,,,,,,\nfind,Find the customer,1,7,1,1,text,Each letter you type narrows the list. Tap a house to fill the call.,,11,left,always,,find.hint,,,,yes,,,,,,,,,,,,\n";</script>
+<script>window.PROOF_BUILTIN_CSV = "Screen,Row,Container,Stack,Cell,Weight,Type,Content,Slot,Font size,Align,Visible when,Label,Id,Sub label,Sub label size,Sub label place,Wrap,Pad X,Pad Y,V align,Nudge X,Nudge Y,Accent,Icon,Press style,Min size,Max size,Column width,Freeze,Line height\nall,Header,1,1,1,1,button,set-view:entry,,11,center,always,Entry,hdr.entry,,,,no,2,,,,,,,,,,,,5\nall,Header,1,1,2,1,button,set-view:report,,11,center,always,Report,hdr.report,,,,no,2,,,,,,,,,,,,\nall,Header,1,1,3,1,button,reload-layout,,11,center,always,Reload,hdr.reload,,,,no,2,,,,,,,,,,,,\nall,Header,1,1,4,1,button,toggle-tray,,11,center,always,Tools,hdr.tools,,,,no,2,,,,,,settings,,,,,,\nall,Header,1,1,5,1,button,set-view:find,,11,center,always,New,hdr.newcall,,,,no,2,,,,,,,,,,,,\nall,Header,1,1,6,1,button,set-view:find,,11,center,always,Find,hdr.find,,,,no,2,,,,,,,,,,,,\nall,Header,1,2,2,1,button,proof-badge,,10,center,always,,badge,,,,no,,0,,,,,,,,,,,\ntray,Tools,1,1,1,2,button,proof-profile,,12,center,always,Profile,tools.profile,,,,no,4,,,,,,,,,,,,\ntray,Tools,1,1,2,1,button,proof-adjust,,12,center,always,Adjust,tools.adjust,,,,no,4,,,,,,,,,,,,\ntray,Tools,1,1,3,1,button,toggle-inspector,,12,center,always,Advanced,tools.inspector,,,,no,4,,,,,,,,,,,,\ntray,Tools,1,2,1,1,button,proof-save-tweaks,,12,center,always,Save tweaks,tools.save,,,,no,4,,,,,,,,,,,,\ntray,Tools,1,2,2,1,button,proof-clear-tweaks,,12,center,always,Clear mine,tools.clear,,,,no,4,,,,,,,,,,,,\ntray,Tools,1,2,3,1,button,toggle-live,,12,center,always,Edit,tools.mode,,,,no,4,,,,,,,,,,,,\nentry,Job details,1,1,1,1,text,JOB DETAILS,,13,left,always,,job.title,,,,no,,,,,,amber,,,,,,,\nentry,Job details,1,2,1,1,text,Date,,12,left,always,,job.date.label,,,,no,,,,,,,,,,,,,\nentry,Job details,1,2,2,2,text,f:date,box,14,left,always,,job.date,,,,no,,,,,,,,,,,,,\nentry,Job details,1,3,1,1,text,Customer,,12,left,always,,job.customer.label,,,,no,,,,,,,,,,,,,\nentry,Job details,1,3,2,5,text,f:customer,box,14,left,always,,job.customer,,,,no,,,,,,,,,,,,,\nentry,Job details,1,4,1,1,text,Address,,12,left,always,,job.address.label,,,,no,,,,,,,,,,,,,\nentry,Job details,1,4,2,2,text,f:address,box,14,left,always,,job.address,,,,no,,,,,,,,,,,,,\nentry,Job details,1,5,1,1,text,Phone,,12,left,always,,job.phone.label,,,,no,,,,,,,,,,,,,\nentry,Job details,1,5,2,2,text,f:phone,box,14,left,always,,job.phone,,,,no,,,,,,,,,,,,,\nentry,Job details,1,6,1,1,text,Condenser model,,12,left,always,,job.model.label,,,,yes,,,,,,,,,,,,,\nentry,Job details,1,6,2,2,text,f:outdoorModel,box,14,left,always,,job.model,,,,no,,,,,,,,,,,,,\nentry,Job details,1,7,1,1,text,Suction pressure,,12,left,always,,job.suction.label,,,,no,,,,,,,,,,,,,\nentry,Job details,1,7,2,2,text,f:suctionPressure,box,14,left,always,,job.suction,PSIG,10,middle-right,no,,,,,,,,,,,,,\nentry,Job details,1,8,1,0,text,BAD ROW on purpose (weight 0): the page refuses it and says so. Delete this row on the tab to clear the message.,,12,left,always,,job.bad,,,,yes,,,,,,,,,,,,,\nreport,Report,1,1,1,1,text,Report page (empty in this proof),,13,center,always,,report.text,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,1,1,3,text,Find the customer,,15,left,always,,find.title,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,1,2,1,button,set-view:entry,,12,center,always,Back,find.back,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,2,1,1,text,Name,,12,left,always,,find.name.label,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,2,2,3,text,find.name,box,14,left,always,,find.name,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,3,1,1,text,Address,,12,left,always,,find.address.label,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,3,2,3,text,find.address,box,14,left,always,,find.address,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,4,1,1,text,Phone,,12,left,always,,find.phone.label,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,4,2,3,text,find.phone,box,14,left,always,,find.phone,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,5,1,1,button,proof-find,,13,center,always,Find,find.find,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,5,2,1,button,proof-cancel,,13,center,always,Cancel,find.cancel,,,,no,,,,,,,,none,,,,,\nfind,Find the customer,1,6,1,1,text,houses,results,13,left,always,,find.results,,,,no,,,,,,,,,,,,,\nfind,Find the customer,1,7,1,1,text,Each letter you type narrows the list. Tap a house to fill the call.,,11,left,always,,find.hint,,,,yes,,,,,,,,,,,,,\nall,Header,1,2,1,1,text,,,10,center,always,,hdr.spacer1,,,,no,,,,,,,,,,,,,2\nall,Header,1,2,3,1,text,,,10,center,always,,hdr.spacer2,,,,no,,,,,,,,,,,,,\ntray,Tools,1,3,1,1,button,refresh-page,,12,center,always,Refresh page,tools.refresh,,,,no,4,,,,,,,,,,,,\n";</script>
 <script>
 // =====================================================================================================
 // PROOF PAGE (throwaway sandbox). Round 1: Prompts no. 95. Round 2: Prompts no. 96. Read DESIGN.md first.
@@ -8219,7 +8220,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.6.0';
+  const PROOF_VERSION = '0.7.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8229,7 +8230,7 @@ body.light-theme .proof-box{color:#0f172a}
   const FIELDS = { 'f:date': 'Date', 'f:customer': 'Customer', 'f:address': 'Address', 'f:phone': 'Phone', 'f:outdoorModel': 'Condenser model', 'f:suctionPressure': 'Suction pressure' };
   const FIND_KEYS = { 'find.name': 1, 'find.address': 1, 'find.phone': 1 };
   const TYPES = { button: 1, text: 1, logo: 1, badge: 1 };
-  const TOOL_ACTIONS = { 'reload-layout': 1, 'proof-save-tweaks': 1, 'proof-clear-tweaks': 1, 'proof-profile': 1, 'toggle-tray': 1, 'proof-adjust': 1 };
+  const TOOL_ACTIONS = { 'reload-layout': 1, 'proof-save-tweaks': 1, 'proof-clear-tweaks': 1, 'proof-profile': 1, 'toggle-tray': 1, 'proof-adjust': 1, 'refresh-page': 1 };
   const ACTIONS = Object.assign({ 'proof-badge': 1, 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1 }, TOOL_ACTIONS);
   // What a tweak can change (DESIGN.md). Each rule turns a value into its normal text form, or returns an error.
   const PLACES = { 'top-left': ['left', 'top'], 'top-center': ['center', 'top'], 'top-right': ['right', 'top'], 'middle-left': ['left', 'middle'], 'middle': ['center', 'middle'],
@@ -8280,7 +8281,7 @@ body.light-theme .proof-box{color:#0f172a}
     const a = p.clickAction || '';
     if (a === 'proof-badge') return 'none';   // the badge never flashes (a tap does something only when a newer version exists)
     if (/^set-view:/.test(a) || a === 'toggle-inspector' || a === 'toggle-live' || a === 'toggle-tray' || a === 'proof-adjust' || a === 'proof-profile') return 'stay';
-    if (a === 'reload-layout' || a === 'proof-save-tweaks' || a === 'proof-clear-tweaks') return 'busy';
+    if (a === 'reload-layout' || a === 'proof-save-tweaks' || a === 'proof-clear-tweaks' || a === 'refresh-page') return 'busy';
     return 'flash';
   }
   const HOUSES = [   // made-up places only
@@ -8321,16 +8322,21 @@ body.light-theme .proof-box{color:#0f172a}
   window.EngineSlots['box'] = { render(p) {
     const k = p.proofKey, tel = /phone/.test(k), num = /suction/i.test(k);
     const va = p.vAlign === 'top' ? 'flex-start' : p.vAlign === 'bottom' ? 'flex-end' : 'center';
-    return '<div class="proof-cell"><div class="proof-face" style="align-items:' + va + '"><input class="proof-box" data-key="' + esc(k) + '" value="' + esc(valOf(k)) + '"' +
-      (tel ? ' inputmode="tel"' : num ? ' inputmode="decimal"' : '') + ' placeholder="' + esc(FIELDS[k] || k.replace('find.', '')) + '"' + boxAttrs(p) + ' style="font-size:' + boxSize(p) + 'px;text-align:' + (p.align || 'left') + '"></div></div>';
+    // round 7 (1): autofill fix C (Danny's Android test, 0.6.0): each value box sits in its own form with autocomplete off and has
+    // autocomplete one-time-code; the form takes no space (display:contents) and never submits (Enter is stopped, see below).
+    return '<div class="proof-cell"><div class="proof-face" style="align-items:' + va + '"><form class="proof-form" autocomplete="off" onsubmit="return false"><input class="proof-box" data-key="' + esc(k) + '" value="' + esc(valOf(k)) + '"' +
+      (tel ? ' inputmode="tel"' : num ? ' inputmode="decimal"' : '') + ' placeholder="' + esc(FIELDS[k] || k.replace('find.', '')) + '"' + boxAttrs(p) + ' style="font-size:' + boxSize(p) + 'px;text-align:' + (p.align || 'left') + '"></form></div></div>';
   } };
+  // Enter in a value box: never submit or reload (the form also says onsubmit return false); focus and caret stay
+  document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target && e.target.classList && e.target.classList.contains('proof-box')) e.preventDefault(); }, true);
+  document.addEventListener('submit', e => { if (e.target && e.target.classList && e.target.classList.contains('proof-form')) e.preventDefault(); }, true);
   // tapping the empty part of a tall box puts the cursor in it
   document.addEventListener('click', e => { const f = e.target && e.target.classList && e.target.classList.contains('proof-face') ? e.target : null; if (f && isLiveInteraction) { const i = f.querySelector('.proof-box'); if (i) i.focus(); } });
   // round 5 (3): keep the phone's autofill away: autocomplete off and a NEUTRAL name / id (a short code made from the cell Id;
   // words like phone, address or name make Chrome offer saved data), autocorrect and spellcheck off, capitals only where words are typed.
   function shortCode(t) { let h = 2166136261; for (let i = 0; i < t.length; i++) { h ^= t.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); }
   function boxAttrs(p) { const c = 'pcb-' + shortCode(p.proofId || p.proofKey || ''), words = /customer|address|name/.test(p.proofKey || '') && !/phone/.test(p.proofKey || '');
-    return ' id="' + c + '" name="' + c + '" autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="' + (words ? 'words' : 'off') + '" data-lpignore="true" data-form-type="other"'; }
+    return ' id="' + c + '" name="' + c + '" autocomplete="one-time-code" autocorrect="off" spellcheck="false" autocapitalize="' + (words ? 'words' : 'off') + '" data-lpignore="true" data-form-type="other"'; }
   window.EngineSlots['results'] = { render() { return '<div class="proof-results">' + resultsHtml() + '</div>'; } };
   function matches() {
     const q = ['find.name', 'find.address', 'find.phone'].map(k => find[k].trim().toLowerCase());
@@ -8400,7 +8406,7 @@ body.light-theme .proof-box{color:#0f172a}
     const refused = [], screens = { entry: 1 }, ids = {};
     rows = withBadgeRow(rows);   // round 6: tabs from 0.4.0 / 0.5.0 have no badge row: add one in memory (migration)
     rows.forEach(r => { const s = String(r['Screen'] || '').trim().toLowerCase(); if (s) screens[s] = 1; });
-    const out = []; const byRow = {}; let used = 0; const colW = {}, freezeOf = {};
+    const out = []; const byRow = {}; let used = 0; const colW = {}, freezeOf = {}, lineH = {}, warned = [];
     rows.forEach((r, i) => {
       const n = i + 2, g = c => String(r[c] == null ? '' : r[c]).trim();   // n = the row number on the tab (row 1 = headings)
       if (!COLS.slice(0, 8).some(c => g(c))) return;   // an empty row
@@ -8419,6 +8425,8 @@ body.light-theme .proof-box{color:#0f172a}
       if (minS !== '' && maxS !== '' && sizeOk(minS) && sizeOk(maxS) && Number(minS) > Number(maxS)) why.push('Min size ' + minS + ' is above Max size ' + maxS);
       if (cw !== '' && !(isFinite(Number(cw)) && Number(cw) >= 0.2 && Number(cw) <= 10)) why.push('Column width "' + cw + '" must be a number from 0.2 to 10');
       if (frz && frz !== 'yes' && frz !== 'no') why.push('Freeze "' + frz + '" must be yes or no');
+      const lh = g('Line height');   // round 7: the height share of the cell's LINE (stack); first row of the line that has it wins
+      if (lh !== '' && !(isFinite(Number(lh)) && Number(lh) >= 0.2 && Number(lh) <= 20)) why.push('Line height "' + lh + '" must be a number from 0.2 to 20');
       if (content === 'proof-badge' && vis === 'never') why.push('the version badge cannot be hidden');
       const press = g('Press style').toLowerCase();
       if (press && !PRESS[press]) why.push('Press style "' + press + '" must be one of: flash, stay, busy, none');
@@ -8450,6 +8458,9 @@ body.light-theme .proof-box{color:#0f172a}
       if (maxS !== '') cell.maxSize = Number(maxS);
       if (cw !== '' && colW[key + '\u0002' + ci] == null) colW[key + '\u0002' + ci] = Number(cw);   // first value in a column wins
       if (frz && freezeOf[key] == null) freezeOf[key] = frz;   // first value in a section wins
+      if (lh !== '') { const lk = key + '\u0002' + ci + '\u0002' + si, have = lineH[lk];
+        if (!have) lineH[lk] = { v: Number(lh), n };
+        else if (have.v !== Number(lh)) warned.push('Tab row ' + n + ': Line height ' + lh + ' not used (tab row ' + have.n + ' set this line to ' + have.v + ' first).'); }
       if (slot === 'box') { cell.slot = 'box'; cell.proofKey = content; cell.label = ''; }
       else if (slot === 'results') { cell.slot = 'results'; cell.label = ''; }
       else if (type === 'button') { cell.label = g('Label') || content; cell.clickAction = content; }
@@ -8461,8 +8472,13 @@ body.light-theme .proof-box{color:#0f172a}
     const state = { layoutVersion: 'proof-2', viewportWidth: 'auto', showWireframes: false, activeSelection: null, rows: out.map((R, ri) => {
       let tall = 0;
       const containers = num(R.cont).map(ci => {
-        const stacks = num(R.cont[ci]).map(si => { const cells = num(R.cont[ci][si]).map(pi => R.cont[ci][si][pi]); const big = cells.some(c => c.slot === 'results'); return { id: 'S' + si, weight: big ? 7 : 1, splits: cells }; });
-        tall = Math.max(tall, stacks.reduce((a, s) => a + (s.weight > 1 ? 330 : 50), 0));
+        const stacks = num(R.cont[ci]).map(si => { const cells = num(R.cont[ci][si]).map(pi => R.cont[ci][si][pi]); const big = cells.some(c => c.slot === 'results'); const lh = lineH[R.key + '\u0002' + ci + '\u0002' + si];
+          return { id: 'S' + si, weight: big ? 7 : (lh ? lh.v : 1), splits: cells, _big: big }; });
+        // section height: as before when a line holds the results list (330 + 50 per other line); otherwise the heaviest line gets
+        // 50 px and the others their share (round 7 'Line height'; all 1 = 50 per line, the old height)
+        const ws = stacks.map(s => s.weight), wMax = Math.max(...ws);
+        tall = Math.max(tall, stacks.some(s => s._big) ? stacks.reduce((a, s) => a + (s._big ? 330 : 50), 0) : Math.round(50 * ws.reduce((a, x) => a + x, 0) / wMax));
+        stacks.forEach(s => { delete s._big; });
         return { id: 'C' + ci, weight: colW[R.key + '\u0002' + ci] || 1, stacks };   // round 6: 'Column width' (default 1)
       });
       const row = { id: 'PR' + (ri + 1), name: R.name, heightPx: Math.max(56, tall), isAutoHeight: false, containers };
@@ -8471,7 +8487,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (R.screen === 'tray') row.isTray = true; else if (R.screen !== 'all') row.view = R.screen;
       return row;
     }) };
-    return { state, refused, used };
+    return { state, refused, used, warned };
   }
   function eachCell(state, fn) { (state.rows || []).forEach(r => (r.containers || []).forEach(c => (c.stacks || []).forEach(s => (s.splits || []).forEach(p => fn(p, r))))); }
   // Round 6 (4): the version badge is an ORDINARY cell: a layout-tab row (Id 'badge', Type button, Content proof-badge), by default
@@ -8549,7 +8565,7 @@ body.light-theme .proof-box{color:#0f172a}
       const g = await gviz(tab);
       if (!isRightTab(g.labels, tab)) throw Object.assign(new Error('missing'), { missing: true });
       if (!build(g.rows).used) throw Object.assign(new Error('empty'), { missing: true });
-      const known = COLS.concat(Object.keys(COLPROP), ['Icon', 'Press style', 'Min size', 'Max size', 'Column width', 'Freeze']);   // round 4: say so when the tab is newer than this page
+      const known = COLS.concat(Object.keys(COLPROP), ['Icon', 'Press style', 'Min size', 'Max size', 'Column width', 'Freeze', 'Line height']);   // round 4: say so when the tab is newer than this page
       const unknown = g.labels.filter(l => l && known.indexOf(l) < 0 && !/^Layout /i.test(l));
       if (unknown.length) notes.push('The tab has column(s) this page does not know: ' + unknown.join(', ') + '. This page may be out of date: tap Reload, or refresh the browser.');
       lsSet(K.layout(profile), { at: Date.now(), rows: g.rows });
@@ -8645,7 +8661,7 @@ body.light-theme .proof-box{color:#0f172a}
     try { renderCanvas(); if (wasEdit) syncInspectorUI(); } catch (e) {}
     applied = snapshot(); baseSig = structSig(engineState); lastL = L;
     info = { profile: L.profile, fellBack: L.profile !== wanted, rows: b.used, refused: b.refused.length, tweaks: nt, readAt: reason === 'clear' ? info.readAt : new Date(), source: L.source, sourceText: L.sourceText, tweaksFrom: T.from, pending: !!T.pending };
-    notes = n.concat(b.refused);
+    notes = n.concat(b.refused, b.warned || []);
     if (T.pending && T.rows.length) notes.push(T.rows.length + ' tweak(s) on this device are not saved to the sheet yet: press Save tweaks.');
     if (reason === 'reload') lastAction = 'Reloaded ' + hhmm() + ', ' + b.used + ' rows, ' + b.refused.length + ' refused, ' + nt + ' tweaks.';
     paintNotes(); if (barOpen) barSync();
@@ -8730,6 +8746,15 @@ body.light-theme .proof-box{color:#0f172a}
   window.EngineActions['proof-profile'] = () => { nextProfile(); };
   window.EngineActions['proof-badge'] = () => { if (staleV) reloadTo(staleV); };   // no newer version: nothing happens
   window.EngineActions['proof-adjust'] = () => { if (barOpen) closeBar(); else openBar(); };
+  // round 7 (3): Refresh page = reload the whole page past the browser's copy (new ?v=, other switches dropped). With unsaved
+  // tweaks the first tap only warns; a second tap within 5 s reloads anyway.
+  let refreshArmed = 0;
+  window.EngineActions['refresh-page'] = () => {
+    const unsaved = (info.readAt && changedFrom(applied).length) || structChanged() || pendingOnPhone();
+    if (unsaved && Date.now() - refreshArmed > 5000) { refreshArmed = Date.now(); say('Unsaved tweaks. Tap again to refresh anyway', 'warn', 5000); return; }
+    refreshArmed = 0;
+    runBusy('refresh-page', 'Refreshing...', () => { location.replace(location.pathname + '?v=' + encodeURIComponent(PROOF_VERSION) + '&t=' + Date.now()); return new Promise(() => {}); });
+  };
   // In Edit mode a tap selects a cell; the proof's tool buttons (Reload, Tools, Profile, Save, Clear) must still work there,
   // like the engine's own control cells do.
   { const hs = handleSplitClick; handleSplitClick = function (rIdx, cIdx, sIdx, pIdx, e) {
@@ -8944,6 +8969,10 @@ body.light-theme .proof-box{color:#0f172a}
       if (busy[a]) { const sp = btn.querySelector('span') || btn; if (!btn.dataset.orig) btn.dataset.orig = sp.textContent; sp.textContent = busy[a]; btn.classList.add('proof-busy'); }
       if (doneUntil[a] > Date.now()) btn.classList.add('proof-done');
     });
+    // round 7: a text cell with no text (e.g. hdr.spacer1 / hdr.spacer2) is drawn empty: no border, no box (still a cell: selectable in Adjust)
+    document.querySelectorAll('#viewport-canvas-frame .grid-split-partition').forEach(part => { const cell = cellOfPart(part); if (!cell) return;
+      const blank = cell.type === 'text' && !cell.slot && !String(cell.label == null ? '' : cell.label).trim() && !(cell.subLabel && cell.subLabel.enabled && cell.subLabel.text);
+      part.classList.toggle('proof-blank', blank); });
     badge(); stackFrozen();
   }
   // Round 6: the engine pins every frozen section at top: 0 (engine/12-borders-and-frozen-region.css:38, shared with the main
@@ -8965,7 +8994,7 @@ body.light-theme .proof-box{color:#0f172a}
       decorate(); setTimeout(() => document.querySelectorAll('#viewport-canvas-frame button.proof-done').forEach(b => b.classList.remove('proof-done')), 950);
     });
   }
-  const ASYNC = { 'reload-layout': 1, 'proof-save-tweaks': 1, 'proof-clear-tweaks': 1 };
+  const ASYNC = { 'reload-layout': 1, 'proof-save-tweaks': 1, 'proof-clear-tweaks': 1, 'refresh-page': 1 };   // these show their own busy look
   document.addEventListener('pointerdown', e => {
     const btn = e.target && e.target.closest && e.target.closest('button'); if (!btn) return;
     const part = btn.closest('.grid-split-partition'), style = part ? part.getAttribute('data-press') : 'flash';
@@ -9087,7 +9116,7 @@ body.light-theme .proof-box{color:#0f172a}
         ' autocomplete="' + (o.otc ? 'one-time-code' : 'off') + '" autocorrect="off" spellcheck="false" autocapitalize="off"' + (o.ro ? ' readonly data-ro="1"' : '') + '>';
       const face = '<div class="af-face">' + input + '</div>';
       return '<div class="af-row"><label for="' + id + '" class="af-label"><b>' + L + '</b> Phone</label>' + (o.otc ? '<form autocomplete="off" onsubmit="return false" class="af-form">' + face + '</form>' : face) + '</div>'; };
-    pg.innerHTML = '<h1>Autofill test (proof ' + PROOF_VERSION + ')</h1><p class="af-note">Tap each box. Does a saved phone or address bar appear? Tell Chat 03 the letters.</p>' +
+    pg.innerHTML = '<h1>Autofill test (proof ' + PROOF_VERSION + ')</h1><p class="af-note">Tap each box. Does a saved phone or address bar appear? Tell Chat 03 the letters.</p><p class="af-note af-chosen">C is the chosen fix (round 7: now on every value box of the real page).</p>' +
       ['A', 'B', 'C', 'D', 'E'].map(box).join('') + '<p class="af-key">A today\'s Phone box · B plain hint, normal keypad · C one-time-code in a form · D read-only until tapped · E B + C + D</p>' +
       '<p><a href="' + location.pathname + '">Back to the proof page</a></p>';
     document.body.appendChild(pg);
