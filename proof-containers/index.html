@@ -724,11 +724,17 @@
 .proof-results .proof-hit{display:block;width:100%;text-align:left;margin:0 0 6px;padding:8px 10px;border-radius:8px;border:1px solid #234d82;background:#0c1a2e;color:#e2e8f0;font-size:14px}
 .proof-results .proof-hit span{display:block;font-size:12px;color:#94a3b8}
 .proof-results .proof-empty{color:#fbbf24;font-size:13px;padding:6px 0}
-#proof-notes{position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(15,23,42,.94);color:#94a3b8;font:12px/1.35 system-ui,sans-serif;padding:5px 8px;border-top:1px solid #334155}
+#proof-notes{position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(15,23,42,.94);color:#94a3b8;font:12px/1.35 system-ui,sans-serif;padding:5px 8px;border-top:1px solid #334155;max-height:30vh;overflow:auto}
+#proof-notes b{color:#cbd5e1;font-weight:600}
+#proof-notes .proof-last{color:#fbbf24}
+#proof-save-now{margin:3px 0 1px;padding:5px 12px;border-radius:8px;border:1px solid #f59e0b;background:#78350f;color:#fff;font:600 13px system-ui,sans-serif}
+#proof-notes.small{max-height:1.5em;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+body.proof-typing #proof-notes{display:none}
+#viewport-outer-scroller{padding-bottom:70px}
 body.light-theme .proof-box{background:#fff;color:#0f172a}
 </style>
 </head>
-<body data-visitor-mode="1" class="flex flex-col antialiased select-none clean-preview-mode">
+<body class="flex flex-col antialiased select-none clean-preview-mode">
   <button id="reopen-inspector-fab" type="button" onclick="openInspectorWindow()" class="hidden fixed bottom-4 right-4 px-3 py-2 rounded-full bg-blue-600 hover:bg-blue-500 text-white border border-cyan-300 shadow-xl text-xs font-mono font-bold items-center gap-1.5 cursor-pointer" style="z-index:90;">⚙️ Open Inspector</button>
 
   <!-- Full-Screen Workspace Layout (All Tools Consolidated Inside Inspector Modal) -->
@@ -3467,7 +3473,7 @@ body.light-theme .proof-box{background:#fff;color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-1", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-2", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3477,7 +3483,7 @@ body.light-theme .proof-box{background:#fff;color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-1', stamp: '2026-11-20 21:27:34', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.2.0', stamp: '2026-11-20 23:40:43', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8111,25 +8117,33 @@ body.light-theme .proof-box{background:#fff;color:#0f172a}
     // =========================================================
     function syncLiveClass() { document.body.classList.toggle('live-mode', Boolean(isLiveInteraction) || IS_VISITOR_MODE); }
   </script>
-<script>window.PROOF_BUILTIN_CSV = "Screen,Row,Container,Stack,Cell,Weight,Type,Content,Slot,Font size,Align,Visible when,Label\r\nall,Header,1,1,1,1,button,set-view:entry,,12,center,always,Entry\r\nall,Header,1,1,2,1,button,set-view:report,,12,center,always,Report\r\nall,Header,2,1,1,1,logo,,,13,center,always,Proof page\r\nall,Header,3,1,1,1,button,set-view:find,,12,center,always,New call\r\nall,Header,3,1,2,1,button,set-view:find,,12,center,always,Find\r\nentry,Job details,1,1,1,1,text,JOB DETAILS,,13,left,always,\r\nentry,Job details,1,2,1,1,text,Date,,12,left,always,\r\nentry,Job details,1,2,2,2,text,f:date,box,14,left,always,\r\nentry,Job details,1,3,1,1,text,Customer,,12,left,always,\r\nentry,Job details,1,3,2,2,text,f:customer,box,14,left,always,\r\nentry,Job details,1,4,1,1,text,Address,,12,left,always,\r\nentry,Job details,1,4,2,2,text,f:address,box,14,left,always,\r\nentry,Job details,1,5,1,1,text,Phone,,12,left,always,\r\nentry,Job details,1,5,2,2,text,f:phone,box,14,left,always,\r\nentry,Job details,1,6,1,1,text,Condenser model,,12,left,always,\r\nentry,Job details,1,6,2,2,text,f:outdoorModel,box,14,left,always,\r\nentry,Job details,1,7,1,1,text,Suction pressure,,12,left,always,\r\nentry,Job details,1,7,2,2,text,f:suctionPressure,box,14,left,always,\r\nentry,Job details,1,8,1,0,text,BAD ROW on purpose (weight 0): the page refuses it and says so. Delete this row on the tab to clear the message.,,12,left,always,\r\nreport,Report,1,1,1,1,text,Report page (empty in this proof),,13,center,always,\r\nfind,Find the customer,1,1,1,3,text,Find the customer,,15,left,always,\r\nfind,Find the customer,1,1,2,1,button,set-view:entry,,12,center,always,Back\r\nfind,Find the customer,1,2,1,1,text,Name,,12,left,always,\r\nfind,Find the customer,1,2,2,3,text,find.name,box,14,left,always,\r\nfind,Find the customer,1,3,1,1,text,Address,,12,left,always,\r\nfind,Find the customer,1,3,2,3,text,find.address,box,14,left,always,\r\nfind,Find the customer,1,4,1,1,text,Phone,,12,left,always,\r\nfind,Find the customer,1,4,2,3,text,find.phone,box,14,left,always,\r\nfind,Find the customer,1,5,1,1,button,proof-find,,13,center,always,Find\r\nfind,Find the customer,1,5,2,1,button,proof-cancel,,13,center,always,Cancel\r\nfind,Find the customer,1,6,1,1,text,houses,results,13,left,always,\r\nfind,Find the customer,1,7,1,1,text,Each letter you type narrows the list. Tap a house to fill the call.,,11,left,always,\r\n";</script>
+<script>window.PROOF_BUILTIN_CSV = "Screen,Row,Container,Stack,Cell,Weight,Type,Content,Slot,Font size,Align,Visible when,Label,Id\nall,Header,1,1,1,1,button,set-view:entry,,12,center,always,Entry,hdr.entry\nall,Header,1,1,2,1,button,set-view:report,,12,center,always,Report,hdr.report\nall,Header,2,1,1,1,button,reload-layout,,12,center,always,Reload,hdr.reload\nall,Header,2,1,2,1,button,toggle-tray,,12,center,always,Tools,hdr.tools\nall,Header,3,1,1,1,button,set-view:find,,12,center,always,New call,hdr.newcall\nall,Header,3,1,2,1,button,set-view:find,,12,center,always,Find,hdr.find\ntray,Tools,1,1,1,2,button,proof-profile,,12,center,always,Profile,tools.profile\ntray,Tools,1,1,2,1,button,toggle-inspector,,12,center,always,Inspector,tools.inspector\ntray,Tools,1,1,3,1,button,toggle-live,,12,center,always,Edit,tools.mode\ntray,Tools,1,2,1,1,button,proof-save-tweaks,,12,center,always,Save tweaks,tools.save\ntray,Tools,1,2,2,1,button,proof-clear-tweaks,,12,center,always,Clear my tweaks,tools.clear\nentry,Job details,1,1,1,1,text,JOB DETAILS,,13,left,always,,job.title\nentry,Job details,1,2,1,1,text,Date,,12,left,always,,job.date.label\nentry,Job details,1,2,2,2,text,f:date,box,14,left,always,,job.date\nentry,Job details,1,3,1,1,text,Customer,,12,left,always,,job.customer.label\nentry,Job details,1,3,2,5,text,f:customer,box,14,left,always,,job.customer\nentry,Job details,1,4,1,1,text,Address,,12,left,always,,job.address.label\nentry,Job details,1,4,2,2,text,f:address,box,14,left,always,,job.address\nentry,Job details,1,5,1,1,text,Phone,,12,left,always,,job.phone.label\nentry,Job details,1,5,2,2,text,f:phone,box,14,left,always,,job.phone\nentry,Job details,1,6,1,1,text,Condenser model,,12,left,always,,job.model.label\nentry,Job details,1,6,2,2,text,f:outdoorModel,box,14,left,always,,job.model\nentry,Job details,1,7,1,1,text,Suction pressure,,12,left,always,,job.suction.label\nentry,Job details,1,7,2,2,text,f:suctionPressure,box,14,left,always,,job.suction\nentry,Job details,1,8,1,0,text,BAD ROW on purpose (weight 0): the page refuses it and says so. Delete this row on the tab to clear the message.,,12,left,always,,job.bad\nreport,Report,1,1,1,1,text,Report page (empty in this proof),,13,center,always,,report.text\nfind,Find the customer,1,1,1,3,text,Find the customer,,15,left,always,,find.title\nfind,Find the customer,1,1,2,1,button,set-view:entry,,12,center,always,Back,find.back\nfind,Find the customer,1,2,1,1,text,Name,,12,left,always,,find.name.label\nfind,Find the customer,1,2,2,3,text,find.name,box,14,left,always,,find.name\nfind,Find the customer,1,3,1,1,text,Address,,12,left,always,,find.address.label\nfind,Find the customer,1,3,2,3,text,find.address,box,14,left,always,,find.address\nfind,Find the customer,1,4,1,1,text,Phone,,12,left,always,,find.phone.label\nfind,Find the customer,1,4,2,3,text,find.phone,box,14,left,always,,find.phone\nfind,Find the customer,1,5,1,1,button,proof-find,,13,center,always,Find,find.find\nfind,Find the customer,1,5,2,1,button,proof-cancel,,13,center,always,Cancel,find.cancel\nfind,Find the customer,1,6,1,1,text,houses,results,13,left,always,,find.results\nfind,Find the customer,1,7,1,1,text,Each letter you type narrows the list. Tap a house to fill the call.,,11,left,always,,find.hint\n";</script>
 <script>
 // =====================================================================================================
-// PROOF PAGE (throwaway, Prompts no. 95). The layout engine draws the screens and the 'Find the customer' page from ROWS of a sheet tab
-// ('Layout test' of the test sheet 'PMI container proof (test)'), one row per cell. Fake data only. Not part of the PMI app.
-// What it adds to the engine, in a small way:
-//  - slot 'box': a REAL text box, bound to the call (f:date ...) or to the page store (find.name ...)
-//  - slot 'results': a list that is repainted ON ITS OWN while you type (never the whole page), so the phone keyboard stays up
-//  - button actions: set-view:<screen> (the engine's own), proof-find, proof-cancel
-//  - reading the tab: live (Google gviz JSONP), else the last good copy saved on this phone, else layout-test.csv next to this page,
-//    else a copy built into the page. A bad row is refused with a plain message; the rest is still drawn.
+// PROOF PAGE (throwaway sandbox). Round 1: Prompts no. 95. Round 2: Prompts no. 96. Read DESIGN.md first.
+// The layout engine draws the screens and the 'Find the customer' page from ROWS of a sheet tab, one row per cell.
+// Fake data only. Not part of the PMI app.
+// Round 2 adds: a Reload button (re-reads the tab and the tweaks without reloading the browser page), device PROFILES
+// (one layout tab each), the engine's own INSPECTOR in the page, SAVE TWEAKS (this device's changes go to the 'Tweaks'
+// tab through a small test Apps Script), tweaks applied over the profile's layout on every load, and the Find results
+// placed under the box being typed in.
+// Repaint rule (round 1, unchanged): renderCanvas is NEVER called while a text box has focus; typing repaints only the
+// results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8', TAB = 'Layout test';
-  const CACHE_KEY = 'proof-containers.layout.v1', CALL_KEY = 'proof-containers.call.v1';
+  const PROOF_VERSION = '0.2.0';
+  const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
+  const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
+  const PROFILES = ['phone', 'wide', 'android', 'iphone'];
+  const TAB_OF = p => 'Layout ' + p, TWEAKS_TAB = 'Tweaks';
+  const K = { call: 'proof-containers.call.v1', profile: 'proof-containers.profile.v1', device: 'proof-containers.device.v1',
+    tweaks: 'proof-containers.tweaks.v1', endpoint: 'proof-containers.endpoint.v1', layout: p => 'proof-containers.layout.v2.' + p };
   const FIELDS = { 'f:date': 'Date', 'f:customer': 'Customer', 'f:address': 'Address', 'f:phone': 'Phone', 'f:outdoorModel': 'Condenser model', 'f:suctionPressure': 'Suction pressure' };
   const FIND_KEYS = { 'find.name': 1, 'find.address': 1, 'find.phone': 1 };
   const TYPES = { button: 1, text: 1, logo: 1, badge: 1 };
-  const ACTIONS = { 'proof-find': 1, 'proof-cancel': 1 };
+  const TOOL_ACTIONS = { 'reload-layout': 1, 'proof-save-tweaks': 1, 'proof-clear-tweaks': 1, 'proof-profile': 1, 'toggle-tray': 1 };
+  const ACTIONS = Object.assign({ 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1 }, TOOL_ACTIONS);
+  const PROPS = ['weight', 'fontSize', 'label', 'align'];   // what a tweak can change (DESIGN.md)
   const HOUSES = [   // made-up places only
     { name: 'Test House 1', address: '123 Test St', phone: '555-0101' }, { name: 'Test House 2', address: '125 Test St', phone: '555-0102' },
     { name: 'Sample Condo A', address: '400 Sample Ave #12', phone: '555-0103' }, { name: 'Sample Condo B', address: '400 Sample Ave #14', phone: '555-0104' },
@@ -8137,12 +8151,33 @@ body.light-theme .proof-box{background:#fff;color:#0f172a}
     { name: 'Placeholder Villa', address: '5 Placeholder Ln', phone: '555-0107' }, { name: 'Mock Townhome', address: '31 Mock Ct', phone: '555-0108' }
   ];
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  let call = {}; try { call = JSON.parse(localStorage.getItem(CALL_KEY) || '{}') || {}; } catch (e) {}
+  const lsGet = (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } };
+  const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } };
+  const hhmm = d => { const x = d || new Date(), p = n => String(n).padStart(2, '0'); return p(x.getHours()) + ':' + p(x.getMinutes()); };
+  const isTyping = () => { const a = document.activeElement; return !!(a && a.classList && a.classList.contains('proof-box')); };
+
+  let call = lsGet(K.call, {}) || {};
   const find = { 'find.name': '', 'find.address': '', 'find.phone': '' };
   const valOf = k => (k in find ? find[k] : (call[k] || ''));
-  const notes = [];   // the small line at the bottom: where the layout came from, refused rows
 
-  // ---------- the two slots ----------
+  // ---------- this device's name (made once, remembered) ----------
+  function deviceName() {
+    let d = lsGet(K.device, '');
+    if (d && /^[A-Za-z0-9 ._-]{3,40}$/.test(d)) return d;
+    const ua = navigator.userAgent || '';
+    const os = /Android/.test(ua) ? 'Android' : /iPhone/.test(ua) ? 'iPhone' : /iPad/.test(ua) ? 'iPad' : /CrOS/.test(ua) ? 'ChromeOS' : /Windows/.test(ua) ? 'Windows' : /Macintosh/.test(ua) ? 'Mac' : /Linux/.test(ua) ? 'Linux' : 'Device';
+    const br = /SamsungBrowser/.test(ua) ? 'Samsung' : /EdgA?\//.test(ua) ? 'Edge' : /CriOS|Chrome\//.test(ua) ? 'Chrome' : /FxiOS|Firefox\//.test(ua) ? 'Firefox' : /Safari\//.test(ua) ? 'Safari' : 'Browser';
+    const rnd = Array.from(crypto.getRandomValues(new Uint8Array(2))).map(b => b.toString(16).padStart(2, '0')).join('');
+    d = os + ' ' + br + ' ' + rnd; lsSet(K.device, d); return d;
+  }
+  const DEVICE = deviceName();
+
+  // ---------- profile ----------
+  const chosenProfile = () => { const c = lsGet(K.profile, 'auto'); return PROFILES.indexOf(c) >= 0 ? c : 'auto'; };
+  const autoProfile = () => (window.innerWidth < 700 ? 'phone' : 'wide');
+  const wantedProfile = () => (chosenProfile() === 'auto' ? autoProfile() : chosenProfile());
+
+  // ---------- the slots ----------
   window.EngineSlots = window.EngineSlots || {};
   window.EngineSlots['box'] = { render(p) {
     const k = p.proofKey, tel = /phone/.test(k), num = /suction/i.test(k);
@@ -8160,38 +8195,64 @@ body.light-theme .proof-box{background:#fff;color:#0f172a}
     if (!m.length) return '<div class="proof-empty">No match. Change what you typed.</div>';
     return '<div class="proof-count">' + m.length + ' of ' + HOUSES.length + '</div>' + m.map(h => '<button type="button" class="proof-hit" data-i="' + HOUSES.indexOf(h) + '"><b>' + esc(h.name) + '</b><span>' + esc(h.address) + ' · ' + esc(h.phone) + '</span></button>').join('');
   }
-  // repaint ONLY the results cells (never renderCanvas while a box has focus: that would drop the keyboard)
   const paintResults = () => document.querySelectorAll('.proof-results').forEach(el => { el.innerHTML = resultsHtml(); });
-  window.__proofRepaints = 0;   // for the desktop test: how often the whole page was drawn
+  window.__proofRepaints = 0;
+  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; return rc.apply(this, arguments); }; }
 
   document.addEventListener('input', e => {
     const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b) return;
     const k = b.dataset.key;
     if (k in find) { find[k] = b.value; paintResults(); }
-    else { call[k] = b.value; try { localStorage.setItem(CALL_KEY, JSON.stringify(call)); } catch (x) {} }
+    else { call[k] = b.value; lsSet(K.call, call); }
   });
   document.addEventListener('click', e => {
     const h = e.target && e.target.closest && e.target.closest('.proof-hit'); if (!h) return;
     e.preventDefault(); e.stopPropagation();
     const x = HOUSES[+h.dataset.i]; if (!x) return;
-    call['f:customer'] = x.name; call['f:address'] = x.address; call['f:phone'] = x.phone;
-    try { localStorage.setItem(CALL_KEY, JSON.stringify(call)); } catch (y) {}
+    call['f:customer'] = x.name; call['f:address'] = x.address; call['f:phone'] = x.phone; lsSet(K.call, call);
     clearFind(); goView('entry');
   }, true);
   function clearFind() { Object.keys(find).forEach(k => { find[k] = ''; }); }
-  function goView(v) { try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (e) {} setView(v); }
-  window.EngineActions = window.EngineActions || {};
-  window.EngineActions['proof-find'] = () => { paintResults(); try { document.activeElement && document.activeElement.blur && document.activeElement.blur(); } catch (e) {} };
-  window.EngineActions['proof-cancel'] = () => { clearFind(); goView('entry'); };
-  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; return rc.apply(this, arguments); }; }
-  // the engine's set-view action: leaving Find clears it the same way Cancel does is NOT wanted (Back keeps what you typed), so nothing to add
+  function blurNow() { try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (e) {} }
+  function goView(v) { blurNow(); resetTypingOrder(); setView(v); }
 
-  // ---------- rows of the tab -> engine layout ----------
-  const COLS = ['Screen', 'Row', 'Container', 'Stack', 'Cell', 'Weight', 'Type', 'Content', 'Slot', 'Font size', 'Align', 'Visible when', 'Label'];
+  // ---------- results above the keyboard (item 6): while a Find box has focus, its results stack moves right under that box
+  // (CSS order only, nothing is redrawn, so the keyboard stays up) and the page scrolls that box to the top of what is visible.
+  function stacksOf(box) { const st = box.closest('.grid-stack-row'); const cont = st && st.parentElement; return st && cont ? { st, cont, all: Array.from(cont.children).filter(x => x.classList.contains('grid-stack-row')) } : null; }
+  function placeResultsUnder(box) {
+    const s = stacksOf(box); if (!s) return;
+    const res = s.cont.querySelector('.proof-results'); const rs = res && res.closest('.grid-stack-row'); if (!rs) return;
+    const at = s.all.indexOf(s.st);
+    s.all.forEach((x, i) => { x.style.order = String(i * 2); });
+    rs.style.order = String(at * 2 + 1);
+    document.body.classList.add('proof-typing');
+    scrollBoxToTop(box);
+  }
+  function scrollBoxToTop(box) {
+    const go = () => {
+      if (document.activeElement !== box) return;
+      const sticky = Array.from(document.querySelectorAll('.row-sticky')).reduce((m, el) => Math.max(m, el.getBoundingClientRect().bottom), 0);
+      const top = box.getBoundingClientRect().top, want = Math.max(0, sticky) + 6, dy = top - want;
+      if (Math.abs(dy) < 4) return;
+      const sc = document.getElementById('viewport-outer-scroller');
+      if (sc && sc.scrollHeight > sc.clientHeight + 2) sc.scrollTop += dy; else window.scrollBy(0, dy);
+    };
+    requestAnimationFrame(go); setTimeout(go, 350);   // again once the keyboard has opened
+  }
+  function resetTypingOrder() {
+    document.querySelectorAll('.grid-stack-row').forEach(x => { if (x.style.order) x.style.order = ''; });
+    document.body.classList.remove('proof-typing');
+  }
+  document.addEventListener('focusin', e => { const b = e.target; if (b && b.classList && b.classList.contains('proof-box') && b.dataset.key in find) placeResultsUnder(b); });
+  document.addEventListener('focusout', () => { setTimeout(() => { const a = document.activeElement; if (!(a && a.classList && a.classList.contains('proof-box') && a.dataset.key in find)) resetTypingOrder(); }, 300); });
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', () => { const a = document.activeElement; if (a && a.classList && a.classList.contains('proof-box') && a.dataset.key in find) scrollBoxToTop(a); });
+
+  // ---------- rows of a tab -> engine layout ----------
+  const COLS = ['Screen', 'Row', 'Container', 'Stack', 'Cell', 'Weight', 'Type', 'Content', 'Slot', 'Font size', 'Align', 'Visible when', 'Label', 'Id'];
   function build(rows) {
-    const refused = [], screens = {};
+    const refused = [], screens = { entry: 1 }, ids = {};
     rows.forEach(r => { const s = String(r['Screen'] || '').trim().toLowerCase(); if (s) screens[s] = 1; });
-    const out = []; const byRow = {};
+    const out = []; const byRow = {}; let used = 0;
     rows.forEach((r, i) => {
       const n = i + 2, g = c => String(r[c] == null ? '' : r[c]).trim();   // n = the row number on the tab (row 1 = headings)
       if (!COLS.slice(0, 8).some(c => g(c))) return;   // an empty row
@@ -8199,6 +8260,7 @@ body.light-theme .proof-box{background:#fff;color:#0f172a}
       const screen = g('Screen').toLowerCase(), rowName = g('Row'), ci = +g('Container'), si = +g('Stack'), pi = +g('Cell'), w = Number(g('Weight'));
       const type = g('Type').toLowerCase() || 'text', content = g('Content'), slot = g('Slot').toLowerCase(), fs = Number(g('Font size')) || 12, align = g('Align').toLowerCase() || 'center';
       const vis = g('Visible when').toLowerCase() || 'always';
+      const id = g('Id') || (screen + '/' + rowName + '/' + ci + '.' + si + '.' + pi);
       if (!screen) why.push('no Screen');
       if (!rowName) why.push('no Row');
       if (!(ci >= 1 && si >= 1 && pi >= 1 && Number.isInteger(ci) && Number.isInteger(si) && Number.isInteger(pi))) why.push('Container, Stack and Cell must be 1, 2, 3 ...');
@@ -8206,22 +8268,26 @@ body.light-theme .proof-box{background:#fff;color:#0f172a}
       if (!TYPES[type]) why.push('unknown Type "' + type + '"');
       if (slot && slot !== 'box' && slot !== 'results') why.push('unknown Slot "' + slot + '"');
       if (slot === 'box' && !FIELDS[content] && !FIND_KEYS[content]) why.push('unknown field "' + content + '"');
-      if (type === 'button') { const a = content; const ok = ACTIONS[a] || (/^set-view:/.test(a) && (screens[a.slice(9)] || a.slice(9) === 'entry')); if (!ok) why.push('unknown action "' + a + '"'); }
+      if (type === 'button') { const a = content; const ok = ACTIONS[a] || (/^set-view:/.test(a) && screens[a.slice(9)]); if (!ok) why.push('unknown action "' + a + '"'); }
       if (vis !== 'always' && vis !== 'never') why.push('Visible when must be always or never');
+      if (!/^[A-Za-z0-9 ._\/-]{1,80}$/.test(id)) why.push('the Id may hold only letters, digits, space . _ / - (80 at most)');
+      else if (ids[id]) why.push('the Id "' + id + '" is already used on tab row ' + ids[id]);
       if (why.length) { refused.push('Tab row ' + n + ' refused: ' + why.join(', ') + '.'); return; }
+      ids[id] = n;
       if (vis === 'never') return;
       const key = screen + '\u0001' + rowName;
       let R = byRow[key]; if (!R) { R = byRow[key] = { screen, name: rowName, cont: {} }; out.push(R); }
       const C = R.cont[ci] = R.cont[ci] || {}; const S = C[si] = C[si] || {};
-      const cell = { id: 'P' + pi, weight: w, type, fontSize: fs, align: align === 'left' || align === 'right' ? align : 'center', vAlign: 'center', nudgeX: 0, nudgeY: 0, isDisabled: false, wrap: true };
+      const cell = { id: 'P' + pi, proofId: id, weight: w, type, fontSize: fs, align: align === 'left' || align === 'right' ? align : 'center', vAlign: 'center', nudgeX: 0, nudgeY: 0, isDisabled: false, wrap: true };
       if (slot === 'box') { cell.slot = 'box'; cell.proofKey = content; cell.label = ''; }
       else if (slot === 'results') { cell.slot = 'results'; cell.label = ''; }
       else if (type === 'button') { cell.label = g('Label') || content; cell.clickAction = content; }
       else cell.label = type === 'logo' ? (g('Label') || content || 'Logo') : content;
-      if (S[pi]) refused.push('Tab row ' + n + ' refused: cell ' + ci + '.' + si + '.' + pi + ' of "' + rowName + '" is already used.'); else S[pi] = cell;
+      if (S[pi]) { refused.push('Tab row ' + n + ' refused: cell ' + ci + '.' + si + '.' + pi + ' of "' + rowName + '" is already used.'); delete ids[id]; }
+      else { S[pi] = cell; used++; }
     });
     const num = o => Object.keys(o).map(Number).sort((a, b) => a - b);
-    const state = { layoutVersion: 'proof-1', viewportWidth: 'auto', showWireframes: false, activeSelection: null, rows: out.map((R, ri) => {
+    const state = { layoutVersion: 'proof-2', viewportWidth: 'auto', showWireframes: false, activeSelection: null, rows: out.map((R, ri) => {
       let tall = 0;
       const containers = num(R.cont).map(ci => {
         const stacks = num(R.cont[ci]).map(si => { const cells = num(R.cont[ci][si]).map(pi => R.cont[ci][si][pi]); const big = cells.some(c => c.slot === 'results'); return { id: 'S' + si, weight: big ? 7 : 1, splits: cells }; });
@@ -8229,16 +8295,31 @@ body.light-theme .proof-box{background:#fff;color:#0f172a}
         return { id: 'C' + ci, weight: 1, stacks };
       });
       const row = { id: 'PR' + (ri + 1), name: R.name, heightPx: Math.max(56, tall), isAutoHeight: false, containers };
-      if (R.screen === 'all') row.sticky = true; else row.view = R.screen;
+      if (R.screen === 'all') row.sticky = true; else if (R.screen === 'tray') row.isTray = true; else row.view = R.screen;
       return row;
     }) };
-    return { state, refused };
+    return { state, refused, used };
   }
+  function eachCell(state, fn) { (state.rows || []).forEach(r => (r.containers || []).forEach(c => (c.stacks || []).forEach(s => (s.splits || []).forEach(p => fn(p, r))))); }
+  function propsOf(p) { return { weight: Number(p.weight) || 1, fontSize: Number(p.fontSize) || 12, label: p.slot || p.clickAction === 'proof-profile' ? null : String(p.label == null ? '' : p.label), align: p.align || 'center' }; }
 
-  // ---------- reading the tab ----------
-  function fromGviz(t) {   // Google's table: cols with labels, rows with c[].v
-    const labels = t.cols.map(c => String(c.label || '').trim());
-    return t.rows.map(r => { const o = {}; (r.c || []).forEach((c, i) => { o[labels[i]] = c == null ? '' : (c.f != null && typeof c.v !== 'number' ? c.f : c.v); }); return o; });
+  // ---------- reading: Google's gviz answer (JSONP, no key; needs the test sheet shared 'Anyone with the link: Viewer') ----------
+  function gviz(tab, timeoutMs) {
+    return new Promise((res, rej) => {
+      const cb = '__proofCb' + Date.now() + Math.floor(Math.random() * 1e6), s = document.createElement('script');
+      const t = setTimeout(() => { cleanup(); rej(new Error('no answer')); }, timeoutMs || 8000);
+      const cleanup = () => { clearTimeout(t); try { delete window[cb]; } catch (e) { window[cb] = undefined; } s.remove(); };
+      window[cb] = d => {
+        cleanup();
+        if (!(d && d.status === 'ok' && d.table)) return rej(new Error((d && d.errors && d.errors[0] && d.errors[0].detailed_message) || 'the sheet refused'));
+        const labels = d.table.cols.map(c => String(c.label || '').trim());
+        const rows = d.table.rows.map(r => { const o = {}; (r.c || []).forEach((c, i) => { o[labels[i]] = c == null ? '' : (c.f != null && typeof c.v !== 'number' ? c.f : c.v); }); return o; });
+        res({ labels, rows });
+      };
+      s.onerror = () => { cleanup(); rej(new Error('could not load')); };
+      s.src = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?headers=1&sheet=' + encodeURIComponent(tab) + '&tqx=responseHandler:' + cb + '&t=' + Date.now();
+      document.head.appendChild(s);
+    });
   }
   function fromCsv(text) {
     const lines = []; let row = [], f = '', q = false;
@@ -8249,38 +8330,217 @@ body.light-theme .proof-box{background:#fff;color:#0f172a}
     const head = (lines.shift() || []).map(s => s.trim());
     return lines.filter(l => l.some(x => x.trim())).map(l => { const o = {}; head.forEach((h, i) => { o[h] = l[i] == null ? '' : l[i]; }); return o; });
   }
-  function live(timeoutMs) {
-    return new Promise((res, rej) => {
-      const cb = '__proofCb' + Date.now(), s = document.createElement('script');
-      const t = setTimeout(() => { cleanup(); rej(new Error('no answer')); }, timeoutMs);
-      const cleanup = () => { clearTimeout(t); try { delete window[cb]; } catch (e) { window[cb] = undefined; } s.remove(); };
-      window[cb] = d => { cleanup(); if (d && d.status === 'ok' && d.table) res(fromGviz(d.table)); else rej(new Error((d && d.errors && d.errors[0] && d.errors[0].detailed_message) || 'the sheet refused')); };
-      s.onerror = () => { cleanup(); rej(new Error('could not load')); };
-      s.src = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?headers=1&sheet=' + encodeURIComponent(TAB) + '&tqx=responseHandler:' + cb + '&t=' + Date.now();
-      document.head.appendChild(s);
+  // Google answers with the FIRST tab when a tab name does not exist, so check we got the tab we asked for:
+  // a profile tab has an 'Id' column, and its column O heading is its own name.
+  function isRightTab(labels, tab) {
+    if (labels.indexOf(tab) >= 0) return true;
+    if (labels.indexOf('Id') < 0) return false;
+    return !labels.some(l => /^Layout /i.test(l) && l !== tab);
+  }
+
+  async function readLayout(profile, notes) {
+    const tab = TAB_OF(profile);
+    try {
+      const g = await gviz(tab);
+      if (!isRightTab(g.labels, tab)) throw Object.assign(new Error('missing'), { missing: true });
+      if (!build(g.rows).used) throw Object.assign(new Error('empty'), { missing: true });
+      lsSet(K.layout(profile), { at: Date.now(), rows: g.rows });
+      return { rows: g.rows, profile, source: 'live', sourceText: 'Layout read live from the tab "' + tab + '".' };
+    } catch (e) {
+      if (e.missing) {
+        if (profile !== 'phone') { notes.push('The tab "' + tab + '" is missing or empty: using "Layout phone".'); return readLayout('phone', notes); }
+        notes.push('The tab "Layout phone" is missing or empty.');
+      } else notes.push('Live read of "' + tab + '" failed (' + e.message + ').');
+    }
+    const c = lsGet(K.layout(profile), null);
+    if (c && Array.isArray(c.rows) && build(c.rows).used) return { rows: c.rows, profile, source: 'saved', sourceText: 'Using saved layout of "' + tab + '" (from ' + new Date(c.at).toLocaleString() + ').' };
+    try { const r = await fetch('layout-profiles.csv', { cache: 'no-store' }); if (r.ok) { const rows = fromCsv(await r.text()); if (build(rows).used) return { rows, profile, source: 'csv', sourceText: 'Using saved layout: layout-profiles.csv next to this page (not the live sheet).' }; } } catch (e) {}
+    return { rows: fromCsv(window.PROOF_BUILTIN_CSV || ''), profile, source: 'builtin', sourceText: 'Using saved layout: the copy built into this page (not the live sheet).' };
+  }
+
+  // ---------- tweaks: the 'Tweaks' tab (Device name, Profile, Cell id, Property, Value, Saved at; H1 'Save address', H2 the web app address)
+  let endpoint = lsGet(K.endpoint, '') || '';
+  async function readTweaks(profile, notes) {
+    let sheetRows = null, how = '';
+    try {
+      const g = await gviz(TWEAKS_TAB);
+      if (g.labels.indexOf('Device name') < 0) throw new Error('the tab "Tweaks" is missing');
+      const a = g.rows.map(r => String(r['Save address'] || '').trim()).find(x => /^https:\/\/script\.google(usercontent)?\.com\//.test(x));
+      if (a && a !== endpoint) { endpoint = a; lsSet(K.endpoint, a); }
+      sheetRows = g.rows.filter(r => String(r['Device name']).trim() === DEVICE).map(r => ({ profile: String(r['Profile']).trim(), cell: String(r['Cell id']).trim(), prop: String(r['Property']).trim(), value: r['Value'] == null ? '' : String(r['Value']) }));
+      how = 'sheet';
+    } catch (e) { notes.push('Tweaks not read from the sheet (' + e.message + ').'); }
+    if (endpoint) {   // the script's answer is fresher than Google's table, so use it when it works
+      try {
+        const r = await withTimeout(fetch(endpoint + '?token=' + TOKEN + '&device=' + encodeURIComponent(DEVICE) + '&t=' + Date.now()), 10000);
+        const d = JSON.parse(await r.text());
+        if (d && d.ok && Array.isArray(d.rows)) { sheetRows = d.rows.map(x => ({ profile: x.profile, cell: x.cell, prop: x.prop, value: String(x.value) })); how = 'script'; }
+      } catch (e) {}
+    }
+    const local = (lsGet(K.tweaks, {}) || {})[profile];
+    if (local && local.state === 'pending') return { rows: local.rows, from: 'device', pending: true };
+    if (sheetRows) return { rows: sheetRows.filter(r => r.profile === profile), from: how };
+    if (local) return { rows: local.rows, from: 'device' };
+    return { rows: [], from: 'none' };
+  }
+  function withTimeout(p, ms) { return Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error('no answer')), ms))]); }
+  function applyTweaks(state, rows, notes) {
+    const byId = {}; eachCell(state, p => { if (p.proofId) byId[p.proofId] = p; });
+    let n = 0;
+    rows.forEach(t => {
+      const p = byId[t.cell], v = t.value;
+      if (!p) { notes.push('Tweak for "' + t.cell + '" ignored: no such cell in this profile.'); return; }
+      if (t.prop === 'weight') { const w = Number(v); if (!(w > 0 && w <= 100)) return notes.push('Tweak ' + t.cell + ' weight "' + v + '" ignored: must be more than 0.'); p.weight = w; }
+      else if (t.prop === 'fontSize') { const f = Number(v); if (!(f >= 6 && f <= 48)) return notes.push('Tweak ' + t.cell + ' font size "' + v + '" ignored: must be 6 to 48.'); p.fontSize = f; }
+      else if (t.prop === 'align') { if (!/^(left|center|right)$/.test(v)) return notes.push('Tweak ' + t.cell + ' align "' + v + '" ignored.'); p.align = v; }
+      else if (t.prop === 'label') { if (p.slot || p.clickAction === 'proof-profile') return notes.push('Tweak ' + t.cell + ' label ignored: this cell has no label.'); p.label = v; }
+      else return notes.push('Tweak ' + t.cell + ' "' + t.prop + '" ignored: unknown property.');
+      n++;
     });
+    return n;
   }
-  function show(rows, source) {
-    const b = build(rows);
-    if (!b.state.rows.length) { notes.push('The layout had no usable rows.'); return false; }
-    engineState = b.state; currentView = 'entry';
-    try { renderCanvas(); } catch (e) {}
-    notes.push(source); b.refused.forEach(x => notes.push(x));
-    paintNotes(); return true;
+
+  // ---------- the page state ----------
+  let base = {};       // proofId -> props from the tab (before tweaks)
+  let applied = {};    // proofId -> props after tweaks (what was last loaded or saved)
+  let info = { profile: '', fellBack: false, rows: 0, refused: 0, tweaks: 0, readAt: null, source: '' };
+  let notes = [], lastAction = '';
+
+  function snapshot() { const m = {}; eachCell(engineState, p => { if (p.proofId) m[p.proofId] = propsOf(p); }); return m; }
+  function changedFrom(ref) {   // rows {cell, prop, value} where the page differs from ref
+    const out = [];
+    eachCell(engineState, p => {
+      const b = p.proofId && ref[p.proofId]; if (!b) return;
+      const c = propsOf(p);
+      PROPS.forEach(k => { if (c[k] == null || b[k] == null) return; if (String(c[k]) !== String(b[k])) out.push({ cell: p.proofId, prop: k, value: String(c[k]) }); });
+    });
+    return out;
   }
+
+  let waitingForBlur = null;
+  async function load(reason) {
+    if (isTyping()) {   // never redraw while a box has focus (the keyboard would close): do it once the box is left
+      if (!waitingForBlur) { waitingForBlur = () => { document.removeEventListener('focusout', waitingForBlur); waitingForBlur = null; setTimeout(() => load(reason), 0); }; document.addEventListener('focusout', waitingForBlur); }
+      return;
+    }
+    const n = [];
+    const wanted = wantedProfile();
+    const L = await readLayout(wanted, n);
+    const b = build(L.rows);
+    if (!b.state.rows.length) { n.push('The layout had no usable rows.'); notes = n; paintNotes(); return; }
+    base = {}; eachCell(b.state, p => { if (p.proofId) base[p.proofId] = propsOf(p); });
+    const T = await readTweaks(L.profile, n);
+    const nt = applyTweaks(b.state, T.rows, n);
+    eachCell(b.state, p => { if (p.clickAction === 'proof-profile') p.label = 'Profile: ' + L.profile + (chosenProfile() === 'auto' ? ' (auto)' : ''); });
+    if (isTyping()) { setTimeout(() => load(reason), 0); return; }   // the person started typing while we were reading: wait
+    const keepView = currentView, wasEdit = !isLiveInteraction;
+    engineState = b.state;
+    try { undoStack.length = 0; redoStack.length = 0; recordHistorySnapshot(); } catch (e) {}
+    try { updateHistoryButtons(); } catch (e) {}
+    currentView = b.state.rows.some(r => r.view === keepView) ? keepView : 'entry';
+    try { renderCanvas(); if (wasEdit) syncInspectorUI(); } catch (e) {}
+    applied = snapshot();
+    info = { profile: L.profile, fellBack: L.profile !== wanted, rows: b.used, refused: b.refused.length, tweaks: nt, readAt: new Date(), source: L.source, sourceText: L.sourceText, tweaksFrom: T.from, pending: !!T.pending };
+    notes = n.concat(b.refused);
+    if (T.pending) notes.push(T.rows.length + ' tweak(s) on this device are not saved to the sheet yet: press Save tweaks.');
+    if (reason === 'reload') lastAction = 'Reloaded ' + hhmm() + ', ' + b.used + ' rows, ' + b.refused.length + ' refused, ' + nt + ' tweaks.';
+    paintNotes();
+  }
+  function reload() {
+    const lost = changedFrom(applied).length;
+    return load('reload').then(() => { if (lost) { lastAction += ' ' + lost + ' unsaved inspector change(s) dropped.'; paintNotes(); } });
+  }
+
+  async function post(body) {
+    if (!endpoint) throw new Error('the sheet has no save address yet (Tweaks tab, cell H2)');
+    const r = await withTimeout(fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({ token: TOKEN, device: DEVICE, profile: info.profile }, body)) }), 15000);
+    let d; try { d = JSON.parse(await r.text()); } catch (e) { throw new Error('the script gave no clear answer'); }
+    if (!d || !d.ok) throw new Error((d && d.error) || 'refused');
+    return d;
+  }
+  function setLocal(profile, v) { const all = lsGet(K.tweaks, {}) || {}; if (v == null) delete all[profile]; else all[profile] = v; lsSet(K.tweaks, all); }
+  async function saveTweaks() {
+    const rows = changedFrom(base), profile = info.profile;
+    setLocal(profile, { rows, state: 'pending', at: Date.now() });
+    lastAction = 'Saving ' + rows.length + ' tweak(s) ...'; paintNotes();
+    try {
+      const d = await post({ op: 'replace', rows });
+      setLocal(profile, { rows, state: 'saved', at: Date.now() });
+      applied = snapshot(); info.tweaks = rows.length; info.pending = false;
+      notes = notes.filter(x => !/not saved to the sheet yet/.test(x));
+      lastAction = 'Saved ' + d.saved + ' tweak(s) to the sheet at ' + hhmm() + ' (' + DEVICE + ', profile ' + profile + '). Only weight, font size, label and alignment are saved.';
+    } catch (e) {
+      info.pending = true;
+      lastAction = 'NOT saved to the sheet: ' + e.message + '. The ' + rows.length + ' tweak(s) stay on this device and are used here; press Save tweaks again later.';
+    }
+    paintNotes();
+  }
+  async function clearTweaks() {
+    const profile = info.profile;
+    setLocal(profile, { rows: [], state: 'pending', at: Date.now() });
+    try { await post({ op: 'clear' }); setLocal(profile, null); lastAction = 'Cleared this device\'s tweaks for profile ' + profile + ' at ' + hhmm() + '.'; }
+    catch (e) { lastAction = 'Cleared on this device, NOT on the sheet: ' + e.message + '. Press Clear my tweaks again later.'; }
+    const keep = lastAction; await load('clear'); lastAction = keep; paintNotes();
+  }
+  function nextProfile() {
+    const order = ['auto'].concat(PROFILES), c = chosenProfile();
+    lsSet(K.profile, order[(order.indexOf(c) + 1) % order.length]);
+    return load('profile').then(() => { lastAction = 'Profile ' + (chosenProfile() === 'auto' ? 'auto (' + info.profile + ')' : info.profile) + ', remembered on this device.'; paintNotes(); });
+  }
+
+  // ---------- actions ----------
+  window.EngineActions = window.EngineActions || {};
+  window.EngineActions['proof-find'] = () => { paintResults(); blurNow(); };
+  window.EngineActions['proof-cancel'] = () => { clearFind(); goView('entry'); };
+  window.EngineActions['reload-layout'] = () => { reload(); };
+  window.EngineActions['proof-save-tweaks'] = () => { saveTweaks(); };
+  window.EngineActions['proof-clear-tweaks'] = () => { clearTweaks(); };
+  window.EngineActions['proof-profile'] = () => { nextProfile(); };
+  // In Edit mode a tap selects a cell; the proof's tool buttons (Reload, Tools, Profile, Save, Clear) must still work there,
+  // like the engine's own control cells do.
+  { const hs = handleSplitClick; handleSplitClick = function (rIdx, cIdx, sIdx, pIdx, e) {
+    if (!isLiveInteraction) {
+      const row = engineState.rows[rIdx], cell = row && row.containers[cIdx] && row.containers[cIdx].stacks[sIdx] && row.containers[cIdx].stacks[sIdx].splits[pIdx];
+      if (cell && TOOL_ACTIONS[cell.clickAction] && !(e && e.shiftKey)) {
+        if (e) e.stopPropagation();
+        if (cell.clickAction === 'toggle-tray') { toggleTray(); return; }
+        window.EngineActions[cell.clickAction](cell, row, e); return;
+      }
+    }
+    return hs.apply(this, arguments);
+  }; }
+
+  // Opening the inspector switches to Edit (so a tap selects a cell); closing it goes back to Live. On a phone it opens compact.
+  { const oi = openInspectorWindow, ci = closeInspectorWindow;
+    let firstOpen = true;
+    openInspectorWindow = function () { const r = oi.apply(this, arguments); if (isLiveInteraction) toggleInteractionState();
+      if (firstOpen) { firstOpen = false; try { setActiveInspectorTab('layout'); } catch (e) {} } return r; };
+    closeInspectorWindow = function () { const r = ci.apply(this, arguments); if (!isLiveInteraction) { toggleInteractionState(); } return r; }; }
+
+  // every inspector change ends in saveStateToStorage: count the changes not saved to the sheet yet and show it
+  { const ss = saveStateToStorage; let t = null; saveStateToStorage = function () { const r = ss.apply(this, arguments);
+      clearTimeout(t); t = setTimeout(() => { if (info.readAt) paintNotes(); }, 150); return r; }; }
+
+  // ---------- the bottom line ----------
   function paintNotes() {
-    let n = document.getElementById('proof-notes'); if (!n) { n = document.createElement('div'); n.id = 'proof-notes'; document.body.appendChild(n); }
-    n.innerHTML = notes.map(esc).join('<br>');
+    let n = document.getElementById('proof-notes');
+    if (!n) { n = document.createElement('div'); n.id = 'proof-notes'; n.title = 'Tap to make this smaller or bigger'; n.addEventListener('click', e => {
+      if (e.target && e.target.id === 'proof-save-now') { e.stopPropagation(); saveTweaks(); return; }   // the inspector can cover the Tools row on a phone
+      n.classList.toggle('small'); }); document.body.appendChild(n); }
+    const head = 'proof ' + PROOF_VERSION + ' · profile ' + (info.profile || '?') + (chosenProfile() === 'auto' ? ' (auto)' : '') + ' · ' + DEVICE +
+      ' · read ' + (info.readAt ? hhmm(info.readAt) : '-') + ' · ' + info.rows + ' rows, ' + info.refused + ' refused · ' + info.tweaks + ' tweaks applied' + (info.pending ? ' (not saved yet)' : '');
+    const unsaved = info.readAt ? changedFrom(applied).length : 0;
+    n.innerHTML = '<b>' + esc(head) + '</b>' + (unsaved ? '<br><span class="proof-last">' + unsaved + ' change(s) not saved yet.</span> <button type="button" id="proof-save-now">Save tweaks</button>' : '') + (info.sourceText ? '<br>' + esc(info.sourceText) : '') + (lastAction ? '<br><span class="proof-last">' + esc(lastAction) + '</span>' : '') + notes.map(x => '<br>' + esc(x)).join('');
   }
-  async function start() {
-    notes.length = 0;
-    try { const rows = await live(8000); try { localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), rows })); } catch (e) {} if (show(rows, 'Layout read live from the sheet tab "' + TAB + '".')) return; } catch (e) { notes.push('Live read failed (' + e.message + ').'); }
-    try { const c = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null'); if (c && Array.isArray(c.rows) && show(c.rows, 'Using saved layout (from ' + new Date(c.at).toLocaleString() + ').')) return; } catch (e) {}
-    try { const r = await fetch('layout-test.csv', { cache: 'no-store' }); if (r.ok && show(fromCsv(await r.text()), 'Using saved layout: layout-test.csv next to this page (not the live sheet).')) return; } catch (e) {}
-    show(fromCsv(window.PROOF_BUILTIN_CSV || ''), 'Using saved layout: the copy built into this page (not the live sheet).');
-  }
-  window.PMIProof = { build, fromCsv, start, HOUSES };
-  window.addEventListener('DOMContentLoaded', () => { setTimeout(start, 0); });
+
+  window.PMIProof = { build, fromCsv, load, reload, saveTweaks, clearTweaks, nextProfile, changedFrom: () => changedFrom(base), info: () => info, device: DEVICE, PROFILES, HOUSES, version: PROOF_VERSION };
+  window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+      try { if (window.innerWidth < 700) lastOpenInspectorState = 'compact'; if (inspectorWindowState !== 'closed') closeInspectorWindow(); } catch (e) {}   // the page opens in Live with the inspector shut
+      try { if (!isLiveInteraction) toggleInteractionState(); } catch (e) {}
+      load('start').then(() => { try { applyInspectorWindowUI(); } catch (e) {} });   // hides the engine's 'Open Inspector' button: the Tools row has one
+    }, 0);
+  });
 })();
 </script>
 
