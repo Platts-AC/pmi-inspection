@@ -776,8 +776,26 @@ button.proof-busy{opacity:.55;cursor:progress}
 button.proof-done{animation:proofDone .9s ease-out}
 @keyframes proofDone{0%{box-shadow:0 0 0 3px #34d399;border-color:#34d399}100%{box-shadow:none}}
 /* round 4 (9): version badge and stale-page bar */
-#proof-badge{position:fixed;top:2px;right:4px;z-index:80;font:600 10px/1.4 ui-monospace,monospace;color:#94a3b8;background:rgba(15,23,42,.85);border:1px solid #334155;border-radius:6px;padding:0 5px;pointer-events:none}
-#proof-stale{position:fixed;left:0;right:0;top:0;z-index:90;background:#78350f;color:#fff;border-bottom:2px solid #f59e0b;font:600 14px/1.3 system-ui,sans-serif;padding:12px 14px;text-align:center;cursor:pointer}
+#proof-badge{position:fixed;top:2px;z-index:80;font:600 10px/1.4 ui-monospace,monospace;color:#94a3b8;background:rgba(15,23,42,.85);border:1px solid #334155;border-radius:6px;padding:0 5px;margin:0;cursor:default;max-width:calc(100vw - 8px);white-space:nowrap;overflow:hidden}
+/* round 5 (2): the badge glows orange (calm pulse) when a newer version is published; tap = reload */
+#proof-badge.stale{color:#fff;background:#b45309;border-color:#f59e0b;cursor:pointer;animation:proofGlow 2.4s ease-in-out infinite}
+@keyframes proofGlow{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.0)}50%{box-shadow:0 0 10px 3px rgba(245,158,11,.75)}}
+#proof-badge.picked{outline:2px solid #22d3ee;outline-offset:1px}
+body.proof-adjusting #proof-badge{cursor:pointer}
+/* round 5 (4): one message line, pinned under the top buttons, kept on the visible screen */
+#proof-status{display:none;position:fixed;left:8px;right:8px;z-index:75;font:600 12px/20px system-ui,sans-serif;height:20px;padding:0 8px;border-radius:6px;background:rgba(15,23,42,.92);border:1px solid #334155;color:#cbd5e1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;text-align:center}
+#proof-status.done{color:#6ee7b7;border-color:#065f46}
+#proof-status.warn{color:#fde68a;border-color:#b45309}
+/* round 5 (1): minus | middle (real number big, change or 'default' small and grey; orange when changed) | plus */
+#proof-bar .pb-mid{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05;padding:2px 6px}
+#proof-bar .pb-mid .pb-num{font-size:18px}
+#proof-bar .pb-mid .pb-chg{font-size:11px;color:#94a3b8;font-weight:500}
+#proof-bar .pb-mid.changed{background:#7c2d12;border-color:#f97316}
+#proof-bar .pb-mid.changed .pb-chg{color:#fed7aa}
+#proof-bar.pb-change-only .pb-mid .pb-num{display:none}
+#proof-bar.pb-change-only .pb-mid .pb-chg{font-size:18px;color:inherit}
+#proof-bar .pb-dot{flex:0 0 44px;display:flex;align-items:center;justify-content:center;padding:0}
+#proof-bar .pb-dot i{display:block;width:12px;height:12px;border-radius:50%;background:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,.25)}
 body.light-theme .proof-face{background:#fff}
 body.light-theme .proof-box{color:#0f172a}
 </style>
@@ -3531,7 +3549,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.4.0', stamp: '{{STAMP}}', name: '{{BUILD_NAME}}' };
+    const ENGINE_BUILD = { version: 'proof-0.5.0', stamp: '{{STAMP}}', name: '{{BUILD_NAME}}' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8179,11 +8197,13 @@ body.light-theme .proof-box{color:#0f172a}
 // header buttons on one line, a phone Adjust bar, and a plain warning for inspector edits that Save tweaks does not keep.
 // Round 4: Done that works on phones, boxes and buttons fill their cell, the 16 px floor shown, align inside boxes, an instant
 // Clear mine, short bar messages, shared button feedback (+ 'Press style' column), a version badge and a stale-page check.
+// Round 5: middle reset button on number controls and a reset dot on choices, the version badge as an editable cell that glows
+// when stale (safe self-reload), autofill off on value boxes, one always-visible message line, plain names (Section, Column, Line, Cell).
 // Repaint rule (round 1, unchanged): renderCanvas is NEVER called while a text box has focus; typing repaints only the
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.4.0';
+  const PROOF_VERSION = '0.5.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8232,7 +8252,7 @@ body.light-theme .proof-box{color:#0f172a}
     else if (k === 'subLabelSize') sub(p).fontSize = Number(v);
     else if (k === 'subLabelPlace') { const s = sub(p); s.align = PLACES[v][0]; s.vAlign = PLACES[v][1]; }
   }
-  const noLabel = p => !!p.slot || p.clickAction === 'proof-profile';
+  const noLabel = p => !!p.slot || p.clickAction === 'proof-profile' || !!p.isBadge;
   const BOX_FLOOR = 16;   // typing boxes never go under 16 px: iPhone zooms the page into a smaller box
   const boxSize = p => Math.max(BOX_FLOOR, Number(p.fontSize) || 14);
   const PRESS = { flash: 1, stay: 1, busy: 1, none: 1 };   // round 4: the styles the CSS defines; the tab can only choose one
@@ -8281,10 +8301,15 @@ body.light-theme .proof-box{color:#0f172a}
     const k = p.proofKey, tel = /phone/.test(k), num = /suction/i.test(k);
     const va = p.vAlign === 'top' ? 'flex-start' : p.vAlign === 'bottom' ? 'flex-end' : 'center';
     return '<div class="proof-cell"><div class="proof-face" style="align-items:' + va + '"><input class="proof-box" data-key="' + esc(k) + '" value="' + esc(valOf(k)) + '"' +
-      (tel ? ' inputmode="tel"' : num ? ' inputmode="decimal"' : '') + ' placeholder="' + esc(FIELDS[k] || k.replace('find.', '')) + '" autocomplete="off" style="font-size:' + boxSize(p) + 'px;text-align:' + (p.align || 'left') + '"></div></div>';
+      (tel ? ' inputmode="tel"' : num ? ' inputmode="decimal"' : '') + ' placeholder="' + esc(FIELDS[k] || k.replace('find.', '')) + '"' + boxAttrs(p) + ' style="font-size:' + boxSize(p) + 'px;text-align:' + (p.align || 'left') + '"></div></div>';
   } };
   // tapping the empty part of a tall box puts the cursor in it
   document.addEventListener('click', e => { const f = e.target && e.target.classList && e.target.classList.contains('proof-face') ? e.target : null; if (f && isLiveInteraction) { const i = f.querySelector('.proof-box'); if (i) i.focus(); } });
+  // round 5 (3): keep the phone's autofill away: autocomplete off and a NEUTRAL name / id (a short code made from the cell Id;
+  // words like phone, address or name make Chrome offer saved data), autocorrect and spellcheck off, capitals only where words are typed.
+  function shortCode(t) { let h = 2166136261; for (let i = 0; i < t.length; i++) { h ^= t.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); }
+  function boxAttrs(p) { const c = 'pcb-' + shortCode(p.proofId || p.proofKey || ''), words = /customer|address|name/.test(p.proofKey || '') && !/phone/.test(p.proofKey || '');
+    return ' id="' + c + '" name="' + c + '" autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="' + (words ? 'words' : 'off') + '" data-lpignore="true" data-form-type="other"'; }
   window.EngineSlots['results'] = { render() { return '<div class="proof-results">' + resultsHtml() + '</div>'; } };
   function matches() {
     const q = ['find.name', 'find.address', 'find.phone'].map(k => find[k].trim().toLowerCase());
@@ -8352,13 +8377,21 @@ body.light-theme .proof-box{color:#0f172a}
   const COLS = ['Screen', 'Row', 'Container', 'Stack', 'Cell', 'Weight', 'Type', 'Content', 'Slot', 'Font size', 'Align', 'Visible when', 'Label', 'Id'];
   function build(rows) {
     const refused = [], screens = { entry: 1 }, ids = {};
-    rows.forEach(r => { const s = String(r['Screen'] || '').trim().toLowerCase(); if (s) screens[s] = 1; });
-    const out = []; const byRow = {}; let used = 0;
+    rows.forEach(r => { const s = String(r['Screen'] || '').trim().toLowerCase(); if (s && s !== 'badge') screens[s] = 1; });
+    const out = []; const byRow = {}; let used = 0, badgeRow = null;
     rows.forEach((r, i) => {
       const n = i + 2, g = c => String(r[c] == null ? '' : r[c]).trim();   // n = the row number on the tab (row 1 = headings)
       if (!COLS.slice(0, 8).some(c => g(c))) return;   // an empty row
       const why = [];
       const screen = g('Screen').toLowerCase(), rowName = g('Row'), ci = +g('Container'), si = +g('Stack'), pi = +g('Cell'), w = Number(g('Weight'));
+      if (screen === 'badge') {   // the version badge row (round 5): only Font size and Align count
+        const fsb = Number(g('Font size') || 10), alb = (g('Align') || 'right').toLowerCase();
+        if (!(fsb >= BADGE_MIN && fsb <= BADGE_MAX)) why.push('the badge Font size must be ' + BADGE_MIN + ' to ' + BADGE_MAX);
+        if (!/^(left|center|right)$/.test(alb)) why.push('the badge Align must be left, center or right');
+        if (g('Id') && g('Id') !== 'badge') why.push('the badge row Id must be badge');
+        if (why.length) { refused.push('Tab row ' + n + ' refused: ' + why.join(', ') + '.'); return; }
+        badgeRow = Object.assign(newBadge(), { fontSize: fsb, align: alb }); return;
+      }
       const type = g('Type').toLowerCase() || 'text', content = g('Content'), slot = g('Slot').toLowerCase(), fs = Number(g('Font size')) || 12, align = g('Align').toLowerCase() || 'center';
       const vis = g('Visible when').toLowerCase() || 'always';
       const extra = {};   // round 3 columns: missing column = the old default; a bad value refuses the row
@@ -8410,9 +8443,15 @@ body.light-theme .proof-box{color:#0f172a}
       if (R.screen === 'all') row.sticky = true; else if (R.screen === 'tray') row.isTray = true; else row.view = R.screen;
       return row;
     }) };
+    state.badge = badgeRow || newBadge();
     return { state, refused, used };
   }
-  function eachCell(state, fn) { (state.rows || []).forEach(r => (r.containers || []).forEach(c => (c.stacks || []).forEach(s => (s.splits || []).forEach(p => fn(p, r))))); }
+  function eachCell(state, fn) { (state.rows || []).forEach(r => (r.containers || []).forEach(c => (c.stacks || []).forEach(s => (s.splits || []).forEach(p => fn(p, r))))); if (state.badge) fn(state.badge, null); }
+  // round 5 (2c): the version badge is a cell of its own (Id 'badge'), kept beside the engine's rows (the engine never draws it).
+  // Optional layout-tab row: Screen 'badge', Id 'badge', Font size (9 to 24), Align (left / center / right = top left / middle / right).
+  // A tab without that row (every 0.4.0 tab) gets today's badge: top right, 10 px.
+  const BADGE_MIN = 9, BADGE_MAX = 24;
+  const newBadge = () => ({ proofId: 'badge', isBadge: true, fontSize: 10, align: 'right', weight: 1, label: '' });
   function propsOf(p) {   // every saveable property as text, engine defaults filled in (null = does not apply to this cell)
     const s = p.subLabel && typeof p.subLabel === 'object' ? p.subLabel : null;
     return { weight: String(Number(p.weight) || 1), fontSize: String(Number(p.fontSize) || 12), label: noLabel(p) ? null : String(p.label == null ? '' : p.label), align: p.align || 'center',
@@ -8522,6 +8561,7 @@ body.light-theme .proof-box{color:#0f172a}
       const p = byId[t.cell];
       if (!p) { notes.push('Tweak for "' + t.cell + '" ignored: no such cell in this profile.'); return; }
       if (!RULES[t.prop]) { notes.push('Tweak ' + t.cell + ' "' + t.prop + '" ignored: unknown property.'); return; }
+      if (p.isBadge && !((t.prop === 'fontSize' && Number(t.value) >= BADGE_MIN && Number(t.value) <= BADGE_MAX) || (t.prop === 'align' && /^(left|center|right)$/.test(t.value)))) { notes.push('Tweak badge ' + t.prop + ' "' + t.value + '" ignored: the badge takes only a text size of ' + BADGE_MIN + ' to ' + BADGE_MAX + ' and left, center or right.'); return; }
       if (propsOf(p)[t.prop] === null) { notes.push('Tweak ' + t.cell + ' ' + t.prop + ' ignored: this cell has no ' + t.prop + '.'); return; }
       const r = RULES[t.prop](t.value);
       if (r.err) { notes.push('Tweak ' + t.cell + ' ' + t.prop + ' "' + t.value + '" ignored: ' + r.err.replace(/^.*? must/, 'must') + '.'); return; }
@@ -8548,7 +8588,7 @@ body.light-theme .proof-box{color:#0f172a}
   }
 
   let waitingForBlur = null;
-  let lastL = null;   // the last layout read (rows + profile), so Clear mine can redraw at once without the network
+  let lastL = null, lastShort = '';   // the last layout read (rows + profile), so Clear mine can redraw at once without the network
   function selectedId() { const sel = engineState.activeSelection; if (!sel || sel.tier !== 'split') return ''; const p = engineState.rows[sel.rowIndex]?.containers[sel.containerIndex]?.stacks[sel.stackIndex]?.splits[sel.splitIndex]; return (p && p.proofId) || ''; }
   function reselect(id) { if (!id) return; engineState.rows.forEach((r, ri) => r.containers.forEach((c, ci) => c.stacks.forEach((st, si) => st.splits.forEach((x, pi) => { if (x.proofId === id) engineState.activeSelection = { rowIndex: ri, containerIndex: ci, stackIndex: si, splitIndex: pi, tier: 'split' }; })))); }
   function show(L, T, n, reason, wanted) {   // build the page from a layout read + tweak rows and draw it (no network)
@@ -8578,6 +8618,10 @@ body.light-theme .proof-box{color:#0f172a}
     }
     const n = [];
     const wanted = wantedProfile();
+    loading++;
+    try { await loadInner(n, wanted, reason); } finally { loading--; }
+  }
+  async function loadInner(n, wanted, reason) {
     const L = await readLayout(wanted, n);
     if (!build(L.rows).state.rows.length) { n.push('The layout had no usable rows.'); notes = n; paintNotes(); return; }
     const T = await readTweaks(L.profile, n);
@@ -8586,7 +8630,7 @@ body.light-theme .proof-box{color:#0f172a}
   }
   function reload() {
     const lost = changedFrom(applied).length;
-    return load('reload').then(() => { if (lost) { lastAction += ' ' + lost + ' unsaved inspector change(s) dropped.'; paintNotes(); } });
+    return load('reload').then(() => { lastShort = 'Reloaded ' + hhmm() + (lost ? ' · ' + lost + ' unsaved dropped' : ''); if (lost) { lastAction += ' ' + lost + ' unsaved inspector change(s) dropped.'; paintNotes(); } });
   }
 
   async function post(body) {
@@ -8620,14 +8664,14 @@ body.light-theme .proof-box{color:#0f172a}
     lastAction = 'Clearing this device\'s tweaks on the sheet ...';
     if (lastL && lastL.profile === profile) show(lastL, { rows: [], from: 'device' }, [], 'clear', wantedProfile());   // back to the tab on screen at once
     else await load('clear');
-    try { await post({ op: 'clear' }); setLocal(profile, null); lastAction = 'Cleared this device\'s tweaks for profile ' + profile + ' at ' + hhmm() + '.'; }
-    catch (e) { lastAction = 'Cleared on this device, NOT on the sheet: ' + e.message + '. Press Clear mine again later.'; }
+    try { await post({ op: 'clear' }); setLocal(profile, null); lastAction = 'Cleared this device\'s tweaks for profile ' + profile + ' at ' + hhmm() + '.'; lastShort = 'Cleared ' + hhmm(); }
+    catch (e) { lastAction = 'Cleared on this device, NOT on the sheet: ' + e.message + '. Press Clear mine again later.'; lastShort = 'Cleared here, NOT on the sheet'; }
     paintNotes(); if (barOpen) barStatus();
   }
   function nextProfile() {
     const order = ['auto'].concat(PROFILES), c = chosenProfile();
     lsSet(K.profile, order[(order.indexOf(c) + 1) % order.length]);
-    return load('profile').then(() => { lastAction = 'Profile ' + (chosenProfile() === 'auto' ? 'auto (' + info.profile + ')' : info.profile) + ', remembered on this device.'; paintNotes(); });
+    return load('profile').then(() => { lastAction = 'Profile ' + (chosenProfile() === 'auto' ? 'auto (' + info.profile + ')' : info.profile) + ', remembered on this device.'; paintNotes(); say('Profile ' + info.profile + (chosenProfile() === 'auto' ? ' (auto)' : ''), 'done'); });
   }
 
   // ---------- actions ----------
@@ -8650,6 +8694,7 @@ body.light-theme .proof-box{color:#0f172a}
         window.EngineActions[cell.clickAction](cell, row, e); return;
       }
     }
+    badgeSelected = false;
     const r = hs.apply(this, arguments);
     if (barOpen) { barSync(); keepSelectedVisible(); }
     return r;
@@ -8658,7 +8703,7 @@ body.light-theme .proof-box{color:#0f172a}
   // Opening the inspector switches to Edit (so a tap selects a cell); closing it goes back to Live. On a phone it opens compact.
   { const oi = openInspectorWindow, ci = closeInspectorWindow;
     let firstOpen = true;
-    openInspectorWindow = function () { if (barOpen) closeBar(true); const r = oi.apply(this, arguments); if (isLiveInteraction) toggleInteractionState();
+    openInspectorWindow = function () { if (barOpen) closeBar(true); const r = oi.apply(this, arguments); watchPlain(); if (isLiveInteraction) toggleInteractionState();
       if (firstOpen) { firstOpen = false; try { setActiveInspectorTab('layout'); } catch (e) {} } return r; };
     closeInspectorWindow = function () { const r = ci.apply(this, arguments); if (!isLiveInteraction) { toggleInteractionState(); } return r; }; }
 
@@ -8671,7 +8716,9 @@ body.light-theme .proof-box{color:#0f172a}
   // text is changed in place (no renderCanvas), so the phone keyboard stays up. The bar sits on the visible screen above the keyboard.
   let barOpen = false, barGroup = 'width', bar = null;
   const GROUPS = [['width', 'Width'], ['size', 'Size'], ['align', 'Align'], ['wrap', 'Wrap'], ['label', 'Label']];
+  let badgeSelected = false;
   function selCell() {
+    if (badgeSelected && engineState.badge) return engineState.badge;
     const sel = engineState.activeSelection; if (!sel || sel.tier !== 'split') return null;
     const p = engineState.rows[sel.rowIndex]?.containers[sel.containerIndex]?.stacks[sel.stackIndex]?.splits[sel.splitIndex];
     return p && p.proofId ? p : null;
@@ -8699,16 +8746,18 @@ body.light-theme .proof-box{color:#0f172a}
   function barAct(b) {
     const a = b.dataset.pb, p = selCell();
     if (a === 'close') return closeBar();
-    if (a === 'group') { barGroup = barGroup === b.dataset.g ? '' : b.dataset.g; return barSync(); }
+    if (a === 'group') { barGroup = b.dataset.g; return barSync(); }
     if (a === 'save') { commitLabel(); barBusy(b, 'Saving...'); return saveTweaks().then(r => { barBusy(b, null); barNote(r.short, r.ok ? 'done' : 'warn'); barSync(); }); }
     if (a === 'revert') { commitLabel(); lastAction = 'Reverted to the saved layout ' + hhmm() + '.'; barBusy(b, 'Reverting...'); return load('revert').then(() => { barBusy(b, null); barNote('Back to saved ' + hhmm(), 'done'); barSync(); }); }
     if (a === 'done') return labelDone();
     if (!p) return;
-    const box = p.slot === 'box';
+    const box = p.slot === 'box', lo = p.isBadge ? BADGE_MIN : box ? BOX_FLOOR : 6, hi = p.isBadge ? BADGE_MAX : 48;
+    if (a === 'mid') { const df = defOf(p); return edit(q => { if (barGroup === 'width') q.weight = Number(df.weight); else q.fontSize = Number(df.fontSize); }); }
+    if (a === 'dot') { const df = defOf(p), k = b.dataset.prop; return edit(q => setProp(q, k, df[k])); }
     if (a === 'w-') edit(q => { q.weight = Math.max(0.25, +((Number(q.weight) || 1) - 0.25).toFixed(2)); });
     if (a === 'w+') edit(q => { q.weight = Math.min(100, +((Number(q.weight) || 1) + 0.25).toFixed(2)); });
-    if (a === 's-') edit(q => { q.fontSize = box ? Math.max(BOX_FLOOR, boxSize(q) - 1) : Math.max(6, (Number(q.fontSize) || 12) - 1); });
-    if (a === 's+') edit(q => { q.fontSize = Math.min(48, (box ? boxSize(q) : (Number(q.fontSize) || 12)) + 1); });
+    if (a === 's-') edit(q => { q.fontSize = Math.max(lo, (box ? boxSize(q) : (Number(q.fontSize) || 12)) - 1); });
+    if (a === 's+') edit(q => { q.fontSize = Math.min(hi, (box ? boxSize(q) : (Number(q.fontSize) || 12)) + 1); });
     if (a === 'al') edit(q => { q.align = b.dataset.v; });
     if (a === 'wr') edit(q => { q.wrap = b.dataset.v === 'yes'; });
   }
@@ -8743,33 +8792,52 @@ body.light-theme .proof-box{color:#0f172a}
     makeBar(); barOpen = true; document.body.classList.add('proof-adjusting');
     try { if (inspectorWindowState !== 'closed') closeInspectorWindow(); } catch (e) {}
     if (isLiveInteraction) toggleInteractionState();
-    bar.style.display = 'block'; barSync(); placeBar(); decorate();
+    bar.style.display = 'block'; barSync(); placeBar(); decorate(); paintLine();
     lastAction = 'Adjust: tap a box, then pick Width, Size, Align, Wrap or Label.';
   }
   function closeBar(keepEdit) {
-    commitLabel(); barOpen = false; document.body.classList.remove('proof-adjusting');
+    commitLabel(); barOpen = false; badgeSelected = false; document.body.classList.remove('proof-adjusting');
     if (bar) bar.style.display = 'none';
     if (!keepEdit) { engineState.activeSelection = null; if (!isLiveInteraction) toggleInteractionState(); else renderCanvas(); }
-    decorate();
+    decorate(); paintLine();
     paintNotes();
   }
+  // Round 5 (1): number controls are minus | MIDDLE | plus. The middle shows the real number big and, small and grey, the change
+  // from the default ('+2', '-0.5') or 'default'; orange when changed; a tap puts the default back. DEFAULT = the value the layout
+  // tab gives this cell (the build fills the engine's own default when the tab cell is empty: weight from the Weight column,
+  // text size 12, align center). Value boxes show at least 16 px; their default is shown the same way (max(16, tab size)).
+  // MID_STYLE 'change' (Option B, show only the change) is the ONE place to switch: it puts the class pb-change-only on the bar.
+  const MID_STYLE = 'number';
+  const fmtNum = v => String(+Number(v).toFixed(2));
+  const fmtChg = d => (d > 0 ? '+' : d < 0 ? '-' : '') + fmtNum(Math.abs(d));
+  function defOf(p) { return base[p.proofId] || propsOf(p); }
+  function midHtml(minus, plus, cur, def, minusOff, plusOff) {
+    const d = +(Number(cur) - Number(def)).toFixed(2), changed = d !== 0;
+    return '<button type="button" data-pb="' + minus + '"' + (minusOff ? ' disabled' : '') + '>−</button>' +
+      '<button type="button" data-pb="mid" class="pb-mid' + (changed ? ' changed' : '') + '" title="Back to the default (' + fmtNum(def) + ')"><b class="pb-num">' + fmtNum(cur) + '</b><small class="pb-chg">' + (changed ? fmtChg(d) : 'default') + '</small></button>' +
+      '<button type="button" data-pb="' + plus + '"' + (plusOff ? ' disabled' : '') + '>+</button>';
+  }
+  const dotHtml = prop => '<button type="button" data-pb="dot" data-prop="' + prop + '" class="pb-dot" title="Back to the sheet\'s choice" aria-label="Back to the sheet\'s choice"><i></i></button>';
   function barSync() {
     if (!bar || !barOpen) return;
-    const p = selCell(), pr = p ? propsOf(p) : null;
-    document.getElementById('pb-sel').textContent = p ? 'Selected: ' + p.proofId + (p.label && !p.slot ? ' (' + p.label + ')' : '') : 'Tap a box to adjust it';
-    bar.querySelectorAll('[data-pb="group"]').forEach(b => b.classList.toggle('on', b.dataset.g === barGroup));
+    bar.classList.toggle('pb-change-only', MID_STYLE === 'change');
+    const p = selCell(), pr = p ? propsOf(p) : null, df = p ? defOf(p) : null, isB = !!(p && p.isBadge);
+    document.getElementById('pb-sel').textContent = !p ? 'Tap a box to adjust it' : isB ? 'Selected: version badge' : 'Selected: ' + p.proofId + (p.label && !p.slot ? ' (' + p.label + ')' : '');
+    if (isB && !/^(size|align)$/.test(barGroup)) barGroup = 'size';
+    bar.querySelectorAll('[data-pb="group"]').forEach(b => { b.classList.toggle('on', b.dataset.g === barGroup); b.disabled = isB && !/^(size|align)$/.test(b.dataset.g); });
     const boxCell = p && p.slot === 'box', size = p ? (boxCell ? boxSize(p) : Number(p.fontSize) || 12) : 0;
+    const lo = isB ? BADGE_MIN : boxCell ? BOX_FLOOR : 6, hi = isB ? BADGE_MAX : 48;
     const body = document.getElementById('pb-body');
     if (!p) body.innerHTML = '<div class="pb-hint">Tap any box, label or button on the page.</div>';
     else if (!barGroup) body.innerHTML = '<div class="pb-hint">Pick Width, Size, Align, Wrap or Label.</div>';
-    else if (barGroup === 'width') body.innerHTML = '<button type="button" data-pb="w-">−</button><span class="pb-val">Width ' + pr.weight + '</span><button type="button" data-pb="w+">+</button>';
-    else if (barGroup === 'size') body.innerHTML = '<button type="button" data-pb="s-"' + ((boxCell ? size <= BOX_FLOOR : size <= 6) ? ' disabled' : '') + '>−</button><span class="pb-val">Text ' + size + (boxCell ? ' · ' + BOX_FLOOR + ' min' : '') + '</span><button type="button" data-pb="s+"' + (size >= 48 ? ' disabled' : '') + '>+</button>';
-    else if (barGroup === 'align') body.innerHTML = ['left', 'center', 'right'].map(v => '<button type="button" data-pb="al" data-v="' + v + '" class="' + (pr.align === v ? 'on' : '') + '">' + v[0].toUpperCase() + '</button>').join('');
-    else if (barGroup === 'wrap') body.innerHTML = pr.wrap === null ? '<div class="pb-hint">A text box has no wrap.</div>' : ['yes', 'no'].map(v => '<button type="button" data-pb="wr" data-v="' + v + '" class="' + (pr.wrap === v ? 'on' : '') + '">' + (v === 'yes' ? 'Wrap on' : 'Wrap off') + '</button>').join('');
+    else if (barGroup === 'width') body.innerHTML = midHtml('w-', 'w+', pr.weight, df.weight, Number(pr.weight) <= 0.25, Number(pr.weight) >= 100);
+    else if (barGroup === 'size') body.innerHTML = midHtml('s-', 's+', size, boxCell ? Math.max(BOX_FLOOR, Number(df.fontSize)) : df.fontSize, size <= lo, size >= hi);
+    else if (barGroup === 'align') body.innerHTML = ['left', 'center', 'right'].map(v => '<button type="button" data-pb="al" data-v="' + v + '" class="' + (pr.align === v ? 'on' : '') + '">' + v[0].toUpperCase() + '</button>').join('') + (pr.align !== df.align ? dotHtml('align') : '');
+    else if (barGroup === 'wrap') body.innerHTML = pr.wrap === null ? '<div class="pb-hint">A value box has no wrap.</div>' : ['yes', 'no'].map(v => '<button type="button" data-pb="wr" data-v="' + v + '" class="' + (pr.wrap === v ? 'on' : '') + '">' + (v === 'yes' ? 'Wrap on' : 'Wrap off') + '</button>').join('') + (pr.wrap !== df.wrap ? dotHtml('wrap') : '');
     else if (barGroup === 'label') {
       const cur = document.getElementById('pb-label');
       if (cur && document.activeElement === cur) { barStatus(); return; }   // never rebuild the box being typed in
-      body.innerHTML = pr.label === null ? '<div class="pb-hint">This cell has no label.</div>' : '<input id="pb-label" type="text" autocomplete="off" value="' + esc(pr.label) + '"><button type="button" data-pb="done">Done</button>';
+      body.innerHTML = pr.label === null ? '<div class="pb-hint">This one has no label.</div>' : '<input id="pb-label" type="text" autocomplete="off" autocorrect="off" spellcheck="false" value="' + esc(pr.label) + '"><button type="button" data-pb="done">Done</button>';
     }
     barStatus(); placeBar();
   }
@@ -8822,11 +8890,13 @@ body.light-theme .proof-box{color:#0f172a}
       if (busy[a]) { const sp = btn.querySelector('span') || btn; if (!btn.dataset.orig) btn.dataset.orig = sp.textContent; sp.textContent = busy[a]; btn.classList.add('proof-busy'); }
       if (doneUntil[a] > Date.now()) btn.classList.add('proof-done');
     });
+    badge();
   }
   function runBusy(action, label, fn) {
     if (busy[action]) return Promise.resolve();   // a second tap while it runs does nothing
-    busy[action] = label; decorate();
-    return Promise.resolve().then(fn).catch(() => {}).then(() => {
+    busy[action] = label; decorate(); say(label, '', 30000);
+    return Promise.resolve().then(fn).catch(() => {}).then(res => {
+      const msg = (res && res.short) || lastShort || 'Done'; say(msg, (res && res.ok === false) || /not saved|NOT/.test(msg) ? 'warn' : 'done'); lastShort = '';
       delete busy[action]; doneUntil[action] = Date.now() + 900;
       document.querySelectorAll('#viewport-canvas-frame button.proof-busy').forEach(btn => { const sp = btn.querySelector('span') || btn; if (btn.dataset.orig != null) sp.textContent = btn.dataset.orig; delete btn.dataset.orig; btn.classList.remove('proof-busy'); });
       decorate(); setTimeout(() => document.querySelectorAll('#viewport-canvas-frame button.proof-done').forEach(b => b.classList.remove('proof-done')), 950);
@@ -8844,20 +8914,104 @@ body.light-theme .proof-box{color:#0f172a}
     if (style === 'busy' && !ASYNC[cell.clickAction]) runBusy(cell.clickAction, 'Working...', () => new Promise(r => setTimeout(r, 400)));   // a quick action asked to look busy
   }, true);
 
-  // ---------- VERSION BADGE AND STALE-PAGE CHECK (round 4, item 9) ----------
+  // ---------- MESSAGE LINE (round 5, item 4): every button message in ONE line that stays in view ----------
+  // Inside the Adjust bar when it is open; otherwise a thin line pinned just under the top buttons, placed against the VISIBLE
+  // screen (visualViewport) so the keyboard can never hide it. One line; a newer message replaces the older one.
+  let lineMsg = null;
+  function say(text, kind, ms) {
+    lineMsg = { text: String(text), kind: kind || '', until: ms === 0 ? Infinity : Date.now() + (ms || 6000) };
+    if (barOpen) { barNote(text, kind === 'warn' ? 'warn' : 'done'); paintLine(); return; }
+    paintLine(); setTimeout(paintLine, (ms || 6000) + 50);
+  }
+  function lineText() { if (lineMsg && lineMsg.until > Date.now()) return lineMsg; if (staleV) return { text: 'A newer version is available (' + staleV + '): tap the badge', kind: 'warn' }; return null; }
+  function paintLine() {
+    let e = document.getElementById('proof-status');
+    if (!e) { e = document.createElement('div'); e.id = 'proof-status'; e.setAttribute('role', 'status'); document.body.appendChild(e); }
+    const m = lineText();
+    if (!m || barOpen) { e.style.display = 'none'; return; }
+    e.textContent = m.text; e.className = m.kind === 'warn' ? 'warn' : m.kind === 'done' ? 'done' : ''; e.style.display = 'block';
+    placeLine();
+  }
+  function placeLine() {
+    const e = document.getElementById('proof-status'); if (!e || e.style.display === 'none') return;
+    const vv = window.visualViewport, vvTop = vv ? vv.offsetTop : 0, vvBottom = vv ? vv.offsetTop + vv.height : innerHeight;
+    const head = Array.from(document.querySelectorAll('#viewport-canvas-frame .row-sticky')).reduce((m, x) => Math.max(m, x.getBoundingClientRect().bottom), 0);
+    const h = e.offsetHeight || 22;
+    e.style.top = Math.round(Math.min(Math.max(head + 2, vvTop + 2), vvBottom - h - 2)) + 'px';
+  }
+  if (window.visualViewport) { visualViewport.addEventListener('resize', placeLine); visualViewport.addEventListener('scroll', placeLine); }
+  window.addEventListener('scroll', placeLine, true); window.addEventListener('resize', placeLine);
+
+  // ---------- VERSION BADGE (round 4 item 9; round 5 item 2) ----------
+  // The badge glows orange when version.json is newer than this page; a tap reloads with ?v=. The page reloads ITSELF only when it
+  // is safe (nothing unsaved or waiting on the phone, no box or label being typed in, Adjust bar and inspector shut, no sheet call
+  // running), and only once per new version (so a cached old page cannot loop); otherwise it only glows. Checked on open, when
+  // the page is shown again, when the phone comes back online and every 2 minutes (the main app checks at the same moments,
+  // but never reloads by itself: it asks Reload / Not now). The round 4 orange bar is replaced by the glowing badge + the message line.
   const PRETEND = (() => { const v = new URLSearchParams(location.search).get('pretend'); return v && /^\d+\.\d+\.\d+$/.test(v) ? v : ''; })();   // test switch: act like an older page
   const newer = (a, b) => { const x = a.split('.').map(Number), y = b.split('.').map(Number); for (let i = 0; i < 3; i++) { if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0); } return false; };
-  function badge() { let e = document.getElementById('proof-badge'); if (!e) { e = document.createElement('div'); e.id = 'proof-badge'; document.body.appendChild(e); } e.textContent = 'v' + PROOF_VERSION + (PRETEND ? ' (acting as ' + PRETEND + ')' : ''); }
-  async function staleCheck() {
+  let staleV = '', loading = 0;
+  function badge() {
+    let e = document.getElementById('proof-badge');
+    if (!e) { e = document.createElement('button'); e.type = 'button'; e.id = 'proof-badge'; document.body.appendChild(e);
+      e.addEventListener('click', ev => { ev.stopPropagation();
+        if (barOpen) { badgeSelected = true; engineState.activeSelection = null; renderCanvas(); barSync(); return; }
+        if (staleV) reloadTo(staleV); }); }
+    const bd = (engineState && engineState.badge) || newBadge(), fs = Math.min(BADGE_MAX, Math.max(BADGE_MIN, Number(bd.fontSize) || 10));
+    e.textContent = 'v' + PROOF_VERSION + (PRETEND ? ' (acting as ' + PRETEND + ')' : '');
+    e.style.fontSize = fs + 'px';
+    e.style.left = bd.align === 'left' ? '4px' : bd.align === 'center' ? '50%' : 'auto';
+    e.style.right = bd.align === 'right' || !bd.align ? '4px' : 'auto';
+    e.style.transform = bd.align === 'center' ? 'translateX(-50%)' : 'none';
+    e.classList.toggle('stale', !!staleV); e.classList.toggle('picked', barOpen && badgeSelected);
+    e.title = staleV ? 'A newer version (' + staleV + ') is available: tap to reload' : 'Version ' + PROOF_VERSION;
+  }
+  function reloadTo(v) { say('Reloading the newer version (' + v + ')...', 'warn'); location.replace(location.pathname + '?v=' + encodeURIComponent(v) + '&t=' + Date.now()); }
+  function pendingOnPhone() { const t = lsGet(K.tweaks, {}) || {}; return Object.keys(t).some(k => t[k] && t[k].state === 'pending'); }
+  function whyNotSafe() {
+    if (info.readAt && changedFrom(applied).length) return 'changes not saved yet';
+    if (structChanged()) return 'changes not saved yet';
+    if (pendingOnPhone()) return 'tweaks waiting to be saved';
+    const a = document.activeElement; if (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) return 'a box is in use';
+    if (barOpen) return 'the Adjust bar is open';
+    try { if (inspectorWindowState !== 'closed') return 'the inspector is open'; } catch (e) {}
+    if (Object.keys(busy).length || loading) return 'the page is busy';
+    return '';
+  }
+  let lastCheck = 0;
+  async function checkVersion(auto) {
+    if (auto && Date.now() - lastCheck < 1500) return; lastCheck = Date.now();
     try {
       const r = await fetch('version.json?t=' + Date.now(), { cache: 'no-store' }); if (!r.ok) return;
-      const j = await r.json(), v = String(j && j.version || '');
-      if (!/^\d+\.\d+\.\d+$/.test(v) || !newer(v, PRETEND || PROOF_VERSION)) return;
-      let bar = document.getElementById('proof-stale');
-      if (!bar) { bar = document.createElement('div'); bar.id = 'proof-stale'; bar.setAttribute('role', 'button'); document.body.appendChild(bar);
-        bar.addEventListener('click', () => { bar.textContent = 'Reloading...'; location.replace(location.pathname + '?v=' + encodeURIComponent(v) + '&t=' + Date.now()); }); }
-      bar.textContent = 'A newer version is available (' + v + '). Tap to reload';
+      const j = await r.json(), v = String(j && j.version || '').trim();
+      staleV = /^\d+\.\d+\.\d+$/.test(v) && newer(v, PRETEND || PROOF_VERSION) ? v : '';
+      badge(); paintLine();
+      if (!staleV) return;
+      let done = ''; try { done = sessionStorage.getItem('proof-containers.autoreload') || ''; } catch (e) {}
+      const why = whyNotSafe();
+      if (!why && done !== v) { try { sessionStorage.setItem('proof-containers.autoreload', v); } catch (e) {} reloadTo(v); return; }
+      say('A newer version is available (' + v + '): tap the badge', 'warn', 0);   // one short line; the reason goes to the bottom notes
+      lastAction = 'A newer version (' + v + ') is published. Tap the glowing badge to reload.' + (why ? ' Not reloading by itself: ' + why + '.' : ''); paintNotes();
     } catch (e) {}
+  }
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) checkVersion(true); });
+  window.addEventListener('online', () => checkVersion(true));
+  setInterval(() => { if (!document.hidden) checkVersion(true); }, 120000);
+
+  // ---------- PLAIN NAMES (round 5, item 5): display words only; ids, sheet columns, tweak names and the engine are unchanged ----------
+  // Row -> Section, Container -> Column, Stack -> Line, Split -> Cell, in the Advanced inspector (watched as it changes).
+  const PLAIN = { row: 'section', rows: 'sections', container: 'column', containers: 'columns', stack: 'line', stacks: 'lines', split: 'cell', splits: 'cells' };
+  const plainWord = w => { const t = PLAIN[w.toLowerCase()]; if (!t) return w; if (w === w.toUpperCase()) return t.toUpperCase(); if (w[0] === w[0].toUpperCase()) return t[0].toUpperCase() + t.slice(1); return t; };
+  const PLAIN_RE = /\b(rows?|containers?|stacks?|splits?)\b/gi;
+  function plainTexts(root) {
+    if (!root) return;
+    const tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n;
+    while ((n = tw.nextNode())) { const v = n.nodeValue; if (v && PLAIN_RE.test(v)) { PLAIN_RE.lastIndex = 0; const nv = v.replace(PLAIN_RE, plainWord); if (nv !== v) n.nodeValue = nv; } PLAIN_RE.lastIndex = 0; }
+  }
+  function watchPlain() {
+    const w = document.getElementById('inspector-window'); if (!w || w.__plain) return; w.__plain = true;
+    plainTexts(w);
+    let q = false; new MutationObserver(() => { if (q) return; q = true; requestAnimationFrame(() => { q = false; plainTexts(w); }); }).observe(w, { subtree: true, childList: true, characterData: true });
   }
 
   // ---------- the bottom line ----------
@@ -8874,13 +9028,13 @@ body.light-theme .proof-box{color:#0f172a}
   }
 
   window.PMIProof = { build, fromCsv, load, reload, saveTweaks, clearTweaks, nextProfile, changedFrom: () => changedFrom(base), info: () => info, device: DEVICE, PROFILES, HOUSES, version: PROOF_VERSION,
-    openBar, closeBar, structChanged, propsOf };
+    openBar, closeBar, structChanged, propsOf, checkVersion, say };
   window.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       try { if (window.innerWidth < 700) lastOpenInspectorState = 'compact'; if (inspectorWindowState !== 'closed') closeInspectorWindow(); } catch (e) {}   // the page opens in Live with the inspector shut
       try { if (!isLiveInteraction) toggleInteractionState(); } catch (e) {}
-      badge(); staleCheck();
-      load('start').then(() => { try { applyInspectorWindowUI(); } catch (e) {} });   // hides the engine's 'Open Inspector' button: the Tools row has one
+      badge(); paintLine(); watchPlain();
+      load('start').then(() => { try { applyInspectorWindowUI(); } catch (e) {} checkVersion(); });   // hides the engine's 'Open Inspector' button: the Tools row has one
     }, 0);
   });
 })();
