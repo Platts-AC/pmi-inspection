@@ -758,6 +758,8 @@
 .grid-split-partition:has(> div > button.rounded-lg) > div.w-full{align-self:stretch}
 .grid-split-partition:has(.proof-results){align-items:stretch}
 .grid-split-partition:has(.proof-results) > *{height:100%;align-self:stretch}
+.grid-stack-row:has(> .proof-fold-status){position:relative}
+.proof-fold-status{position:absolute;right:10px;top:50%;transform:translateY(-50%);font:600 11px/1.2 system-ui,sans-serif;color:#94a3b8;white-space:nowrap;pointer-events:none}
 .grid-split-partition:has(.proof-ct){align-items:stretch}
 .grid-split-partition:has(.proof-ct) > *{height:100%;align-self:stretch}
 .proof-results{height:100%;width:100%;display:flex;flex-direction:column;overflow:hidden;padding:4px 6px;box-sizing:border-box;text-align:left}
@@ -3590,7 +3592,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.14.1", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.15.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3600,7 +3602,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.14.1', stamp: '2026-11-22 16:09:44', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.15.0', stamp: '2026-11-22 16:51:18', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8277,7 +8279,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.14.1';
+  const PROOF_VERSION = '0.15.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8408,7 +8410,7 @@ body.light-theme .proof-box{color:#0f172a}
     // round 7 (1): autofill fix C (Danny's Android test, 0.6.0): each value box sits in its own form with autocomplete off and has
     // autocomplete one-time-code; the form takes no space (display:contents) and never submits (Enter is stopped, see below).
     return '<div class="proof-cell"><div class="proof-face" style="align-items:' + va + '"><form class="proof-form" autocomplete="off" onsubmit="return false"><input class="proof-box" data-key="' + esc(k) + '" value="' + esc(valOf(k)) + '"' +
-      (wm || (F && F.kind === 'readonly') ? ' inputmode="none" readonly' : tel ? ' inputmode="tel"' : num ? ' inputmode="decimal"' : '') + ' placeholder="' + esc(F ? F.name : (FIELD_FALLBACK[k] || 'Search')) + '"' + boxAttrs(p) + ' style="font-size:' + boxSize(p) + 'px;text-align:' + (p.align || 'left') + '"></form>' + sw + '</div></div>';
+      (wm || (F && (F.kind === 'readonly' || F.calc)) ? ' inputmode="none" readonly' : tel ? ' inputmode="tel"' : num ? ' inputmode="decimal"' : '') + ' placeholder="' + esc(F ? F.name : (FIELD_FALLBACK[k] || 'Search')) + '"' + boxAttrs(p) + ' style="font-size:' + boxSize(p) + 'px;text-align:' + (p.align || 'left') + '"></form>' + sw + '</div></div>';
   } };
   // Enter in a value box: never submit or reload (the form also says onsubmit return false); focus and caret stay
   document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target && e.target.classList && e.target.classList.contains('proof-box')) e.preventDefault(); }, true);
@@ -8484,6 +8486,46 @@ body.light-theme .proof-box{color:#0f172a}
     });
     return out.sort((a, b) => (b.exact - a.exact) || (b.why.length - a.why.length) || (b.score - a.score) || (a.i - b.i));
   }
+  // ---------- Round C2a: calc-engine and fold-section ----------
+  // calc-engine: a FIXED rule list in code (never a sheet scripting language), ported 1:1 from the main app 01.12.00
+  // (app/tools/calculations.js: a - b with 1 decimal, the compression ratio (a + 14.7) / (b + 14.7) with 2 decimals;
+  // app/tools/capacitor.js: uF = 2652 x amps / volts with 2 decimals). An input that is blank or not a number = a blank result.
+  const diff = (a, b) => (a - b).toFixed(1);
+  const CALC_RULES = {};
+  [['superheat', ['suction line', 'vapor sat'], diff], ['subcooling', ['liquid sat', 'liquid line'], diff], ['approach', ['liquid line', 'outdoor ambient'], diff],
+   ['evapTD', ['return dry bulb', 'vapor sat'], diff], ['deltaT', ['return dry bulb', 'supply dry bulb'], diff], ['deltaDP', ['return dew point', 'supply dew point'], diff],
+   ['indoorSH', ['indoor suction line', 'vapor sat'], diff], ['indoorSC', ['liquid sat', 'indoor liquid line'], diff], ['condenserTD', ['liquid sat', 'outdoor ambient'], diff],
+   ['compressionRatio', ['discharge psig', 'suction psig'], (a, b) => (b + 14.7 > 0 && a + 14.7 > 0 ? ((a + 14.7) / (b + 14.7)).toFixed(2) : '')],
+   ['capacitorUf', ['volts', 'amps'], (v, a) => (v > 0 && a >= 0 ? (2652 * a / v).toFixed(2) : '')]
+  ].forEach(([name, inputs, fn]) => { CALC_RULES[name.toLowerCase()] = { name, inputs, fn }; });
+  const numOf = v => { const t = String(v == null ? '' : v).trim(); return t !== '' && isFinite(Number(t)) ? Number(t) : null; };
+  function calcCells() { const seen = {}, out = []; eachCell(engineState, p => { const F = p.proofField; if (F && F.calc && !seen[F.id]) { seen[F.id] = 1; out.push(F); } }); return out; }
+  function runCalcs() {   // every calc value from the call's inputs; the boxes are updated in place (no redraw)
+    calcCells().forEach(F => { const xs = F.calc.inputs.map(id => numOf(call[id])), v = xs.every(x => x !== null) ? F.calc.rule.fn(...xs) : '';
+      if (v === '') delete call[F.id]; else call[F.id] = v;
+      document.querySelectorAll('input.proof-box').forEach(b => { if (b.dataset.key === F.id && b.value !== v) b.value = v; }); });
+  }
+  // fold-section: Structure 'Fold' (open / closed) on a Section's first Line = the engine's own collapsible Section (as the main app's
+  // PMI sections): its first Line is the title bar; a tap folds / opens it. Kept per call (callView.folds); New = the sheet value.
+  const foldKey = row => (row.view || '') + '/' + row.name;
+  function applyFolds(state) {
+    (state.rows || []).forEach(row => { if (!row.proofFold) return; row.isCollapsible = true; row.hideHeaderCount = true;
+      const k = foldKey(row), f = callView.folds || {}; row.isCollapsed = k in f ? !!f[k] : row.proofFold === 'closed'; });
+  }
+  { const tr = toggleRowCollapse; toggleRowCollapse = function (rIdx) { const r = tr.apply(this, arguments), row = engineState.rows[rIdx];
+      if (row && row.proofFold) { callView.folds = callView.folds || {}; callView.folds[foldKey(row)] = !!row.isCollapsed; saveView(); } return r; }; }
+  // the title shows 'N of M filled' (the main app's Section badge counts its fields); painted in place, no redraw
+  function paintFolds() {
+    const bands = document.querySelectorAll('#viewport-canvas-frame .grid-row-band');
+    (engineState.rows || []).forEach((row, ri) => { if (!row.proofFold || !bands[ri]) return;
+      const ids = {}; row.containers.forEach(c => c.stacks.forEach(st => st.splits.forEach(p => { if (p.slot === 'box' && p.proofField && !isDraft(p.proofKey)) ids[p.proofField.id] = 1; })));
+      const all = Object.keys(ids), n = all.filter(id => callVal(id)).length, text = n + ' of ' + all.length + ' filled';
+      const head = bands[ri].querySelector('.grid-stack-row'); if (!head) return;
+      let s = head.querySelector(':scope > .proof-fold-status'); if (!s) { s = document.createElement('span'); s.className = 'proof-fold-status'; head.appendChild(s); }
+      if (s.textContent !== text) s.textContent = text;
+      const chip = bands[ri].querySelector(':scope > .proof-chip'), right = chip && chip.offsetParent ? (chip.offsetWidth + 16) + 'px' : ''; if (s.style.right !== right) s.style.right = right; });   // beside the '+N hidden' chip, never under it
+  }
+
   // ---------- Round C1b: the Call types tab, the call-type question (Slot call-types, Action open-call-type) ----------
   // Call types: Call type | Template | Aliases (separated by |) | Active | Order | Notes. Missing tab = no question (Entry as before).
   const CT_COLS = ['Call type', 'Template', 'Aliases', 'Active', 'Order', 'Notes'];
@@ -8567,13 +8609,13 @@ body.light-theme .proof-box{color:#0f172a}
   }
   const paintResults = () => document.querySelectorAll('.proof-results').forEach(el => { el.innerHTML = resultsHtml(); });
   window.__proofRepaints = 0;
-  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; try { closeWheel(); closeAsk(); } catch (e) {}   /* 0.12.2 (R6) */ const r = rc.apply(this, arguments); try { decorate(); } catch (e) {} return r; }; }
+  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; try { closeWheel(); closeAsk(); } catch (e) {}   /* 0.12.2 (R6) */ const r = rc.apply(this, arguments); try { decorate(); } catch (e) {} try { paintFolds(); } catch (e) {} return r; }; }
 
   document.addEventListener('input', e => {
     const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b) return;
     const k = b.dataset.key;
     if (k in find || isDraft(k)) { find[k] = b.value; if (FIND_KEYS[k]) paintResults(); }   // C1a: a New customer box fills the draft
-    else { call[k] = b.value; lsSet(K.call, call); try { paintLimit(b); applyVis(); } catch (e) {} }   // round B2: Hard min / max note; when-filled Lines
+    else { call[k] = b.value; runCalcs(); lsSet(K.call, call); try { paintLimit(b); applyVis(); paintFolds(); } catch (e) {} }   // C2a: calc values and fold status, no redraw   // round B2: Hard min / max note; when-filled Lines
   });
   document.addEventListener('click', e => {
     const h = e.target && e.target.closest && e.target.closest('.proof-hit'); if (!h) return;
@@ -8589,7 +8631,7 @@ body.light-theme .proof-box{color:#0f172a}
     hf.forEach(f => { delete call[f.id]; }); hf.forEach(f => { if (f.find && x[f.find]) call[f.id] = x[f.find]; });
     eachCell(engineState, p => { if (p.slot !== 'box' || FIND_KEYS[p.proofKey] || isDraft(p.proofKey)) return; const ff = findFillOf(p); if (ff && x[ff] != null) call[p.proofField ? p.proofField.id : p.proofKey] = x[ff]; });
     if (extra) Object.keys(extra).forEach(k => { call[k] = extra[k]; });
-    lsSet(K.call, call);
+    runCalcs(); lsSet(K.call, call);
     ctFrom = ''; clearFind(); goView(ctView && activeTypes().length ? ctView : 'entry');   // C1b: then 'What kind of call is this?'
   }
   // Round C1a (Blueprint P8, Stage C): start-new-customer copies each Find box into the New customer box with the same Find fill and
@@ -8688,7 +8730,7 @@ body.light-theme .proof-box{color:#0f172a}
     rows.forEach(r => { const s = String(r['Screen'] || '').trim().toLowerCase(); if (s) screens[s] = 1; });
     const draftScreen = String((rows.find(r => String(r['Content'] || '').trim() === 'save-new-customer') || {})['Screen'] || '').trim().toLowerCase();   // 0.13.1 (R8)
     const ctScreen = String((rows.find(r => String(r['Slot'] || '').trim() === 'call-types') || {})['Screen'] || '').trim().toLowerCase();   // C1b: the call-type question
-    const out = []; const byRow = {}; let used = 0; const colW = {}, freezeOf = {}, lineH = {}, warned = [];
+    const out = []; const byRow = {}; let used = 0; const colW = {}, freezeOf = {}, foldOf = {}, lineH = {}, warned = [];
     let badgeDrawn = false;
     const holes = [];
     const addHole = r => { const v = c => String(r[c] == null ? '' : r[c]).trim(); const sc = v('Screen').toLowerCase(), rn = v('Row'), ci = +v('Container'), si = +v('Stack'), pi = +v('Cell'), w = Number(v('Weight'));
@@ -8760,6 +8802,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (maxS !== '') cell.maxSize = Number(maxS);
       if (cw !== '' && colW[key + '\u0002' + ci] == null) colW[key + '\u0002' + ci] = Number(cw);   // first value in a column wins
       if (frz && freezeOf[key] == null) freezeOf[key] = frz;   // first value in a section wins
+      const fld = g('Fold').toLowerCase(); if ((fld === 'open' || fld === 'closed') && foldOf[key] == null) foldOf[key] = fld;   // C2a
       if (lh !== '') { const lk = key + '\u0002' + ci + '\u0002' + si, have = lineH[lk];
         if (!have) lineH[lk] = { v: Number(lh), n: at };
         else if (have.v !== Number(lh)) warned.push(where + ': Line height ' + lh + ' not used (' + have.n + ' set this line to ' + have.v + ' first).'); }
@@ -8809,6 +8852,7 @@ body.light-theme .proof-box{color:#0f172a}
       const row = { id: 'PR' + (ri + 1), name: R.name, heightPx: Math.max(56, tall), isAutoHeight: false, containers };
       const frozen = freezeOf[R.key] ? freezeOf[R.key] === 'yes' : R.screen === 'all';   // round 6: 'Freeze' (empty = Screen all is frozen)
       if (frozen) row.sticky = true;
+      if (foldOf[R.key]) row.proofFold = foldOf[R.key];   // C2a: applied per call by applyFolds()
       if (R.screen === 'tray') row.isTray = true; else if (R.screen !== 'all') row.view = R.screen;
       return row;
     }) };
@@ -8822,9 +8866,9 @@ body.light-theme .proof-box{color:#0f172a}
   function formulaErrors(r) {
     return Object.keys(r).filter(k => k.charAt(0) !== '_' && FORMULA_ERR.test(String(r[k] == null ? '' : r[k]).trim())).map(k => 'formula error "' + String(r[k]).trim() + '" in ' + k);
   }
-  const STRUCTURE_COLS = ['Screen', 'Section', 'Column', 'Line name', 'Cells', 'Cell widths', 'Line height', 'Column width', 'Freeze'];
+  const STRUCTURE_COLS = ['Screen', 'Section', 'Column', 'Line name', 'Cells', 'Cell widths', 'Line height', 'Column width', 'Freeze', 'Fold'];   // Fold: C2a
   const ITEM_SKIP = { 'Id': 1, 'Line': 1, 'Cell': 1, 'Weight': 1, 'Field': 1, 'Recipe': 1, 'Join with': 1, 'Join sep': 1, 'Label size': 1 };   // placing / recipe columns (every other column is look); a cell's width lives on Structure 'Cell widths' (Danny, Q-015)
-  const FIELDS_COLS = ['Field Id', 'Name', 'Short label', 'Aliases', 'Kind', 'Unit', 'Hard min', 'Hard max', 'Report wording', 'Scope', 'Notes', 'Find fill'];   // Find fill: 0.12.2 (R7)   // Blueprint P7
+  const FIELDS_COLS = ['Field Id', 'Name', 'Short label', 'Aliases', 'Kind', 'Unit', 'Hard min', 'Hard max', 'Report wording', 'Scope', 'Notes', 'Find fill', 'Calc'];   // Calc: C2a   // Find fill: 0.12.2 (R7)   // Blueprint P7
   const SIZES_COLS = ['Profile', 'Target', 'Font size', 'Line height', 'Pad X', 'Pad Y', 'Min size', 'Max size', 'Notes'];   // Blueprint P12
   const ITEM_B1_COLS = ['Field', 'Recipe', 'Join with', 'Join sep', 'Label size'];   // Blueprint P18 (B1) + BD-6
   const KINDS = { text: 1, number: 1, date: 1, choice: 1, yesno: 1, comment: 1, readonly: 1, calculated: 1 };
@@ -8892,6 +8936,12 @@ body.light-theme .proof-box{color:#0f172a}
       if (!Object.keys(r).some(c => c.charAt(0) !== '_' && g2(r, c)) && !why.length) return;   // an empty row (0.12.1, BT-47: any column counts)
       const id = g2(r, 'Field Id'), name = g2(r, 'Name'), kind = (g2(r, 'Kind') || 'text').toLowerCase(), scope = g2(r, 'Scope').toLowerCase(), wording = String(r['Report wording'] == null ? '' : r['Report wording']).trim();
       const hmin = g2(r, 'Hard min'), hmax = g2(r, 'Hard max');
+      const calcRaw = g2(r, 'Calc'); let calc = null;   // C2a: 'rule: f:inputA, f:inputB'
+      if (calcRaw && !why.length) { const m = /^([A-Za-z]+)\s*:\s*(.*)$/.exec(calcRaw), rule = m && CALC_RULES[m[1].toLowerCase()], ins = m ? m[2].split(',').map(x => x.trim()).filter(Boolean) : [];
+        if (!m) why.push('Calc "' + calcRaw + '" must look like rule: f:inputA, f:inputB');
+        else if (!rule) why.push('Calc rule "' + m[1] + '" is not known (known: ' + Object.keys(CALC_RULES).map(k => CALC_RULES[k].name).join(', ') + ')');
+        else if (ins.length !== rule.inputs.length) why.push('Calc ' + rule.name + ' needs ' + rule.inputs.length + ' inputs (' + rule.inputs.join(', ') + ')');
+        else calc = { rule, inputs: ins }; }
       const ffCol = 'Find fill' in r, ff = ffCol ? g2(r, 'Find fill').toLowerCase() : (FIND_FILL_FALLBACK[id] || '');   // 0.12.2 (R7); no column = today's fill (migration)
       if (ffCol && ff && !FIND_FILLS[ff] && !why.length) why.push('Find fill "' + g2(r, 'Find fill') + '" must be name, address, phone, email or calltype (or blank)');
       if (!why.length) {
@@ -8911,7 +8961,11 @@ body.light-theme .proof-box{color:#0f172a}
       }
       if (why.length) { msgs.push({ _refuse: where + ' refused: ' + why.join(', ') + '.' }); if (id && !map[id] && !bad[id]) bad[id] = where; return; }
       map[id] = { id, name, short: g2(r, 'Short label'), kind, unit: g2(r, 'Unit'), wording, hmin, hmax, scope, where, find: ff };
+      if (calc) map[id].calc = calc;
     });
+    // C2a: a Calc input must be a Field on this tab (checked once every row is read); otherwise the calc Field's row is refused
+    Object.keys(map).forEach(id => { const c = map[id].calc; if (!c) return; const miss = c.inputs.filter(x => !map[x] || map[x].calc);
+      if (miss.length) { msgs.push({ _refuse: map[id].where + ' refused: Calc input ' + miss.join(', ') + (miss.some(x => map[x]) ? ' is a calc Field itself or' : '') + ' is not on the Fields tab.' }); bad[id] = map[id].where; delete map[id]; } });
     return { map, bad, msgs };
   }
   // the Recipe of a Field row -> pieces in order, or an error (Blueprint P22; blank = the default by Kind and screen)
@@ -8941,7 +8995,7 @@ body.light-theme .proof-box{color:#0f172a}
       const where = 'Structure row ' + (i + 2), why = formulaErrors(r);
       if (!Object.keys(r).some(c => c.charAt(0) !== '_' && g(r, c)) && !why.length) return;   // an empty row (0.12.2, R11: any column counts)
       const screen = g(r, 'Screen').toLowerCase(), sec = g(r, 'Section'), col = g(r, 'Column') || '1', name = g(r, 'Line name'), cells = g(r, 'Cells');
-      const lh = g(r, 'Line height'), cw = g(r, 'Column width'), frz = g(r, 'Freeze').toLowerCase(), wsRaw = g(r, 'Cell widths');
+      const lh = g(r, 'Line height'), cw = g(r, 'Column width'), frz = g(r, 'Freeze').toLowerCase(), wsRaw = g(r, 'Cell widths'), fold = g(r, 'Fold').toLowerCase();
       // round A.2: whole numbers 1 to 20 with ONE space between them (or one number on a 1-cell line); anything else may be a value
       // Google turned into a date, time or fraction, so it is refused with the plain-text hint
       const wsWhole = /^[1-9]\d*( [1-9]\d*)*$/.test(wsRaw) && wsRaw.split(' ').every(x => Number(x) <= 20);
@@ -8954,6 +9008,7 @@ body.light-theme .proof-box{color:#0f172a}
         if (!okNum(lh, 0.2, 20)) why.push('Line height "' + lh + '" must be a number from 0.2 to 20');
         if (!okNum(cw, 0.2, 10)) why.push('Column width "' + cw + '" must be a number from 0.2 to 10');
         if (frz && frz !== 'yes' && frz !== 'no') why.push('Freeze "' + frz + '" must be yes or no');
+        if (fold && fold !== 'open' && fold !== 'closed') why.push('Fold "' + g(r, 'Fold') + '" must be open or closed (or blank: cannot fold)');   // C2a
         if (wsRaw !== '' && !(wsWhole || wsOne)) why.push('Cell widths "' + wsRaw + '" must be whole numbers from 1 to 20 with one space between them, one per cell (for example 1 2). ' + CW_HINT);
       }
       const ltp = parseTpl(r, 'Templates'); if (!why.length && ltp.err) why.push(ltp.err);   // round B2: Templates for the whole Line
@@ -8961,12 +9016,13 @@ body.light-theme .proof-box{color:#0f172a}
       const sk = screen + '\u0001' + sec, ck = sk + '\u0002' + col;
       if (colIndex[ck] == null) colIndex[ck] = Object.keys(colIndex).filter(k => k.indexOf(sk + '\u0002') === 0).length + 1;
       lineCount[ck] = (lineCount[ck] || 0) + 1;
-      const L = lines[name] = { where, screen, sec, ci: colIndex[ck], si: lineCount[ck], cells: Number(cells), lh, cw: '', frz: '', items: {}, widths: ws.map(Number), tpl: ltp.tpl || null };
+      const L = lines[name] = { where, screen, sec, ci: colIndex[ck], si: lineCount[ck], cells: Number(cells), lh, cw: '', frz: '', fold: '', items: {}, widths: ws.map(Number), tpl: ltp.tpl || null };
       // Cell widths: one share per cell (empty = all equal). Fewer numbers than cells: the rest are 1; more: the extra are not used (a note says so)
       if (ws.length && ws.length !== L.cells) out.push({ _note: where + ': Cell widths "' + wsRaw + '" has ' + ws.length + ' number(s) for ' + L.cells + ' cell(s): ' + (ws.length < L.cells ? 'the rest are 1.' : 'the extra are not used.') });
       // one home each (Danny 19:46): Column width on the FIRST line of its Column, Freeze on the FIRST line of its Section
       if (!firstOfColumn[ck]) { firstOfColumn[ck] = where; L.cw = cw; } else if (cw) out.push({ _note: where + ': Column width ' + cw + ' not used (it belongs on the first line of the Column: ' + firstOfColumn[ck] + ').' });
-      if (!firstOfSection[sk]) { firstOfSection[sk] = where; L.frz = frz; } else if (frz) out.push({ _note: where + ': Freeze ' + frz + ' not used (it belongs on the first line of the Section: ' + firstOfSection[sk] + ').' });
+      if (!firstOfSection[sk]) { firstOfSection[sk] = where; L.frz = frz; L.fold = fold; } else { if (frz) out.push({ _note: where + ': Freeze ' + frz + ' not used (it belongs on the first line of the Section: ' + firstOfSection[sk] + ').' });
+        if (fold) out.push({ _note: where + ' (' + name + '): Fold ' + fold + ' not used (it belongs on the first line of the Section: ' + firstOfSection[sk] + ').' }); }   // C2a
       order.push(name);
     });
     // round B1: the Fields tab (null = Round A, no Fields)
@@ -9084,7 +9140,7 @@ body.light-theme .proof-box{color:#0f172a}
         // 0.12.1 (BT-44): Profile sizes that end with Min above Max on one item are not used for it (the item keeps its own)
         if (String(o['Min size'] || '').trim() !== '' && String(o['Max size'] || '').trim() !== '' && Number(o['Min size']) > Number(o['Max size']) && (from['Min size'] || from['Max size'])) {
           out.push({ _note: (from['Min size'] || from['Max size']) + ': Min size ' + o['Min size'] + ' above Max size ' + o['Max size'] + ' on ' + o['Id'] + ': not used.' }); o['Min size'] = own.min; o['Max size'] = own.max; }
-        if (c === 1) { o['Line height'] = lh; o['Column width'] = L.cw; o['Freeze'] = L.frz; }
+        if (c === 1) { o['Line height'] = lh; o['Column width'] = L.cw; o['Freeze'] = L.frz; o['Fold'] = L.fold; }
         out.push(o);
       }
     });
@@ -9339,6 +9395,7 @@ body.light-theme .proof-box{color:#0f172a}
     base = {}; eachCell(b.state, p => { if (p.proofId) base[p.proofId] = propsOf(p); });
     const nt = applyTweaks(b.state, T.rows, n);
     eachCell(b.state, p => { if (p.clickAction === 'proof-profile') p.label = 'Profile: ' + L.profile + (chosenProfile() === 'auto' ? ' (auto)' : ''); if (isBadge(p)) p.label = badgeText(); });
+    applyFolds(b.state);   // C2a
     registerTemplateActions(b.state); usesB2 = layoutUsesB2(b.state);   // round B2
     const keepView = currentView, wasEdit = !isLiveInteraction, keepSel = selectedId();
     engineState = b.state; reselect(keepSel);
@@ -9447,7 +9504,7 @@ body.light-theme .proof-box{color:#0f172a}
   window.EngineActions['new-call'] = () => {
     const typedSomething = Object.keys(call).some(k => String(call[k] == null ? '' : call[k]).trim());
     if (typedSomething && Date.now() - newArmed > 5000) { newArmed = Date.now(); say('Tap New again to clear this call', 'warn', 5000); return; }
-    newArmed = 0; call = {}; lsSet(K.call, call); callView = VIEW_DEFAULT(); saveView(); clearFind(); goView('find'); paintNotes();   // round B2: reveals and template belong to the call
+    newArmed = 0; call = {}; lsSet(K.call, call); callView = VIEW_DEFAULT(); try { applyFolds(engineState); } catch (e) {}; saveView(); clearFind(); goView('find'); paintNotes();   // round B2: reveals and template belong to the call
   };
   // round 7 (3): Refresh page = reload the whole page past the browser's copy (new ?v=, other switches dropped). With unsaved
   // tweaks the first tap only warns; a second tap within 5 s reloads anyway.
@@ -9841,7 +9898,7 @@ body.light-theme .proof-box{color:#0f172a}
   // by the same amount so the box does not move. Edit / Adjust shows everything (as the engine does). Only one-Column Sections
   // collapse a Line; in a Section with several Columns a hidden Line just leaves its cells blank.
   const K_VIEW = 'proof-containers.callview.v1', K_INPUT = 'proof-containers.inputStyle.v1';
-  const VIEW_DEFAULT = () => ({ view: 'template', tpl: '', revealed: {} });
+  const VIEW_DEFAULT = () => ({ view: 'template', tpl: '', revealed: {}, folds: {} });   // folds: C2a (per call)
   let callView = Object.assign(VIEW_DEFAULT(), lsGet(K_VIEW, {}) || {});
   if (!/^(all|template|values)$/.test(callView.view)) callView.view = 'template';
   if (!callView.revealed || typeof callView.revealed !== 'object') callView.revealed = {};
@@ -9910,14 +9967,14 @@ body.light-theme .proof-box{color:#0f172a}
           else { if (band.dataset.pvGone) { delete band.dataset.pvGone; band.style.removeProperty('display'); } band.style.height = h + 'px'; }
         }
         let chip = band.querySelector(':scope > .proof-chip');
-        if ((n || back) && shown && callView.view === 'template') { if (!chip) {   /* 0.12.2 (R2): the chip belongs to Template view */ chip = document.createElement('button'); chip.type = 'button'; chip.className = 'proof-chip'; band.appendChild(chip); }
+        if ((n || back) && shown && callView.view === 'template' && !row.isCollapsed) { if (!chip) {   /* 0.12.2 (R2): the chip belongs to Template view */ chip = document.createElement('button'); chip.type = 'button'; chip.className = 'proof-chip'; band.appendChild(chip); }
           chip.dataset.row = String(ri); chip.dataset.act = n ? 'show' : 'hide'; chip.textContent = n ? '+' + n + ' hidden' : 'Hide ' + back; }   // 0.12.3 (F4): 'Hide N' puts them away again
         else if (chip) chip.remove();
       });
       if (anchor) { const dy = anchor.getBoundingClientRect().top - before; if (Math.abs(dy) > 0.5) { const sc = scroller(); if (sc) sc.scrollTop += dy; else window.scrollBy(0, dy); } }
       try { stackFrozen(); } catch (e) {}
     } finally { visBusy = false; }
-    pinChips();
+    pinChips(); try { paintFolds(); } catch (e) {}
   }
   // 0.12.3 (F3): a chip stays reachable while its Section is on screen: it slides down to just below the frozen header (and the top of
   // what the phone shows when the keyboard is up), never past its Section's bottom. Only the chip moves: no scroll, no redraw.
