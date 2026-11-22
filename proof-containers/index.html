@@ -3575,7 +3575,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.12.2", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.12.3", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3585,7 +3585,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.12.2', stamp: '2026-11-22 11:25:09', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.12.3', stamp: '2026-11-22 12:06:37', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8262,7 +8262,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.12.2';
+  const PROOF_VERSION = '0.12.3';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -9632,7 +9632,7 @@ body.light-theme .proof-box{color:#0f172a}
   }
   const hasField = p => !!p.proofField || (p.slot === 'box' && !!p.proofKey && !FIND_KEYS[p.proofKey]);
   let usesB2 = false;   // the layout uses a B2 setting (then the footer shows the View and Template)
-  function visPlan() {   // Map stack -> { hide, blank: Set of item keys }
+  function visPlan(noReveal) {   // Map stack -> { hide, blank: Set of item keys }; noReveal (0.12.3, F4): as if nothing was revealed
     const plan = new Map(); if (!isLiveInteraction) return plan;
     const mode = callView.view, active = callView.tpl;
     const a = document.activeElement, fpart = a && a.closest && a.closest('.grid-split-partition'), fpid = fpart ? fpart.getAttribute('data-pid') : '';
@@ -9640,7 +9640,7 @@ body.light-theme .proof-box{color:#0f172a}
       const multi = (row.containers || []).length !== 1;
       (row.containers || []).forEach(c => (c.stacks || []).forEach(s => {
         const items = {}; (s.splits || []).forEach(p => { if (p.proofItem) (items[p.proofItem] = items[p.proofItem] || []).push(p); });
-        const keys = Object.keys(items), filled = (s.splits || []).some(cellFilled), revealed = !!callView.revealed[s.proofLine];
+        const keys = Object.keys(items), filled = (s.splits || []).some(cellFilled), revealed = !noReveal && !!callView.revealed[s.proofLine];
         const focused = !!fpid && (s.splits || []).some(p => p.proofId === fpid);
         const blank = new Set(); let hide = false;
         if (mode === 'values') { if ((s.splits || []).some(hasField) && !filled) hide = true; }
@@ -9664,15 +9664,17 @@ body.light-theme .proof-box{color:#0f172a}
     visBusy = true;
     try {
       const plan = visPlan(), a = document.activeElement, anchor = isBox(a) ? (a.closest('.proof-face') || a) : null;
+      const plan0 = callView.view === 'template' && Object.keys(callView.revealed).length ? visPlan(true) : null;   // 0.12.3 (F4): what a reveal is holding open
       const before = anchor ? anchor.getBoundingClientRect().top : 0;
       const bands = frame.querySelectorAll('.grid-row-band');
       (engineState.rows || []).forEach((row, ri) => {
         const band = bands[ri]; if (!band) return;
-        let all = 0, shown = 0, n = 0;
+        let all = 0, shown = 0, n = 0, back = 0;
         const conts = band.querySelectorAll('.grid-container-cell');
         (row.containers || []).forEach((c, ci) => {
           const els = conts[ci] ? Array.from(conts[ci].children).filter(x => x.classList.contains('grid-stack-row')) : [];
           (c.stacks || []).forEach((s, si) => { const pl = plan.get(s), hide = !!(pl && pl.hide), w = Number(s.weight) || 1; all += w; if (hide) n++; else shown += w;
+            if (plan0 && !hide && s.proofLine && callView.revealed[s.proofLine]) { const p0 = plan0.get(s); if (p0 && (p0.hide || p0.blank.size)) back++; }
             const el = els[si]; if (el && el.style.display !== (hide ? 'none' : '')) el.style.display = hide ? 'none' : ''; });
         });
         band.querySelectorAll('.grid-split-partition').forEach(part => { const ix = partIdx(part); if (!ix || ix[0] !== ri) return;
@@ -9684,22 +9686,45 @@ body.light-theme .proof-box{color:#0f172a}
           else { if (band.dataset.pvGone) { delete band.dataset.pvGone; band.style.removeProperty('display'); } band.style.height = h + 'px'; }
         }
         let chip = band.querySelector(':scope > .proof-chip');
-        if (n && shown && callView.view === 'template') { if (!chip) {   /* 0.12.2 (R2): the chip belongs to Template view */ chip = document.createElement('button'); chip.type = 'button'; chip.className = 'proof-chip'; band.appendChild(chip); } chip.dataset.row = String(ri); chip.textContent = '+' + n + ' hidden'; }
+        if ((n || back) && shown && callView.view === 'template') { if (!chip) {   /* 0.12.2 (R2): the chip belongs to Template view */ chip = document.createElement('button'); chip.type = 'button'; chip.className = 'proof-chip'; band.appendChild(chip); }
+          chip.dataset.row = String(ri); chip.dataset.act = n ? 'show' : 'hide'; chip.textContent = n ? '+' + n + ' hidden' : 'Hide ' + back; }   // 0.12.3 (F4): 'Hide N' puts them away again
         else if (chip) chip.remove();
       });
       if (anchor) { const dy = anchor.getBoundingClientRect().top - before; if (Math.abs(dy) > 0.5) { const sc = scroller(); if (sc) sc.scrollTop += dy; else window.scrollBy(0, dy); } }
       try { stackFrozen(); } catch (e) {}
     } finally { visBusy = false; }
+    pinChips();
   }
+  // 0.12.3 (F3): a chip stays reachable while its Section is on screen: it slides down to just below the frozen header (and the top of
+  // what the phone shows when the keyboard is up), never past its Section's bottom. Only the chip moves: no scroll, no redraw.
+  let pinQueued = false;
+  function pinChips() {
+    const frame = document.getElementById('viewport-canvas-frame'); if (!frame) return;
+    const chips = frame.querySelectorAll('.grid-row-band > .proof-chip'); if (!chips.length) return;
+    const vv = window.visualViewport, head = Math.max(vv ? vv.offsetTop : 0, ...Array.from(frame.querySelectorAll('.row-sticky')).map(e => { const r = e.getBoundingClientRect(); return r.height ? r.bottom : 0; }));
+    chips.forEach(ch => { const band = ch.parentElement.getBoundingClientRect(), h = ch.offsetHeight || 22;
+      const want = Math.max(CHIP_TOP, Math.min(head + CHIP_TOP - band.top, band.height - h - CHIP_TOP)), top = Math.round(Math.max(CHIP_TOP, want)) + 'px';
+      if (ch.style.top !== top) ch.style.top = top; });
+  }
+  const CHIP_TOP = 2;   // the chip's gap from the top of its Section (and from the frozen header when pinned)
+  const queuePin = () => { if (pinQueued) return; pinQueued = true; requestAnimationFrame(() => { pinQueued = false; pinChips(); }); };
+  document.addEventListener('scroll', queuePin, true);
+  if (window.visualViewport) { window.visualViewport.addEventListener('scroll', queuePin); window.visualViewport.addEventListener('resize', queuePin); }
+  window.addEventListener('resize', queuePin);
   function revealSection(ri) {
     const row = engineState.rows[ri]; if (!row || callView.view !== 'template') return;   // 0.12.2 (R2)
     const plan = visPlan();
     (row.containers || []).forEach(c => (c.stacks || []).forEach(s => { if (plan.get(s) && s.proofLine) callView.revealed[s.proofLine] = 1; }));
     saveView(); applyVis(); paintNotes();
   }
+  function hideSection(ri) {   // 0.12.3 (F4): the Lines this Section revealed hide again (Lines with a value and the box being typed in stay)
+    const row = engineState.rows[ri]; if (!row || callView.view !== 'template') return;
+    (row.containers || []).forEach(c => (c.stacks || []).forEach(s => { if (s.proofLine) delete callView.revealed[s.proofLine]; }));
+    saveView(); applyVis(); paintNotes();
+  }
   // 0.12.2 (R3): the chip acts on PRESS and never takes the focus, so a box being typed in keeps it (and the phone keyboard stays)
   ['pointerdown', 'mousedown'].forEach(t => document.addEventListener(t, e => { const ch = e.target && e.target.closest && e.target.closest('.proof-chip'); if (!ch) return; e.preventDefault(); e.stopPropagation();
-    if (t === 'pointerdown') revealSection(Number(ch.dataset.row)); }, true));
+    if (t === 'pointerdown') (ch.dataset.act === 'hide' ? hideSection : revealSection)(Number(ch.dataset.row)); }, true));
   document.addEventListener('click', e => { const ch = e.target && e.target.closest && e.target.closest('.proof-chip'); if (!ch) return; e.preventDefault(); e.stopPropagation(); }, true);
   // a View or Template switch waits while a value box has focus (H1 rule d); it never redraws the page
   function whenFree(fn) {
@@ -9816,7 +9841,7 @@ body.light-theme .proof-box{color:#0f172a}
 
   window.PMIProof = { build, fromCsv, load, reload, saveTweaks, clearTweaks, nextProfile, changedFrom: () => changedFrom(base), info: () => info, device: DEVICE, PROFILES, HOUSES, version: PROOF_VERSION,
     openBar, closeBar, structChanged, propsOf, checkVersion, say, barSync: () => barSync(),
-    b2: { applyVis, revealSection, setTemplate, callView: () => callView } };   // round B2 (tests)
+    b2: { applyVis, revealSection, hideSection, setTemplate, callView: () => callView } };   // round B2 (tests)
   window.addEventListener('DOMContentLoaded', () => {
     // round B1 (Danny, U79): the engine's 'Layout updated to the new built-in version' pop-up (app/src/engine/56-version-badge-and-notice.js,
     // shown when the saved screen copy is from another version) is not wanted on this page: removed here and hidden by CSS (make.py).
