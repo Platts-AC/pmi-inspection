@@ -3557,7 +3557,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.10.1", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.10.2", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3567,7 +3567,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.10.1', stamp: '2026-11-22 05:56:14', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.10.2', stamp: '2026-11-22 06:42:50', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8233,11 +8233,14 @@ body.light-theme .proof-box{color:#0f172a}
 // Round A.1 (0.10.1): the engine's saved copy of the screen carries this version (layoutVersion 'proof-' + PROOF_VERSION), so a copy
 // saved by another version is never painted (the engine keeps it aside and shows 'Loading the layout ...' until the sheet answers);
 // the copy is rewritten after every draw; the version check starts at load, next to the first sheet read.
+// Round A.2 (0.10.2): no sheet row can hide or remove the version badge (it is put back, with a note naming the row); Cell widths
+// accept only whole numbers with single spaces (Google may turn other forms into dates, times or fractions); the banner says
+// 'Offline: showing the saved layout' when the sheet could not be read.
 // Repaint rule (round 1, unchanged): renderCanvas is NEVER called while a text box has focus; typing repaints only the
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.10.1';
+  const PROOF_VERSION = '0.10.2';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8288,6 +8291,9 @@ body.light-theme .proof-box{color:#0f172a}
     else if (k === 'subLabelPlace') { const s = sub(p); s.align = PLACES[v][0]; s.vAlign = PLACES[v][1]; }
   }
   const isBadge = p => !!p && p.clickAction === 'proof-badge';
+  // Round A.2: the version badge's sheet row is the row with the action proof-badge or the Id below (the one place the Id is named)
+  const BADGE_ID = 'badge';
+  const isBadgeRow = r => { const v = c => String(r[c] == null ? '' : r[c]).trim(); return v('Content') === 'proof-badge' || v('Id') === BADGE_ID; };
   const noLabel = p => !!p.slot || p.clickAction === 'proof-profile' || isBadge(p);
   // Round 6: NO 16 px floor any more (Danny: the same everywhere). Text size limits come from the optional tab columns
   // 'Min size' / 'Max size'; empty = 6 to 48 (the badge 9 to 24).
@@ -8440,7 +8446,8 @@ body.light-theme .proof-box{color:#0f172a}
     rows = withBadgeRow(rows);   // round 6: tabs from 0.4.0 / 0.5.0 have no badge row: add one in memory (migration)
     rows.forEach(r => { const s = String(r['Screen'] || '').trim().toLowerCase(); if (s) screens[s] = 1; });
     const out = []; const byRow = {}; let used = 0; const colW = {}, freezeOf = {}, lineH = {}, warned = [];
-    rows.forEach((r, i) => {
+    let badgeDrawn = false;
+    const one = (r, i) => {
       if (r._refuse) { refused.push(r._refuse); return; }   // round A: a Structure / Items row the bundle step already refused
       if (r._note) { warned.push(r._note); return; }
       const n = i + 2, g = c => String(r[c] == null ? '' : r[c]).trim();   // n = the row number on the tab (row 1 = headings)
@@ -8448,6 +8455,11 @@ body.light-theme .proof-box{color:#0f172a}
       if (!COLS.slice(0, 8).some(c => g(c))) return;   // an empty row
       const why = [];
       const fe = formulaErrors(r); if (fe.length) { refused.push(where + ' refused: ' + fe.join(', ') + '.'); return; }   // round A: never print #VALUE! etc.
+      if (isBadgeRow(r)) {   // round A.2: the version badge can never be hidden or turned into something else by a sheet row
+        const was = { vis: g('Visible when'), type: g('Type'), content: g('Content') };
+        if (was.vis.toLowerCase() === 'never') { r = Object.assign({}, r, { 'Visible when': 'always' }); warned.push(where + ': the version badge cannot be hidden (Visible when "never" not used).'); }
+        if (was.type.toLowerCase() !== 'button' || was.content !== 'proof-badge') { r = Object.assign({}, r, { 'Type': 'button', 'Content': 'proof-badge' }); warned.push(where + ': the version badge must be a button with the action proof-badge (Type "' + was.type + '", Content "' + was.content + '" not used).'); }
+      }
       const screen = g('Screen').toLowerCase(), rowName = g('Row'), ci = +g('Container'), si = +g('Stack'), pi = +g('Cell'), w = Number(g('Weight'));
       const type = g('Type').toLowerCase() || 'text', content = g('Content'), slot = g('Slot').toLowerCase(), fs = Number(g('Font size')) || 12, align = g('Align').toLowerCase() || 'center';
       const vis = g('Visible when').toLowerCase() || 'always';
@@ -8464,7 +8476,6 @@ body.light-theme .proof-box{color:#0f172a}
       if (frz && frz !== 'yes' && frz !== 'no') why.push('Freeze "' + frz + '" must be yes or no');
       const lh = g('Line height');   // round 7: the height share of the cell's LINE (stack); first row of the line that has it wins
       if (lh !== '' && !(isFinite(Number(lh)) && Number(lh) >= 0.2 && Number(lh) <= 20)) why.push('Line height "' + lh + '" must be a number from 0.2 to 20');
-      if (content === 'proof-badge' && vis === 'never') why.push('the version badge cannot be hidden');
       const press = g('Press style').toLowerCase();
       if (press && !PRESS[press]) why.push('Press style "' + press + '" must be one of: flash, stay, busy, none');
       const icon = g('Icon').toLowerCase();
@@ -8505,8 +8516,10 @@ body.light-theme .proof-box{color:#0f172a}
         cell.clickAction = (id === 'hdr.newcall' && content === 'set-view:find') ? 'new-call' : content; }
       else cell.label = type === 'logo' ? (g('Label') || content || 'Logo') : content;
       if (S[pi]) { refused.push(where + ' refused: cell ' + ci + '.' + si + '.' + pi + ' of "' + rowName + '" is already used.'); delete ids[id]; }
-      else { S[pi] = cell; used++; }
-    });
+      else { S[pi] = cell; used++; if (cell.clickAction === 'proof-badge') badgeDrawn = true; }
+    };
+    rows.forEach(one);
+    if (!badgeDrawn && used) { warned.push('The version badge was missing or refused: it is drawn in its own column at the right of the top section.'); one(defaultBadgeRow(rows), rows.length); }   // round A.2
     const num = o => Object.keys(o).map(Number).sort((a, b) => a - b);
     const state = { layoutVersion: 'proof-' + PROOF_VERSION, viewportWidth: 'auto', showWireframes: false, activeSelection: null, rows: out.map((R, ri) => {
       let tall = 0;
@@ -8539,6 +8552,7 @@ body.light-theme .proof-box{color:#0f172a}
   const STRUCTURE_COLS = ['Screen', 'Section', 'Column', 'Line name', 'Cells', 'Cell widths', 'Line height', 'Column width', 'Freeze'];
   const ITEM_SKIP = { 'Id': 1, 'Line': 1, 'Cell': 1, 'Weight': 1 };   // the Items columns that place the Item (every other column is its look); a cell's width lives on Structure 'Cell widths' (Danny, Q-015)
   const MAX_CELLS = 12;
+  const CW_HINT = 'Format the Cell widths column as Plain text, or Google turns such values into dates, times or fractions.';   // round A.2: one hint for every case
   // Turns Structure rows (one per Line, top to bottom) and Items rows (one per Item: Line name + Cell) into the rows the page has
   // always built from (Screen, Row, Container, Stack, Cell + look columns), so the drawing code is the one 0.9.0 uses.
   // A Cell with no Item becomes a blank cell (Blueprint D2 / D4). Refused rows come back as {_refuse}, notes as {_note}.
@@ -8551,7 +8565,11 @@ body.light-theme .proof-box{color:#0f172a}
       if (!STRUCTURE_COLS.slice(0, 5).some(c => g(r, c)) && !why.length) return;   // an empty row
       const screen = g(r, 'Screen').toLowerCase(), sec = g(r, 'Section'), col = g(r, 'Column') || '1', name = g(r, 'Line name'), cells = g(r, 'Cells');
       const lh = g(r, 'Line height'), cw = g(r, 'Column width'), frz = g(r, 'Freeze').toLowerCase(), wsRaw = g(r, 'Cell widths');
-      const ws = wsRaw === '' ? [] : wsRaw.split(/[\s,;]+/).filter(Boolean);
+      // round A.2: whole numbers 1 to 20 with ONE space between them (or one number on a 1-cell line); anything else may be a value
+      // Google turned into a date, time or fraction, so it is refused with the plain-text hint
+      const wsWhole = /^[1-9]\d*( [1-9]\d*)*$/.test(wsRaw) && wsRaw.split(' ').every(x => Number(x) <= 20);
+      const wsOne = cells === '1' && /^\d+(\.\d+)?$/.test(wsRaw) && Number(wsRaw) > 0 && Number(wsRaw) <= 20;
+      const ws = wsRaw === '' || !(wsWhole || wsOne) ? [] : wsRaw.split(' ');
       if (!why.length) {
         if (!screen) why.push('no Screen'); if (!sec) why.push('no Section'); if (!name) why.push('no Line name');
         else if (lines[name]) why.push('the Line name "' + name + '" is already used on ' + lines[name].where);
@@ -8559,8 +8577,7 @@ body.light-theme .proof-box{color:#0f172a}
         if (!okNum(lh, 0.2, 20)) why.push('Line height "' + lh + '" must be a number from 0.2 to 20');
         if (!okNum(cw, 0.2, 10)) why.push('Column width "' + cw + '" must be a number from 0.2 to 10');
         if (frz && frz !== 'yes' && frz !== 'no') why.push('Freeze "' + frz + '" must be yes or no');
-        if (ws.some(x => !(isFinite(Number(x)) && Number(x) >= 0.1 && Number(x) <= 20))) why.push('Cell widths "' + wsRaw + '" must be numbers from 0.1 to 20, one per cell (for example 1 2)' +
-          (/^\d{1,2}\/\d{1,2}\/\d{2,4}$|^\d{5}$/.test(wsRaw) ? ' (Google turned it into a date: format the Cell widths column as Plain text and type it again)' : ''));
+        if (wsRaw !== '' && !(wsWhole || wsOne)) why.push('Cell widths "' + wsRaw + '" must be whole numbers from 1 to 20 with one space between them, one per cell (for example 1 2). ' + CW_HINT);
       }
       if (why.length) { out.push({ _refuse: where + ' refused: ' + why.join(', ') + '.' }); if (name && !lines[name]) lines[name] = { bad: where, where }; return; }
       const sk = screen + '\u0001' + sec, ck = sk + '\u0002' + col;
@@ -8597,7 +8614,7 @@ body.light-theme .proof-box{color:#0f172a}
         const it = L.items[c], o = { 'Screen': L.screen, 'Row': L.sec, 'Container': String(L.ci), 'Stack': String(L.si), 'Cell': String(c) };
         const wv = String(L.widths[c - 1] || 1);   // the width belongs to the Cell (the locker), with or without an Item
         if (it) { Object.keys(it.r).forEach(k => { if (!ITEM_SKIP[k]) o[k] = it.r[k]; }); o['Id'] = g(it.r, 'Id'); o['Weight'] = wv; o._where = it.where;
-          if (String(o['Visible when'] || '').trim().toLowerCase() === 'never') { o['Type'] = 'text'; o['Content'] = ''; o['Slot'] = ''; o['Visible when'] = 'always'; } }   // hidden = an empty cell, nothing moves
+          if (String(o['Visible when'] || '').trim().toLowerCase() === 'never' && !isBadgeRow(o)) { o['Type'] = 'text'; o['Content'] = ''; o['Slot'] = ''; o['Visible when'] = 'always'; } }   // hidden = an empty cell, nothing moves
         else { o['Type'] = 'text'; o['Content'] = ''; o['Weight'] = wv; o['Visible when'] = 'always'; o['Id'] = (name.replace(/[^A-Za-z0-9 ._\/-]/g, '-') + '/' + c).slice(-80); o._where = L.where; }
         if (c === 1) { o['Line height'] = L.lh; o['Column width'] = L.cw; o['Freeze'] = L.frz; }
         out.push(o);
@@ -8630,18 +8647,21 @@ body.light-theme .proof-box{color:#0f172a}
   // its own narrow column (Column width 0.6) at the right end of the frozen Header section. Moving it = changing its Section / Line
   // on the tab. A tab without a badge row (0.4.0, 0.5.0) gets that row added in memory; a 0.5.0-style row with Screen 'badge'
   // gives its Font size and Align to it.
-  function withBadgeRow(rows) {
+  function defaultBadgeRow(rows) {   // round A.2: the default badge row, also used when a sheet row would hide or remove the badge
     const g = (r, c) => String(r[c] == null ? '' : r[c]).trim();
-    if (rows.some(r => g(r, 'Id') === 'badge' && g(r, 'Screen').toLowerCase() !== 'badge')) return rows;
-    const old = rows.find(r => g(r, 'Screen').toLowerCase() === 'badge');
-    const rest = rows.filter(r => g(r, 'Screen').toLowerCase() !== 'badge');
-    const all = rest.filter(r => g(r, 'Screen').toLowerCase() === 'all');
+    const old = rows.find(r => g(r, 'Screen').toLowerCase() === 'badge');   // a 0.5.0 'badge' screen row gives its size and align
+    const all = rows.filter(r => g(r, 'Screen').toLowerCase() === 'all');
     const sec = (all.find(r => g(r, 'Row') === 'Header') || all[0] || {})['Row'] || 'Header';
     const lastC = all.filter(r => g(r, 'Row') === sec).reduce((m, r) => Math.max(m, Number(g(r, 'Container')) || 0), 0);
-    const row = { 'Screen': 'all', 'Row': sec, 'Container': String(lastC + 1), 'Stack': '1', 'Cell': '1', 'Weight': '1', 'Type': 'button', 'Content': 'proof-badge',
-      'Slot': '', 'Font size': String((old && g(old, 'Font size')) || '10'), 'Align': (old && g(old, 'Align')) || 'right', 'Visible when': 'always', 'Label': '', 'Id': 'badge', 'Column width': '0.6' };
-    return rest.concat([row]);
+    return { 'Screen': 'all', 'Row': sec, 'Container': String(lastC + 1), 'Stack': '1', 'Cell': '1', 'Weight': '1', 'Type': 'button', 'Content': 'proof-badge',
+      'Slot': '', 'Font size': String((old && g(old, 'Font size')) || '10'), 'Align': (old && g(old, 'Align')) || 'right', 'Visible when': 'always', 'Label': '', 'Id': BADGE_ID, 'Column width': '0.6' };
   }
+  function withBadgeRow(rows) {
+    const g = (r, c) => String(r[c] == null ? '' : r[c]).trim();
+    if (rows.some(r => g(r, 'Id') === BADGE_ID && g(r, 'Screen').toLowerCase() !== 'badge')) return rows;
+    return rows.filter(r => g(r, 'Screen').toLowerCase() !== 'badge').concat([defaultBadgeRow(rows)]);
+  }
+
   function propsOf(p) {   // every saveable property as text, engine defaults filled in (null = does not apply to this cell)
     const s = p.subLabel && typeof p.subLabel === 'object' ? p.subLabel : null;
     return { weight: String(Number(p.weight) || 1), fontSize: String(Number(p.fontSize) || 12), label: noLabel(p) ? null : String(p.label == null ? '' : p.label), align: p.align || 'center',
@@ -8705,7 +8725,7 @@ body.light-theme .proof-box{color:#0f172a}
     return readOldTab(profile, notes);
   }
   async function readOldTab(profile, notes) {
-    const tab = TAB_OF(profile);
+    const tab = TAB_OF(profile); let offline = false;   // round A.2: true when the sheet could not be read (no signal), for the banner
     try {
       const g = await gviz(tab);
       if (!isRightTab(g.labels, tab)) throw Object.assign(new Error('missing'), { missing: true });
@@ -8719,13 +8739,13 @@ body.light-theme .proof-box{color:#0f172a}
       if (e.missing) {
         if (profile !== 'phone') { notes.push('The tab "' + tab + '" is missing or empty: using "Layout phone".'); return readOldTab('phone', notes); }
         notes.push('The tab "Layout phone" is missing or empty.');
-      } else notes.push('Live read of "' + tab + '" failed (' + e.message + ').');
+      } else { notes.push('Live read of "' + tab + '" failed (' + e.message + ').'); offline = true; }
     }
     const c = lsGet(K.layout(profile), null), sb = savedBundle();   // round A: the newer of the two last good copies
-    if (sb && !(c && c.at > sb.at)) return { rows: sb.rows, profile, source: 'saved', sourceText: 'Layout from the last good copy of Structure + Items (saved ' + new Date(sb.at).toLocaleString() + ').' };
-    if (c && Array.isArray(c.rows) && build(c.rows).used) return { rows: c.rows, profile, source: 'saved', sourceText: 'Layout from the last good copy of "' + tab + '" (saved ' + new Date(c.at).toLocaleString() + ').' };
-    try { const r = await fetch('layout-profiles.csv', { cache: 'no-store' }); if (r.ok) { const rows = fromCsv(await r.text()); if (build(rows).used) return { rows, profile, source: 'csv', sourceText: 'Using saved layout: layout-profiles.csv next to this page (not the live sheet).' }; } } catch (e) {}
-    return { rows: fromCsv(window.PROOF_BUILTIN_CSV || ''), profile, source: 'builtin', sourceText: 'Using saved layout: the copy built into this page (not the live sheet).' };
+    if (sb && !(c && c.at > sb.at)) return { rows: sb.rows, profile, source: 'saved', offline, sourceText: 'Layout from the last good copy of Structure + Items (saved ' + new Date(sb.at).toLocaleString() + ').' };
+    if (c && Array.isArray(c.rows) && build(c.rows).used) return { rows: c.rows, profile, source: 'saved', offline, sourceText: 'Layout from the last good copy of "' + tab + '" (saved ' + new Date(c.at).toLocaleString() + ').' };
+    try { const r = await fetch('layout-profiles.csv', { cache: 'no-store' }); if (r.ok) { const rows = fromCsv(await r.text()); if (build(rows).used) return { rows, profile, source: 'csv', offline, sourceText: 'Using saved layout: layout-profiles.csv next to this page (not the live sheet).' }; } } catch (e) {}
+    return { rows: fromCsv(window.PROOF_BUILTIN_CSV || ''), profile, source: 'builtin', offline, sourceText: 'Using saved layout: the copy built into this page (not the live sheet).' };
   }
 
   // ---------- tweaks: the 'Tweaks' tab (Device name, Profile, Cell id, Property, Value, Saved at; H1 'Save address', H2 the web app address)
@@ -8807,7 +8827,7 @@ body.light-theme .proof-box{color:#0f172a}
     try { renderCanvas(); if (wasEdit) syncInspectorUI(); } catch (e) {}
     try { saveStateToStorage(false); } catch (e) {}   // round A.1: the saved screen copy is always this version's latest draw (iPhone may skip beforeunload)
     applied = snapshot(); baseSig = structSig(engineState); lastL = L;
-    info = { profile: L.profile, fellBack: L.profile !== wanted, rows: b.used, refused: b.refused.length, tweaks: nt, readAt: reason === 'clear' ? info.readAt : new Date(), source: L.source, sourceText: L.sourceText, tweaksFrom: T.from, pending: !!T.pending };
+    info = { profile: L.profile, fellBack: L.profile !== wanted, rows: b.used, refused: b.refused.length, tweaks: nt, readAt: reason === 'clear' ? info.readAt : new Date(), offline: !!L.offline, source: L.source, sourceText: L.sourceText, tweaksFrom: T.from, pending: !!T.pending };
     notes = n.concat(b.refused, b.warned || []);
     if (T.pending && T.rows.length) notes.push(T.rows.length + ' tweak(s) on this device are not saved to the sheet yet: press Save tweaks.');
     if (reason === 'reload') lastAction = 'Reloaded ' + hhmm() + ', ' + b.used + ' rows, ' + b.refused.length + ' refused, ' + nt + ' tweaks.';
@@ -8833,7 +8853,7 @@ body.light-theme .proof-box{color:#0f172a}
   }
   function reload() {
     const lost = changedFrom(applied).length;
-    return load('reload').then(() => { lastShort = 'Reloaded ' + hhmm() + (lost ? ' · ' + lost + ' unsaved dropped' : ''); if (lost) { lastAction += ' ' + lost + ' unsaved inspector change(s) dropped.'; paintNotes(); } });
+    return load('reload').then(() => { lastShort = (info.offline ? 'Offline: showing the saved layout' : 'Reloaded ' + hhmm()) + (lost ? ' · ' + lost + ' unsaved dropped' : ''); /* round A.2: offline = the saved layout */ if (lost) { lastAction += ' ' + lost + ' unsaved inspector change(s) dropped.'; paintNotes(); } });
   }
 
   async function post(body) {
@@ -9143,7 +9163,7 @@ body.light-theme .proof-box{color:#0f172a}
     if (busy[action]) return Promise.resolve();   // a second tap while it runs does nothing
     busy[action] = label; decorate(); say(label, '', 30000);
     return Promise.resolve().then(fn).catch(() => {}).then(res => {
-      const msg = (res && res.short) || lastShort || 'Done'; say(msg, (res && res.ok === false) || /not saved|NOT/.test(msg) ? 'warn' : 'done'); lastShort = '';
+      const msg = (res && res.short) || lastShort || 'Done'; say(msg, (res && res.ok === false) || /not saved|NOT|^Offline/.test(msg) ? 'warn' : 'done'); lastShort = '';
       delete busy[action]; doneUntil[action] = Date.now() + 900;
       document.querySelectorAll('#viewport-canvas-frame button.proof-busy').forEach(btn => { const sp = btn.querySelector('span') || btn; if (btn.dataset.orig != null) sp.textContent = btn.dataset.orig; delete btn.dataset.orig; btn.classList.remove('proof-busy'); });
       decorate(); setTimeout(() => document.querySelectorAll('#viewport-canvas-frame button.proof-done').forEach(b => b.classList.remove('proof-done')), 950);
@@ -9202,7 +9222,7 @@ body.light-theme .proof-box{color:#0f172a}
   // after each redraw. Live tap: reload only when a newer version exists. In Adjust / Edit a tap selects it like any cell.
   const badgeText = () => 'v' + PROOF_VERSION + (PRETEND ? ' (acting as ' + PRETEND + ')' : '');
   function badge() {
-    const part = document.querySelector('#viewport-canvas-frame .grid-split-partition[data-pid="badge"]');
+    const part = document.querySelector('#viewport-canvas-frame .grid-split-partition[data-pid="' + BADGE_ID + '"]');
     const e = part && part.querySelector('button.rounded-lg'); if (!e) return;
     if (e.id !== 'proof-badge') e.id = 'proof-badge';
     e.classList.toggle('stale', !!staleV);
