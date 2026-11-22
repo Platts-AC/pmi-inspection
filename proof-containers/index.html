@@ -3575,7 +3575,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.12.1", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.12.2", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3585,7 +3585,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.12.1', stamp: '2026-11-22 10:01:39', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.12.2', stamp: '2026-11-22 11:25:09', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8262,7 +8262,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.12.1';
+  const PROOF_VERSION = '0.12.2';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8273,7 +8273,12 @@ body.light-theme .proof-box{color:#0f172a}
   // Round B1: field meanings come from the Fields tab. This built-in list is used ONLY when the layout comes from an old Layout tab
   // or Round A's tabs (no Fields tab): the one allowed second home (Q-016), so the old tabs keep drawing as 0.10.2 did.
   const FIELD_FALLBACK = { 'f:date': 'Date', 'f:customer': 'Customer', 'f:address': 'Address', 'f:phone': 'Phone', 'f:outdoorModel': 'Condenser model', 'f:suctionPressure': 'Suction pressure' };
-  const FIND_KEYS = { 'find.name': 1, 'find.address': 1, 'find.phone': 1 };
+  const FIND_KEYS = { 'find.name': 1, 'find.address': 1, 'find.phone': 1 };   // the Find slot's own boxes
+  // 0.12.2 (R7): which Field a picked house fills, and word capitals, come from the Fields column 'Find fill' (name, address, phone).
+  // This list is part of the one allowed second home (old Layout tabs, and a Fields tab made before the column existed).
+  const FIND_FILL_FALLBACK = { 'f:customer': 'name', 'f:address': 'address', 'f:phone': 'phone' };
+  const FIND_FILLS = { name: 1, address: 1, phone: 1 }, FIND_BOX_FILL = { 'find.name': 'name', 'find.address': 'address', 'find.phone': 'phone' };
+  const findFillOf = p => p.proofField ? (p.proofField.find || '') : (FIND_BOX_FILL[p.proofKey] || FIND_FILL_FALLBACK[p.proofKey] || '');
   const TYPES = { button: 1, text: 1, logo: 1, badge: 1 };
   const TOOL_ACTIONS = { 'reload-layout': 1, 'proof-save-tweaks': 1, 'proof-clear-tweaks': 1, 'proof-profile': 1, 'toggle-tray': 1, 'proof-adjust': 1, 'refresh-page': 1 };
   const ACTIONS = Object.assign({ 'proof-badge': 1, 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1, 'new-call': 1, 'reveal-hidden': 1 }, TOOL_ACTIONS);
@@ -8316,6 +8321,7 @@ body.light-theme .proof-box{color:#0f172a}
     else if (k === 'subLabelPlace') { const s = sub(p); s.align = PLACES[v][0]; s.vAlign = PLACES[v][1]; }
   }
   const isBadge = p => !!p && p.clickAction === 'proof-badge';
+  const BOTH_SWITCH_W = 36;   // 0.12.2 (F1): room for the type / wheel switch in a 'both' value box (switch 30 px + 6 px gap)
   const VIS_RULES = { always: 1, never: 1, 'when-filled': 1, reserved: 1 };   // Blueprint P9 (round B2 adds when-filled and reserved)
   // Round A.2: the version badge's sheet row is the row with the action proof-badge or the Id below (the one place the Id is named)
   const BADGE_ID = 'badge';
@@ -8330,6 +8336,7 @@ body.light-theme .proof-box{color:#0f172a}
   function pressDefault(p) {
     const a = p.clickAction || '';
     if (a === 'proof-badge') return 'none';   // the badge never flashes (a tap does something only when a newer version exists)
+    if (/^set-show:|^set-template:/.test(a)) return 'none';   // 0.12.2 (R12): their look is the active View / template (markActive)
     if (/^set-view:/.test(a) || a === 'toggle-inspector' || a === 'toggle-live' || a === 'toggle-tray' || a === 'proof-adjust' || a === 'proof-profile') return 'stay';
     if (a === 'reload-layout' || a === 'proof-save-tweaks' || a === 'proof-clear-tweaks' || a === 'refresh-page') return 'busy';
     return 'flash';
@@ -8369,9 +8376,11 @@ body.light-theme .proof-box{color:#0f172a}
 
   // ---------- the slots ----------
   window.EngineSlots = window.EngineSlots || {};
+  // the keypad of a value box: tel by the old rule on the key (6c), decimal for a Fields 'number' (old tabs: the old suction rule)
+  function keypadOf(p) { const k = p.proofKey || '', F = p.proofField; return /phone/.test(k) ? 'tel' : (F ? F.kind === 'number' : /suction/i.test(k)) ? 'decimal' : ''; }
   window.EngineSlots['box'] = { render(p) {
     // keypad: tel by the old rule on the key (6c, unchanged in B1); decimal for a Fields 'number' (old tabs: the old suction rule)
-    const k = p.proofKey, F = p.proofField, tel = /phone/.test(k), num = F ? F.kind === 'number' : /suction/i.test(k);
+    const k = p.proofKey, F = p.proofField, km = keypadOf(p), tel = km === 'tel', num = km === 'decimal';
     const va = p.vAlign === 'top' ? 'flex-start' : p.vAlign === 'bottom' ? 'flex-end' : 'center';
     const wm = p.proofInput && p.proofInput !== 'type' && modeOf(p) === 'wheel';   // round B2: a box in wheel mode never opens the keyboard
     const sw = p.proofInput === 'both' ? '<button type="button" class="proof-mode" tabindex="-1">' + (wm ? '⌨' : '◎') + '</button>' : '';
@@ -8388,7 +8397,7 @@ body.light-theme .proof-box{color:#0f172a}
   // round 5 (3): keep the phone's autofill away: autocomplete off and a NEUTRAL name / id (a short code made from the cell Id;
   // words like phone, address or name make Chrome offer saved data), autocorrect and spellcheck off, capitals only where words are typed.
   function shortCode(t) { let h = 2166136261; for (let i = 0; i < t.length; i++) { h ^= t.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); }
-  function boxAttrs(p) { const c = 'pcb-' + shortCode(p.proofId || p.proofKey || ''), words = /customer|address|name/.test(p.proofKey || '') && !/phone/.test(p.proofKey || '');
+  function boxAttrs(p) { const c = 'pcb-' + shortCode(p.proofId || p.proofKey || ''), ff = findFillOf(p), words = ff === 'name' || ff === 'address';   // 0.12.2 (R7): from Find fill
     return ' id="' + c + '" name="' + c + '" autocomplete="one-time-code" autocorrect="off" spellcheck="false" autocapitalize="' + (words ? 'words' : 'off') + '" data-lpignore="true" data-form-type="other"'; }
   window.EngineSlots['results'] = { render() { return '<div class="proof-results">' + resultsHtml() + '</div>'; } };
   // Round B1 (Blueprint P8): two recipe pieces drawn by code. 'unit' = the read-only unit text from Fields Unit; 'report-value' = the
@@ -8402,8 +8411,9 @@ body.light-theme .proof-box{color:#0f172a}
     const F = p.proofField || {}, J = p.proofJoin, v = x => String(call[x.id] == null ? '' : call[x.id]).trim();
     let value = v(F), unit = F.unit || '';
     if (J) {   // 0.12.1 (BT-27): only filled values are joined; no lone separator or unit
-      const sep = J.sep === '' ? JOIN_SEP : J.sep, u2 = J.field.unit || '', parts = [[v(F), unit], [v(J.field), u2]].filter(x => x[0]);
-      if (!u2 || u2 === unit || !unit) { value = parts.map(x => x[0]).join(sep); if (!unit) unit = parts.length ? (parts.find(x => x[1]) || ['', ''])[1] : ''; }
+      // 0.12.2 (R9): each value keeps its own Field's unit; one shared unit only when both are filled with the same unit
+      const sep = J.sep === '' ? JOIN_SEP : J.sep, parts = [[v(F), F.unit || ''], [v(J.field), J.field.unit || '']].filter(x => x[0]);
+      if (parts.length === 2 && parts[0][1] === parts[1][1]) { value = parts[0][0] + sep + parts[1][0]; unit = parts[0][1]; }
       else { value = parts.map(x => x[0] + (x[1] ? ' ' + x[1] : '')).join(sep); unit = ''; } }
     const t = F.wording || '{label}: {value} {unit}';
     return t.replace(/\{(label|value|unit)\}/g, (m, w) => w === 'label' ? (p.proofLabel || F.name || '') : w === 'value' ? value : (value.trim() ? unit : '')).replace(/\s+/g, ' ').trim();
@@ -8426,7 +8436,7 @@ body.light-theme .proof-box{color:#0f172a}
   }
   const paintResults = () => document.querySelectorAll('.proof-results').forEach(el => { el.innerHTML = resultsHtml(); });
   window.__proofRepaints = 0;
-  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; const r = rc.apply(this, arguments); try { decorate(); } catch (e) {} return r; }; }
+  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; try { closeWheel(); } catch (e) {}   /* 0.12.2 (R6) */ const r = rc.apply(this, arguments); try { decorate(); } catch (e) {} return r; }; }
 
   document.addEventListener('input', e => {
     const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b) return;
@@ -8438,7 +8448,9 @@ body.light-theme .proof-box{color:#0f172a}
     const h = e.target && e.target.closest && e.target.closest('.proof-hit'); if (!h) return;
     e.preventDefault(); e.stopPropagation();
     const x = HOUSES[+h.dataset.i]; if (!x) return;
-    call['f:customer'] = x.name; call['f:address'] = x.address; call['f:phone'] = x.phone; lsSet(K.call, call);
+    // 0.12.2 (R7): every value box whose Field has a Find fill gets that part of the house (no Field Id named here)
+    eachCell(engineState, p => { if (p.slot !== 'box' || FIND_KEYS[p.proofKey]) return; const ff = findFillOf(p); if (ff && x[ff] != null) call[p.proofField ? p.proofField.id : p.proofKey] = x[ff]; });
+    lsSet(K.call, call);
     clearFind(); goView('entry');
   }, true);
   function clearFind() { Object.keys(find).forEach(k => { find[k] = ''; }); }
@@ -8482,7 +8494,7 @@ body.light-theme .proof-box{color:#0f172a}
     document.body.classList.remove('proof-typing'); kbPad(0);
   }
   document.addEventListener('focusin', e => { const b = e.target; if (isBox(b)) { if (b.dataset.key in find) document.body.classList.add('proof-typing'); keepInView(b); } });
-  document.addEventListener('focusout', () => { setTimeout(() => { if (!isBox(document.activeElement)) { resetTypingOrder(); try { applyVis(); } catch (e) {} } }, 300); });
+  document.addEventListener('focusout', () => { setTimeout(() => { if (!isBox(document.activeElement)) { if (document.getElementById('proof-wheel')) document.body.classList.remove('proof-typing'); else resetTypingOrder(); try { applyVis(); } catch (e) {} } }, 300); });   // 0.12.2 (R6): an open wheel keeps its spacer
   if (window.visualViewport) window.visualViewport.addEventListener('resize', () => { const a = document.activeElement; if (isBox(a)) keepInView(a); });
 
   // ---------- rows of a tab -> engine layout ----------
@@ -8494,6 +8506,8 @@ body.light-theme .proof-box{color:#0f172a}
     const out = []; const byRow = {}; let used = 0; const colW = {}, freezeOf = {}, lineH = {}, warned = [];
     let badgeDrawn = false;
     const holes = [];
+    const addHole = r => { const v = c => String(r[c] == null ? '' : r[c]).trim(); const sc = v('Screen').toLowerCase(), rn = v('Row'), ci = +v('Container'), si = +v('Stack'), pi = +v('Cell'), w = Number(v('Weight'));
+      if (sc && rn && !FORMULA_ERR.test(sc) && !FORMULA_ERR.test(rn) && ci >= 1 && si >= 1 && pi >= 1 && [ci, si, pi].every(Number.isInteger)) holes.push({ key: sc + '\u0001' + rn, ci, si, pi, w: w > 0 && w <= 100 ? w : 1, loc: r._loc || (sc + '/' + rn + '/' + ci + '.' + si + '.' + pi).replace(/[^A-Za-z0-9 ._\/-]/g, '-').slice(-80) }); };
     const one = (r, i) => {
       if (r._refuse) { refused.push(r._refuse); return; }   // round A: a Structure / Items row the bundle step already refused
       if (r._note) { warned.push(r._note); return; }
@@ -8501,7 +8515,7 @@ body.light-theme .proof-box{color:#0f172a}
       const where = r._where || ('Tab row ' + n), at = r._where || ('tab row ' + n);
       if (!COLS.slice(0, 8).some(c => g(c))) return;   // an empty row
       const why = [];
-      const fe = formulaErrors(r); if (fe.length) { refused.push(where + ' refused: ' + fe.join(', ') + '.'); return; }   // round A: never print #VALUE! etc.
+      const fe = formulaErrors(r); if (fe.length) { refused.push(where + ' refused: ' + fe.join(', ') + '.'); addHole(r); return; }   // 0.12.2 (R14): keeps its locker   // round A: never print #VALUE! etc.
       if (isBadgeRow(r)) {   // round A.2: the version badge can never be hidden or turned into something else by a sheet row
         const was = { vis: g('Visible when'), type: g('Type'), content: g('Content') };
         if (was.vis && was.vis.toLowerCase() !== 'always') { r = Object.assign({}, r, { 'Visible when': 'always' }); warned.push(where + ': the version badge cannot be hidden (Visible when "' + was.vis + '" not used).'); }
@@ -8571,7 +8585,8 @@ body.light-theme .proof-box{color:#0f172a}
       if (vis === 'when-filled' || vis === 'reserved') cell.proofVis = vis;
       if (r._tpl) cell.proofTpl = r._tpl;
       if (r._ltpl) cell.proofLTpl = r._ltpl;
-      if (r._input) { cell.proofInput = r._input; cell.proofWheel = r._wheel || null; }
+      if (r._input) { cell.proofInput = r._input; cell.proofWheel = r._wheel || null;
+        if (r._input === 'both' && cell.subLabel && cell.subLabel.enabled && cell.subLabel.align === 'right') cell.subLabel.nudgeX = (Number(cell.subLabel.nudgeX) || 0) - BOTH_SWITCH_W; }   // 0.12.2 (F1): the unit sits left of the switch
       if (fd) { cell.proofField = fd; if (r._join) cell.proofJoin = r._join; if (r._label) cell.proofLabel = r._label; }
       if (slot === 'box') { cell.slot = 'box'; cell.proofKey = content; cell.label = ''; }
       else if (slot === 'unit' || slot === 'report-value') { cell.slot = slot; cell.proofKey = content; cell.label = ''; }
@@ -8622,7 +8637,7 @@ body.light-theme .proof-box{color:#0f172a}
   }
   const STRUCTURE_COLS = ['Screen', 'Section', 'Column', 'Line name', 'Cells', 'Cell widths', 'Line height', 'Column width', 'Freeze'];
   const ITEM_SKIP = { 'Id': 1, 'Line': 1, 'Cell': 1, 'Weight': 1, 'Field': 1, 'Recipe': 1, 'Join with': 1, 'Join sep': 1, 'Label size': 1 };   // placing / recipe columns (every other column is look); a cell's width lives on Structure 'Cell widths' (Danny, Q-015)
-  const FIELDS_COLS = ['Field Id', 'Name', 'Short label', 'Aliases', 'Kind', 'Unit', 'Hard min', 'Hard max', 'Report wording', 'Scope', 'Notes'];   // Blueprint P7
+  const FIELDS_COLS = ['Field Id', 'Name', 'Short label', 'Aliases', 'Kind', 'Unit', 'Hard min', 'Hard max', 'Report wording', 'Scope', 'Notes', 'Find fill'];   // Find fill: 0.12.2 (R7)   // Blueprint P7
   const SIZES_COLS = ['Profile', 'Target', 'Font size', 'Line height', 'Pad X', 'Pad Y', 'Min size', 'Max size', 'Notes'];   // Blueprint P12
   const ITEM_B1_COLS = ['Field', 'Recipe', 'Join with', 'Join sep', 'Label size'];   // Blueprint P18 (B1) + BD-6
   const KINDS = { text: 1, number: 1, date: 1, choice: 1, yesno: 1, comment: 1, readonly: 1, calculated: 1 };
@@ -8636,6 +8651,7 @@ body.light-theme .proof-box{color:#0f172a}
   const MONTH = '(jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\\.?';
   const DATE_LIKE = [/^\d{1,4}[\/.-]\d{1,2}([\/.-]\d{1,4})?$/, /^\d{1,2}:\d{2}(:\d{2})?(\s?[ap]\.?m\.?)?$/i, /^\d+ \d+\/\d+$/, /^\d{1,2} \d{1,2} \d{2,4}$/,
     new RegExp('^' + MONTH + '\\s+\\d', 'i'), new RegExp('^\\d{1,2}[\\s-]' + MONTH + '([\\s-]\\d{2,4})?$', 'i')];
+  const CHOICE_DATE = [/^\d{1,4}[\/.-]\d{1,2}[\/.-]\d{1,4}$/, DATE_LIKE[1], DATE_LIKE[4], DATE_LIKE[5]];   // a wheel choice: full dates, times, month names
   // true when Google turned the cell into a date, time or number (it says so in its answer: _t), or the text looks like one
   const converted = (r, col) => { const v = String(r[col] == null ? '' : r[col]).trim(), t = r._t && r._t[col]; return !!v && (t === 'date' || t === 'time' || t === 'number' || DATE_LIKE.some(x => x.test(v))); };
   const g2 = (r, c) => String(r[c] == null ? '' : r[c]).trim();
@@ -8648,6 +8664,7 @@ body.light-theme .proof-box{color:#0f172a}
     const raw = g2(r, col); if (!raw) return {};
     if (converted(r, col)) return { err: col + ' "' + raw + '" looks like a date, time or number. ' + PT_HINT(col) };
     const parts = raw.split(',').map(x => x.trim()).filter(Boolean), minus = parts.filter(x => x.charAt(0) === '-');
+    if (!parts.length) return { err: col + ' "' + raw + '" has no template name (use names like PM, Repair, or minus names like -NoCool)' };   // 0.12.2 (R8)
     if (minus.length && minus.length !== parts.length) return { err: col + ' "' + raw + '" mixes names and minus names: use only names (PM, Repair) or only minus names (-NoCool, -Quote)' };
     const names = parts.map(x => x.replace(/^-\s*/, ''));
     const bad = names.filter(n => !TPL_NAME.test(n)); if (bad.length) return { err: col + ' "' + raw + '": a template name may hold letters, digits, space . _ - (30 at most), not "' + bad[0] + '"' };
@@ -8668,7 +8685,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (count > WHEEL_MAX) return { err: 'Wheel "' + raw + '" has ' + count + ' choices (' + WHEEL_MAX + ' at most): use a bigger step' };
       if (start < lo || start > hi) return { err: 'Wheel "' + raw + '": start ' + start + ' is outside ' + lo + '..' + hi };
       const dec = Math.max(...[m[1], m[3] || '1'].map(x => (String(x).split('.')[1] || '').length));
-      const items = Array.from({ length: count }, (_, i) => (lo + i * step).toFixed(dec).replace(/^-0$/, '0'));
+      const items = Array.from({ length: count }, (_, i) => (lo + i * step).toFixed(dec).replace(/^-0$/, '0')).reverse();   // 0.12.2 (F2): highest at the top
       const st = items.reduce((b, x, i) => Math.abs(Number(x) - start) < Math.abs(Number(items[b]) - start) ? i : b, 0);
       return { wheel: { items, start: st } };
     }
@@ -8677,7 +8694,7 @@ body.light-theme .proof-box{color:#0f172a}
     if (items.length < 2) return { err: 'Wheel "' + raw + '" needs a range like 20..250 step 1 start 120, or a list of 2 or more choices separated by commas' };
     if (items.length > 200) return { err: 'Wheel "' + raw + '" has ' + items.length + ' choices (200 at most)' };
     const long = items.find(x => x.length > 40); if (long) return { err: 'Wheel choice "' + long.slice(0, 20) + '..." is longer than 40 letters' };
-    const dl = items.find(x => DATE_LIKE.some(d => d.test(x))); if (dl) return { err: 'Wheel choice "' + dl + '" looks like a date, time or number. ' + PT_HINT('Wheel') };
+    const dl = items.find(x => CHOICE_DATE.some(d => d.test(x)));   /* 0.12.2 (R1): 1.5, 3/4, 1 1/2 are fine; only real dates and times are refused */ if (dl) return { err: 'Wheel choice "' + dl + '" looks like a date, time or number. ' + PT_HINT('Wheel') };
     return { wheel: { items, start: 0 } };
   }
   // Fields tab -> { map: Field Id -> meaning, bad: Field Id -> where it was refused, msgs }
@@ -8688,6 +8705,8 @@ body.light-theme .proof-box{color:#0f172a}
       if (!Object.keys(r).some(c => c.charAt(0) !== '_' && g2(r, c)) && !why.length) return;   // an empty row (0.12.1, BT-47: any column counts)
       const id = g2(r, 'Field Id'), name = g2(r, 'Name'), kind = (g2(r, 'Kind') || 'text').toLowerCase(), scope = g2(r, 'Scope').toLowerCase(), wording = String(r['Report wording'] == null ? '' : r['Report wording']).trim();
       const hmin = g2(r, 'Hard min'), hmax = g2(r, 'Hard max');
+      const ffCol = 'Find fill' in r, ff = ffCol ? g2(r, 'Find fill').toLowerCase() : (FIND_FILL_FALLBACK[id] || '');   // 0.12.2 (R7); no column = today's fill (migration)
+      if (ffCol && ff && !FIND_FILLS[ff] && !why.length) why.push('Find fill "' + g2(r, 'Find fill') + '" must be name, address or phone (or blank)');
       if (!why.length) {
         if (!id) why.push('no Field Id');
         else if (converted(r, 'Field Id')) why.push('Field Id "' + id + '" looks like a date or number. ' + PT_HINT('Field Id'));
@@ -8704,7 +8723,7 @@ body.light-theme .proof-box{color:#0f172a}
         if (words.length) why.push('Report wording may use only {label}, {value} and {unit} (not ' + words.join(' ') + ')');
       }
       if (why.length) { msgs.push({ _refuse: where + ' refused: ' + why.join(', ') + '.' }); if (id && !map[id] && !bad[id]) bad[id] = where; return; }
-      map[id] = { id, name, short: g2(r, 'Short label'), kind, unit: g2(r, 'Unit'), wording, hmin, hmax, scope, where };
+      map[id] = { id, name, short: g2(r, 'Short label'), kind, unit: g2(r, 'Unit'), wording, hmin, hmax, scope, where, find: ff };
     });
     return { map, bad, msgs };
   }
@@ -8733,7 +8752,7 @@ body.light-theme .proof-box{color:#0f172a}
     const okNum = (v, lo, hi) => v === '' || (isFinite(Number(v)) && Number(v) >= lo && Number(v) <= hi);
     structure.forEach((r, i) => {
       const where = 'Structure row ' + (i + 2), why = formulaErrors(r);
-      if (!STRUCTURE_COLS.slice(0, 5).some(c => g(r, c)) && !why.length) return;   // an empty row
+      if (!Object.keys(r).some(c => c.charAt(0) !== '_' && g(r, c)) && !why.length) return;   // an empty row (0.12.2, R11: any column counts)
       const screen = g(r, 'Screen').toLowerCase(), sec = g(r, 'Section'), col = g(r, 'Column') || '1', name = g(r, 'Line name'), cells = g(r, 'Cells');
       const lh = g(r, 'Line height'), cw = g(r, 'Column width'), frz = g(r, 'Freeze').toLowerCase(), wsRaw = g(r, 'Cell widths');
       // round A.2: whole numbers 1 to 20 with ONE space between them (or one number on a 1-cell line); anything else may be a value
@@ -8770,7 +8789,7 @@ body.light-theme .proof-box{color:#0f172a}
     items.forEach((r, i) => {
       const where = 'Items row ' + (i + 2), why = formulaErrors(r);
       const id = g(r, 'Id'), ln = g(r, 'Line'), cell = g(r, 'Cell'), fid = g(r, 'Field');
-      if (!id && !ln && !cell && !fid && !why.length) return;   // an empty row
+      if (!Object.keys(r).some(c => c.charAt(0) !== '_' && g(r, c)) && !why.length) return;   // an empty row (0.12.2, R11: any column counts)
       const L = lines[ln];
       let F = null, J = null, words = null;
       if (!why.length) {
@@ -8781,6 +8800,7 @@ body.light-theme .proof-box{color:#0f172a}
         else if (Number(cell) > L.cells) why.push('Cell ' + cell + ' is outside line "' + ln + '" (it has ' + L.cells + ' cells)');
         if (sizeBad(g(r, 'Label size'), SIZE_LO, SIZE_HI)) why.push('Label size "' + g(r, 'Label size') + '" must be a number from ' + SIZE_LO + ' to ' + SIZE_HI);
         if (fid) {   // 0.12.1 (BT-41): the value box sizes are checked here too, so a bad one refuses the WHOLE Field row
+          [['Sub label size', 'subLabelSize'], ['Sub label place', 'subLabelPlace'], ['Wrap', 'wrap']].forEach(([c, k]) => { if (g(r, c) !== '') { const t = RULES[k](g(r, c)); if (t.err) why.push(t.err.replace(/^\w[\w ]*? must/, c + ' "' + g(r, c) + '" must')); } });   // 0.12.2 (R4)
           ['Font size', 'Min size', 'Max size'].forEach(c => { if (sizeBad(g(r, c), SIZE_LO, SIZE_HI)) why.push(c + ' "' + g(r, c) + '" must be a number from ' + SIZE_LO + ' to ' + SIZE_HI); });
           if (g(r, 'Min size') !== '' && g(r, 'Max size') !== '' && !sizeBad(g(r, 'Min size'), SIZE_LO, SIZE_HI) && !sizeBad(g(r, 'Max size'), SIZE_LO, SIZE_HI) && Number(g(r, 'Min size')) > Number(g(r, 'Max size'))) why.push('Min size ' + g(r, 'Min size') + ' is above Max size ' + g(r, 'Max size'));
         }
@@ -8868,7 +8888,7 @@ body.light-theme .proof-box{color:#0f172a}
         const it = L.items[c], o = { 'Screen': L.screen, 'Row': L.sec, 'Container': String(L.ci), 'Stack': String(L.si), 'Cell': String(c) };
         const wv = String(L.widths[c - 1] || 1);   // the width belongs to the Cell (the locker), with or without an Item
         if (it) { Object.keys(it.r).forEach(k => { if (!ITEM_SKIP[k]) o[k] = it.r[k]; }); o['Id'] = g(it.r, 'Id'); o['Weight'] = wv; o._where = it.where;
-          if (String(o['Visible when'] || '').trim().toLowerCase() === 'never' && !isBadgeRow(o)) { o['Type'] = 'text'; o['Content'] = ''; o['Slot'] = ''; o['Visible when'] = 'always'; delete o._fieldDef; } }   // hidden = an empty cell, nothing moves
+          if (String(o['Visible when'] || '').trim().toLowerCase() === 'never' && !isBadgeRow(o)) { o['Type'] = 'text'; o['Content'] = ''; o['Slot'] = ''; o['Visible when'] = 'always'; o['Sub label'] = ''; ['_fieldDef', '_tpl', '_join', '_label', '_input', '_wheel'].forEach(k => { delete o[k]; }); } }   // hidden = an empty cell, nothing moves (0.12.2, R5: no Templates, no unit)
         else { o['Type'] = 'text'; o['Content'] = ''; o['Weight'] = wv; o['Visible when'] = 'always'; o['Id'] = locId(name, c); o._where = L.where; o._blank = true; }
         o._loc = locId(name, c); o._line = name; if (L.tpl) o._ltpl = L.tpl;   // round B2
         const own = { min: o['Min size'], max: o['Max size'] }, from = {};
@@ -9328,6 +9348,7 @@ body.light-theme .proof-box{color:#0f172a}
     try { recordHistorySnapshot(); } catch (e) {} saveStateToStorage(); renderCanvas(); keepSelectedVisible(); barStatus();
   }
   function openBar() {
+    try { closeWheel(); } catch (e) {}   // 0.12.2 (R6)
     makeBar(); barOpen = true; document.body.classList.add('proof-adjusting');
     try { if (inspectorWindowState !== 'closed') closeInspectorWindow(); } catch (e) {}
     if (isLiveInteraction) toggleInteractionState();
@@ -9663,29 +9684,35 @@ body.light-theme .proof-box{color:#0f172a}
           else { if (band.dataset.pvGone) { delete band.dataset.pvGone; band.style.removeProperty('display'); } band.style.height = h + 'px'; }
         }
         let chip = band.querySelector(':scope > .proof-chip');
-        if (n && shown) { if (!chip) { chip = document.createElement('button'); chip.type = 'button'; chip.className = 'proof-chip'; band.appendChild(chip); } chip.dataset.row = String(ri); chip.textContent = '+' + n + ' hidden'; }
+        if (n && shown && callView.view === 'template') { if (!chip) {   /* 0.12.2 (R2): the chip belongs to Template view */ chip = document.createElement('button'); chip.type = 'button'; chip.className = 'proof-chip'; band.appendChild(chip); } chip.dataset.row = String(ri); chip.textContent = '+' + n + ' hidden'; }
         else if (chip) chip.remove();
       });
       if (anchor) { const dy = anchor.getBoundingClientRect().top - before; if (Math.abs(dy) > 0.5) { const sc = scroller(); if (sc) sc.scrollTop += dy; else window.scrollBy(0, dy); } }
       try { stackFrozen(); } catch (e) {}
     } finally { visBusy = false; }
   }
-  window.__proofApplyVis = 0;
   function revealSection(ri) {
-    const row = engineState.rows[ri]; if (!row) return;
+    const row = engineState.rows[ri]; if (!row || callView.view !== 'template') return;   // 0.12.2 (R2)
     const plan = visPlan();
     (row.containers || []).forEach(c => (c.stacks || []).forEach(s => { if (plan.get(s) && s.proofLine) callView.revealed[s.proofLine] = 1; }));
     saveView(); applyVis(); paintNotes();
   }
-  document.addEventListener('click', e => { const ch = e.target && e.target.closest && e.target.closest('.proof-chip'); if (!ch) return; e.preventDefault(); e.stopPropagation(); revealSection(Number(ch.dataset.row)); }, true);
+  // 0.12.2 (R3): the chip acts on PRESS and never takes the focus, so a box being typed in keeps it (and the phone keyboard stays)
+  ['pointerdown', 'mousedown'].forEach(t => document.addEventListener(t, e => { const ch = e.target && e.target.closest && e.target.closest('.proof-chip'); if (!ch) return; e.preventDefault(); e.stopPropagation();
+    if (t === 'pointerdown') revealSection(Number(ch.dataset.row)); }, true));
+  document.addEventListener('click', e => { const ch = e.target && e.target.closest && e.target.closest('.proof-chip'); if (!ch) return; e.preventDefault(); e.stopPropagation(); }, true);
   // a View or Template switch waits while a value box has focus (H1 rule d); it never redraws the page
   function whenFree(fn) {
     if (!isTyping()) { fn(); return; }
     const once = () => { document.removeEventListener('focusout', once); setTimeout(() => { if (isTyping()) whenFree(fn); else fn(); }, 0); };
     document.addEventListener('focusout', once);
   }
-  ['all', 'template', 'values'].forEach(v => { window.EngineActions['set-show:' + v] = () => whenFree(() => { callView.view = v; saveView(); applyVis(); paintNotes(); say('View: ' + viewWord(), 'done'); }); });
-  function setTemplate(name) { whenFree(() => { callView.tpl = name; saveView(); applyVis(); paintNotes(); say('Template: ' + (name || 'none'), 'done'); }); }
+  ['all', 'template', 'values'].forEach(v => { window.EngineActions['set-show:' + v] = () => whenFree(() => { callView.view = v; saveView(); applyVis(); paintNotes(); markActive(); say('View: ' + viewWord(), 'done'); }); });
+  // 0.12.2 (R12): the tray shows the active View and template (their buttons look pressed)
+  function markActive() { document.querySelectorAll('#viewport-canvas-frame .grid-split-partition').forEach(part => { const c = cellOfPart(part), a = c && c.clickAction || '', btn = part.querySelector('button.rounded-lg'); if (!btn) return;
+    if (/^set-show:/.test(a)) btn.classList.toggle('ctl-on', a === 'set-show:' + callView.view);
+    else if (TPL_ACTION.test(a)) btn.classList.toggle('ctl-on', sameName(a.slice(13).trim(), callView.tpl)); }); }
+  function setTemplate(name) { whenFree(() => { callView.tpl = name; saveView(); applyVis(); paintNotes(); markActive(); say('Template: ' + (name || 'none'), 'done'); }); }
   window.EngineActions['reveal-hidden'] = (cell) => { let ri = -1; (engineState.rows || []).forEach((r, i) => r.containers.forEach(c => c.stacks.forEach(s => { if (s.splits.indexOf(cell) >= 0) ri = i; }))); if (ri >= 0) revealSection(ri); };
   function registerTemplateActions(state) {   // set-template:<name> buttons named on the sheet
     eachCell(state, p => { const a = p.clickAction || ''; if (TPL_ACTION.test(a) && !window.EngineActions[a]) window.EngineActions[a] = () => setTemplate(a.slice(13).trim()); });
@@ -9714,7 +9741,10 @@ body.light-theme .proof-box{color:#0f172a}
     if (t) { if (!n) { n = document.createElement('span'); n.className = 'proof-limit'; face.appendChild(n); } n.textContent = t; } else if (n) n.remove();
   }
   let wheel = null;
-  function closeWheel() { if (wheel) { wheel.el.remove(); wheel = null; document.body.classList.remove('proof-wheel-open'); } }
+  function closeWheel() { if (wheel) { const padded = wheel.padded; wheel.el.remove(); wheel = null; document.body.classList.remove('proof-wheel-open'); if (padded && !isTyping()) kbPad(0); } }
+  // 0.12.2 (R6): the wheel closes on any screen change, a redraw, Adjust / Advanced and a tap outside it
+  { const sv = setView; setView = function () { closeWheel(); return sv.apply(this, arguments); }; }
+  document.addEventListener('pointerdown', e => { if (wheel && !wheel.el.contains(e.target)) closeWheel(); }, true);
   function openWheel(box) {
     const p = boxCell(box); if (!p || !p.proofWheel) return;
     closeWheel(); blurNow();
@@ -9730,7 +9760,12 @@ body.light-theme .proof-box{color:#0f172a}
     const placeWheel = () => { const vv = window.visualViewport, bottom = vv ? vv.offsetTop + vv.height : innerHeight; el.style.top = Math.max(0, bottom - el.offsetHeight) + 'px'; };
     placeWheel(); wheel.place = placeWheel;
     // the box stays in view above the wheel (only if it would be covered)
-    requestAnimationFrame(() => { const r = (box.closest('.proof-face') || box).getBoundingClientRect(), top = el.getBoundingClientRect().top; if (r.bottom > top - VIEW_GAP) { const dy = r.bottom - (top - VIEW_GAP), sc = scroller(); if (sc) sc.scrollTop += dy; else window.scrollBy(0, dy); } });
+    // 0.12.2 (R6): the box always ends above the wheel; near the bottom of the page the spacer gives room to scroll
+    const lift = () => { if (!wheel || wheel.box !== box) return; const r = (box.closest('.proof-face') || box).getBoundingClientRect(), top = el.getBoundingClientRect().top; if (r.bottom <= top - VIEW_GAP) return;
+      const dy = r.bottom - (top - VIEW_GAP), sc = scroller(), e2 = sc || document.scrollingElement || document.documentElement, room = e2.scrollHeight - e2.clientHeight - e2.scrollTop;
+      if (dy > room) { const pad = document.getElementById('proof-kbpad'); kbPad((pad ? parseFloat(pad.style.height) || 0 : 0) + dy - room + 1); wheel.padded = true; }
+      if (sc) sc.scrollTop += dy; else window.scrollBy(0, dy); };
+    requestAnimationFrame(lift); setTimeout(lift, 120);
     el.addEventListener('click', e => {
       const b = e.target.closest('button'); if (!b) return; e.stopPropagation();
       if (b.dataset.pw === 'cancel') return closeWheel();
@@ -9755,14 +9790,15 @@ body.light-theme .proof-box{color:#0f172a}
   }, true);
   document.addEventListener('focusin', e => { const box = e.target; if (!isBox(box) || !isLiveInteraction) return; const p = boxCell(box); if (p && p.proofInput && modeOf(p) === 'wheel') { box.blur(); } }, true);
   function setBoxMode(box, p) {
-    const m = modeOf(p); box.readOnly = m === 'wheel'; box.setAttribute('inputmode', m === 'wheel' ? 'none' : (p.proofField && p.proofField.kind === 'number' ? 'decimal' : 'text'));
+    const m = modeOf(p); box.readOnly = m === 'wheel'; const km = keypadOf(p);   // 0.12.2 (R10): the same keypad rule as the first draw
+    if (m === 'wheel') box.setAttribute('inputmode', 'none'); else if (km) box.setAttribute('inputmode', km); else box.removeAttribute('inputmode');
     const sw = box.parentElement && box.parentElement.parentElement && box.parentElement.parentElement.querySelector('.proof-mode');
     if (sw) { sw.textContent = m === 'wheel' ? '⌨' : '◎'; sw.title = m === 'wheel' ? 'Type instead' : 'Use the wheel'; }
   }
   // after each draw: wheel boxes, limit notes, hidden Lines
   function decorateB2() {
     document.querySelectorAll('#viewport-canvas-frame .proof-box').forEach(box => { const p = boxCell(box); if (!p) return; if (p.proofInput) setBoxMode(box, p); paintLimit(box); });
-    applyVis();
+    applyVis(); markActive();
   }
 
   // ---------- the bottom line ----------
