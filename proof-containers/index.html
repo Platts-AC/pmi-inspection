@@ -754,6 +754,8 @@
 .proof-results .proof-count{font-size:11px;color:#94a3b8;margin:2px 0 4px}
 .proof-results .proof-hit{display:block;width:100%;text-align:left;margin:0 0 6px;padding:8px 10px;border-radius:8px;border:1px solid #234d82;background:#0c1a2e;color:#e2e8f0;font-size:14px}
 .proof-results .proof-hit span{display:block;font-size:12px;color:#94a3b8}
+.proof-results .proof-hit .proof-why{float:right;margin-left:8px;font-style:normal;font-size:11px;line-height:20px;color:#fbbf24}
+.proof-results .proof-hit i{font-size:11px;color:#94a3b8}
 .proof-results .proof-empty{color:#fbbf24;font-size:13px;padding:6px 0}
 #proof-notes{position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(15,23,42,.94);color:#94a3b8;font:12px/1.35 system-ui,sans-serif;padding:5px 8px;border-top:1px solid #334155;max-height:30vh;overflow:auto}
 #proof-notes b{color:#cbd5e1;font-weight:600}
@@ -3575,7 +3577,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.12.3", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.13.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3585,7 +3587,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.12.3', stamp: '2026-11-22 12:06:37', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.13.0', stamp: '2026-11-22 13:56:39', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8262,14 +8264,14 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.12.3';
+  const PROOF_VERSION = '0.13.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
   const TAB_OF = p => 'Layout ' + p, TWEAKS_TAB = 'Tweaks';
   const K = { call: 'proof-containers.call.v1', profile: 'proof-containers.profile.v1', device: 'proof-containers.device.v1',
     tweaks: 'proof-containers.tweaks.v1', endpoint: 'proof-containers.endpoint.v1', layout: p => 'proof-containers.layout.v2.' + p,
-    bundle: 'proof-containers.bundle.v1' };   // round A: the last good Structure + Items, stored together
+    bundle: 'proof-containers.bundle.v1', sites: 'proof-containers.sites.v1' };   // sites: round C1a, the new customers kept on this phone   // round A: the last good Structure + Items, stored together
   // Round B1: field meanings come from the Fields tab. This built-in list is used ONLY when the layout comes from an old Layout tab
   // or Round A's tabs (no Fields tab): the one allowed second home (Q-016), so the old tabs keep drawing as 0.10.2 did.
   const FIELD_FALLBACK = { 'f:date': 'Date', 'f:customer': 'Customer', 'f:address': 'Address', 'f:phone': 'Phone', 'f:outdoorModel': 'Condenser model', 'f:suctionPressure': 'Suction pressure' };
@@ -8277,11 +8279,11 @@ body.light-theme .proof-box{color:#0f172a}
   // 0.12.2 (R7): which Field a picked house fills, and word capitals, come from the Fields column 'Find fill' (name, address, phone).
   // This list is part of the one allowed second home (old Layout tabs, and a Fields tab made before the column existed).
   const FIND_FILL_FALLBACK = { 'f:customer': 'name', 'f:address': 'address', 'f:phone': 'phone' };
-  const FIND_FILLS = { name: 1, address: 1, phone: 1 }, FIND_BOX_FILL = { 'find.name': 'name', 'find.address': 'address', 'find.phone': 'phone' };
+  const FIND_FILLS = { name: 1, address: 1, phone: 1, email: 1 } /* email: round C1a */, FIND_BOX_FILL = { 'find.name': 'name', 'find.address': 'address', 'find.phone': 'phone' };
   const findFillOf = p => p.proofField ? (p.proofField.find || '') : (FIND_BOX_FILL[p.proofKey] || FIND_FILL_FALLBACK[p.proofKey] || '');
   const TYPES = { button: 1, text: 1, logo: 1, badge: 1 };
   const TOOL_ACTIONS = { 'reload-layout': 1, 'proof-save-tweaks': 1, 'proof-clear-tweaks': 1, 'proof-profile': 1, 'toggle-tray': 1, 'proof-adjust': 1, 'refresh-page': 1 };
-  const ACTIONS = Object.assign({ 'proof-badge': 1, 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1, 'new-call': 1, 'reveal-hidden': 1 }, TOOL_ACTIONS);
+  const ACTIONS = Object.assign({ 'proof-badge': 1, 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1, 'new-call': 1, 'reveal-hidden': 1, 'start-new-customer': 1, 'save-new-customer': 1 }, TOOL_ACTIONS);   // C1a: Blueprint P8 (Stage C)
   const TPL_NAME = /^[A-Za-z0-9][A-Za-z0-9 _.-]{0,29}$/, TPL_ACTION = /^set-template:([A-Za-z0-9][A-Za-z0-9 _.-]{0,29})?$/;   // round B2: set-template:<name> (set-template: alone = no template)
   // What a tweak can change (DESIGN.md). Each rule turns a value into its normal text form, or returns an error.
   const PLACES = { 'top-left': ['left', 'top'], 'top-center': ['center', 'top'], 'top-right': ['right', 'top'], 'middle-left': ['left', 'middle'], 'middle': ['center', 'middle'],
@@ -8341,7 +8343,7 @@ body.light-theme .proof-box{color:#0f172a}
     if (a === 'reload-layout' || a === 'proof-save-tweaks' || a === 'proof-clear-tweaks' || a === 'refresh-page') return 'busy';
     return 'flash';
   }
-  const HOUSES = [   // made-up places only
+  const HOUSES = [   // made-up places only; round C1a: used only when the sheet has no Sites tab (the Sites tab is their home)
     { name: 'Test House 1', address: '123 Test St', phone: '555-0101' }, { name: 'Test House 2', address: '125 Test St', phone: '555-0102' },
     { name: 'Sample Condo A', address: '400 Sample Ave #12', phone: '555-0103' }, { name: 'Sample Condo B', address: '400 Sample Ave #14', phone: '555-0104' },
     { name: 'Demo Office', address: '9 Demo Blvd', phone: '555-0105' }, { name: 'Example Shop', address: '77 Example Rd', phone: '555-0106' },
@@ -8355,7 +8357,11 @@ body.light-theme .proof-box{color:#0f172a}
 
   let call = lsGet(K.call, {}) || {};
   const find = { 'find.name': '', 'find.address': '', 'find.phone': '' };
-  const valOf = k => (k in find ? find[k] : (call[k] || ''));
+  // Round C1a: the value boxes of the New customer screen (Screen NEW_VIEW, opened by start-new-customer) fill a DRAFT, not the call,
+  // until save-new-customer; their key is DRAFT + the Field Id, kept with the Find boxes (cleared together).
+  const NEW_VIEW = 'newcust', DRAFT = 'new:';
+  const isDraft = k => String(k || '').indexOf(DRAFT) === 0;
+  const valOf = k => (k in find ? find[k] : isDraft(k) ? '' : (call[k] || ''));
 
   // ---------- this device's name (made once, remembered) ----------
   function deviceName() {
@@ -8418,21 +8424,44 @@ body.light-theme .proof-box{color:#0f172a}
     const t = F.wording || '{label}: {value} {unit}';
     return t.replace(/\{(label|value|unit)\}/g, (m, w) => w === 'label' ? (p.proofLabel || F.name || '') : w === 'value' ? value : (value.trim() ? unit : '')).replace(/\s+/g, ' ').trim();
   }
-  // round 8: nothing is listed until something is typed; every typed word must appear (any order); at most LIST_MAX are drawn
+  // round 8: nothing is listed until something is typed; at most LIST_MAX are drawn.
+  // Round C1a (study Q5, Danny 13:47 'match any box, both-match first'): each typed box is tested against its own part of the site
+  // (Name box: name, Address box: address, Phone box: phone digits); every typed word must appear in that part. A site is listed when
+  // at least one typed box matches; each hit says what matched. Order: exact address or full phone first, then more matching boxes,
+  // then Address > Phone > Name; ties keep the sheet order. St / Street, Ave / Avenue ... count as the same word.
   const LIST_MAX = 50;
   const typed = () => ['find.name', 'find.address', 'find.phone'].map(k => String(find[k] || '').trim().toLowerCase());
+  const ABBR = { street: 'st', avenue: 'ave', road: 'rd', drive: 'dr', boulevard: 'blvd', lane: 'ln', court: 'ct', place: 'pl', north: 'n', south: 's', east: 'e', west: 'w' };
+  const words = t => String(t || '').toLowerCase().replace(/[^a-z0-9#\s]/g, ' ').replace(/#/g, ' ').split(/\s+/).filter(Boolean).map(w => ABBR[w] || w);
+  const digits = t => String(t || '').replace(/\D/g, '');
+  let SITES = null;   // round C1a: the Sites tab (null = no tab: the built-in HOUSES)
+  const phoneSites = () => { const a = lsGet(K.sites, []); return Array.isArray(a) ? a.filter(x => x && (x.name || x.address)) : []; };
+  const allSites = () => (SITES || HOUSES).concat(phoneSites().map(x => Object.assign({ onPhone: true }, x)));
+  const PART_W = { address: 3, phone: 2, name: 1 }, PART_WORD = { address: 'Address', phone: 'Phone', name: 'Name' };
   function matches() {
     const q = typed(); if (!q.some(Boolean)) return null;
-    const has = (text, words) => words.split(/\s+/).filter(Boolean).every(w => text.includes(w));
-    return HOUSES.filter(h => (!q[0] || has(h.name.toLowerCase(), q[0])) && (!q[1] || has(h.address.toLowerCase(), q[1])) && (!q[2] || h.phone.replace(/\D/g, '').includes(q[2].replace(/\D/g, '') || q[2])));
+    const hasAll = (text, t) => { const have = words(text).join(' '); return words(t).every(w => have.includes(w)); };
+    const out = [];
+    allSites().forEach((h, i) => {
+      const why = [];
+      if (q[1] && words(q[1]).length && hasAll(h.address, q[1])) why.push('address');
+      if (q[2]) { const d = digits(q[2]); if (d ? digits(h.phone).includes(d) : hasAll(h.phone, q[2])) why.push('phone'); }
+      if (q[0] && words(q[0]).length && hasAll(h.name, q[0])) why.push('name');
+      if (!why.length) return;
+      const exact = (why.indexOf('address') >= 0 && words(q[1]).join(' ') === words(h.address).join(' ')) || (why.indexOf('phone') >= 0 && digits(q[2]).length >= 7 && digits(q[2]) === digits(h.phone));
+      out.push({ h, i, why, exact, score: why.reduce((a, w) => a + PART_W[w], 0) });
+    });
+    return out.sort((a, b) => (b.exact - a.exact) || (b.why.length - a.why.length) || (b.score - a.score) || (a.i - b.i));
   }
+  const hasNewCustomer = () => { let y = false; eachCell(engineState, p => { if (p.clickAction === 'start-new-customer') y = true; }); return y; };
   function resultsHtml() {
     const all = matches();
     if (!all) return '<div class="proof-count proof-hint">Type to find</div>';
-    if (!all.length) return '<div class="proof-empty">No match. Change what you typed.</div>';
+    if (!all.length) return '<div class="proof-empty">No match. Change what you typed' + (hasNewCustomer() ? ', or tap New customer.' : '.') + '</div>';
     const m = all.slice(0, LIST_MAX);
     const count = all.length > LIST_MAX ? LIST_MAX + ' of ' + all.length + ': keep typing' : all.length + (all.length === 1 ? ' match' : ' matches');
-    return '<div class="proof-count">' + count + '</div><div class="proof-list">' + m.map(h => '<button type="button" class="proof-hit" data-i="' + HOUSES.indexOf(h) + '"><b>' + esc(h.name) + '</b><span>' + esc(h.address) + ' · ' + esc(h.phone) + '</span></button>').join('') + '</div>';
+    return '<div class="proof-count">' + count + '</div><div class="proof-list">' + m.map(x => '<button type="button" class="proof-hit" data-i="' + x.i + '"><em class="proof-why">Matched: ' + x.why.map(w => PART_WORD[w]).join(', ') + '</em><b>' + esc(x.h.name) + '</b>' + (x.h.onPhone ? ' <i>on this phone</i>' : '') +
+      '<span>' + esc(x.h.address) + (x.h.phone ? ' · ' + esc(x.h.phone) : '') + '</span></button>').join('') + '</div>';
   }
   const paintResults = () => document.querySelectorAll('.proof-results').forEach(el => { el.innerHTML = resultsHtml(); });
   window.__proofRepaints = 0;
@@ -8441,18 +8470,42 @@ body.light-theme .proof-box{color:#0f172a}
   document.addEventListener('input', e => {
     const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b) return;
     const k = b.dataset.key;
-    if (k in find) { find[k] = b.value; paintResults(); }
+    if (k in find || isDraft(k)) { find[k] = b.value; if (FIND_KEYS[k]) paintResults(); }   // C1a: a New customer box fills the draft
     else { call[k] = b.value; lsSet(K.call, call); try { paintLimit(b); applyVis(); } catch (e) {} }   // round B2: Hard min / max note; when-filled Lines
   });
   document.addEventListener('click', e => {
     const h = e.target && e.target.closest && e.target.closest('.proof-hit'); if (!h) return;
     e.preventDefault(); e.stopPropagation();
-    const x = HOUSES[+h.dataset.i]; if (!x) return;
-    // 0.12.2 (R7): every value box whose Field has a Find fill gets that part of the house (no Field Id named here)
-    eachCell(engineState, p => { if (p.slot !== 'box' || FIND_KEYS[p.proofKey]) return; const ff = findFillOf(p); if (ff && x[ff] != null) call[p.proofField ? p.proofField.id : p.proofKey] = x[ff]; });
+    const x = allSites()[+h.dataset.i]; if (!x) return;
+    loadSite(x);
+  }, true);
+  // a found or new customer goes into the call: every value box whose Field has a Find fill gets that part of the site (0.12.2, R7:
+  // no Field Id named here); then Find (and any New customer draft) is cleared and Entry opens
+  function loadSite(x, extra) {
+    eachCell(engineState, p => { if (p.slot !== 'box' || FIND_KEYS[p.proofKey] || isDraft(p.proofKey)) return; const ff = findFillOf(p); if (ff && x[ff] != null) call[p.proofField ? p.proofField.id : p.proofKey] = x[ff]; });
+    if (extra) Object.keys(extra).forEach(k => { call[k] = extra[k]; });
     lsSet(K.call, call);
     clearFind(); goView('entry');
-  }, true);
+  }
+  // Round C1a (Blueprint P8, Stage C): start-new-customer copies each Find box into the New customer box with the same Find fill and
+  // opens the New customer screen; save-new-customer needs the Find fill name and address, keeps the customer on this phone (fake
+  // data: key proof-containers.sites.v1) and loads it like a found one. Back / Cancel (set-view:find) leave the call untouched.
+  const draftCells = () => { const a = []; eachCell(engineState, p => { if (p.slot === 'box' && isDraft(p.proofKey) && p.proofField) a.push(p); }); return a; };
+  window.EngineActions['start-new-customer'] = () => {
+    Object.keys(find).forEach(k => { if (isDraft(k)) delete find[k]; });
+    draftCells().forEach(p => { const ff = p.proofField.find, fk = Object.keys(FIND_BOX_FILL).find(k => FIND_BOX_FILL[k] === ff); find[p.proofKey] = fk ? String(find[fk] || '').trim() : ''; });
+    goView(NEW_VIEW);
+  };
+  window.EngineActions['save-new-customer'] = () => {
+    blurNow();
+    const site = { name: '', address: '', phone: '', email: '' }, extra = {};
+    draftCells().forEach(p => { const v = String(find[p.proofKey] || '').trim(), ff = p.proofField.find; if (ff && ff in site && v) site[ff] = v; if (v) extra[p.proofField.id] = v; });
+    if (!site.name || !site.address) { say('Name and address are needed to save.', 'warn'); return; }
+    const list = phoneSites(); site.id = 'phone-' + Date.now().toString(36); site.saved = new Date().toISOString(); list.push(site);
+    if (!lsSet(K.sites, list)) { say('Could not keep the new customer on this phone (storage full?).', 'warn'); return; }
+    say('New customer kept on this phone: ' + site.name, 'done');
+    loadSite(site, extra);
+  };
   function clearFind() { Object.keys(find).forEach(k => { find[k] = ''; }); }
   function blurNow() { try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (e) {} }
   function goView(v) { blurNow(); resetTypingOrder(); setView(v); }
@@ -8588,7 +8641,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (r._input) { cell.proofInput = r._input; cell.proofWheel = r._wheel || null;
         if (r._input === 'both' && cell.subLabel && cell.subLabel.enabled && cell.subLabel.align === 'right') cell.subLabel.nudgeX = (Number(cell.subLabel.nudgeX) || 0) - BOTH_SWITCH_W; }   // 0.12.2 (F1): the unit sits left of the switch
       if (fd) { cell.proofField = fd; if (r._join) cell.proofJoin = r._join; if (r._label) cell.proofLabel = r._label; }
-      if (slot === 'box') { cell.slot = 'box'; cell.proofKey = content; cell.label = ''; }
+      if (slot === 'box') { cell.slot = 'box'; cell.proofKey = fd && screen === NEW_VIEW ? DRAFT + fd.id : content; cell.label = ''; }   // C1a: a draft box
       else if (slot === 'unit' || slot === 'report-value') { cell.slot = slot; cell.proofKey = content; cell.label = ''; }
       else if (slot === 'results') { cell.slot = 'results'; cell.label = ''; }
       else if (type === 'button') { cell.label = g('Label') || content;
@@ -8706,7 +8759,7 @@ body.light-theme .proof-box{color:#0f172a}
       const id = g2(r, 'Field Id'), name = g2(r, 'Name'), kind = (g2(r, 'Kind') || 'text').toLowerCase(), scope = g2(r, 'Scope').toLowerCase(), wording = String(r['Report wording'] == null ? '' : r['Report wording']).trim();
       const hmin = g2(r, 'Hard min'), hmax = g2(r, 'Hard max');
       const ffCol = 'Find fill' in r, ff = ffCol ? g2(r, 'Find fill').toLowerCase() : (FIND_FILL_FALLBACK[id] || '');   // 0.12.2 (R7); no column = today's fill (migration)
-      if (ffCol && ff && !FIND_FILLS[ff] && !why.length) why.push('Find fill "' + g2(r, 'Find fill') + '" must be name, address or phone (or blank)');
+      if (ffCol && ff && !FIND_FILLS[ff] && !why.length) why.push('Find fill "' + g2(r, 'Find fill') + '" must be name, address, phone or email (or blank)');
       if (!why.length) {
         if (!id) why.push('no Field Id');
         else if (converted(r, 'Field Id')) why.push('Field Id "' + id + '" looks like a date or number. ' + PT_HINT('Field Id'));
@@ -8905,10 +8958,32 @@ body.light-theme .proof-box{color:#0f172a}
   // round B1: read the four tabs together (all or nothing; Profile sizes is optional). Fallbacks: Round A's two tabs, then the old
   // Layout tab (readLayout), then the last good copy. A missing tab name gives Google's FIRST tab, so each tab is checked by its headings.
   const hasCols = (t, cols) => cols.every(c => t.labels.indexOf(c) >= 0);
+  // Round C1a: the Sites tab (fake houses; study Q2). Read with the four tabs but on its own: a missing tab, or Google's first-tab answer
+  // (no 'Site Id' heading), keeps the built-in HOUSES and refuses nothing. Rows: Site Id | Name | Address | Phone | Email | Notes | Active.
+  const SITES_COLS = ['Site Id', 'Name', 'Address', 'Phone', 'Email', 'Notes', 'Active'];
+  function parseSites(rows, notes) {
+    const out = [], ids = {};
+    (rows || []).forEach((r, i) => {
+      const n = i + 2, g = c => g2(r, c);
+      if (!Object.keys(r).some(c => c.charAt(0) !== '_' && g(c))) return;   // an empty row
+      const fe = formulaErrors(r); if (fe.length) { notes.push('Sites row ' + n + ' refused: ' + fe.join(', ') + '.'); return; }
+      const why = [], id = g('Site Id'), act = g('Active').toLowerCase();
+      if (!id) why.push('no Site Id'); else if (ids[id]) why.push('the Site Id "' + id + '" is already used on row ' + ids[id]);
+      if (!g('Name') && !g('Address')) why.push('no Name and no Address');
+      if (act && act !== 'yes' && act !== 'no') why.push('Active "' + g('Active') + '" must be yes or no (or blank)');
+      ['Site Id', 'Address', 'Phone'].forEach(c => { if (converted(r, c)) why.push(c + ' "' + g(c) + '" looks like a date, time or number. ' + PT_HINT(c)); });
+      if (why.length) { notes.push('Sites row ' + n + ' refused: ' + why.join('; ') + '.'); return; }
+      ids[id] = n; if (act === 'no') return;
+      out.push({ id, name: g('Name'), address: g('Address'), phone: g('Phone'), email: g('Email'), notes: g('Notes') });
+    });
+    return out;
+  }
   async function readBundle(notes, profile) {
-    let st, it, fl, ps;
-    try { [st, it, fl, ps] = await Promise.all([gviz('Structure'), gviz('Items'), gviz('Fields'), gviz('Profile sizes')]); }
+    let st, it, fl, ps, si = null;
+    SITES = null;   // C1a: until this read says otherwise (an old Layout tab has no Sites)
+    try { [st, it, fl, ps, si] = await Promise.all([gviz('Structure'), gviz('Items'), gviz('Fields'), gviz('Profile sizes'), gviz('Sites').catch(() => null)]); }
     catch (e) { return { failed: true, why: e.message }; }
+    const sitesRows = si && hasCols(si, ['Site Id']) ? si.rows : null;   // C1a
     const hasS = st.labels.indexOf('Line name') >= 0, hasI = it.labels.indexOf('Id') >= 0 && it.labels.indexOf('Line') >= 0;
     if (!hasS || !hasI) { if (hasS || hasI) notes.push((hasS ? 'Structure found but Items is missing or has no Id / Line heading' : 'Items found but Structure is missing or has no Line name heading') + ': both are needed, so the old layout tab is used.'); return { missing: true }; }
     const hasF = fl.labels.indexOf('Field Id') >= 0, hasP = hasCols(ps, ['Profile', 'Target']);
@@ -8922,8 +8997,10 @@ body.light-theme .proof-box{color:#0f172a}
     const knownS = STRUCTURE_COLS.concat(['Templates']), knownI = ['Id', 'Line', 'Cell'].concat(ITEM_B1_COLS, ['Input style', 'Wheel', 'Templates'], COLS.slice(6), Object.keys(COLPROP), ['Icon', 'Press style', 'Min size', 'Max size']);   // no Weight: widths live on Structure
     const unknown = st.labels.filter(l => l && knownS.indexOf(l) < 0).map(l => 'Structure: ' + l).concat(items.labels.filter(l => l && knownI.indexOf(l) < 0).map(l => itemsTab + ': ' + l),
       hasF ? fl.labels.filter(l => l && FIELDS_COLS.indexOf(l) < 0).map(l => 'Fields: ' + l) : [], hasF && hasP ? ps.labels.filter(l => l && SIZES_COLS.indexOf(l) < 0).map(l => 'Profile sizes: ' + l) : []);
+    if (sitesRows) unknown.push(...si.labels.filter(l => l && SITES_COLS.indexOf(l) < 0).map(l => 'Sites: ' + l));
     if (unknown.length) notes.push('Column(s) this page does not know: ' + unknown.join(', ') + '. This page may be out of date: tap Reload, or refresh the browser.');
-    lsSet(K.bundle, { at: Date.now(), structure: st.rows, items: items.rows, itemsTab, fields: opt.fields, sizes: opt.sizes });
+    SITES = sitesRows ? parseSites(sitesRows, notes) : null;
+    lsSet(K.bundle, { at: Date.now(), structure: st.rows, items: items.rows, itemsTab, fields: opt.fields, sizes: opt.sizes, sites: sitesRows });
     return { rows, source: 'bundle', sourceText: bundleText(opt, itemsTab, 'Layout read from ') };
   }
   function bundleText(opt, itemsTab, lead) {
@@ -8935,6 +9012,7 @@ body.light-theme .proof-box{color:#0f172a}
     if (!(c && Array.isArray(c.structure) && Array.isArray(c.items))) return null;
     const opt = { fields: Array.isArray(c.fields) ? c.fields : null, sizes: Array.isArray(c.sizes) ? c.sizes : null, profile };
     const rows = bundleRows(c.structure, c.items, opt);
+    if (build(rows).used) SITES = Array.isArray(c.sites) ? parseSites(c.sites, []) : null;   // C1a: the saved Sites rows too
     return build(rows).used ? { rows, at: c.at, text: bundleText(opt, c.itemsTab || 'Items', 'Layout from the last good copy of ') } : null;
   }
   // ---------- end of round A / B1 ----------
