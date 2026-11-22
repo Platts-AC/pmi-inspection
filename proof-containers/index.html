@@ -3590,7 +3590,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.14.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.14.1", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3600,7 +3600,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.14.0', stamp: '2026-11-22 15:33:32', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.14.1', stamp: '2026-11-22 16:09:44', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8277,7 +8277,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.14.0';
+  const PROOF_VERSION = '0.14.1';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8296,7 +8296,7 @@ body.light-theme .proof-box{color:#0f172a}
   const findFillOf = p => p.proofField ? (p.proofField.find || '') : (FIND_BOX_FILL[p.proofKey] || FIND_FILL_FALLBACK[p.proofKey] || '');
   const TYPES = { button: 1, text: 1, logo: 1, badge: 1 };
   const TOOL_ACTIONS = { 'reload-layout': 1, 'proof-save-tweaks': 1, 'proof-clear-tweaks': 1, 'proof-profile': 1, 'toggle-tray': 1, 'proof-adjust': 1, 'refresh-page': 1 };
-  const ACTIONS = Object.assign({ 'proof-badge': 1, 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1, 'new-call': 1, 'reveal-hidden': 1, 'start-new-customer': 1, 'save-new-customer': 1, 'open-call-type': 1 }, TOOL_ACTIONS);   // C1b: open-call-type   // C1a: Blueprint P8 (Stage C)
+  const ACTIONS = Object.assign({ 'proof-badge': 1, 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1, 'new-call': 1, 'reveal-hidden': 1, 'start-new-customer': 1, 'save-new-customer': 1, 'open-call-type': 1, 'call-type-back': 1 }, TOOL_ACTIONS);   // 0.14.1: call-type-back   // C1b: open-call-type   // C1a: Blueprint P8 (Stage C)
   const TPL_NAME = /^[A-Za-z0-9][A-Za-z0-9 _.-]{0,29}$/, TPL_ACTION = /^set-template:([A-Za-z0-9][A-Za-z0-9 _.-]{0,29})?$/;   // round B2: set-template:<name> (set-template: alone = no template)
   // What a tweak can change (DESIGN.md). Each rule turns a value into its normal text form, or returns an error.
   const PLACES = { 'top-left': ['left', 'top'], 'top-center': ['center', 'top'], 'top-right': ['right', 'top'], 'middle-left': ['left', 'middle'], 'middle': ['center', 'middle'],
@@ -8501,7 +8501,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (act && act !== 'yes' && act !== 'no') why.push('Active "' + g('Active') + '" must be yes or no (or blank)');
       if (order && !isFinite(Number(order))) why.push('Order "' + order + '" must be a number (or blank)');
       if (converted(r, 'Aliases') || aliases.some(a => DATE_LIKE.some(d => d.test(a)))) why.push('Aliases "' + g('Aliases') + '" look like a date, time or number. ' + PT_HINT('Aliases'));
-      if (why.length) { notes.push('Call types row ' + n + ' refused: ' + why.join('; ') + '.'); return; }
+      if (why.length) { notes.push('Call types row ' + n + ' refused: ' + why.join('; ').replace(/\.$/, '') + '.'); return; }   // 0.14.1: one period
       seen[type.toLowerCase()] = n;
       out.push({ type, template: tpl || type, aliases, active: act !== 'no', order: order === '' ? Infinity : Number(order), row: n });
     });
@@ -8548,8 +8548,12 @@ body.light-theme .proof-box{color:#0f172a}
   }
   window.EngineActions['open-call-type'] = () => {
     if (!ctView || !activeTypes().length) { say('No call types on the sheet (a Call types tab and a Screen with the call-types Slot).', 'warn'); return; }
-    ctFilter = ''; goView(ctView);
+    ctFilter = ''; ctFrom = currentView !== ctView ? currentView : ctFrom; goView(ctView);   // 0.14.1: Back returns here
   };
+  // 0.14.1: Back on the call-type question: to the screen it was opened from by Change (Entry); after a chosen customer, to the screen
+  // with the Find list (the Slot 'results'; no screen name in the code)
+  let ctFrom = '';
+  window.EngineActions['call-type-back'] = () => { let v = ctFrom; if (!v) eachCell(engineState, (p, r) => { if (!v && p.slot === 'results' && r.view) v = r.view; }); ctFrom = ''; if (v) goView(v); };
   const hasNewCustomer = () => { let y = false; eachCell(engineState, p => { if (p.clickAction === 'start-new-customer') y = true; }); return y; };
   function resultsHtml() {
     const all = matches();
@@ -8563,7 +8567,7 @@ body.light-theme .proof-box{color:#0f172a}
   }
   const paintResults = () => document.querySelectorAll('.proof-results').forEach(el => { el.innerHTML = resultsHtml(); });
   window.__proofRepaints = 0;
-  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; try { closeWheel(); } catch (e) {}   /* 0.12.2 (R6) */ const r = rc.apply(this, arguments); try { decorate(); } catch (e) {} return r; }; }
+  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; try { closeWheel(); closeAsk(); } catch (e) {}   /* 0.12.2 (R6) */ const r = rc.apply(this, arguments); try { decorate(); } catch (e) {} return r; }; }
 
   document.addEventListener('input', e => {
     const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b) return;
@@ -8586,7 +8590,7 @@ body.light-theme .proof-box{color:#0f172a}
     eachCell(engineState, p => { if (p.slot !== 'box' || FIND_KEYS[p.proofKey] || isDraft(p.proofKey)) return; const ff = findFillOf(p); if (ff && x[ff] != null) call[p.proofField ? p.proofField.id : p.proofKey] = x[ff]; });
     if (extra) Object.keys(extra).forEach(k => { call[k] = extra[k]; });
     lsSet(K.call, call);
-    clearFind(); goView(ctView && activeTypes().length ? ctView : 'entry');   // C1b: then 'What kind of call is this?'
+    ctFrom = ''; clearFind(); goView(ctView && activeTypes().length ? ctView : 'entry');   // C1b: then 'What kind of call is this?'
   }
   // Round C1a (Blueprint P8, Stage C): start-new-customer copies each Find box into the New customer box with the same Find fill and
   // opens the New customer screen; save-new-customer needs the Find fill name and address, keeps the customer on this phone (fake
@@ -8607,7 +8611,7 @@ body.light-theme .proof-box{color:#0f172a}
     if (twin) { say('Already saved: ' + twin.name + ' (loaded it).', 'done'); loadSite(twin); return; }
     // C1b (F10): the same house number + street under a DIFFERENT name: ask before keeping a second customer there
     const sk = streetKey(site.address), near = sk && allSites().find(x => streetKey(x.address) === sk && words(x.name).join(' ') !== words(site.name).join(' '));
-    if (near) { ask('There is already a customer at ' + near.address + ' (' + near.name + '). Use that one?', [['Use that one', () => loadSite(near)], ['Save as new', () => keepNew(site, extra)]]); return; }
+    if (near) { ask('There is already a customer at ' + near.address + ' (' + near.name + '). Use that one?', [['Use that one', () => loadSite(near)], ['Save as new', () => keepNew(site, extra)], ['Cancel', () => {}]]   /* 0.14.1 (C1B-52): Cancel keeps the draft */); return; }
     keepNew(site, extra);
   };
   function keepNew(site, extra) {
@@ -8624,6 +8628,14 @@ body.light-theme .proof-box{color:#0f172a}
     document.body.appendChild(el);
   }
   function closeAsk() { const o = document.getElementById('proof-ask'); if (o) o.remove(); }
+  // 0.14.1 (C1B-52): Escape or a tap outside the question = Cancel (nothing happens, the screen stays)
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.getElementById('proof-ask')) { e.preventDefault(); closeAsk(); } }, true);
+  document.addEventListener('pointerdown', e => { const o = document.getElementById('proof-ask'); if (o && !o.contains(e.target)) { e.preventDefault(); e.stopPropagation(); closeAsk(); } }, true);
+  // 0.14.1 (C1B-43): after EVERY screen change, taps on buttons and list items are ignored for a moment, so the second tap of a
+  // double tap cannot land on whatever the new screen shows at that place. Typing boxes are never blocked.
+  const TAP_GUARD_MS = 300; let tapGuardUntil = 0;
+  window.addEventListener('click', e => { if (Date.now() >= tapGuardUntil) return; const t = e.target && e.target.closest && e.target.closest('button, .proof-hit, .proof-ct-item');
+    if (t && !(document.getElementById('proof-ask') || { contains: () => false }).contains(t)) { e.preventDefault(); e.stopPropagation(); } }, true);
   function clearFind() { Object.keys(find).forEach(k => { find[k] = ''; }); }
   function blurNow() { try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (e) {} }
   function goView(v) { blurNow(); resetTypingOrder(); setView(v); }
@@ -9095,7 +9107,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (!g('Name') && !g('Address')) why.push('no Name and no Address');
       if (act && act !== 'yes' && act !== 'no') why.push('Active "' + g('Active') + '" must be yes or no (or blank)');
       ['Site Id', 'Address', 'Phone'].forEach(c => { if (r._t && /^(date|time|number)$/.test(r._t[c] || '')) why.push(   /* 0.13.1 (R9): only what Google SENT as a date, time or number */c + ' "' + g(c) + '" looks like a date, time or number. ' + PT_HINT(c)); });
-      if (why.length) { notes.push('Sites row ' + n + ' refused: ' + why.join('; ') + '.'); return; }
+      if (why.length) { notes.push('Sites row ' + n + ' refused: ' + why.join('; ').replace(/\.$/, '') + '.'); return; }   // 0.14.1: one period
       ids[id] = n; if (act === 'no') return;
       out.push({ id, name: g('Name'), address: g('Address'), phone: g('Phone'), email: g('Email'), notes: g('Notes') });
     });
@@ -9420,7 +9432,10 @@ body.light-theme .proof-box{color:#0f172a}
   window.EngineActions = window.EngineActions || {};
   window.EngineActions['proof-find'] = () => { paintResults(); blurNow(); };
   window.EngineActions['proof-cancel'] = () => { clearFind(); goView('entry'); };
-  window.EngineActions['reload-layout'] = () => runBusy('reload-layout', 'Reloading...', () => reload());
+  window.EngineActions['reload-layout'] = () => runBusy('reload-layout', 'Reloading...', () => reload()).then(() => reloadIfNewer());   // 0.14.1 (F8)
+  // 0.14.1 (F8): Reload also asks version.json; a newer published version is loaded as a badge tap does
+  async function reloadIfNewer() { try { const r = await fetch('version.json?t=' + Date.now(), { cache: 'no-store' }); if (!r.ok) return; const v = String(((await r.json()) || {}).version || '').trim();
+    if (/^\d+\.\d+\.\d+$/.test(v) && newer(v, PRETEND || PROOF_VERSION)) { staleV = v; reloadTo(v); } } catch (e) {} }
   window.EngineActions['proof-save-tweaks'] = () => runBusy('proof-save-tweaks', 'Saving...', () => saveTweaks());
   window.EngineActions['proof-clear-tweaks'] = () => runBusy('proof-clear-tweaks', 'Clearing...', () => clearTweaks());
   window.EngineActions['proof-profile'] = () => { nextProfile(); };
@@ -9977,7 +9992,7 @@ body.light-theme .proof-box{color:#0f172a}
   let wheel = null;
   function closeWheel() { if (wheel) { const padded = wheel.padded; wheel.el.remove(); wheel = null; document.body.classList.remove('proof-wheel-open'); if (padded && !isTyping()) kbPad(0); } }
   // 0.12.2 (R6): the wheel closes on any screen change, a redraw, Adjust / Advanced and a tap outside it
-  { const sv = setView; setView = function () { closeWheel(); return sv.apply(this, arguments); }; }
+  { const sv = setView; setView = function () { closeWheel(); closeAsk(); tapGuardUntil = Date.now() + TAP_GUARD_MS; return sv.apply(this, arguments); }; }   // 0.14.1: C1B-43, C1B-52
   document.addEventListener('pointerdown', e => { if (wheel && !wheel.el.contains(e.target)) closeWheel(); }, true);
   function openWheel(box) {
     const p = boxCell(box); if (!p || !p.proofWheel) return;
@@ -10042,7 +10057,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (e.target && e.target.id === 'proof-save-now') { e.stopPropagation(); window.EngineActions['proof-save-tweaks'](); return; }   // the inspector can cover the Tools row on a phone
       n.classList.toggle('small'); }); document.body.appendChild(n); }
     const head = 'proof ' + PROOF_VERSION + ' · profile ' + (info.profile || '?') + (chosenProfile() === 'auto' ? ' (auto)' : '') + ' · ' + DEVICE +
-      (info.offline ? ' · sheet not read (offline) ' + hhmm(info.readAt) : ' · read ' + (info.readAt ? hhmm(info.readAt) : '-')) + ' · ' + info.rows + ' rows, ' + info.refused + ' refused · ' + info.tweaks + ' tweaks applied' + (info.pending ? ' (not saved yet)' : '') + (usesB2 ? ' · view ' + viewWord() + ', template ' + (callView.tpl || 'none') + (callView.callType ? ', call type ' + callView.callType : '') : '');   // C1b: the call type
+      (info.offline ? ' · sheet not read (offline) ' + hhmm(info.readAt) : ' · read ' + (info.readAt ? hhmm(info.readAt) : '-')) + ' · ' + info.rows + ' rows, ' + (info.refused + (notes || []).filter(x => /^(Sites|Call types) row \d+ refused/.test(String(x && x._note || x))).length) + ' refused · ' + info.tweaks + ' tweaks applied' + (info.pending ? ' (not saved yet)' : '') + (usesB2 ? ' · view ' + viewWord() + ', template ' + (callView.tpl || 'none') + (callView.callType ? ', call type ' + callView.callType : '') : '');   // C1b: the call type
     const unsaved = info.readAt ? changedFrom(applied).length : 0;
     const lost = info.readAt && structChanged();
     n.innerHTML = '<b>' + esc(head) + '</b>' + (unsaved ? '<br><span class="proof-last">' + unsaved + ' change(s) not saved yet.</span> <button type="button" id="proof-save-now">Save tweaks</button>' : '') + (lost ? '<br><span class="proof-warn">' + esc(NOT_KEPT) + '</span>' : '') + (info.sourceText ? '<br>' + esc(info.sourceText) : '') + (lastAction ? '<br><span class="proof-last">' + esc(lastAction) + '</span>' : '') + notes.map(x => '<br>' + esc(x)).join('');
