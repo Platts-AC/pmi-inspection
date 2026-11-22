@@ -3577,7 +3577,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.13.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.13.1", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3587,7 +3587,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.13.0', stamp: '2026-11-22 13:56:39', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.13.1', stamp: '2026-11-22 14:56:58', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8264,7 +8264,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.13.0';
+  const PROOF_VERSION = '0.13.1';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8357,9 +8357,11 @@ body.light-theme .proof-box{color:#0f172a}
 
   let call = lsGet(K.call, {}) || {};
   const find = { 'find.name': '', 'find.address': '', 'find.phone': '' };
-  // Round C1a: the value boxes of the New customer screen (Screen NEW_VIEW, opened by start-new-customer) fill a DRAFT, not the call,
+  // Round C1a: the value boxes of the New customer screen (the Screen with the save-new-customer button, opened by start-new-customer) fill a DRAFT, not the call,
   // until save-new-customer; their key is DRAFT + the Field Id, kept with the Find boxes (cleared together).
-  const NEW_VIEW = 'newcust', DRAFT = 'new:';
+  // 0.13.1 (R8): no screen name in the code: the New customer screen is the Screen that holds the save-new-customer button (build())
+  let newView = '';
+  const DRAFT = 'new:';
   const isDraft = k => String(k || '').indexOf(DRAFT) === 0;
   const valOf = k => (k in find ? find[k] : isDraft(k) ? '' : (call[k] || ''));
 
@@ -8431,24 +8433,40 @@ body.light-theme .proof-box{color:#0f172a}
   // then Address > Phone > Name; ties keep the sheet order. St / Street, Ave / Avenue ... count as the same word.
   const LIST_MAX = 50;
   const typed = () => ['find.name', 'find.address', 'find.phone'].map(k => String(find[k] || '').trim().toLowerCase());
-  const ABBR = { street: 'st', avenue: 'ave', road: 'rd', drive: 'dr', boulevard: 'blvd', lane: 'ln', court: 'ct', place: 'pl', north: 'n', south: 's', east: 'e', west: 'w' };
-  const words = t => String(t || '').toLowerCase().replace(/[^a-z0-9#\s]/g, ' ').replace(/#/g, ' ').split(/\s+/).filter(Boolean).map(w => ABBR[w] || w);
+  // 0.13.1 (R4): every typed word must START a word of that part (whole-word start); the street words below equal their short form
+  // both ways (St = Street); north / south / east / west stay words. (R2) the Phone box uses digits only, from 3 digits on.
+  // (R5) exact = the house number + street equal (unit after # / Apt / Unit / Suite, city after a comma and a zip ignored), or the
+  // last 7 digits of the phone equal.
+  const ABBR = { street: 'st', avenue: 'ave', road: 'rd', drive: 'dr', boulevard: 'blvd', lane: 'ln', court: 'ct', place: 'pl' };
+  const LONG = Object.keys(ABBR).reduce((o, k) => { o[ABBR[k]] = k; return o; }, {});
+  const words = t => String(t || '').toLowerCase().replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(Boolean);
+  const short = w => ABBR[w] || w;
   const digits = t => String(t || '').replace(/\D/g, '');
   let SITES = null;   // round C1a: the Sites tab (null = no tab: the built-in HOUSES)
+  let houseFields = null;   // 0.13.1 (R6): the house-Scope Fields [{ id, find }] of the layout that won (null = old tabs)
   const phoneSites = () => { const a = lsGet(K.sites, []); return Array.isArray(a) ? a.filter(x => x && (x.name || x.address)) : []; };
   const allSites = () => (SITES || HOUSES).concat(phoneSites().map(x => Object.assign({ onPhone: true }, x)));
   const PART_W = { address: 3, phone: 2, name: 1 }, PART_WORD = { address: 'Address', phone: 'Phone', name: 'Name' };
+  function hasAll(text, typedText) {
+    const have = []; words(text).forEach(w => { have.push(w); if (ABBR[w]) have.push(ABBR[w]); if (LONG[w]) have.push(LONG[w]); });
+    const t = words(typedText); return !!t.length && t.every(q => have.some(h => h.indexOf(q) === 0));
+  }
+  function streetKey(a) {
+    const w = words(String(a || '').split(/[#,]/)[0]), cut = w.findIndex(x => /^(apt|unit|ste|suite)$/.test(x));
+    const k = (cut >= 0 ? w.slice(0, cut) : w).map(short); if (k.length > 2 && /^\d{5}$/.test(k[k.length - 1])) k.pop();
+    return k.length >= 2 && /^\d/.test(k[0]) ? k.join(' ') : '';
+  }
+  const sameSite = (a, b) => words(a.name).join(' ') === words(b.name).join(' ') && words(a.address).map(short).join(' ') === words(b.address).map(short).join(' ');
   function matches() {
     const q = typed(); if (!q.some(Boolean)) return null;
-    const hasAll = (text, t) => { const have = words(text).join(' '); return words(t).every(w => have.includes(w)); };
-    const out = [];
+    const d = digits(q[2]), ka = streetKey(q[1]), out = [];
     allSites().forEach((h, i) => {
       const why = [];
-      if (q[1] && words(q[1]).length && hasAll(h.address, q[1])) why.push('address');
-      if (q[2]) { const d = digits(q[2]); if (d ? digits(h.phone).includes(d) : hasAll(h.phone, q[2])) why.push('phone'); }
-      if (q[0] && words(q[0]).length && hasAll(h.name, q[0])) why.push('name');
+      if (q[1] && hasAll(h.address, q[1])) why.push('address');
+      if (d.length >= 3 && digits(h.phone).includes(d)) why.push('phone');
+      if (q[0] && hasAll(h.name, q[0])) why.push('name');
       if (!why.length) return;
-      const exact = (why.indexOf('address') >= 0 && words(q[1]).join(' ') === words(h.address).join(' ')) || (why.indexOf('phone') >= 0 && digits(q[2]).length >= 7 && digits(q[2]) === digits(h.phone));
+      const exact = (why.indexOf('address') >= 0 && !!ka && ka === streetKey(h.address)) || (why.indexOf('phone') >= 0 && d.length >= 7 && d.slice(-7) === digits(h.phone).slice(-7));
       out.push({ h, i, why, exact, score: why.reduce((a, w) => a + PART_W[w], 0) });
     });
     return out.sort((a, b) => (b.exact - a.exact) || (b.why.length - a.why.length) || (b.score - a.score) || (a.i - b.i));
@@ -8457,6 +8475,7 @@ body.light-theme .proof-box{color:#0f172a}
   function resultsHtml() {
     const all = matches();
     if (!all) return '<div class="proof-count proof-hint">Type to find</div>';
+    const q = typed(); if (!all.length && q[2] && !q[0] && !q[1] && digits(q[2]).length < 3) return '<div class="proof-count proof-hint">Type 3 or more digits</div>';   // 0.13.1 (R2)
     if (!all.length) return '<div class="proof-empty">No match. Change what you typed' + (hasNewCustomer() ? ', or tap New customer.' : '.') + '</div>';
     const m = all.slice(0, LIST_MAX);
     const count = all.length > LIST_MAX ? LIST_MAX + ' of ' + all.length + ': keep typing' : all.length + (all.length === 1 ? ' match' : ' matches');
@@ -8482,6 +8501,9 @@ body.light-theme .proof-box{color:#0f172a}
   // a found or new customer goes into the call: every value box whose Field has a Find fill gets that part of the site (0.12.2, R7:
   // no Field Id named here); then Find (and any New customer draft) is cleared and Entry opens
   function loadSite(x, extra) {
+    // 0.13.1 (R6): every house-Scope Field is cleared first (old tabs: the Find fill Fields), then filled from the site
+    const hf = houseFields || Object.keys(FIND_FILL_FALLBACK).map(id => ({ id, find: FIND_FILL_FALLBACK[id] }));
+    hf.forEach(f => { delete call[f.id]; }); hf.forEach(f => { if (f.find && x[f.find]) call[f.id] = x[f.find]; });
     eachCell(engineState, p => { if (p.slot !== 'box' || FIND_KEYS[p.proofKey] || isDraft(p.proofKey)) return; const ff = findFillOf(p); if (ff && x[ff] != null) call[p.proofField ? p.proofField.id : p.proofKey] = x[ff]; });
     if (extra) Object.keys(extra).forEach(k => { call[k] = extra[k]; });
     lsSet(K.call, call);
@@ -8494,13 +8516,16 @@ body.light-theme .proof-box{color:#0f172a}
   window.EngineActions['start-new-customer'] = () => {
     Object.keys(find).forEach(k => { if (isDraft(k)) delete find[k]; });
     draftCells().forEach(p => { const ff = p.proofField.find, fk = Object.keys(FIND_BOX_FILL).find(k => FIND_BOX_FILL[k] === ff); find[p.proofKey] = fk ? String(find[fk] || '').trim() : ''; });
-    goView(NEW_VIEW);
+    if (!newView) { say('No New customer screen on the sheet (a Screen with a save-new-customer button).', 'warn'); return; }
+    goView(newView);
   };
   window.EngineActions['save-new-customer'] = () => {
     blurNow();
     const site = { name: '', address: '', phone: '', email: '' }, extra = {};
     draftCells().forEach(p => { const v = String(find[p.proofKey] || '').trim(), ff = p.proofField.find; if (ff && ff in site && v) site[ff] = v; if (v) extra[p.proofField.id] = v; });
     if (!site.name || !site.address) { say('Name and address are needed to save.', 'warn'); return; }
+    const twin = allSites().find(x => sameSite(x, site));   // 0.13.1 (R3): no duplicates; the one already kept is loaded
+    if (twin) { say('Already saved: ' + twin.name + ' (loaded it).', 'done'); loadSite(twin); return; }
     const list = phoneSites(); site.id = 'phone-' + Date.now().toString(36); site.saved = new Date().toISOString(); list.push(site);
     if (!lsSet(K.sites, list)) { say('Could not keep the new customer on this phone (storage full?).', 'warn'); return; }
     say('New customer kept on this phone: ' + site.name, 'done');
@@ -8556,6 +8581,7 @@ body.light-theme .proof-box{color:#0f172a}
     const refused = [], screens = { entry: 1 }, ids = {};
     rows = withBadgeRow(rows);   // round 6: tabs from 0.4.0 / 0.5.0 have no badge row: add one in memory (migration)
     rows.forEach(r => { const s = String(r['Screen'] || '').trim().toLowerCase(); if (s) screens[s] = 1; });
+    const draftScreen = String((rows.find(r => String(r['Content'] || '').trim() === 'save-new-customer') || {})['Screen'] || '').trim().toLowerCase();   // 0.13.1 (R8)
     const out = []; const byRow = {}; let used = 0; const colW = {}, freezeOf = {}, lineH = {}, warned = [];
     let badgeDrawn = false;
     const holes = [];
@@ -8641,7 +8667,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (r._input) { cell.proofInput = r._input; cell.proofWheel = r._wheel || null;
         if (r._input === 'both' && cell.subLabel && cell.subLabel.enabled && cell.subLabel.align === 'right') cell.subLabel.nudgeX = (Number(cell.subLabel.nudgeX) || 0) - BOTH_SWITCH_W; }   // 0.12.2 (F1): the unit sits left of the switch
       if (fd) { cell.proofField = fd; if (r._join) cell.proofJoin = r._join; if (r._label) cell.proofLabel = r._label; }
-      if (slot === 'box') { cell.slot = 'box'; cell.proofKey = fd && screen === NEW_VIEW ? DRAFT + fd.id : content; cell.label = ''; }   // C1a: a draft box
+      if (slot === 'box') { cell.slot = 'box'; cell.proofKey = fd && draftScreen && screen === draftScreen ? DRAFT + fd.id : content; cell.label = ''; }   // C1a: a draft box
       else if (slot === 'unit' || slot === 'report-value') { cell.slot = slot; cell.proofKey = content; cell.label = ''; }
       else if (slot === 'results') { cell.slot = 'results'; cell.label = ''; }
       else if (type === 'button') { cell.label = g('Label') || content;
@@ -8680,6 +8706,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (R.screen === 'tray') row.isTray = true; else if (R.screen !== 'all') row.view = R.screen;
       return row;
     }) };
+    state.proofNewView = draftScreen;   // 0.13.1 (R8)
     return { state, refused, used, warned };
   }
   // ---------- round A: Structure + Items (Blueprint v0.2 stage A); round B1: + Fields + Profile sizes (Blueprint v0.3) ----------
@@ -8838,6 +8865,7 @@ body.light-theme .proof-box{color:#0f172a}
     // round B1: the Fields tab (null = Round A, no Fields)
     const FD = opt.fields ? readFields(opt.fields) : null;
     if (FD) FD.msgs.forEach(m => out.push(m));
+    out._house = FD ? Object.keys(FD.map).map(k => FD.map[k]).filter(f => f.scope === 'house').map(f => ({ id: f.id, find: f.find || '' })) : null;   // 0.13.1 (R6)
     const ids = {};
     items.forEach((r, i) => {
       const where = 'Items row ' + (i + 2), why = formulaErrors(r);
@@ -8971,7 +8999,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (!id) why.push('no Site Id'); else if (ids[id]) why.push('the Site Id "' + id + '" is already used on row ' + ids[id]);
       if (!g('Name') && !g('Address')) why.push('no Name and no Address');
       if (act && act !== 'yes' && act !== 'no') why.push('Active "' + g('Active') + '" must be yes or no (or blank)');
-      ['Site Id', 'Address', 'Phone'].forEach(c => { if (converted(r, c)) why.push(c + ' "' + g(c) + '" looks like a date, time or number. ' + PT_HINT(c)); });
+      ['Site Id', 'Address', 'Phone'].forEach(c => { if (r._t && /^(date|time|number)$/.test(r._t[c] || '')) why.push(   /* 0.13.1 (R9): only what Google SENT as a date, time or number */c + ' "' + g(c) + '" looks like a date, time or number. ' + PT_HINT(c)); });
       if (why.length) { notes.push('Sites row ' + n + ' refused: ' + why.join('; ') + '.'); return; }
       ids[id] = n; if (act === 'no') return;
       out.push({ id, name: g('Name'), address: g('Address'), phone: g('Phone'), email: g('Email'), notes: g('Notes') });
@@ -8980,7 +9008,6 @@ body.light-theme .proof-box{color:#0f172a}
   }
   async function readBundle(notes, profile) {
     let st, it, fl, ps, si = null;
-    SITES = null;   // C1a: until this read says otherwise (an old Layout tab has no Sites)
     try { [st, it, fl, ps, si] = await Promise.all([gviz('Structure'), gviz('Items'), gviz('Fields'), gviz('Profile sizes'), gviz('Sites').catch(() => null)]); }
     catch (e) { return { failed: true, why: e.message }; }
     const sitesRows = si && hasCols(si, ['Site Id']) ? si.rows : null;   // C1a
@@ -8999,7 +9026,7 @@ body.light-theme .proof-box{color:#0f172a}
       hasF ? fl.labels.filter(l => l && FIELDS_COLS.indexOf(l) < 0).map(l => 'Fields: ' + l) : [], hasF && hasP ? ps.labels.filter(l => l && SIZES_COLS.indexOf(l) < 0).map(l => 'Profile sizes: ' + l) : []);
     if (sitesRows) unknown.push(...si.labels.filter(l => l && SITES_COLS.indexOf(l) < 0).map(l => 'Sites: ' + l));
     if (unknown.length) notes.push('Column(s) this page does not know: ' + unknown.join(', ') + '. This page may be out of date: tap Reload, or refresh the browser.');
-    SITES = sitesRows ? parseSites(sitesRows, notes) : null;
+    rows._sites = sitesRows ? parseSites(sitesRows, notes) : null;   // 0.13.1 (R10): travels with this copy
     lsSet(K.bundle, { at: Date.now(), structure: st.rows, items: items.rows, itemsTab, fields: opt.fields, sizes: opt.sizes, sites: sitesRows });
     return { rows, source: 'bundle', sourceText: bundleText(opt, itemsTab, 'Layout read from ') };
   }
@@ -9012,8 +9039,8 @@ body.light-theme .proof-box{color:#0f172a}
     if (!(c && Array.isArray(c.structure) && Array.isArray(c.items))) return null;
     const opt = { fields: Array.isArray(c.fields) ? c.fields : null, sizes: Array.isArray(c.sizes) ? c.sizes : null, profile };
     const rows = bundleRows(c.structure, c.items, opt);
-    if (build(rows).used) SITES = Array.isArray(c.sites) ? parseSites(c.sites, []) : null;   // C1a: the saved Sites rows too
-    return build(rows).used ? { rows, at: c.at, text: bundleText(opt, c.itemsTab || 'Items', 'Layout from the last good copy of ') } : null;
+    const siteNotes = []; rows._sites = Array.isArray(c.sites) ? parseSites(c.sites, siteNotes) : null;   // 0.13.1 (R10): with its notes
+    return build(rows).used ? { rows, at: c.at, notes: siteNotes, text: bundleText(opt, c.itemsTab || 'Items', 'Layout from the last good copy of ') } : null;
   }
   // ---------- end of round A / B1 ----------
   function eachCell(state, fn) { (state.rows || []).forEach(r => (r.containers || []).forEach(c => (c.stacks || []).forEach(s => (s.splits || []).forEach(p => fn(p, r))))); }
@@ -9096,7 +9123,7 @@ body.light-theme .proof-box{color:#0f172a}
     if (bun.rows) return { rows: bun.rows, profile, source: 'bundle', sourceText: bun.sourceText };
     if (bun.failed) {
       notes.push('Structure + Items not used (' + bun.why + ').');
-      const sb = savedBundle(profile); if (sb && !/could not load|no answer/.test(bun.why)) return { rows: sb.rows, profile, source: 'saved', sourceText: sb.text + ' (saved ' + new Date(sb.at).toLocaleString() + ').' };
+      const sb = savedBundle(profile); if (sb && !/could not load|no answer/.test(bun.why)) { notes.push(...sb.notes); return { rows: sb.rows, profile, source: 'saved', sourceText: sb.text + ' (saved ' + new Date(sb.at).toLocaleString() + ').' }; }
     }
     return readOldTab(profile, notes);
   }
@@ -9118,7 +9145,7 @@ body.light-theme .proof-box{color:#0f172a}
       } else { notes.push('Live read of "' + tab + '" failed (' + e.message + ').'); offline = true; }
     }
     const c = lsGet(K.layout(profile), null), sb = savedBundle(profile);   // round A: the newer of the two last good copies
-    if (sb && !(c && c.at > sb.at)) return { rows: sb.rows, profile, source: 'saved', offline, sourceText: sb.text + ' (saved ' + new Date(sb.at).toLocaleString() + ').' };
+    if (sb && !(c && c.at > sb.at)) { notes.push(...sb.notes); return { rows: sb.rows, profile, source: 'saved', offline, sourceText: sb.text + ' (saved ' + new Date(sb.at).toLocaleString() + ').' }; }
     if (c && Array.isArray(c.rows) && build(c.rows).used) return { rows: c.rows, profile, source: 'saved', offline, sourceText: 'Layout from the last good copy of "' + tab + '" (saved ' + new Date(c.at).toLocaleString() + ').' };
     try { const r = await fetch('layout-profiles.csv', { cache: 'no-store' }); if (r.ok) { const rows = fromCsv(await r.text()); if (build(rows).used) return { rows, profile, source: 'csv', offline, sourceText: 'Using saved layout: layout-profiles.csv next to this page (not the live sheet).' }; } } catch (e) {}
     return { rows: fromCsv(window.PROOF_BUILTIN_CSV || ''), profile, source: 'builtin', offline, sourceText: 'Using saved layout: the copy built into this page (not the live sheet).' };
@@ -9203,6 +9230,8 @@ body.light-theme .proof-box{color:#0f172a}
     registerTemplateActions(b.state); usesB2 = layoutUsesB2(b.state);   // round B2
     const keepView = currentView, wasEdit = !isLiveInteraction, keepSel = selectedId();
     engineState = b.state; reselect(keepSel);
+    newView = b.state.proofNewView || '';   // 0.13.1 (R8)
+    SITES = Array.isArray(L.rows._sites) ? L.rows._sites : null; houseFields = Array.isArray(L.rows._house) ? L.rows._house : null;   // 0.13.1 (R10, R6): from the copy that won
     try { undoStack.length = 0; redoStack.length = 0; recordHistorySnapshot(); } catch (e) {}
     try { updateHistoryButtons(); } catch (e) {}
     currentView = b.state.rows.some(r => r.view === keepView) ? keepView : 'entry';
@@ -9715,6 +9744,7 @@ body.light-theme .proof-box{color:#0f172a}
     const mode = callView.view, active = callView.tpl;
     const a = document.activeElement, fpart = a && a.closest && a.closest('.grid-split-partition'), fpid = fpart ? fpart.getAttribute('data-pid') : '';
     (engineState.rows || []).forEach(row => {
+      if (newView && row.view === newView) return;   // 0.13.1 (R1): a View or Template never hides the New customer form
       const multi = (row.containers || []).length !== 1;
       (row.containers || []).forEach(c => (c.stacks || []).forEach(s => {
         const items = {}; (s.splits || []).forEach(p => { if (p.proofItem) (items[p.proofItem] = items[p.proofItem] || []).push(p); });
