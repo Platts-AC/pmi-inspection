@@ -760,6 +760,10 @@
 .grid-split-partition:has(.proof-results) > *{height:100%;align-self:stretch}
 .grid-stack-row:has(> .proof-fold-status){position:relative}
 .proof-fold-status{position:absolute;right:10px;top:50%;transform:translateY(-50%);font:600 11px/1.2 system-ui,sans-serif;color:#94a3b8;white-space:nowrap;pointer-events:none}
+.grid-split-partition:has(.proof-report-body){align-items:stretch}
+.grid-split-partition:has(.proof-report-body) > *{height:100%;align-self:stretch}
+.proof-report-body{height:100%;width:100%;box-sizing:border-box;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:8px 10px;white-space:pre-wrap;text-align:left;font:13px/1.45 ui-monospace,Menlo,monospace;color:#e2e8f0;user-select:text;-webkit-user-select:text}
+.proof-report-empty{color:#64748b}
 .grid-split-partition:has(.proof-ct){align-items:stretch}
 .grid-split-partition:has(.proof-ct) > *{height:100%;align-self:stretch}
 .proof-results{height:100%;width:100%;display:flex;flex-direction:column;overflow:hidden;padding:4px 6px;box-sizing:border-box;text-align:left}
@@ -3592,7 +3596,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.15.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.16.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3602,7 +3606,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.15.0', stamp: '2026-11-22 16:51:18', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.16.0', stamp: '2026-11-22 16:56:58', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8279,7 +8283,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.15.0';
+  const PROOF_VERSION = '0.16.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8298,7 +8302,7 @@ body.light-theme .proof-box{color:#0f172a}
   const findFillOf = p => p.proofField ? (p.proofField.find || '') : (FIND_BOX_FILL[p.proofKey] || FIND_FILL_FALLBACK[p.proofKey] || '');
   const TYPES = { button: 1, text: 1, logo: 1, badge: 1 };
   const TOOL_ACTIONS = { 'reload-layout': 1, 'proof-save-tweaks': 1, 'proof-clear-tweaks': 1, 'proof-profile': 1, 'toggle-tray': 1, 'proof-adjust': 1, 'refresh-page': 1 };
-  const ACTIONS = Object.assign({ 'proof-badge': 1, 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1, 'new-call': 1, 'reveal-hidden': 1, 'start-new-customer': 1, 'save-new-customer': 1, 'open-call-type': 1, 'call-type-back': 1 }, TOOL_ACTIONS);   // 0.14.1: call-type-back   // C1b: open-call-type   // C1a: Blueprint P8 (Stage C)
+  const ACTIONS = Object.assign({ 'proof-badge': 1, 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1, 'new-call': 1, 'reveal-hidden': 1, 'start-new-customer': 1, 'save-new-customer': 1, 'open-call-type': 1, 'call-type-back': 1, 'copy-report': 1 }, TOOL_ACTIONS);   // C2b: copy-report   // 0.14.1: call-type-back   // C1b: open-call-type   // C1a: Blueprint P8 (Stage C)
   const TPL_NAME = /^[A-Za-z0-9][A-Za-z0-9 _.-]{0,29}$/, TPL_ACTION = /^set-template:([A-Za-z0-9][A-Za-z0-9 _.-]{0,29})?$/;   // round B2: set-template:<name> (set-template: alone = no template)
   // What a tweak can change (DESIGN.md). Each rule turns a value into its normal text form, or returns an error.
   const PLACES = { 'top-left': ['left', 'top'], 'top-center': ['center', 'top'], 'top-right': ['right', 'top'], 'middle-left': ['left', 'middle'], 'middle': ['center', 'middle'],
@@ -8525,6 +8529,30 @@ body.light-theme .proof-box{color:#0f172a}
       if (s.textContent !== text) s.textContent = text;
       const chip = bands[ri].querySelector(':scope > .proof-chip'), right = chip && chip.offsetParent ? (chip.offsetWidth + 16) + 'px' : ''; if (s.style.right !== right) s.style.right = right; });   // beside the '+N hidden' chip, never under it
   }
+
+  // ---------- Round C2b: report-body (Slot) and copy-report (Action) ----------
+  // The main app's report wording (app/tools/report.js reportLine, app/tools/fields.js P.text): one line per filled Field,
+  // '►' + label + ':' + ' ' + value + unit (' ' + unit; ':1' with no space). Sections in sheet order, each with its name in capitals
+  // above its lines, a blank line between Sections; only Fields that have a value (calc values included); New customer drafts never.
+  const unitText = u => (u ? (u === ':1' ? ':1' : ' ' + u) : '');
+  function reportBody() {
+    const secs = [];
+    (engineState.rows || []).forEach(row => { if (row.isTray) return; const lines = [], seen = {};
+      (row.containers || []).forEach(c => (c.stacks || []).forEach(st => (st.splits || []).forEach(p => {
+        const F = p.proofField; if (p.slot !== 'box' || !F || isDraft(p.proofKey) || seen[F.id]) return; seen[F.id] = 1;
+        const v = String(call[F.id] == null ? '' : call[F.id]).trim(); if (v) lines.push('►' + (p.proofLabel || F.name) + ': ' + v + unitText(F.unit)); })));
+      if (lines.length) secs.push([String(row.name || '').toUpperCase()].concat(lines).join('\n')); });
+    return secs.join('\n\n');
+  }
+  window.EngineSlots['report-body'] = { render() { const t = reportBody(); return '<div class="proof-report-body">' + (t ? esc(t) : '<span class="proof-report-empty">Nothing in the report yet.</span>') + '</div>'; } };
+  // copy-report: the main app's copy (clipboard, then the old select-and-copy way) and its messages
+  function copyText(text) {
+    const fallback = () => { try { const ta = document.createElement('textarea'); ta.value = text; ta.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); const ok = document.execCommand('copy'); ta.remove(); return ok; } catch (e) { return false; } };
+    if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(text).then(() => true, () => fallback());
+    return Promise.resolve(fallback());
+  }
+  window.EngineActions['copy-report'] = () => { const t = reportBody(); if (!t) { say('Nothing in the report yet', 'warn'); return; }
+    copyText(t).then(ok => say(ok ? 'Report copied ✓' : 'Copy failed: select the text instead', ok ? 'done' : 'warn')); };
 
   // ---------- Round C1b: the Call types tab, the call-type question (Slot call-types, Action open-call-type) ----------
   // Call types: Call type | Template | Aliases (separated by |) | Active | Order | Notes. Missing tab = no question (Entry as before).
@@ -8779,7 +8807,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (g('Align') && !/^(left|center|right)$/i.test(g('Align'))) why.push('Align "' + g('Align') + '" must be left, center or right');   // 0.12.1 (BT-48): no silent center
       if (!TYPES[type]) why.push('unknown Type "' + type + '"');
       const fd = r._fieldDef || null;   // round B1: the Field this piece belongs to (made by bundleRows from the Fields tab)
-      if (slot && slot !== 'box' && slot !== 'results' && slot !== 'call-types' && !((slot === 'unit' || slot === 'report-value') && fd)) why.push('unknown Slot "' + slot + '"');
+      if (slot && slot !== 'box' && slot !== 'results' && slot !== 'call-types' && slot !== 'report-body' && !((slot === 'unit' || slot === 'report-value') && fd)) why.push('unknown Slot "' + slot + '"');
       if (slot === 'box' && !fd && !FIELD_FALLBACK[content] && !FIND_KEYS[content]) why.push('unknown field "' + content + '"');
       if (type === 'button') { const a = content; const ok = ACTIONS[a] || (/^set-view:/.test(a) && screens[a.slice(9)]) || /^set-show:(all|template|values)$/.test(a) || TPL_ACTION.test(a); /* round B2 actions */ if (!ok) why.push('unknown action "' + a + '" (this page may be out of date: tap Reload, or refresh the browser)'); }
       if (!VIS_RULES[vis]) why.push('Visible when must be always, never, when-filled or reserved');   // round B2: when-filled, reserved (Blueprint P9)
@@ -8818,7 +8846,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (fd) { cell.proofField = fd; if (r._join) cell.proofJoin = r._join; if (r._label) cell.proofLabel = r._label; }
       if (slot === 'box') { cell.slot = 'box'; cell.proofKey = fd && draftScreen && screen === draftScreen ? DRAFT + fd.id : content; cell.label = ''; }   // C1a: a draft box
       else if (slot === 'unit' || slot === 'report-value') { cell.slot = slot; cell.proofKey = content; cell.label = ''; }
-      else if (slot === 'results' || slot === 'call-types') { cell.slot = slot; cell.label = ''; }   // C1b: call-types (a list, like results)
+      else if (slot === 'results' || slot === 'call-types' || slot === 'report-body') { cell.slot = slot; cell.label = ''; }   // C2b: report-body   // C1b: call-types (a list, like results)
       else if (type === 'button') { cell.label = g('Label') || content;
         // round 9 migration: on older tabs New (Id hdr.newcall) only opened Find (set-view:find); it now clears the call first
         cell.clickAction = (id === 'hdr.newcall' && content === 'set-view:find') ? 'new-call' : content; }
@@ -8834,7 +8862,7 @@ body.light-theme .proof-box{color:#0f172a}
     const state = { layoutVersion: 'proof-' + PROOF_VERSION, viewportWidth: 'auto', showWireframes: false, activeSelection: null, rows: out.map((R, ri) => {
       let tall = 0;
       const containers = num(R.cont).map(ci => {
-        const stacks = num(R.cont[ci]).map(si => { const cells = num(R.cont[ci][si]).map(pi => R.cont[ci][si][pi]); const big = cells.some(c => c.slot === 'results' || c.slot === 'call-types'); const lh = lineH[R.key + '\u0002' + ci + '\u0002' + si];
+        const stacks = num(R.cont[ci]).map(si => { const cells = num(R.cont[ci][si]).map(pi => R.cont[ci][si][pi]); const big = cells.some(c => c.slot === 'results' || c.slot === 'call-types' || c.slot === 'report-body'); const lh = lineH[R.key + '\u0002' + ci + '\u0002' + si];
           const st = { id: 'S' + si, weight: big ? (lh ? lh.v : 7) : (lh ? lh.v : 1), splits: cells, _big: big, _lh: !!lh, proofLine: (cells[0] || {}).proofLine };
           const lt = (cells.find(c => c.proofLTpl) || {}).proofLTpl;   // round B2: the Line's Templates (Structure); never on the badge's Line
           if (lt && cells.some(isBadge)) warned.push('Line "' + st.proofLine + '": Templates not used (the version badge is on this Line and cannot be hidden).');
