@@ -730,6 +730,17 @@
 #viewport-canvas-frame .proof-face{position:relative}
 #viewport-canvas-frame .proof-limit{position:absolute;left:9px;bottom:1px;font:600 10px/1.1 system-ui,sans-serif;color:#fbbf24;pointer-events:none;white-space:nowrap}
 #viewport-canvas-frame .proof-mode{flex:0 0 auto;align-self:center;margin-left:4px;min-width:30px;height:30px;border-radius:6px;border:1px solid #2b4f7e;background:#0c1a2e;color:#93c5fd;font-size:15px;line-height:1;padding:0}
+.proof-ct{height:100%;width:100%;display:flex;flex-direction:column;overflow:hidden;padding:4px 6px;box-sizing:border-box;text-align:left}
+.proof-ct .proof-form{display:contents}
+.proof-ct .proof-ct-filter{width:100%;box-sizing:border-box;margin:0 0 6px;padding:8px 10px;border-radius:8px;border:1px solid #234d82;background:#0c1a2e;color:#e2e8f0;font-size:16px}
+.proof-ct .proof-ct-list{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.proof-ct .proof-ct-item{display:block;width:100%;text-align:left;margin:0 0 6px;padding:10px 12px;border-radius:8px;border:1px solid #234d82;background:#0c1a2e;color:#e2e8f0;font-size:15px}
+.proof-ct .proof-ct-item.ct-on{border-color:#f59e0b;background:#2a1a05}
+.proof-ct .proof-ct-item i{font-size:11px;color:#fbbf24;font-style:normal;margin-left:6px}
+.proof-ct .proof-empty{color:#fbbf24;font-size:13px;padding:6px 0}
+#proof-ask{position:fixed;left:8px;right:8px;bottom:12px;z-index:85;background:#0b1626;border:1px solid #f59e0b;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.6);padding:12px;font:15px system-ui,sans-serif;color:#e2e8f0}
+#proof-ask .pa-btns{display:flex;gap:8px;margin-top:10px}
+#proof-ask .pa-btns button{flex:1;min-height:44px;border-radius:8px;border:1px solid #2b4f7e;background:#0f213a;color:#e2e8f0;font:600 15px system-ui,sans-serif}
 #proof-wheel{position:fixed;left:0;right:0;z-index:80;background:#0b1626;border-top:1px solid #2b4f7e;box-shadow:0 -8px 24px rgba(0,0,0,.5);font:15px system-ui,sans-serif;color:#e2e8f0}
 #proof-wheel .pw-top{display:flex;align-items:center;gap:8px;padding:6px 8px;border-bottom:1px solid #1e3a5f}
 #proof-wheel .pw-top button{min-width:72px;min-height:40px;border-radius:8px;border:1px solid #2b4f7e;background:#0f213a;color:#e2e8f0;font:600 14px system-ui,sans-serif}
@@ -747,6 +758,8 @@
 .grid-split-partition:has(> div > button.rounded-lg) > div.w-full{align-self:stretch}
 .grid-split-partition:has(.proof-results){align-items:stretch}
 .grid-split-partition:has(.proof-results) > *{height:100%;align-self:stretch}
+.grid-split-partition:has(.proof-ct){align-items:stretch}
+.grid-split-partition:has(.proof-ct) > *{height:100%;align-self:stretch}
 .proof-results{height:100%;width:100%;display:flex;flex-direction:column;overflow:hidden;padding:4px 6px;box-sizing:border-box;text-align:left}
 .proof-results .proof-list{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;border-top:1px solid #1e3a5f;padding-top:6px}
 .proof-results .proof-hint{color:#64748b;font-size:13px}
@@ -3577,7 +3590,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.13.1", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.14.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3587,7 +3600,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.13.1', stamp: '2026-11-22 14:56:58', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.14.0', stamp: '2026-11-22 15:33:32', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8264,7 +8277,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.13.1';
+  const PROOF_VERSION = '0.14.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8279,11 +8292,11 @@ body.light-theme .proof-box{color:#0f172a}
   // 0.12.2 (R7): which Field a picked house fills, and word capitals, come from the Fields column 'Find fill' (name, address, phone).
   // This list is part of the one allowed second home (old Layout tabs, and a Fields tab made before the column existed).
   const FIND_FILL_FALLBACK = { 'f:customer': 'name', 'f:address': 'address', 'f:phone': 'phone' };
-  const FIND_FILLS = { name: 1, address: 1, phone: 1, email: 1 } /* email: round C1a */, FIND_BOX_FILL = { 'find.name': 'name', 'find.address': 'address', 'find.phone': 'phone' };
+  const FIND_FILLS = { name: 1, address: 1, phone: 1, email: 1, calltype: 1 } /* email: round C1a; calltype: C1b (the Field that shows the call type) */, FIND_BOX_FILL = { 'find.name': 'name', 'find.address': 'address', 'find.phone': 'phone' };
   const findFillOf = p => p.proofField ? (p.proofField.find || '') : (FIND_BOX_FILL[p.proofKey] || FIND_FILL_FALLBACK[p.proofKey] || '');
   const TYPES = { button: 1, text: 1, logo: 1, badge: 1 };
   const TOOL_ACTIONS = { 'reload-layout': 1, 'proof-save-tweaks': 1, 'proof-clear-tweaks': 1, 'proof-profile': 1, 'toggle-tray': 1, 'proof-adjust': 1, 'refresh-page': 1 };
-  const ACTIONS = Object.assign({ 'proof-badge': 1, 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1, 'new-call': 1, 'reveal-hidden': 1, 'start-new-customer': 1, 'save-new-customer': 1 }, TOOL_ACTIONS);   // C1a: Blueprint P8 (Stage C)
+  const ACTIONS = Object.assign({ 'proof-badge': 1, 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1, 'new-call': 1, 'reveal-hidden': 1, 'start-new-customer': 1, 'save-new-customer': 1, 'open-call-type': 1 }, TOOL_ACTIONS);   // C1b: open-call-type   // C1a: Blueprint P8 (Stage C)
   const TPL_NAME = /^[A-Za-z0-9][A-Za-z0-9 _.-]{0,29}$/, TPL_ACTION = /^set-template:([A-Za-z0-9][A-Za-z0-9 _.-]{0,29})?$/;   // round B2: set-template:<name> (set-template: alone = no template)
   // What a tweak can change (DESIGN.md). Each rule turns a value into its normal text form, or returns an error.
   const PLACES = { 'top-left': ['left', 'top'], 'top-center': ['center', 'top'], 'top-right': ['right', 'top'], 'middle-left': ['left', 'middle'], 'middle': ['center', 'middle'],
@@ -8395,7 +8408,7 @@ body.light-theme .proof-box{color:#0f172a}
     // round 7 (1): autofill fix C (Danny's Android test, 0.6.0): each value box sits in its own form with autocomplete off and has
     // autocomplete one-time-code; the form takes no space (display:contents) and never submits (Enter is stopped, see below).
     return '<div class="proof-cell"><div class="proof-face" style="align-items:' + va + '"><form class="proof-form" autocomplete="off" onsubmit="return false"><input class="proof-box" data-key="' + esc(k) + '" value="' + esc(valOf(k)) + '"' +
-      (wm ? ' inputmode="none" readonly' : tel ? ' inputmode="tel"' : num ? ' inputmode="decimal"' : '') + ' placeholder="' + esc(F ? F.name : (FIELD_FALLBACK[k] || 'Search')) + '"' + boxAttrs(p) + ' style="font-size:' + boxSize(p) + 'px;text-align:' + (p.align || 'left') + '"></form>' + sw + '</div></div>';
+      (wm || (F && F.kind === 'readonly') ? ' inputmode="none" readonly' : tel ? ' inputmode="tel"' : num ? ' inputmode="decimal"' : '') + ' placeholder="' + esc(F ? F.name : (FIELD_FALLBACK[k] || 'Search')) + '"' + boxAttrs(p) + ' style="font-size:' + boxSize(p) + 'px;text-align:' + (p.align || 'left') + '"></form>' + sw + '</div></div>';
   } };
   // Enter in a value box: never submit or reload (the form also says onsubmit return false); focus and caret stay
   document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target && e.target.classList && e.target.classList.contains('proof-box')) e.preventDefault(); }, true);
@@ -8471,6 +8484,72 @@ body.light-theme .proof-box{color:#0f172a}
     });
     return out.sort((a, b) => (b.exact - a.exact) || (b.why.length - a.why.length) || (b.score - a.score) || (a.i - b.i));
   }
+  // ---------- Round C1b: the Call types tab, the call-type question (Slot call-types, Action open-call-type) ----------
+  // Call types: Call type | Template | Aliases (separated by |) | Active | Order | Notes. Missing tab = no question (Entry as before).
+  const CT_COLS = ['Call type', 'Template', 'Aliases', 'Active', 'Order', 'Notes'];
+  let CALL_TYPES = null, ctView = '', ctFilter = '';
+  function parseCallTypes(rows, notes) {
+    const out = [], seen = {};
+    (rows || []).forEach((r, i) => {
+      const n = i + 2, g = c => g2(r, c);
+      if (!Object.keys(r).some(c => c.charAt(0) !== '_' && g(c))) return;
+      const fe = formulaErrors(r); if (fe.length) { notes.push('Call types row ' + n + ' refused: ' + fe.join(', ') + '.'); return; }
+      const why = [], type = g('Call type'), tpl = g('Template'), act = g('Active').toLowerCase(), order = g('Order'), aliases = g('Aliases').split('|').map(x => x.trim()).filter(Boolean);
+      if (!type) why.push('no Call type'); else if (seen[type.toLowerCase()]) why.push('the Call type "' + type + '" is already used on row ' + seen[type.toLowerCase()]);
+      if (type && converted(r, 'Call type')) why.push('Call type "' + type + '" looks like a date, time or number. ' + PT_HINT('Call type'));
+      if (tpl && !TPL_NAME.test(tpl)) why.push('Template "' + tpl + '" is not a template name (letters, numbers, spaces, . _ -; at most 30)');
+      if (act && act !== 'yes' && act !== 'no') why.push('Active "' + g('Active') + '" must be yes or no (or blank)');
+      if (order && !isFinite(Number(order))) why.push('Order "' + order + '" must be a number (or blank)');
+      if (converted(r, 'Aliases') || aliases.some(a => DATE_LIKE.some(d => d.test(a)))) why.push('Aliases "' + g('Aliases') + '" look like a date, time or number. ' + PT_HINT('Aliases'));
+      if (why.length) { notes.push('Call types row ' + n + ' refused: ' + why.join('; ') + '.'); return; }
+      seen[type.toLowerCase()] = n;
+      out.push({ type, template: tpl || type, aliases, active: act !== 'no', order: order === '' ? Infinity : Number(order), row: n });
+    });
+    return out;
+  }
+  const activeTypes = () => (CALL_TYPES || []).filter(t => t.active).sort((a, b) => (a.order - b.order) || (a.row - b.row));
+  // study Q5: strip a trailing '(...)'; exact type 100, exact alias 90, every typed word starts a word of the type or of one alias 70,
+  // the type or an alias inside the text 50. It only orders and filters the official list (never adds to it).
+  function matchCallType(q) {
+    const clean = t => words(t).join(' '), full = clean(q), base = clean(String(q || '').replace(/\s*\([^)]*\)\s*$/, ''));
+    if (!full) return activeTypes().map(t => ({ type: t.type, t, tier: 0, via: '' }));
+    const out = [];
+    activeTypes().forEach(t => {
+      const names = [t.type].concat(t.aliases); let tier = 0, via = '';
+      if (clean(t.type) === base || clean(t.type) === full) tier = 100;
+      else { const a = t.aliases.find(x => clean(x) === base || clean(x) === full); if (a) { tier = 90; via = a; } }
+      if (!tier) { const qw = words(base); const n = names.find(x => { const w = words(x); return qw.length && qw.every(q1 => w.some(h => h.indexOf(q1) === 0)); }); if (n) { tier = 70; via = n === t.type ? '' : n; } }
+      if (!tier) { const n = names.find(x => clean(x) && (' ' + full + ' ').indexOf(' ' + clean(x) + ' ') >= 0); if (n) { tier = 50; via = n === t.type ? '' : n; } }
+      if (tier) out.push({ type: t.type, t, tier, via });
+    });
+    return out.sort((a, b) => (b.tier - a.tier) || (a.t.order - b.t.order) || (a.t.row - b.t.row));
+  }
+  function ctListHtml() {
+    const m = matchCallType(ctFilter);
+    if (!m.length) return '<div class="proof-empty">No matching call type. Clear the box to see all.</div>';
+    return m.map(x => '<button type="button" class="proof-ct-item' + (x.type === callView.callType ? ' ct-on' : '') + '" data-type="' + esc(x.type) + '"><b>' + esc(x.type) + '</b>' + (x.via ? ' <i>Matches: ' + esc(x.via) + '</i>' : '') + '</button>').join('');
+  }
+  window.EngineSlots['call-types'] = { render() {
+    return '<div class="proof-ct"><form class="proof-form" autocomplete="off" onsubmit="return false"><input class="proof-ct-filter" value="' + esc(ctFilter) + '" placeholder="Type to filter" autocomplete="one-time-code" autocorrect="off" spellcheck="false" autocapitalize="off" data-lpignore="true" data-form-type="other"></form><div class="proof-ct-list">' + ctListHtml() + '</div></div>';
+  } };
+  const paintCt = () => document.querySelectorAll('.proof-ct-list').forEach(el => { el.innerHTML = ctListHtml(); });
+  document.addEventListener('input', e => { if (e.target && e.target.classList && e.target.classList.contains('proof-ct-filter')) { ctFilter = e.target.value; paintCt(); } });
+  document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target && e.target.classList && e.target.classList.contains('proof-ct-filter')) e.preventDefault(); }, true);
+  document.addEventListener('click', e => {
+    const b = e.target && e.target.closest && e.target.closest('.proof-ct-item'); if (!b) return;
+    e.preventDefault(); e.stopPropagation(); const t = activeTypes().find(x => x.type === b.dataset.type); if (t) pickCallType(t);
+  }, true);
+  // a tapped type: the call's type (the Field with Find fill calltype), its template (as set-template), View Template, then Entry
+  function pickCallType(t) {
+    callView.callType = t.type; callView.tpl = t.template; callView.view = 'template'; saveView();
+    eachCell(engineState, p => { if (p.proofField && p.proofField.find === 'calltype' && !isDraft(p.proofKey)) call[p.proofField.id] = t.type; });
+    lsSet(K.call, call); ctFilter = '';
+    goView('entry'); try { applyVis(); markActive(); } catch (e) {} paintNotes(); say('Call type: ' + t.type + ' (template ' + t.template + ')', 'done');
+  }
+  window.EngineActions['open-call-type'] = () => {
+    if (!ctView || !activeTypes().length) { say('No call types on the sheet (a Call types tab and a Screen with the call-types Slot).', 'warn'); return; }
+    ctFilter = ''; goView(ctView);
+  };
   const hasNewCustomer = () => { let y = false; eachCell(engineState, p => { if (p.clickAction === 'start-new-customer') y = true; }); return y; };
   function resultsHtml() {
     const all = matches();
@@ -8507,7 +8586,7 @@ body.light-theme .proof-box{color:#0f172a}
     eachCell(engineState, p => { if (p.slot !== 'box' || FIND_KEYS[p.proofKey] || isDraft(p.proofKey)) return; const ff = findFillOf(p); if (ff && x[ff] != null) call[p.proofField ? p.proofField.id : p.proofKey] = x[ff]; });
     if (extra) Object.keys(extra).forEach(k => { call[k] = extra[k]; });
     lsSet(K.call, call);
-    clearFind(); goView('entry');
+    clearFind(); goView(ctView && activeTypes().length ? ctView : 'entry');   // C1b: then 'What kind of call is this?'
   }
   // Round C1a (Blueprint P8, Stage C): start-new-customer copies each Find box into the New customer box with the same Find fill and
   // opens the New customer screen; save-new-customer needs the Find fill name and address, keeps the customer on this phone (fake
@@ -8526,11 +8605,25 @@ body.light-theme .proof-box{color:#0f172a}
     if (!site.name || !site.address) { say('Name and address are needed to save.', 'warn'); return; }
     const twin = allSites().find(x => sameSite(x, site));   // 0.13.1 (R3): no duplicates; the one already kept is loaded
     if (twin) { say('Already saved: ' + twin.name + ' (loaded it).', 'done'); loadSite(twin); return; }
+    // C1b (F10): the same house number + street under a DIFFERENT name: ask before keeping a second customer there
+    const sk = streetKey(site.address), near = sk && allSites().find(x => streetKey(x.address) === sk && words(x.name).join(' ') !== words(site.name).join(' '));
+    if (near) { ask('There is already a customer at ' + near.address + ' (' + near.name + '). Use that one?', [['Use that one', () => loadSite(near)], ['Save as new', () => keepNew(site, extra)]]); return; }
+    keepNew(site, extra);
+  };
+  function keepNew(site, extra) {
     const list = phoneSites(); site.id = 'phone-' + Date.now().toString(36); site.saved = new Date().toISOString(); list.push(site);
     if (!lsSet(K.sites, list)) { say('Could not keep the new customer on this phone (storage full?).', 'warn'); return; }
     say('New customer kept on this phone: ' + site.name, 'done');
     loadSite(site, extra);
-  };
+  }
+  // C1b (F10): a small question over the page (like the wheel): text + buttons; any button closes it
+  function ask(text, choices) {
+    closeAsk(); const el = document.createElement('div'); el.id = 'proof-ask'; el.setAttribute('role', 'dialog');
+    el.innerHTML = '<div class="pa-text">' + esc(text) + '</div><div class="pa-btns">' + choices.map((c, i) => '<button type="button" data-i="' + i + '">' + esc(c[0]) + '</button>').join('') + '</div>';
+    el.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; e.stopPropagation(); closeAsk(); choices[+b.dataset.i][1](); });
+    document.body.appendChild(el);
+  }
+  function closeAsk() { const o = document.getElementById('proof-ask'); if (o) o.remove(); }
   function clearFind() { Object.keys(find).forEach(k => { find[k] = ''; }); }
   function blurNow() { try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (e) {} }
   function goView(v) { blurNow(); resetTypingOrder(); setView(v); }
@@ -8582,6 +8675,7 @@ body.light-theme .proof-box{color:#0f172a}
     rows = withBadgeRow(rows);   // round 6: tabs from 0.4.0 / 0.5.0 have no badge row: add one in memory (migration)
     rows.forEach(r => { const s = String(r['Screen'] || '').trim().toLowerCase(); if (s) screens[s] = 1; });
     const draftScreen = String((rows.find(r => String(r['Content'] || '').trim() === 'save-new-customer') || {})['Screen'] || '').trim().toLowerCase();   // 0.13.1 (R8)
+    const ctScreen = String((rows.find(r => String(r['Slot'] || '').trim() === 'call-types') || {})['Screen'] || '').trim().toLowerCase();   // C1b: the call-type question
     const out = []; const byRow = {}; let used = 0; const colW = {}, freezeOf = {}, lineH = {}, warned = [];
     let badgeDrawn = false;
     const holes = [];
@@ -8631,7 +8725,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (g('Align') && !/^(left|center|right)$/i.test(g('Align'))) why.push('Align "' + g('Align') + '" must be left, center or right');   // 0.12.1 (BT-48): no silent center
       if (!TYPES[type]) why.push('unknown Type "' + type + '"');
       const fd = r._fieldDef || null;   // round B1: the Field this piece belongs to (made by bundleRows from the Fields tab)
-      if (slot && slot !== 'box' && slot !== 'results' && !((slot === 'unit' || slot === 'report-value') && fd)) why.push('unknown Slot "' + slot + '"');
+      if (slot && slot !== 'box' && slot !== 'results' && slot !== 'call-types' && !((slot === 'unit' || slot === 'report-value') && fd)) why.push('unknown Slot "' + slot + '"');
       if (slot === 'box' && !fd && !FIELD_FALLBACK[content] && !FIND_KEYS[content]) why.push('unknown field "' + content + '"');
       if (type === 'button') { const a = content; const ok = ACTIONS[a] || (/^set-view:/.test(a) && screens[a.slice(9)]) || /^set-show:(all|template|values)$/.test(a) || TPL_ACTION.test(a); /* round B2 actions */ if (!ok) why.push('unknown action "' + a + '" (this page may be out of date: tap Reload, or refresh the browser)'); }
       if (!VIS_RULES[vis]) why.push('Visible when must be always, never, when-filled or reserved');   // round B2: when-filled, reserved (Blueprint P9)
@@ -8669,7 +8763,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (fd) { cell.proofField = fd; if (r._join) cell.proofJoin = r._join; if (r._label) cell.proofLabel = r._label; }
       if (slot === 'box') { cell.slot = 'box'; cell.proofKey = fd && draftScreen && screen === draftScreen ? DRAFT + fd.id : content; cell.label = ''; }   // C1a: a draft box
       else if (slot === 'unit' || slot === 'report-value') { cell.slot = slot; cell.proofKey = content; cell.label = ''; }
-      else if (slot === 'results') { cell.slot = 'results'; cell.label = ''; }
+      else if (slot === 'results' || slot === 'call-types') { cell.slot = slot; cell.label = ''; }   // C1b: call-types (a list, like results)
       else if (type === 'button') { cell.label = g('Label') || content;
         // round 9 migration: on older tabs New (Id hdr.newcall) only opened Find (set-view:find); it now clears the call first
         cell.clickAction = (id === 'hdr.newcall' && content === 'set-view:find') ? 'new-call' : content; }
@@ -8685,7 +8779,7 @@ body.light-theme .proof-box{color:#0f172a}
     const state = { layoutVersion: 'proof-' + PROOF_VERSION, viewportWidth: 'auto', showWireframes: false, activeSelection: null, rows: out.map((R, ri) => {
       let tall = 0;
       const containers = num(R.cont).map(ci => {
-        const stacks = num(R.cont[ci]).map(si => { const cells = num(R.cont[ci][si]).map(pi => R.cont[ci][si][pi]); const big = cells.some(c => c.slot === 'results'); const lh = lineH[R.key + '\u0002' + ci + '\u0002' + si];
+        const stacks = num(R.cont[ci]).map(si => { const cells = num(R.cont[ci][si]).map(pi => R.cont[ci][si][pi]); const big = cells.some(c => c.slot === 'results' || c.slot === 'call-types'); const lh = lineH[R.key + '\u0002' + ci + '\u0002' + si];
           const st = { id: 'S' + si, weight: big ? (lh ? lh.v : 7) : (lh ? lh.v : 1), splits: cells, _big: big, _lh: !!lh, proofLine: (cells[0] || {}).proofLine };
           const lt = (cells.find(c => c.proofLTpl) || {}).proofLTpl;   // round B2: the Line's Templates (Structure); never on the badge's Line
           if (lt && cells.some(isBadge)) warned.push('Line "' + st.proofLine + '": Templates not used (the version badge is on this Line and cannot be hidden).');
@@ -8707,6 +8801,7 @@ body.light-theme .proof-box{color:#0f172a}
       return row;
     }) };
     state.proofNewView = draftScreen;   // 0.13.1 (R8)
+    state.proofCtView = ctScreen;   // C1b
     return { state, refused, used, warned };
   }
   // ---------- round A: Structure + Items (Blueprint v0.2 stage A); round B1: + Fields + Profile sizes (Blueprint v0.3) ----------
@@ -8786,7 +8881,7 @@ body.light-theme .proof-box{color:#0f172a}
       const id = g2(r, 'Field Id'), name = g2(r, 'Name'), kind = (g2(r, 'Kind') || 'text').toLowerCase(), scope = g2(r, 'Scope').toLowerCase(), wording = String(r['Report wording'] == null ? '' : r['Report wording']).trim();
       const hmin = g2(r, 'Hard min'), hmax = g2(r, 'Hard max');
       const ffCol = 'Find fill' in r, ff = ffCol ? g2(r, 'Find fill').toLowerCase() : (FIND_FILL_FALLBACK[id] || '');   // 0.12.2 (R7); no column = today's fill (migration)
-      if (ffCol && ff && !FIND_FILLS[ff] && !why.length) why.push('Find fill "' + g2(r, 'Find fill') + '" must be name, address, phone or email (or blank)');
+      if (ffCol && ff && !FIND_FILLS[ff] && !why.length) why.push('Find fill "' + g2(r, 'Find fill') + '" must be name, address, phone, email or calltype (or blank)');
       if (!why.length) {
         if (!id) why.push('no Field Id');
         else if (converted(r, 'Field Id')) why.push('Field Id "' + id + '" looks like a date or number. ' + PT_HINT('Field Id'));
@@ -9008,9 +9103,11 @@ body.light-theme .proof-box{color:#0f172a}
   }
   async function readBundle(notes, profile) {
     let st, it, fl, ps, si = null;
-    try { [st, it, fl, ps, si] = await Promise.all([gviz('Structure'), gviz('Items'), gviz('Fields'), gviz('Profile sizes'), gviz('Sites').catch(() => null)]); }
+    let ct = null;
+    try { [st, it, fl, ps, si, ct] = await Promise.all([gviz('Structure'), gviz('Items'), gviz('Fields'), gviz('Profile sizes'), gviz('Sites').catch(() => null), gviz('Call types').catch(() => null)]); }
     catch (e) { return { failed: true, why: e.message }; }
     const sitesRows = si && hasCols(si, ['Site Id']) ? si.rows : null;   // C1a
+    const ctRows = ct && hasCols(ct, ['Call type']) ? ct.rows : null;   // C1b
     const hasS = st.labels.indexOf('Line name') >= 0, hasI = it.labels.indexOf('Id') >= 0 && it.labels.indexOf('Line') >= 0;
     if (!hasS || !hasI) { if (hasS || hasI) notes.push((hasS ? 'Structure found but Items is missing or has no Id / Line heading' : 'Items found but Structure is missing or has no Line name heading') + ': both are needed, so the old layout tab is used.'); return { missing: true }; }
     const hasF = fl.labels.indexOf('Field Id') >= 0, hasP = hasCols(ps, ['Profile', 'Target']);
@@ -9025,9 +9122,11 @@ body.light-theme .proof-box{color:#0f172a}
     const unknown = st.labels.filter(l => l && knownS.indexOf(l) < 0).map(l => 'Structure: ' + l).concat(items.labels.filter(l => l && knownI.indexOf(l) < 0).map(l => itemsTab + ': ' + l),
       hasF ? fl.labels.filter(l => l && FIELDS_COLS.indexOf(l) < 0).map(l => 'Fields: ' + l) : [], hasF && hasP ? ps.labels.filter(l => l && SIZES_COLS.indexOf(l) < 0).map(l => 'Profile sizes: ' + l) : []);
     if (sitesRows) unknown.push(...si.labels.filter(l => l && SITES_COLS.indexOf(l) < 0).map(l => 'Sites: ' + l));
+    if (ctRows) unknown.push(...ct.labels.filter(l => l && CT_COLS.indexOf(l) < 0).map(l => 'Call types: ' + l));
     if (unknown.length) notes.push('Column(s) this page does not know: ' + unknown.join(', ') + '. This page may be out of date: tap Reload, or refresh the browser.');
     rows._sites = sitesRows ? parseSites(sitesRows, notes) : null;   // 0.13.1 (R10): travels with this copy
-    lsSet(K.bundle, { at: Date.now(), structure: st.rows, items: items.rows, itemsTab, fields: opt.fields, sizes: opt.sizes, sites: sitesRows });
+    rows._ctypes = ctRows ? parseCallTypes(ctRows, notes) : null;   // C1b: the same
+    lsSet(K.bundle, { at: Date.now(), structure: st.rows, items: items.rows, itemsTab, fields: opt.fields, sizes: opt.sizes, sites: sitesRows, ctypes: ctRows });
     return { rows, source: 'bundle', sourceText: bundleText(opt, itemsTab, 'Layout read from ') };
   }
   function bundleText(opt, itemsTab, lead) {
@@ -9040,6 +9139,7 @@ body.light-theme .proof-box{color:#0f172a}
     const opt = { fields: Array.isArray(c.fields) ? c.fields : null, sizes: Array.isArray(c.sizes) ? c.sizes : null, profile };
     const rows = bundleRows(c.structure, c.items, opt);
     const siteNotes = []; rows._sites = Array.isArray(c.sites) ? parseSites(c.sites, siteNotes) : null;   // 0.13.1 (R10): with its notes
+    rows._ctypes = Array.isArray(c.ctypes) ? parseCallTypes(c.ctypes, siteNotes) : null;   // C1b
     return build(rows).used ? { rows, at: c.at, notes: siteNotes, text: bundleText(opt, c.itemsTab || 'Items', 'Layout from the last good copy of ') } : null;
   }
   // ---------- end of round A / B1 ----------
@@ -9230,7 +9330,8 @@ body.light-theme .proof-box{color:#0f172a}
     registerTemplateActions(b.state); usesB2 = layoutUsesB2(b.state);   // round B2
     const keepView = currentView, wasEdit = !isLiveInteraction, keepSel = selectedId();
     engineState = b.state; reselect(keepSel);
-    newView = b.state.proofNewView || '';   // 0.13.1 (R8)
+    newView = b.state.proofNewView || ''; ctView = b.state.proofCtView || '';   // 0.13.1 (R8); C1b
+    CALL_TYPES = Array.isArray(L.rows._ctypes) ? L.rows._ctypes : null;   // C1b: from the copy that won
     SITES = Array.isArray(L.rows._sites) ? L.rows._sites : null; houseFields = Array.isArray(L.rows._house) ? L.rows._house : null;   // 0.13.1 (R10, R6): from the copy that won
     try { undoStack.length = 0; redoStack.length = 0; recordHistorySnapshot(); } catch (e) {}
     try { updateHistoryButtons(); } catch (e) {}
@@ -9941,7 +10042,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (e.target && e.target.id === 'proof-save-now') { e.stopPropagation(); window.EngineActions['proof-save-tweaks'](); return; }   // the inspector can cover the Tools row on a phone
       n.classList.toggle('small'); }); document.body.appendChild(n); }
     const head = 'proof ' + PROOF_VERSION + ' · profile ' + (info.profile || '?') + (chosenProfile() === 'auto' ? ' (auto)' : '') + ' · ' + DEVICE +
-      (info.offline ? ' · sheet not read (offline) ' + hhmm(info.readAt) : ' · read ' + (info.readAt ? hhmm(info.readAt) : '-')) + ' · ' + info.rows + ' rows, ' + info.refused + ' refused · ' + info.tweaks + ' tweaks applied' + (info.pending ? ' (not saved yet)' : '') + (usesB2 ? ' · view ' + viewWord() + ', template ' + (callView.tpl || 'none') : '');
+      (info.offline ? ' · sheet not read (offline) ' + hhmm(info.readAt) : ' · read ' + (info.readAt ? hhmm(info.readAt) : '-')) + ' · ' + info.rows + ' rows, ' + info.refused + ' refused · ' + info.tweaks + ' tweaks applied' + (info.pending ? ' (not saved yet)' : '') + (usesB2 ? ' · view ' + viewWord() + ', template ' + (callView.tpl || 'none') + (callView.callType ? ', call type ' + callView.callType : '') : '');   // C1b: the call type
     const unsaved = info.readAt ? changedFrom(applied).length : 0;
     const lost = info.readAt && structChanged();
     n.innerHTML = '<b>' + esc(head) + '</b>' + (unsaved ? '<br><span class="proof-last">' + unsaved + ' change(s) not saved yet.</span> <button type="button" id="proof-save-now">Save tweaks</button>' : '') + (lost ? '<br><span class="proof-warn">' + esc(NOT_KEPT) + '</span>' : '') + (info.sourceText ? '<br>' + esc(info.sourceText) : '') + (lastAction ? '<br><span class="proof-last">' + esc(lastAction) + '</span>' : '') + notes.map(x => '<br>' + esc(x)).join('');
@@ -9949,6 +10050,7 @@ body.light-theme .proof-box{color:#0f172a}
 
   window.PMIProof = { build, fromCsv, load, reload, saveTweaks, clearTweaks, nextProfile, changedFrom: () => changedFrom(base), info: () => info, device: DEVICE, PROFILES, HOUSES, version: PROOF_VERSION,
     openBar, closeBar, structChanged, propsOf, checkVersion, say, barSync: () => barSync(),
+    c1: { matchCallType: q => matchCallType(q).map(x => ({ type: x.type, tier: x.tier, via: x.via })) },   // C1b (tests; the photo reader later)
     b2: { applyVis, revealSection, hideSection, setTemplate, callView: () => callView } };   // round B2 (tests)
   window.addEventListener('DOMContentLoaded', () => {
     // round B1 (Danny, U79): the engine's 'Layout updated to the new built-in version' pop-up (app/src/engine/56-version-badge-and-notice.js,
