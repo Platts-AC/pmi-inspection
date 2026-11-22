@@ -3567,7 +3567,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.9.0', stamp: '{{STAMP}}', name: '{{BUILD_NAME}}' };
+    const ENGINE_BUILD = { version: 'proof-0.10.0', stamp: '{{STAMP}}', name: '{{BUILD_NAME}}' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8227,17 +8227,21 @@ body.light-theme .proof-box{color:#0f172a}
 // Round 9: the page stays still when a value box is tapped (it scrolls only if the box is hidden behind the header or the
 // keyboard, and only as far as needed); New clears the call (Entry boxes and the saved draft), asking for a second tap when
 // something is typed.
+// Round A (0.10.0, Blueprint v0.2 stage A): the screen can be described by two shared tabs, Structure (one row per Line) and
+// Items (one row per Item, placed by Line name + Cell); blank cells are automatic; one formula-error check on every column of
+// every tab; the last good copy keeps Structure + Items together; the old Layout tabs stay the fallback.
 // Repaint rule (round 1, unchanged): renderCanvas is NEVER called while a text box has focus; typing repaints only the
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.9.0';
+  const PROOF_VERSION = '0.10.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
   const TAB_OF = p => 'Layout ' + p, TWEAKS_TAB = 'Tweaks';
   const K = { call: 'proof-containers.call.v1', profile: 'proof-containers.profile.v1', device: 'proof-containers.device.v1',
-    tweaks: 'proof-containers.tweaks.v1', endpoint: 'proof-containers.endpoint.v1', layout: p => 'proof-containers.layout.v2.' + p };
+    tweaks: 'proof-containers.tweaks.v1', endpoint: 'proof-containers.endpoint.v1', layout: p => 'proof-containers.layout.v2.' + p,
+    bundle: 'proof-containers.bundle.v1' };   // round A: the last good Structure + Items, stored together
   const FIELDS = { 'f:date': 'Date', 'f:customer': 'Customer', 'f:address': 'Address', 'f:phone': 'Phone', 'f:outdoorModel': 'Condenser model', 'f:suctionPressure': 'Suction pressure' };
   const FIND_KEYS = { 'find.name': 1, 'find.address': 1, 'find.phone': 1 };
   const TYPES = { button: 1, text: 1, logo: 1, badge: 1 };
@@ -8434,9 +8438,13 @@ body.light-theme .proof-box{color:#0f172a}
     rows.forEach(r => { const s = String(r['Screen'] || '').trim().toLowerCase(); if (s) screens[s] = 1; });
     const out = []; const byRow = {}; let used = 0; const colW = {}, freezeOf = {}, lineH = {}, warned = [];
     rows.forEach((r, i) => {
+      if (r._refuse) { refused.push(r._refuse); return; }   // round A: a Structure / Items row the bundle step already refused
+      if (r._note) { warned.push(r._note); return; }
       const n = i + 2, g = c => String(r[c] == null ? '' : r[c]).trim();   // n = the row number on the tab (row 1 = headings)
+      const where = r._where || ('Tab row ' + n), at = r._where || ('tab row ' + n);
       if (!COLS.slice(0, 8).some(c => g(c))) return;   // an empty row
       const why = [];
+      const fe = formulaErrors(r); if (fe.length) { refused.push(where + ' refused: ' + fe.join(', ') + '.'); return; }   // round A: never print #VALUE! etc.
       const screen = g('Screen').toLowerCase(), rowName = g('Row'), ci = +g('Container'), si = +g('Stack'), pi = +g('Cell'), w = Number(g('Weight'));
       const type = g('Type').toLowerCase() || 'text', content = g('Content'), slot = g('Slot').toLowerCase(), fs = Number(g('Font size')) || 12, align = g('Align').toLowerCase() || 'center';
       const vis = g('Visible when').toLowerCase() || 'always';
@@ -8469,9 +8477,9 @@ body.light-theme .proof-box{color:#0f172a}
       if (type === 'button') { const a = content; const ok = ACTIONS[a] || (/^set-view:/.test(a) && screens[a.slice(9)]); if (!ok) why.push('unknown action "' + a + '" (this page may be out of date: tap Reload, or refresh the browser)'); }
       if (vis !== 'always' && vis !== 'never') why.push('Visible when must be always or never');
       if (!/^[A-Za-z0-9 ._\/-]{1,80}$/.test(id)) why.push('the Id may hold only letters, digits, space . _ / - (80 at most)');
-      else if (ids[id]) why.push('the Id "' + id + '" is already used on tab row ' + ids[id]);
-      if (why.length) { refused.push('Tab row ' + n + ' refused: ' + why.join(', ') + '.'); return; }
-      ids[id] = n;
+      else if (ids[id]) why.push('the Id "' + id + '" is already used on ' + ids[id]);
+      if (why.length) { refused.push(where + ' refused: ' + why.join(', ') + '.'); return; }
+      ids[id] = at;
       if (vis === 'never') return;
       const key = screen + '\u0001' + rowName;
       let R = byRow[key]; if (!R) { R = byRow[key] = { key, screen, name: rowName, cont: {} }; out.push(R); }
@@ -8485,15 +8493,15 @@ body.light-theme .proof-box{color:#0f172a}
       if (cw !== '' && colW[key + '\u0002' + ci] == null) colW[key + '\u0002' + ci] = Number(cw);   // first value in a column wins
       if (frz && freezeOf[key] == null) freezeOf[key] = frz;   // first value in a section wins
       if (lh !== '') { const lk = key + '\u0002' + ci + '\u0002' + si, have = lineH[lk];
-        if (!have) lineH[lk] = { v: Number(lh), n };
-        else if (have.v !== Number(lh)) warned.push('Tab row ' + n + ': Line height ' + lh + ' not used (tab row ' + have.n + ' set this line to ' + have.v + ' first).'); }
+        if (!have) lineH[lk] = { v: Number(lh), n: at };
+        else if (have.v !== Number(lh)) warned.push(where + ': Line height ' + lh + ' not used (' + have.n + ' set this line to ' + have.v + ' first).'); }
       if (slot === 'box') { cell.slot = 'box'; cell.proofKey = content; cell.label = ''; }
       else if (slot === 'results') { cell.slot = 'results'; cell.label = ''; }
       else if (type === 'button') { cell.label = g('Label') || content;
         // round 9 migration: on older tabs New (Id hdr.newcall) only opened Find (set-view:find); it now clears the call first
         cell.clickAction = (id === 'hdr.newcall' && content === 'set-view:find') ? 'new-call' : content; }
       else cell.label = type === 'logo' ? (g('Label') || content || 'Logo') : content;
-      if (S[pi]) { refused.push('Tab row ' + n + ' refused: cell ' + ci + '.' + si + '.' + pi + ' of "' + rowName + '" is already used.'); delete ids[id]; }
+      if (S[pi]) { refused.push(where + ' refused: cell ' + ci + '.' + si + '.' + pi + ' of "' + rowName + '" is already used.'); delete ids[id]; }
       else { S[pi] = cell; used++; }
     });
     const num = o => Object.keys(o).map(Number).sort((a, b) => a - b);
@@ -8519,6 +8527,101 @@ body.light-theme .proof-box{color:#0f172a}
     }) };
     return { state, refused, used, warned };
   }
+  // ---------- round A: Structure + Items (Blueprint v0.2 stage A) ----------
+  // One shared formula-error check (Blueprint R6) on every column of every tab, text columns included.
+  const FORMULA_ERR = /^#(REF|N\/A|VALUE|NAME|DIV\/0|NUM|NULL|ERROR)[!?]?$|^Loading\.\.\.$/i;
+  function formulaErrors(r) {
+    return Object.keys(r).filter(k => k.charAt(0) !== '_' && FORMULA_ERR.test(String(r[k] == null ? '' : r[k]).trim())).map(k => 'formula error "' + String(r[k]).trim() + '" in ' + k);
+  }
+  const STRUCTURE_COLS = ['Screen', 'Section', 'Column', 'Line name', 'Cells', 'Cell widths', 'Line height', 'Column width', 'Freeze'];
+  const ITEM_SKIP = { 'Id': 1, 'Line': 1, 'Cell': 1, 'Weight': 1 };   // the Items columns that place the Item (every other column is its look); a cell's width lives on Structure 'Cell widths' (Danny, Q-015)
+  const MAX_CELLS = 12;
+  // Turns Structure rows (one per Line, top to bottom) and Items rows (one per Item: Line name + Cell) into the rows the page has
+  // always built from (Screen, Row, Container, Stack, Cell + look columns), so the drawing code is the one 0.9.0 uses.
+  // A Cell with no Item becomes a blank cell (Blueprint D2 / D4). Refused rows come back as {_refuse}, notes as {_note}.
+  function bundleRows(structure, items) {
+    const out = [], lines = {}, order = [], firstOfSection = {}, firstOfColumn = {}, colIndex = {}, lineCount = {};
+    const g = (r, c) => String(r[c] == null ? '' : r[c]).trim();
+    const okNum = (v, lo, hi) => v === '' || (isFinite(Number(v)) && Number(v) >= lo && Number(v) <= hi);
+    structure.forEach((r, i) => {
+      const where = 'Structure row ' + (i + 2), why = formulaErrors(r);
+      if (!STRUCTURE_COLS.slice(0, 5).some(c => g(r, c)) && !why.length) return;   // an empty row
+      const screen = g(r, 'Screen').toLowerCase(), sec = g(r, 'Section'), col = g(r, 'Column') || '1', name = g(r, 'Line name'), cells = g(r, 'Cells');
+      const lh = g(r, 'Line height'), cw = g(r, 'Column width'), frz = g(r, 'Freeze').toLowerCase(), wsRaw = g(r, 'Cell widths');
+      const ws = wsRaw === '' ? [] : wsRaw.split(/[\s,;]+/).filter(Boolean);
+      if (!why.length) {
+        if (!screen) why.push('no Screen'); if (!sec) why.push('no Section'); if (!name) why.push('no Line name');
+        else if (lines[name]) why.push('the Line name "' + name + '" is already used on ' + lines[name].where);
+        if (!(/^\d+$/.test(cells) && Number(cells) >= 1 && Number(cells) <= MAX_CELLS)) why.push('Cells "' + cells + '" must be a whole number from 1 to ' + MAX_CELLS);
+        if (!okNum(lh, 0.2, 20)) why.push('Line height "' + lh + '" must be a number from 0.2 to 20');
+        if (!okNum(cw, 0.2, 10)) why.push('Column width "' + cw + '" must be a number from 0.2 to 10');
+        if (frz && frz !== 'yes' && frz !== 'no') why.push('Freeze "' + frz + '" must be yes or no');
+        if (ws.some(x => !(isFinite(Number(x)) && Number(x) >= 0.1 && Number(x) <= 20))) why.push('Cell widths "' + wsRaw + '" must be numbers from 0.1 to 20, one per cell (for example 1 2)' +
+          (/^\d{1,2}\/\d{1,2}\/\d{2,4}$|^\d{5}$/.test(wsRaw) ? ' (Google turned it into a date: format the Cell widths column as Plain text and type it again)' : ''));
+      }
+      if (why.length) { out.push({ _refuse: where + ' refused: ' + why.join(', ') + '.' }); if (name && !lines[name]) lines[name] = { bad: where, where }; return; }
+      const sk = screen + '\u0001' + sec, ck = sk + '\u0002' + col;
+      if (colIndex[ck] == null) colIndex[ck] = Object.keys(colIndex).filter(k => k.indexOf(sk + '\u0002') === 0).length + 1;
+      lineCount[ck] = (lineCount[ck] || 0) + 1;
+      const L = lines[name] = { where, screen, sec, ci: colIndex[ck], si: lineCount[ck], cells: Number(cells), lh, cw: '', frz: '', items: {}, widths: ws.map(Number) };
+      // Cell widths: one share per cell (empty = all equal). Fewer numbers than cells: the rest are 1; more: the extra are not used (a note says so)
+      if (ws.length && ws.length !== L.cells) out.push({ _note: where + ': Cell widths "' + wsRaw + '" has ' + ws.length + ' number(s) for ' + L.cells + ' cell(s): ' + (ws.length < L.cells ? 'the rest are 1.' : 'the extra are not used.') });
+      // one home each (Danny 19:46): Column width on the FIRST line of its Column, Freeze on the FIRST line of its Section
+      if (!firstOfColumn[ck]) { firstOfColumn[ck] = where; L.cw = cw; } else if (cw) out.push({ _note: where + ': Column width ' + cw + ' not used (it belongs on the first line of the Column: ' + firstOfColumn[ck] + ').' });
+      if (!firstOfSection[sk]) { firstOfSection[sk] = where; L.frz = frz; } else if (frz) out.push({ _note: where + ': Freeze ' + frz + ' not used (it belongs on the first line of the Section: ' + firstOfSection[sk] + ').' });
+      order.push(name);
+    });
+    const ids = {};
+    items.forEach((r, i) => {
+      const where = 'Items row ' + (i + 2), why = formulaErrors(r);
+      const id = g(r, 'Id'), ln = g(r, 'Line'), cell = g(r, 'Cell');
+      if (!id && !ln && !cell && !why.length) return;   // an empty row
+      const L = lines[ln];
+      if (!why.length) {
+        if (!id) why.push('no Id'); else if (ids[id]) why.push('the Id "' + id + '" is already used on ' + ids[id]);
+        if (!L) why.push('unknown Line "' + ln + '" (no such Line name on Structure)');
+        else if (L.bad) why.push('its Line "' + ln + '" was refused (' + L.bad + ')');
+        else if (!(/^\d+$/.test(cell) && Number(cell) >= 1)) why.push('Cell "' + cell + '" must be a whole number from 1');
+        else if (Number(cell) > L.cells) why.push('Cell ' + cell + ' is outside line "' + ln + '" (it has ' + L.cells + ' cells)');
+        else if (L.items[cell]) why.push('Cell ' + cell + ' of line "' + ln + '" already holds ' + L.items[cell].where);
+      }
+      if (why.length) { out.push({ _refuse: where + ' refused: ' + why.join(', ') + '.' }); return; }
+      ids[id] = where; L.items[cell] = { r, where };
+    });
+    order.forEach(name => {
+      const L = lines[name];
+      for (let c = 1; c <= L.cells; c++) {
+        const it = L.items[c], o = { 'Screen': L.screen, 'Row': L.sec, 'Container': String(L.ci), 'Stack': String(L.si), 'Cell': String(c) };
+        const wv = String(L.widths[c - 1] || 1);   // the width belongs to the Cell (the locker), with or without an Item
+        if (it) { Object.keys(it.r).forEach(k => { if (!ITEM_SKIP[k]) o[k] = it.r[k]; }); o['Id'] = g(it.r, 'Id'); o['Weight'] = wv; o._where = it.where;
+          if (String(o['Visible when'] || '').trim().toLowerCase() === 'never') { o['Type'] = 'text'; o['Content'] = ''; o['Slot'] = ''; o['Visible when'] = 'always'; } }   // hidden = an empty cell, nothing moves
+        else { o['Type'] = 'text'; o['Content'] = ''; o['Weight'] = wv; o['Visible when'] = 'always'; o['Id'] = (name.replace(/[^A-Za-z0-9 ._\/-]/g, '-') + '/' + c).slice(-80); o._where = L.where; }
+        if (c === 1) { o['Line height'] = L.lh; o['Column width'] = L.cw; o['Freeze'] = L.frz; }
+        out.push(o);
+      }
+    });
+    return out;
+  }
+  async function readBundle(notes) {
+    let st, it;
+    try { [st, it] = await Promise.all([gviz('Structure'), gviz('Items')]); }
+    catch (e) { return { failed: true, why: e.message }; }
+    const hasS = st.labels.indexOf('Line name') >= 0, hasI = it.labels.indexOf('Id') >= 0 && it.labels.indexOf('Line') >= 0;
+    if (!hasS || !hasI) { if (hasS || hasI) notes.push((hasS ? 'Structure found but Items is missing or has no Id / Line heading' : 'Items found but Structure is missing or has no Line name heading') + ': both are needed, so the old layout tab is used.'); return { missing: true }; }
+    const rows = bundleRows(st.rows, it.rows);
+    if (!build(rows).used) return { failed: true, why: 'nothing on Structure + Items could be drawn' };
+    const knownS = STRUCTURE_COLS, knownI = ['Id', 'Line', 'Cell'].concat(COLS.slice(6), Object.keys(COLPROP), ['Icon', 'Press style', 'Min size', 'Max size']);   // no Weight: widths live on Structure
+    const unknown = st.labels.filter(l => l && knownS.indexOf(l) < 0).map(l => 'Structure: ' + l).concat(it.labels.filter(l => l && knownI.indexOf(l) < 0).map(l => 'Items: ' + l));
+    if (unknown.length) notes.push('Column(s) this page does not know: ' + unknown.join(', ') + '. This page may be out of date: tap Reload, or refresh the browser.');
+    lsSet(K.bundle, { at: Date.now(), structure: st.rows, items: it.rows });
+    return { rows, source: 'bundle', sourceText: 'Layout read from Structure + Items (shared by all profiles).' };
+  }
+  function savedBundle() {
+    const c = lsGet(K.bundle, null);
+    if (!(c && Array.isArray(c.structure) && Array.isArray(c.items))) return null;
+    const rows = bundleRows(c.structure, c.items); return build(rows).used ? { rows, at: c.at } : null;
+  }
+  // ---------- end of round A ----------
   function eachCell(state, fn) { (state.rows || []).forEach(r => (r.containers || []).forEach(c => (c.stacks || []).forEach(s => (s.splits || []).forEach(p => fn(p, r))))); }
   // Round 6 (4): the version badge is an ORDINARY cell: a layout-tab row (Id 'badge', Type button, Content proof-badge), by default
   // its own narrow column (Column width 0.6) at the right end of the frozen Header section. Moving it = changing its Section / Line
@@ -8590,6 +8693,15 @@ body.light-theme .proof-box{color:#0f172a}
   }
 
   async function readLayout(profile, notes) {
+    const bun = await readBundle(notes);   // round A: Structure + Items first (all profiles share them, Blueprint D1)
+    if (bun.rows) return { rows: bun.rows, profile, source: 'bundle', sourceText: bun.sourceText };
+    if (bun.failed) {
+      notes.push('Structure + Items not used (' + bun.why + ').');
+      const sb = savedBundle(); if (sb && !/could not load|no answer/.test(bun.why)) return { rows: sb.rows, profile, source: 'saved', sourceText: 'Layout from the last good copy of Structure + Items (saved ' + new Date(sb.at).toLocaleString() + ').' };
+    }
+    return readOldTab(profile, notes);
+  }
+  async function readOldTab(profile, notes) {
     const tab = TAB_OF(profile);
     try {
       const g = await gviz(tab);
@@ -8602,12 +8714,13 @@ body.light-theme .proof-box{color:#0f172a}
       return { rows: g.rows, profile, source: 'live', sourceText: 'Layout read live from the tab "' + tab + '".' };
     } catch (e) {
       if (e.missing) {
-        if (profile !== 'phone') { notes.push('The tab "' + tab + '" is missing or empty: using "Layout phone".'); return readLayout('phone', notes); }
+        if (profile !== 'phone') { notes.push('The tab "' + tab + '" is missing or empty: using "Layout phone".'); return readOldTab('phone', notes); }
         notes.push('The tab "Layout phone" is missing or empty.');
       } else notes.push('Live read of "' + tab + '" failed (' + e.message + ').');
     }
-    const c = lsGet(K.layout(profile), null);
-    if (c && Array.isArray(c.rows) && build(c.rows).used) return { rows: c.rows, profile, source: 'saved', sourceText: 'Using saved layout of "' + tab + '" (from ' + new Date(c.at).toLocaleString() + ').' };
+    const c = lsGet(K.layout(profile), null), sb = savedBundle();   // round A: the newer of the two last good copies
+    if (sb && !(c && c.at > sb.at)) return { rows: sb.rows, profile, source: 'saved', sourceText: 'Layout from the last good copy of Structure + Items (saved ' + new Date(sb.at).toLocaleString() + ').' };
+    if (c && Array.isArray(c.rows) && build(c.rows).used) return { rows: c.rows, profile, source: 'saved', sourceText: 'Layout from the last good copy of "' + tab + '" (saved ' + new Date(c.at).toLocaleString() + ').' };
     try { const r = await fetch('layout-profiles.csv', { cache: 'no-store' }); if (r.ok) { const rows = fromCsv(await r.text()); if (build(rows).used) return { rows, profile, source: 'csv', sourceText: 'Using saved layout: layout-profiles.csv next to this page (not the live sheet).' }; } } catch (e) {}
     return { rows: fromCsv(window.PROOF_BUILTIN_CSV || ''), profile, source: 'builtin', sourceText: 'Using saved layout: the copy built into this page (not the live sheet).' };
   }
