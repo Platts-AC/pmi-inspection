@@ -3557,7 +3557,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-2", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.10.1", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3567,7 +3567,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.10.0', stamp: '{{STAMP}}', name: '{{BUILD_NAME}}' };
+    const ENGINE_BUILD = { version: 'proof-0.10.1', stamp: '2026-11-22 05:56:14', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8230,11 +8230,14 @@ body.light-theme .proof-box{color:#0f172a}
 // Round A (0.10.0, Blueprint v0.2 stage A): the screen can be described by two shared tabs, Structure (one row per Line) and
 // Items (one row per Item, placed by Line name + Cell); blank cells are automatic; one formula-error check on every column of
 // every tab; the last good copy keeps Structure + Items together; the old Layout tabs stay the fallback.
+// Round A.1 (0.10.1): the engine's saved copy of the screen carries this version (layoutVersion 'proof-' + PROOF_VERSION), so a copy
+// saved by another version is never painted (the engine keeps it aside and shows 'Loading the layout ...' until the sheet answers);
+// the copy is rewritten after every draw; the version check starts at load, next to the first sheet read.
 // Repaint rule (round 1, unchanged): renderCanvas is NEVER called while a text box has focus; typing repaints only the
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.10.0';
+  const PROOF_VERSION = '0.10.1';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8505,7 +8508,7 @@ body.light-theme .proof-box{color:#0f172a}
       else { S[pi] = cell; used++; }
     });
     const num = o => Object.keys(o).map(Number).sort((a, b) => a - b);
-    const state = { layoutVersion: 'proof-2', viewportWidth: 'auto', showWireframes: false, activeSelection: null, rows: out.map((R, ri) => {
+    const state = { layoutVersion: 'proof-' + PROOF_VERSION, viewportWidth: 'auto', showWireframes: false, activeSelection: null, rows: out.map((R, ri) => {
       let tall = 0;
       const containers = num(R.cont).map(ci => {
         const stacks = num(R.cont[ci]).map(si => { const cells = num(R.cont[ci][si]).map(pi => R.cont[ci][si][pi]); const big = cells.some(c => c.slot === 'results'); const lh = lineH[R.key + '\u0002' + ci + '\u0002' + si];
@@ -8802,6 +8805,7 @@ body.light-theme .proof-box{color:#0f172a}
     try { updateHistoryButtons(); } catch (e) {}
     currentView = b.state.rows.some(r => r.view === keepView) ? keepView : 'entry';
     try { renderCanvas(); if (wasEdit) syncInspectorUI(); } catch (e) {}
+    try { saveStateToStorage(false); } catch (e) {}   // round A.1: the saved screen copy is always this version's latest draw (iPhone may skip beforeunload)
     applied = snapshot(); baseSig = structSig(engineState); lastL = L;
     info = { profile: L.profile, fellBack: L.profile !== wanted, rows: b.used, refused: b.refused.length, tweaks: nt, readAt: reason === 'clear' ? info.readAt : new Date(), source: L.source, sourceText: L.sourceText, tweaksFrom: T.from, pending: !!T.pending };
     notes = n.concat(b.refused, b.warned || []);
@@ -9207,18 +9211,18 @@ body.light-theme .proof-box{color:#0f172a}
 
   function reloadTo(v) { say('Reloading the newer version (' + v + ')...', 'warn'); location.replace(location.pathname + '?v=' + encodeURIComponent(v) + '&t=' + Date.now()); }
   function pendingOnPhone() { const t = lsGet(K.tweaks, {}) || {}; return Object.keys(t).some(k => t[k] && t[k].state === 'pending'); }
-  function whyNotSafe() {
+  function whyNotSafe(atStart) {   // atStart (round A.1): the first sheet read is still running and nothing is drawn yet, so that is not a reason to wait
     if (info.readAt && changedFrom(applied).length) return 'changes not saved yet';
     if (structChanged()) return 'changes not saved yet';
     if (pendingOnPhone()) return 'tweaks waiting to be saved';
     const a = document.activeElement; if (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) return 'a box is in use';
     if (barOpen) return 'the Adjust bar is open';
     try { if (inspectorWindowState !== 'closed') return 'the inspector is open'; } catch (e) {}
-    if (Object.keys(busy).length || loading) return 'the page is busy';
+    if (Object.keys(busy).length || (loading && !atStart)) return 'the page is busy';
     return '';
   }
   let lastCheck = 0;
-  async function checkVersion(auto) {
+  async function checkVersion(auto, atStart) {
     if (auto && Date.now() - lastCheck < 1500) return; lastCheck = Date.now();
     try {
       const r = await fetch('version.json?t=' + Date.now(), { cache: 'no-store' }); if (!r.ok) return;
@@ -9227,7 +9231,7 @@ body.light-theme .proof-box{color:#0f172a}
       badge(); paintLine();
       if (!staleV) return;
       let done = ''; try { done = sessionStorage.getItem('proof-containers.autoreload') || ''; } catch (e) {}
-      const why = whyNotSafe();
+      const why = whyNotSafe(atStart);
       if (!why && done !== v) { try { sessionStorage.setItem('proof-containers.autoreload', v); } catch (e) {} reloadTo(v); return; }
       say('A newer version is available (' + v + '): tap the badge', 'warn', 0);   // one short line; the reason goes to the bottom notes
       lastAction = 'A newer version (' + v + ') is published. Tap the glowing badge to reload.' + (why ? ' Not reloading by itself: ' + why + '.' : ''); paintNotes();
@@ -9301,6 +9305,7 @@ body.light-theme .proof-box{color:#0f172a}
       try { if (window.innerWidth < 700) lastOpenInspectorState = 'compact'; if (inspectorWindowState !== 'closed') closeInspectorWindow(); } catch (e) {}   // the page opens in Live with the inspector shut
       try { if (!isLiveInteraction) toggleInteractionState(); } catch (e) {}
       badge(); paintLine(); watchPlain();
+      checkVersion(false, true);   // round A.1 (Fix B): ask version.json at once, next to the first sheet read, so an old cached page moves on before it draws
       load('start').then(() => { try { applyInspectorWindowUI(); } catch (e) {} checkVersion(); });   // hides the engine's 'Open Inspector' button: the Tools row has one
     }, 0);
   });
