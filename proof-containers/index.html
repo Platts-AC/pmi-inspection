@@ -725,6 +725,19 @@
 #viewport-canvas-frame .proof-report{white-space:normal}
 /* round B1 (Danny, U79): the engine's 'Layout updated to the new built-in version' pop-up is not used on this page */
 #layout-replaced-banner{display:none!important}
+/* round B2: '+N hidden' chip (reveals the Section's hidden Lines), the Hard min / max note, the 'both' switch, the wheel */
+.grid-row-band > .proof-chip{position:absolute;top:2px;right:4px;z-index:6;font:600 11px/1.2 system-ui,sans-serif;padding:3px 9px;border-radius:10px;border:1px solid #f59e0b;background:#451a03;color:#fde68a}
+#viewport-canvas-frame .proof-face{position:relative}
+#viewport-canvas-frame .proof-limit{position:absolute;left:9px;bottom:1px;font:600 10px/1.1 system-ui,sans-serif;color:#fbbf24;pointer-events:none;white-space:nowrap}
+#viewport-canvas-frame .proof-mode{flex:0 0 auto;align-self:center;margin-left:4px;min-width:30px;height:30px;border-radius:6px;border:1px solid #2b4f7e;background:#0c1a2e;color:#93c5fd;font-size:15px;line-height:1;padding:0}
+#proof-wheel{position:fixed;left:0;right:0;z-index:80;background:#0b1626;border-top:1px solid #2b4f7e;box-shadow:0 -8px 24px rgba(0,0,0,.5);font:15px system-ui,sans-serif;color:#e2e8f0}
+#proof-wheel .pw-top{display:flex;align-items:center;gap:8px;padding:6px 8px;border-bottom:1px solid #1e3a5f}
+#proof-wheel .pw-top button{min-width:72px;min-height:40px;border-radius:8px;border:1px solid #2b4f7e;background:#0f213a;color:#e2e8f0;font:600 14px system-ui,sans-serif}
+#proof-wheel .pw-top .pw-done{border-color:#22d3ee;color:#22d3ee}
+#proof-wheel .pw-title{flex:1;text-align:center;color:#94a3b8;font-size:13px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+#proof-wheel .pw-list{height:220px;overflow-y:auto;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:88px 0;box-sizing:border-box}
+#proof-wheel .pw-item{display:block;width:100%;height:44px;scroll-snap-align:center;border:0;background:transparent;color:#e2e8f0;font:16px system-ui,sans-serif}
+#proof-wheel .pw-mark{position:absolute;left:8px;right:8px;bottom:88px;height:44px;border-top:1px solid #22d3ee;border-bottom:1px solid #22d3ee;pointer-events:none}
 #viewport-canvas-frame .proof-face:focus-within{outline:2px solid #22d3ee;border-color:#22d3ee}
 #viewport-canvas-frame .proof-box{width:100%;min-width:0;box-sizing:border-box;border:0;outline:none;background:transparent;color:#e2e8f0;padding:7px 0;-webkit-user-select:text;user-select:text}
 .grid-split-partition:has(.proof-cell){align-items:stretch}
@@ -3562,7 +3575,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.11.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.12.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3572,7 +3585,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.11.0', stamp: '2026-11-22 08:33:11', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.12.0', stamp: '2026-11-22 09:35:35', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8249,7 +8262,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.11.0';
+  const PROOF_VERSION = '0.12.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8263,7 +8276,8 @@ body.light-theme .proof-box{color:#0f172a}
   const FIND_KEYS = { 'find.name': 1, 'find.address': 1, 'find.phone': 1 };
   const TYPES = { button: 1, text: 1, logo: 1, badge: 1 };
   const TOOL_ACTIONS = { 'reload-layout': 1, 'proof-save-tweaks': 1, 'proof-clear-tweaks': 1, 'proof-profile': 1, 'toggle-tray': 1, 'proof-adjust': 1, 'refresh-page': 1 };
-  const ACTIONS = Object.assign({ 'proof-badge': 1, 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1, 'new-call': 1 }, TOOL_ACTIONS);
+  const ACTIONS = Object.assign({ 'proof-badge': 1, 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1, 'new-call': 1, 'reveal-hidden': 1 }, TOOL_ACTIONS);
+  const TPL_NAME = /^[A-Za-z0-9][A-Za-z0-9 _.-]{0,29}$/, TPL_ACTION = /^set-template:([A-Za-z0-9][A-Za-z0-9 _.-]{0,29})?$/;   // round B2: set-template:<name> (set-template: alone = no template)
   // What a tweak can change (DESIGN.md). Each rule turns a value into its normal text form, or returns an error.
   const PLACES = { 'top-left': ['left', 'top'], 'top-center': ['center', 'top'], 'top-right': ['right', 'top'], 'middle-left': ['left', 'middle'], 'middle': ['center', 'middle'],
     'middle-right': ['right', 'middle'], 'bottom-left': ['left', 'bottom'], 'bottom-center': ['center', 'bottom'], 'bottom-right': ['right', 'bottom'] };
@@ -8302,6 +8316,7 @@ body.light-theme .proof-box{color:#0f172a}
     else if (k === 'subLabelPlace') { const s = sub(p); s.align = PLACES[v][0]; s.vAlign = PLACES[v][1]; }
   }
   const isBadge = p => !!p && p.clickAction === 'proof-badge';
+  const VIS_RULES = { always: 1, never: 1, 'when-filled': 1, reserved: 1 };   // Blueprint P9 (round B2 adds when-filled and reserved)
   // Round A.2: the version badge's sheet row is the row with the action proof-badge or the Id below (the one place the Id is named)
   const BADGE_ID = 'badge';
   const isBadgeRow = r => { const v = c => String(r[c] == null ? '' : r[c]).trim(); return v('Content') === 'proof-badge' || v('Id') === BADGE_ID; };
@@ -8358,10 +8373,12 @@ body.light-theme .proof-box{color:#0f172a}
     // keypad: tel by the old rule on the key (6c, unchanged in B1); decimal for a Fields 'number' (old tabs: the old suction rule)
     const k = p.proofKey, F = p.proofField, tel = /phone/.test(k), num = F ? F.kind === 'number' : /suction/i.test(k);
     const va = p.vAlign === 'top' ? 'flex-start' : p.vAlign === 'bottom' ? 'flex-end' : 'center';
+    const wm = p.proofInput && p.proofInput !== 'type' && modeOf(p) === 'wheel';   // round B2: a box in wheel mode never opens the keyboard
+    const sw = p.proofInput === 'both' ? '<button type="button" class="proof-mode" tabindex="-1">' + (wm ? '⌨' : '◎') + '</button>' : '';
     // round 7 (1): autofill fix C (Danny's Android test, 0.6.0): each value box sits in its own form with autocomplete off and has
     // autocomplete one-time-code; the form takes no space (display:contents) and never submits (Enter is stopped, see below).
     return '<div class="proof-cell"><div class="proof-face" style="align-items:' + va + '"><form class="proof-form" autocomplete="off" onsubmit="return false"><input class="proof-box" data-key="' + esc(k) + '" value="' + esc(valOf(k)) + '"' +
-      (tel ? ' inputmode="tel"' : num ? ' inputmode="decimal"' : '') + ' placeholder="' + esc(F ? F.name : (FIELD_FALLBACK[k] || 'Search')) + '"' + boxAttrs(p) + ' style="font-size:' + boxSize(p) + 'px;text-align:' + (p.align || 'left') + '"></form></div></div>';
+      (wm ? ' inputmode="none" readonly' : tel ? ' inputmode="tel"' : num ? ' inputmode="decimal"' : '') + ' placeholder="' + esc(F ? F.name : (FIELD_FALLBACK[k] || 'Search')) + '"' + boxAttrs(p) + ' style="font-size:' + boxSize(p) + 'px;text-align:' + (p.align || 'left') + '"></form>' + sw + '</div></div>';
   } };
   // Enter in a value box: never submit or reload (the form also says onsubmit return false); focus and caret stay
   document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target && e.target.classList && e.target.classList.contains('proof-box')) e.preventDefault(); }, true);
@@ -8414,7 +8431,7 @@ body.light-theme .proof-box{color:#0f172a}
     const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b) return;
     const k = b.dataset.key;
     if (k in find) { find[k] = b.value; paintResults(); }
-    else { call[k] = b.value; lsSet(K.call, call); }
+    else { call[k] = b.value; lsSet(K.call, call); try { paintLimit(b); applyVis(); } catch (e) {} }   // round B2: Hard min / max note; when-filled Lines
   });
   document.addEventListener('click', e => {
     const h = e.target && e.target.closest && e.target.closest('.proof-hit'); if (!h) return;
@@ -8464,7 +8481,7 @@ body.light-theme .proof-box{color:#0f172a}
     document.body.classList.remove('proof-typing'); kbPad(0);
   }
   document.addEventListener('focusin', e => { const b = e.target; if (isBox(b)) { if (b.dataset.key in find) document.body.classList.add('proof-typing'); keepInView(b); } });
-  document.addEventListener('focusout', () => { setTimeout(() => { if (!isBox(document.activeElement)) resetTypingOrder(); }, 300); });
+  document.addEventListener('focusout', () => { setTimeout(() => { if (!isBox(document.activeElement)) { resetTypingOrder(); try { applyVis(); } catch (e) {} } }, 300); });
   if (window.visualViewport) window.visualViewport.addEventListener('resize', () => { const a = document.activeElement; if (isBox(a)) keepInView(a); });
 
   // ---------- rows of a tab -> engine layout ----------
@@ -8485,7 +8502,8 @@ body.light-theme .proof-box{color:#0f172a}
       const fe = formulaErrors(r); if (fe.length) { refused.push(where + ' refused: ' + fe.join(', ') + '.'); return; }   // round A: never print #VALUE! etc.
       if (isBadgeRow(r)) {   // round A.2: the version badge can never be hidden or turned into something else by a sheet row
         const was = { vis: g('Visible when'), type: g('Type'), content: g('Content') };
-        if (was.vis.toLowerCase() === 'never') { r = Object.assign({}, r, { 'Visible when': 'always' }); warned.push(where + ': the version badge cannot be hidden (Visible when "never" not used).'); }
+        if (was.vis && was.vis.toLowerCase() !== 'always') { r = Object.assign({}, r, { 'Visible when': 'always' }); warned.push(where + ': the version badge cannot be hidden (Visible when "' + was.vis + '" not used).'); }
+        if (r._tpl) { r = Object.assign({}, r, { _tpl: null }); warned.push(where + ': the version badge cannot be hidden (Templates not used).'); }   // round B2
         if (was.type.toLowerCase() !== 'button' || was.content !== 'proof-badge') { r = Object.assign({}, r, { 'Type': 'button', 'Content': 'proof-badge' }); warned.push(where + ': the version badge must be a button with the action proof-badge (Type "' + was.type + '", Content "' + was.content + '" not used).'); }
       }
       const screen = g('Screen').toLowerCase(), rowName = g('Row'), ci = +g('Container'), si = +g('Stack'), pi = +g('Cell'), w = Number(g('Weight'));
@@ -8519,8 +8537,8 @@ body.light-theme .proof-box{color:#0f172a}
       const fd = r._fieldDef || null;   // round B1: the Field this piece belongs to (made by bundleRows from the Fields tab)
       if (slot && slot !== 'box' && slot !== 'results' && !((slot === 'unit' || slot === 'report-value') && fd)) why.push('unknown Slot "' + slot + '"');
       if (slot === 'box' && !fd && !FIELD_FALLBACK[content] && !FIND_KEYS[content]) why.push('unknown field "' + content + '"');
-      if (type === 'button') { const a = content; const ok = ACTIONS[a] || (/^set-view:/.test(a) && screens[a.slice(9)]); if (!ok) why.push('unknown action "' + a + '" (this page may be out of date: tap Reload, or refresh the browser)'); }
-      if (vis !== 'always' && vis !== 'never') why.push('Visible when must be always or never');
+      if (type === 'button') { const a = content; const ok = ACTIONS[a] || (/^set-view:/.test(a) && screens[a.slice(9)]) || /^set-show:(all|template|values)$/.test(a) || TPL_ACTION.test(a); /* round B2 actions */ if (!ok) why.push('unknown action "' + a + '" (this page may be out of date: tap Reload, or refresh the browser)'); }
+      if (!VIS_RULES[vis]) why.push('Visible when must be always, never, when-filled or reserved');   // round B2: when-filled, reserved (Blueprint P9)
       if (!/^[A-Za-z0-9 ._\/-]{1,80}$/.test(id)) why.push('the Id may hold only letters, digits, space . _ / - (80 at most)');
       else if (ids[id]) why.push('the Id "' + id + '" is already used on ' + ids[id]);
       if (why.length) { refused.push(where + ' refused: ' + why.join(', ') + '.'); return; }
@@ -8541,6 +8559,13 @@ body.light-theme .proof-box{color:#0f172a}
         if (!have) lineH[lk] = { v: Number(lh), n: at };
         else if (have.v !== Number(lh)) warned.push(where + ': Line height ' + lh + ' not used (' + have.n + ' set this line to ' + have.v + ' first).'); }
       if (r._loc) cell.proofLoc = r._loc;   // round B1: where the cell is (Line name/Cell): the key of its width tweak (BD-2, P26)
+      // round B2: what decides whether the cell shows (Visible when, Templates of the item and of its Line), which item and Line it
+      // belongs to, and how its value box is filled (Input style, Wheel)
+      if (!r._blank) cell.proofItem = r._item || id; cell.proofLine = r._line || (screen + '/' + rowName + '/' + ci + '.' + si);
+      if (vis === 'when-filled' || vis === 'reserved') cell.proofVis = vis;
+      if (r._tpl) cell.proofTpl = r._tpl;
+      if (r._ltpl) cell.proofLTpl = r._ltpl;
+      if (r._input) { cell.proofInput = r._input; cell.proofWheel = r._wheel || null; }
       if (fd) { cell.proofField = fd; if (r._join) cell.proofJoin = r._join; if (r._label) cell.proofLabel = r._label; }
       if (slot === 'box') { cell.slot = 'box'; cell.proofKey = content; cell.label = ''; }
       else if (slot === 'unit' || slot === 'report-value') { cell.slot = slot; cell.proofKey = content; cell.label = ''; }
@@ -8559,7 +8584,11 @@ body.light-theme .proof-box{color:#0f172a}
       let tall = 0;
       const containers = num(R.cont).map(ci => {
         const stacks = num(R.cont[ci]).map(si => { const cells = num(R.cont[ci][si]).map(pi => R.cont[ci][si][pi]); const big = cells.some(c => c.slot === 'results'); const lh = lineH[R.key + '\u0002' + ci + '\u0002' + si];
-          return { id: 'S' + si, weight: big ? (lh ? lh.v : 7) : (lh ? lh.v : 1), splits: cells, _big: big, _lh: !!lh }; });
+          const st = { id: 'S' + si, weight: big ? (lh ? lh.v : 7) : (lh ? lh.v : 1), splits: cells, _big: big, _lh: !!lh, proofLine: (cells[0] || {}).proofLine };
+          const lt = (cells.find(c => c.proofLTpl) || {}).proofLTpl;   // round B2: the Line's Templates (Structure); never on the badge's Line
+          if (lt && cells.some(isBadge)) warned.push('Line "' + st.proofLine + '": Templates not used (the version badge is on this Line and cannot be hidden).');
+          else if (lt) st.proofLTpl = lt;
+          return st; });
         // section height: as before when a line holds the results list (330 + 50 per other line); otherwise the heaviest line gets
         // 50 px and the others their share (round 7 'Line height'; all 1 = 50 per line, the old height)
         const ws = stacks.map(s => s.weight), wMax = Math.max(...ws);
@@ -8605,6 +8634,44 @@ body.light-theme .proof-box{color:#0f172a}
   const sizeBad = (v, lo, hi) => v !== '' && !(isFinite(Number(v)) && Number(v) >= lo && Number(v) <= hi);
   const locId = (name, c) => (name.replace(/[^A-Za-z0-9 ._\/-]/g, '-') + '/' + c).slice(-80);   // a Cell's own key 'Line name/Cell' (blank cells, width tweaks)
 
+  // ---------- round B2: Templates (BD-3), Input style and Wheel (P21, P22, BD-5) ----------
+  // Templates: blank = every template; 'PM, Repair' = only those; '-NoCool, -Quote' = every template except those; mixing is refused.
+  function parseTpl(r, col) {
+    const raw = g2(r, col); if (!raw) return {};
+    if (converted(r, col)) return { err: col + ' "' + raw + '" looks like a date, time or number. ' + PT_HINT(col) };
+    const parts = raw.split(',').map(x => x.trim()).filter(Boolean), minus = parts.filter(x => x.charAt(0) === '-');
+    if (minus.length && minus.length !== parts.length) return { err: col + ' "' + raw + '" mixes names and minus names: use only names (PM, Repair) or only minus names (-NoCool, -Quote)' };
+    const names = parts.map(x => x.replace(/^-\s*/, ''));
+    const bad = names.filter(n => !TPL_NAME.test(n)); if (bad.length) return { err: col + ' "' + raw + '": a template name may hold letters, digits, space . _ - (30 at most), not "' + bad[0] + '"' };
+    return { tpl: minus.length ? { except: names } : { only: names } };
+  }
+  const INPUT_STYLES = { type: 1, wheel: 1, both: 1 };
+  const WHEEL_MAX = 2000;
+  // Wheel: a range '20..250 step 1 start 120' (numbers) or a list '16x20x1, 16x25x1, 20x20x1' (plain text items)
+  function parseWheel(r) {
+    const raw = g2(r, 'Wheel'); if (!raw) return {};
+    if (converted(r, 'Wheel')) return { err: 'Wheel "' + raw + '" looks like a date, time or number. ' + PT_HINT('Wheel') };
+    const n = '(-?\\d+(?:\\.\\d+)?)', m = new RegExp('^' + n + '\\s*\\.\\.\\s*' + n + '(?:\\s+step\\s+' + n + ')?(?:\\s+start\\s+' + n + ')?$', 'i').exec(raw);
+    if (m) {
+      const lo = Number(m[1]), hi = Number(m[2]), step = m[3] == null ? 1 : Number(m[3]), start = m[4] == null ? lo : Number(m[4]);
+      if (!(hi > lo)) return { err: 'Wheel "' + raw + '": the end must be above the start' };
+      if (!(step > 0)) return { err: 'Wheel "' + raw + '": step must be more than 0' };
+      const count = Math.floor((hi - lo) / step + 1e-9) + 1;
+      if (count > WHEEL_MAX) return { err: 'Wheel "' + raw + '" has ' + count + ' choices (' + WHEEL_MAX + ' at most): use a bigger step' };
+      if (start < lo || start > hi) return { err: 'Wheel "' + raw + '": start ' + start + ' is outside ' + lo + '..' + hi };
+      const dec = Math.max(...[m[1], m[3] || '1'].map(x => (String(x).split('.')[1] || '').length));
+      const items = Array.from({ length: count }, (_, i) => (lo + i * step).toFixed(dec).replace(/^-0$/, '0'));
+      const st = items.reduce((b, x, i) => Math.abs(Number(x) - start) < Math.abs(Number(items[b]) - start) ? i : b, 0);
+      return { wheel: { items, start: st } };
+    }
+    if (/\.\./.test(raw)) return { err: 'Wheel "' + raw + '" must be a range like 20..250 step 1 start 120, or a list like 16x20x1, 16x25x1' };
+    const items = raw.split(',').map(x => x.trim()).filter(Boolean);
+    if (items.length < 2) return { err: 'Wheel "' + raw + '" needs a range like 20..250 step 1 start 120, or a list of 2 or more choices separated by commas' };
+    if (items.length > 200) return { err: 'Wheel "' + raw + '" has ' + items.length + ' choices (200 at most)' };
+    const long = items.find(x => x.length > 40); if (long) return { err: 'Wheel choice "' + long.slice(0, 20) + '..." is longer than 40 letters' };
+    const dl = items.find(x => DATE_LIKE.some(d => d.test(x))); if (dl) return { err: 'Wheel choice "' + dl + '" looks like a date, time or number. ' + PT_HINT('Wheel') };
+    return { wheel: { items, start: 0 } };
+  }
   // Fields tab -> { map: Field Id -> meaning, bad: Field Id -> where it was refused, msgs }
   function readFields(rows) {
     const map = {}, bad = {}, msgs = [];
@@ -8675,11 +8742,12 @@ body.light-theme .proof-box{color:#0f172a}
         if (frz && frz !== 'yes' && frz !== 'no') why.push('Freeze "' + frz + '" must be yes or no');
         if (wsRaw !== '' && !(wsWhole || wsOne)) why.push('Cell widths "' + wsRaw + '" must be whole numbers from 1 to 20 with one space between them, one per cell (for example 1 2). ' + CW_HINT);
       }
+      const ltp = parseTpl(r, 'Templates'); if (!why.length && ltp.err) why.push(ltp.err);   // round B2: Templates for the whole Line
       if (why.length) { out.push({ _refuse: where + ' refused: ' + why.join(', ') + '.' }); if (name && !lines[name]) lines[name] = { bad: where, where }; return; }
       const sk = screen + '\u0001' + sec, ck = sk + '\u0002' + col;
       if (colIndex[ck] == null) colIndex[ck] = Object.keys(colIndex).filter(k => k.indexOf(sk + '\u0002') === 0).length + 1;
       lineCount[ck] = (lineCount[ck] || 0) + 1;
-      const L = lines[name] = { where, screen, sec, ci: colIndex[ck], si: lineCount[ck], cells: Number(cells), lh, cw: '', frz: '', items: {}, widths: ws.map(Number) };
+      const L = lines[name] = { where, screen, sec, ci: colIndex[ck], si: lineCount[ck], cells: Number(cells), lh, cw: '', frz: '', items: {}, widths: ws.map(Number), tpl: ltp.tpl || null };
       // Cell widths: one share per cell (empty = all equal). Fewer numbers than cells: the rest are 1; more: the extra are not used (a note says so)
       if (ws.length && ws.length !== L.cells) out.push({ _note: where + ': Cell widths "' + wsRaw + '" has ' + ws.length + ' number(s) for ' + L.cells + ' cell(s): ' + (ws.length < L.cells ? 'the rest are 1.' : 'the extra are not used.') });
       // one home each (Danny 19:46): Column width on the FIRST line of its Column, Freeze on the FIRST line of its Section
@@ -8705,6 +8773,10 @@ body.light-theme .proof-box{color:#0f172a}
         else if (Number(cell) > L.cells) why.push('Cell ' + cell + ' is outside line "' + ln + '" (it has ' + L.cells + ' cells)');
         if (sizeBad(g(r, 'Label size'), SIZE_LO, SIZE_HI)) why.push('Label size "' + g(r, 'Label size') + '" must be a number from ' + SIZE_LO + ' to ' + SIZE_HI);
         if (converted(r, 'Join sep')) why.push('Join sep "' + g(r, 'Join sep') + '" looks like a date, time or number. ' + PT_HINT('Join sep'));
+        var itp = parseTpl(r, 'Templates'); if (itp.err) why.push(itp.err);   // round B2
+        var inp = (g(r, 'Input style') || '').toLowerCase(), whl = parseWheel(r);
+        if (inp && !INPUT_STYLES[inp]) why.push('Input style "' + g(r, 'Input style') + '" must be type, wheel or both');
+        if (whl.err) why.push(whl.err);
         if (fid && !FD) why.push('it has a Field (' + fid + ') but there is no Fields tab, so it cannot be drawn');
         else if (fid) {
           F = FD.map[fid];
@@ -8717,12 +8789,13 @@ body.light-theme .proof-box{color:#0f172a}
             else {
               words = rc.words;
               if (J && words.indexOf('report-value') < 0) why.push('Join with needs report-value in the Recipe');
+              if ((inp === 'wheel' || inp === 'both') && !whl.wheel) why.push('Input style ' + inp + ' needs a Wheel (a range like 20..250 step 1 start 120, or a list like 16x20x1, 16x25x1)');
               const need = words.filter(w => w !== 'sub-unit').length;
               if (/^\d+$/.test(cell) && Number(cell) >= 1 && Number(cell) + need - 1 > L.cells) why.push('the Recipe needs ' + need + ' cell(s) (' + words.filter(w => w !== 'sub-unit').join(', ') + ') from Cell ' + cell + ', but line "' + ln + '" has ' + L.cells + ' cell(s)');
             }
           }
         } else {
-          ['Recipe', 'Join with', 'Join sep', 'Label size'].forEach(c => { if (g(r, c)) out.push({ _note: where + ': ' + c + ' "' + g(r, c) + '" not used (it is used only on a row with a Field).' }); });
+          ['Recipe', 'Join with', 'Join sep', 'Label size', 'Input style', 'Wheel'].forEach(c => { if (g(r, c) && !(c === 'Input style' && g(r, c).toLowerCase() === 'type')) out.push({ _note: where + ': ' + c + ' "' + g(r, c) + '" not used (it is used only on a row with a Field).' }); });
         }
       }
       // the cells this row takes, all free?
@@ -8731,7 +8804,7 @@ body.light-theme .proof-box{color:#0f172a}
       const pid = w => w === 'value' || w === 'report-value' || w === null ? id : id + '.' + w;   // Blueprint P22: piece Ids from the item Id
       if (!why.length) pieces.forEach(w => { const x = pid(w); if (ids[x] && x !== id) why.push('the piece Id "' + x + '" is already used on ' + ids[x]); });
       if (why.length) { out.push({ _refuse: where + ' refused: ' + why.join(', ') + '.' }); return; }
-      if (!F) { ids[id] = where; L.items[cell] = { r, where }; return; }
+      if (!F) { ids[id] = where; L.items[cell] = { r: Object.assign({}, r, { _item: id, _tpl: itp.tpl || null }), where }; return; }
       // a Field row: one synthetic row per piece (Q-016 / BD-6: Font size, Min size, Max size = the value box; Label size = the label;
       // the other look columns go to every piece they fit). The label text: Items Label, else Fields Short label, else Fields Name.
       const label = g(r, 'Label') || F.short || F.name, look = {};
@@ -8748,7 +8821,9 @@ body.light-theme .proof-box{color:#0f172a}
           if (w === 'value') o['Wrap'] = '';   // a value box has no wrap (the row's Wrap is for the label)
           if (w === 'value' && words.indexOf('sub-unit') >= 0 && F.unit && !g(r, 'Sub label')) { o['Sub label'] = F.unit; if (!g(r, 'Sub label size')) o['Sub label size'] = '10'; if (!g(r, 'Sub label place')) o['Sub label place'] = 'middle-right'; }   // BD-4: the unit in the corner of the box
           if (J) o._join = J;
+          if (w === 'value' && (inp === 'wheel' || inp === 'both')) { o._input = inp; o._wheel = whl.wheel; }   // round B2
         }
+        o._item = id; o._tpl = itp.tpl || null;
         o['Id'] = pid(w); ids[o['Id']] = where;
         L.items[Number(cell) + k] = { r: o, where };
       });
@@ -8781,8 +8856,8 @@ body.light-theme .proof-box{color:#0f172a}
         const wv = String(L.widths[c - 1] || 1);   // the width belongs to the Cell (the locker), with or without an Item
         if (it) { Object.keys(it.r).forEach(k => { if (!ITEM_SKIP[k]) o[k] = it.r[k]; }); o['Id'] = g(it.r, 'Id'); o['Weight'] = wv; o._where = it.where;
           if (String(o['Visible when'] || '').trim().toLowerCase() === 'never' && !isBadgeRow(o)) { o['Type'] = 'text'; o['Content'] = ''; o['Slot'] = ''; o['Visible when'] = 'always'; delete o._fieldDef; } }   // hidden = an empty cell, nothing moves
-        else { o['Type'] = 'text'; o['Content'] = ''; o['Weight'] = wv; o['Visible when'] = 'always'; o['Id'] = locId(name, c); o._where = L.where; }
-        o._loc = locId(name, c);
+        else { o['Type'] = 'text'; o['Content'] = ''; o['Weight'] = wv; o['Visible when'] = 'always'; o['Id'] = locId(name, c); o._where = L.where; o._blank = true; }
+        o._loc = locId(name, c); o._line = name; if (L.tpl) o._ltpl = L.tpl;   // round B2
         [SZ['*'], SZ.line[name], SZ.item[o['Id']]].forEach(S => { if (S) sizeCols.forEach(k => { if (S[k] != null) o[k] = S[k]; }); });
         if (c === 1) { o['Line height'] = lh; o['Column width'] = L.cw; o['Freeze'] = L.frz; }
         out.push(o);
@@ -8807,7 +8882,7 @@ body.light-theme .proof-box{color:#0f172a}
     const opt = { fields: hasF ? fl.rows : null, sizes: hasF && hasP ? ps.rows : null, profile };
     const rows = bundleRows(st.rows, items.rows, opt);
     if (!build(rows).used) return { failed: true, why: 'nothing on Structure + Items could be drawn' };
-    const knownS = STRUCTURE_COLS, knownI = ['Id', 'Line', 'Cell'].concat(ITEM_B1_COLS, COLS.slice(6), Object.keys(COLPROP), ['Icon', 'Press style', 'Min size', 'Max size']);   // no Weight: widths live on Structure
+    const knownS = STRUCTURE_COLS.concat(['Templates']), knownI = ['Id', 'Line', 'Cell'].concat(ITEM_B1_COLS, ['Input style', 'Wheel', 'Templates'], COLS.slice(6), Object.keys(COLPROP), ['Icon', 'Press style', 'Min size', 'Max size']);   // no Weight: widths live on Structure
     const unknown = st.labels.filter(l => l && knownS.indexOf(l) < 0).map(l => 'Structure: ' + l).concat(items.labels.filter(l => l && knownI.indexOf(l) < 0).map(l => itemsTab + ': ' + l),
       hasF ? fl.labels.filter(l => l && FIELDS_COLS.indexOf(l) < 0).map(l => 'Fields: ' + l) : [], hasF && hasP ? ps.labels.filter(l => l && SIZES_COLS.indexOf(l) < 0).map(l => 'Profile sizes: ' + l) : []);
     if (unknown.length) notes.push('Column(s) this page does not know: ' + unknown.join(', ') + '. This page may be out of date: tap Reload, or refresh the browser.');
@@ -9010,6 +9085,7 @@ body.light-theme .proof-box{color:#0f172a}
     base = {}; eachCell(b.state, p => { if (p.proofId) base[p.proofId] = propsOf(p); });
     const nt = applyTweaks(b.state, T.rows, n);
     eachCell(b.state, p => { if (p.clickAction === 'proof-profile') p.label = 'Profile: ' + L.profile + (chosenProfile() === 'auto' ? ' (auto)' : ''); if (isBadge(p)) p.label = badgeText(); });
+    registerTemplateActions(b.state); usesB2 = layoutUsesB2(b.state);   // round B2
     const keepView = currentView, wasEdit = !isLiveInteraction, keepSel = selectedId();
     engineState = b.state; reselect(keepSel);
     try { undoStack.length = 0; redoStack.length = 0; recordHistorySnapshot(); } catch (e) {}
@@ -9111,7 +9187,7 @@ body.light-theme .proof-box{color:#0f172a}
   window.EngineActions['new-call'] = () => {
     const typedSomething = Object.keys(call).some(k => String(call[k] == null ? '' : call[k]).trim());
     if (typedSomething && Date.now() - newArmed > 5000) { newArmed = Date.now(); say('Tap New again to clear this call', 'warn', 5000); return; }
-    newArmed = 0; call = {}; lsSet(K.call, call); clearFind(); goView('find');
+    newArmed = 0; call = {}; lsSet(K.call, call); callView = VIEW_DEFAULT(); saveView(); clearFind(); goView('find'); paintNotes();   // round B2: reveals and template belong to the call
   };
   // round 7 (3): Refresh page = reload the whole page past the browser's copy (new ?v=, other switches dropped). With unsaved
   // tweaks the first tap only warns; a second tap within 5 s reloads anyway.
@@ -9341,6 +9417,7 @@ body.light-theme .proof-box{color:#0f172a}
       const blank = cell.type === 'text' && !cell.slot && !String(cell.label == null ? '' : cell.label).trim() && !(cell.subLabel && cell.subLabel.enabled && cell.subLabel.text);
       part.classList.toggle('proof-blank', blank); });
     badge(); stackFrozen();
+    try { decorateB2(); } catch (e) {}   // round B2: wheel boxes, Hard min / max notes, hidden Lines (in place)
   }
   // Round 6: the engine pins every frozen section at top: 0 (engine/12-borders-and-frozen-region.css:38, shared with the main
   // app, so not changed): here each visible frozen section gets its top from the heights of the frozen sections above it.
@@ -9496,6 +9573,181 @@ body.light-theme .proof-box{color:#0f172a}
     pg.querySelectorAll('input[data-ro]').forEach(i => { i.addEventListener('focus', () => i.removeAttribute('readonly')); i.addEventListener('blur', () => i.setAttribute('readonly', '')); });
   }
 
+  // ---------- ROUND B2 (0.12.0): Views, Templates, when-filled / reserved Lines, the wheel ----------
+  // Lines are hidden and shown IN PLACE (Gemini's H1 rules, tab 'H1 early proof Gemini'): the Line's row is set to display:none and
+  // its Section band gets shorter by that Line's own share, so every other Line keeps its pixels; renderCanvas is never called for
+  // it (a redraw would drop the keyboard and the box). When a focused box sits below a Line that hides or shows, the page is scrolled
+  // by the same amount so the box does not move. Edit / Adjust shows everything (as the engine does). Only one-Column Sections
+  // collapse a Line; in a Section with several Columns a hidden Line just leaves its cells blank.
+  const K_VIEW = 'proof-containers.callview.v1', K_INPUT = 'proof-containers.inputStyle.v1';
+  const VIEW_DEFAULT = () => ({ view: 'template', tpl: '', revealed: {} });
+  let callView = Object.assign(VIEW_DEFAULT(), lsGet(K_VIEW, {}) || {});
+  if (!/^(all|template|values)$/.test(callView.view)) callView.view = 'template';
+  if (!callView.revealed || typeof callView.revealed !== 'object') callView.revealed = {};
+  const saveView = () => lsSet(K_VIEW, callView);
+  const sameName = (a, b) => String(a).toLowerCase() === String(b).toLowerCase();
+  const tplOk = (t, active) => !t ? true : t.only ? (!!active && t.only.some(n => sameName(n, active))) : !(active && t.except.some(n => sameName(n, active)));
+  const callVal = k => String(call[k] == null ? '' : call[k]).trim();
+  function cellFilled(p) {
+    if (p.proofField) return !!(callVal(p.proofField.id) || (p.proofJoin && callVal(p.proofJoin.field.id)));
+    return p.slot === 'box' && !!p.proofKey && !FIND_KEYS[p.proofKey] && !!callVal(p.proofKey);
+  }
+  const hasField = p => !!p.proofField || (p.slot === 'box' && !!p.proofKey && !FIND_KEYS[p.proofKey]);
+  let usesB2 = false;   // the layout uses a B2 setting (then the footer shows the View and Template)
+  function visPlan() {   // Map stack -> { hide, blank: Set of item keys }
+    const plan = new Map(); if (!isLiveInteraction) return plan;
+    const mode = callView.view, active = callView.tpl;
+    const a = document.activeElement, fpart = a && a.closest && a.closest('.grid-split-partition'), fpid = fpart ? fpart.getAttribute('data-pid') : '';
+    (engineState.rows || []).forEach(row => {
+      const multi = (row.containers || []).length !== 1;
+      (row.containers || []).forEach(c => (c.stacks || []).forEach(s => {
+        const items = {}; (s.splits || []).forEach(p => { if (p.proofItem) (items[p.proofItem] = items[p.proofItem] || []).push(p); });
+        const keys = Object.keys(items), filled = (s.splits || []).some(cellFilled), revealed = !!callView.revealed[s.proofLine];
+        const focused = !!fpid && (s.splits || []).some(p => p.proofId === fpid);
+        const blank = new Set(); let hide = false;
+        if (mode === 'values') { if ((s.splits || []).some(hasField) && !filled) hide = true; }
+        else if (mode === 'template' && !revealed) {
+          keys.forEach(k => { const first = items[k][0], f = items[k].some(cellFilled);
+            const ok = tplOk(first.proofTpl, active) && (first.proofVis === 'when-filled' ? f : first.proofVis !== 'reserved');
+            if (!ok && !f) blank.add(k); });
+          if (!filled && ((s.proofLTpl && !tplOk(s.proofLTpl, active)) || (keys.length && blank.size === keys.length))) hide = true;
+        }
+        if (focused) { hide = false; if (fpid) blank.forEach(k => { if (items[k].some(p => p.proofId === fpid)) blank.delete(k); }); }   // never hide what is being typed in
+        if (multi && hide) { hide = false; keys.forEach(k => blank.add(k)); }
+        if (hide || blank.size) plan.set(s, { hide, blank });
+      }));
+    });
+    return plan;
+  }
+  const partIdx = part => { const m = /handleSplitClick\((\d+), (\d+), (\d+), (\d+)/.exec(part.getAttribute('onclick') || ''); return m ? m.slice(1, 5).map(Number) : null; };
+  let visBusy = false;
+  function applyVis() {
+    const frame = document.getElementById('viewport-canvas-frame'); if (!frame || visBusy) return;
+    visBusy = true;
+    try {
+      const plan = visPlan(), a = document.activeElement, anchor = isBox(a) ? (a.closest('.proof-face') || a) : null;
+      const before = anchor ? anchor.getBoundingClientRect().top : 0;
+      const bands = frame.querySelectorAll('.grid-row-band');
+      (engineState.rows || []).forEach((row, ri) => {
+        const band = bands[ri]; if (!band) return;
+        let all = 0, shown = 0, n = 0;
+        const conts = band.querySelectorAll('.grid-container-cell');
+        (row.containers || []).forEach((c, ci) => {
+          const els = conts[ci] ? Array.from(conts[ci].children).filter(x => x.classList.contains('grid-stack-row')) : [];
+          (c.stacks || []).forEach((s, si) => { const pl = plan.get(s), hide = !!(pl && pl.hide), w = Number(s.weight) || 1; all += w; if (hide) n++; else shown += w;
+            const el = els[si]; if (el && el.style.display !== (hide ? 'none' : '')) el.style.display = hide ? 'none' : ''; });
+        });
+        band.querySelectorAll('.grid-split-partition').forEach(part => { const ix = partIdx(part); if (!ix || ix[0] !== ri) return;
+          const s = row.containers[ix[1]] && row.containers[ix[1]].stacks[ix[2]], p = s && s.splits[ix[3]], pl = s && plan.get(s);
+          const b = !!(pl && !pl.hide && p && pl.blank.has(p.proofItem)); if (part.style.visibility !== (b ? 'hidden' : '')) part.style.visibility = b ? 'hidden' : ''; });
+        if (!row.isAutoHeight && !row.isCollapsed && (row.containers || []).length === 1) {
+          const h = shown ? Math.round((row.heightPx || 120) * shown / all) : 0;
+          if (!shown) { if (!band.dataset.pvGone) { band.dataset.pvGone = '1'; band.style.setProperty('display', 'none', 'important'); } }
+          else { if (band.dataset.pvGone) { delete band.dataset.pvGone; band.style.removeProperty('display'); } band.style.height = h + 'px'; }
+        }
+        let chip = band.querySelector(':scope > .proof-chip');
+        if (n && shown) { if (!chip) { chip = document.createElement('button'); chip.type = 'button'; chip.className = 'proof-chip'; band.appendChild(chip); } chip.dataset.row = String(ri); chip.textContent = '+' + n + ' hidden'; }
+        else if (chip) chip.remove();
+      });
+      if (anchor) { const dy = anchor.getBoundingClientRect().top - before; if (Math.abs(dy) > 0.5) { const sc = scroller(); if (sc) sc.scrollTop += dy; else window.scrollBy(0, dy); } }
+      try { stackFrozen(); } catch (e) {}
+    } finally { visBusy = false; }
+  }
+  window.__proofApplyVis = 0;
+  function revealSection(ri) {
+    const row = engineState.rows[ri]; if (!row) return;
+    const plan = visPlan();
+    (row.containers || []).forEach(c => (c.stacks || []).forEach(s => { if (plan.get(s) && s.proofLine) callView.revealed[s.proofLine] = 1; }));
+    saveView(); applyVis(); paintNotes();
+  }
+  document.addEventListener('click', e => { const ch = e.target && e.target.closest && e.target.closest('.proof-chip'); if (!ch) return; e.preventDefault(); e.stopPropagation(); revealSection(Number(ch.dataset.row)); }, true);
+  // a View or Template switch waits while a value box has focus (H1 rule d); it never redraws the page
+  function whenFree(fn) {
+    if (!isTyping()) { fn(); return; }
+    const once = () => { document.removeEventListener('focusout', once); setTimeout(() => { if (isTyping()) whenFree(fn); else fn(); }, 0); };
+    document.addEventListener('focusout', once);
+  }
+  ['all', 'template', 'values'].forEach(v => { window.EngineActions['set-show:' + v] = () => whenFree(() => { callView.view = v; saveView(); applyVis(); paintNotes(); say('View: ' + viewWord(), 'done'); }); });
+  function setTemplate(name) { whenFree(() => { callView.tpl = name; saveView(); applyVis(); paintNotes(); say('Template: ' + (name || 'none'), 'done'); }); }
+  window.EngineActions['reveal-hidden'] = (cell) => { let ri = -1; (engineState.rows || []).forEach((r, i) => r.containers.forEach(c => c.stacks.forEach(s => { if (s.splits.indexOf(cell) >= 0) ri = i; }))); if (ri >= 0) revealSection(ri); };
+  function registerTemplateActions(state) {   // set-template:<name> buttons named on the sheet
+    eachCell(state, p => { const a = p.clickAction || ''; if (TPL_ACTION.test(a) && !window.EngineActions[a]) window.EngineActions[a] = () => setTemplate(a.slice(13).trim()); });
+  }
+  const viewWord = () => ({ all: 'All', template: 'Template', values: 'Values' })[callView.view];
+  function layoutUsesB2(state) {
+    let u = false; eachCell(state, p => { if (p.proofVis || p.proofTpl || p.proofLTpl || p.proofInput || /^set-show:|^set-template:|^reveal-hidden$/.test(p.clickAction || '')) u = true; });
+    return u;
+  }
+
+  // ---------- the wheel (Input style wheel / both; BD-5: one simple scroll list) ----------
+  const inputModes = () => lsGet(K_INPUT, {}) || {};
+  const modeOf = p => { if (!p.proofInput || p.proofInput === 'type') return 'type'; if (p.proofInput === 'wheel') return 'wheel'; const m = inputModes()[p.proofField ? p.proofField.id : p.proofKey]; return m === 'type' || m === 'wheel' ? m : 'wheel'; };
+  function boxCell(box) { const part = box.closest('.grid-split-partition'), ix = part && partIdx(part); if (!ix) return null; const r = engineState.rows[ix[0]]; return r && r.containers[ix[1]] && r.containers[ix[1]].stacks[ix[2]] && r.containers[ix[1]].stacks[ix[2]].splits[ix[3]]; }
+  // Hard min / Hard max (Fields, P21): an amber note in the value box; it never blocks and never changes the value
+  function limitNote(F, v) {
+    if (!F || (F.hmin === '' && F.hmax === '')) return '';
+    const s = String(v == null ? '' : v).trim(); if (s === '' || !isFinite(Number(s))) return '';
+    const x = Number(s), lo = F.hmin === '' ? -Infinity : Number(F.hmin), hi = F.hmax === '' ? Infinity : Number(F.hmax);
+    return x < lo || x > hi ? 'Outside ' + (F.hmin === '' ? '...' : F.hmin) + '..' + (F.hmax === '' ? '...' : F.hmax) : '';
+  }
+  function paintLimit(box) {
+    const face = box.closest('.proof-face'); if (!face) return;
+    const p = boxCell(box), t = p ? limitNote(p.proofField, box.value) : '';
+    let n = face.querySelector('.proof-limit');
+    if (t) { if (!n) { n = document.createElement('span'); n.className = 'proof-limit'; face.appendChild(n); } n.textContent = t; } else if (n) n.remove();
+  }
+  let wheel = null;
+  function closeWheel() { if (wheel) { wheel.el.remove(); wheel = null; document.body.classList.remove('proof-wheel-open'); } }
+  function openWheel(box) {
+    const p = boxCell(box); if (!p || !p.proofWheel) return;
+    closeWheel(); blurNow();
+    const W = p.proofWheel, cur = String(box.value || '').trim(), at = W.items.indexOf(cur) >= 0 ? W.items.indexOf(cur) : W.start;
+    const el = document.createElement('div'); el.id = 'proof-wheel'; el.setAttribute('role', 'dialog');
+    const label = (p.proofLabel || (p.proofField && p.proofField.name) || '') + (p.proofField && p.proofField.unit ? ' (' + p.proofField.unit + ')' : '');
+    el.innerHTML = '<div class="pw-top"><button type="button" data-pw="cancel">Cancel</button><span class="pw-title">' + esc(label) + '</span><button type="button" data-pw="done" class="pw-done">Done</button></div>' +
+      '<div class="pw-list">' + W.items.map((x, i) => '<button type="button" class="pw-item" data-i="' + i + '">' + esc(x) + '</button>').join('') + '</div><div class="pw-mark"></div>';
+    document.body.appendChild(el); document.body.classList.add('proof-wheel-open');
+    wheel = { el, box, p };
+    const list = el.querySelector('.pw-list'), H = 44;
+    list.scrollTop = at * H;
+    const placeWheel = () => { const vv = window.visualViewport, bottom = vv ? vv.offsetTop + vv.height : innerHeight; el.style.top = Math.max(0, bottom - el.offsetHeight) + 'px'; };
+    placeWheel(); wheel.place = placeWheel;
+    // the box stays in view above the wheel (only if it would be covered)
+    requestAnimationFrame(() => { const r = (box.closest('.proof-face') || box).getBoundingClientRect(), top = el.getBoundingClientRect().top; if (r.bottom > top - VIEW_GAP) { const dy = r.bottom - (top - VIEW_GAP), sc = scroller(); if (sc) sc.scrollTop += dy; else window.scrollBy(0, dy); } });
+    el.addEventListener('click', e => {
+      const b = e.target.closest('button'); if (!b) return; e.stopPropagation();
+      if (b.dataset.pw === 'cancel') return closeWheel();
+      const i = b.dataset.pw === 'done' ? Math.round(list.scrollTop / H) : Number(b.dataset.i);
+      pickWheel(W.items[Math.max(0, Math.min(W.items.length - 1, i))]);
+    });
+  }
+  function pickWheel(v) {   // fills ONLY that box in place; no redraw
+    if (!wheel) return; const { box, p } = wheel; closeWheel();
+    const k = box.dataset.key; box.value = v; call[k] = v; lsSet(K.call, call);
+    paintLimit(box); applyVis(); paintNotes();
+  }
+  if (window.visualViewport) visualViewport.addEventListener('resize', () => { if (wheel && wheel.place) wheel.place(); });
+  // a box in wheel mode opens the wheel instead of the keyboard; 'both' has a small switch that is remembered on this phone
+  document.addEventListener('click', e => {
+    const sw = e.target && e.target.closest && e.target.closest('.proof-mode');
+    if (sw) { e.preventDefault(); e.stopPropagation(); const box = sw.parentElement.querySelector('.proof-box'), p = box && boxCell(box); if (!p) return;
+      const k = p.proofField ? p.proofField.id : p.proofKey, m = inputModes(), next = modeOf(p) === 'wheel' ? 'type' : 'wheel'; m[k] = next; lsSet(K_INPUT, m);
+      setBoxMode(box, p); if (next === 'type') { box.focus(); } else openWheel(box); return; }
+    const box = e.target && e.target.closest && e.target.closest('.proof-box');
+    if (box && isLiveInteraction) { const p = boxCell(box); if (p && p.proofInput && modeOf(p) === 'wheel') { e.preventDefault(); openWheel(box); } }
+  }, true);
+  document.addEventListener('focusin', e => { const box = e.target; if (!isBox(box) || !isLiveInteraction) return; const p = boxCell(box); if (p && p.proofInput && modeOf(p) === 'wheel') { box.blur(); } }, true);
+  function setBoxMode(box, p) {
+    const m = modeOf(p); box.readOnly = m === 'wheel'; box.setAttribute('inputmode', m === 'wheel' ? 'none' : (p.proofField && p.proofField.kind === 'number' ? 'decimal' : 'text'));
+    const sw = box.parentElement && box.parentElement.parentElement && box.parentElement.parentElement.querySelector('.proof-mode');
+    if (sw) { sw.textContent = m === 'wheel' ? '⌨' : '◎'; sw.title = m === 'wheel' ? 'Type instead' : 'Use the wheel'; }
+  }
+  // after each draw: wheel boxes, limit notes, hidden Lines
+  function decorateB2() {
+    document.querySelectorAll('#viewport-canvas-frame .proof-box').forEach(box => { const p = boxCell(box); if (!p) return; if (p.proofInput) setBoxMode(box, p); paintLimit(box); });
+    applyVis();
+  }
+
   // ---------- the bottom line ----------
   function paintNotes() {
     let n = document.getElementById('proof-notes');
@@ -9503,14 +9755,15 @@ body.light-theme .proof-box{color:#0f172a}
       if (e.target && e.target.id === 'proof-save-now') { e.stopPropagation(); window.EngineActions['proof-save-tweaks'](); return; }   // the inspector can cover the Tools row on a phone
       n.classList.toggle('small'); }); document.body.appendChild(n); }
     const head = 'proof ' + PROOF_VERSION + ' · profile ' + (info.profile || '?') + (chosenProfile() === 'auto' ? ' (auto)' : '') + ' · ' + DEVICE +
-      (info.offline ? ' · sheet not read (offline) ' + hhmm(info.readAt) : ' · read ' + (info.readAt ? hhmm(info.readAt) : '-')) + ' · ' + info.rows + ' rows, ' + info.refused + ' refused · ' + info.tweaks + ' tweaks applied' + (info.pending ? ' (not saved yet)' : '');
+      (info.offline ? ' · sheet not read (offline) ' + hhmm(info.readAt) : ' · read ' + (info.readAt ? hhmm(info.readAt) : '-')) + ' · ' + info.rows + ' rows, ' + info.refused + ' refused · ' + info.tweaks + ' tweaks applied' + (info.pending ? ' (not saved yet)' : '') + (usesB2 ? ' · view ' + viewWord() + ', template ' + (callView.tpl || 'none') : '');
     const unsaved = info.readAt ? changedFrom(applied).length : 0;
     const lost = info.readAt && structChanged();
     n.innerHTML = '<b>' + esc(head) + '</b>' + (unsaved ? '<br><span class="proof-last">' + unsaved + ' change(s) not saved yet.</span> <button type="button" id="proof-save-now">Save tweaks</button>' : '') + (lost ? '<br><span class="proof-warn">' + esc(NOT_KEPT) + '</span>' : '') + (info.sourceText ? '<br>' + esc(info.sourceText) : '') + (lastAction ? '<br><span class="proof-last">' + esc(lastAction) + '</span>' : '') + notes.map(x => '<br>' + esc(x)).join('');
   }
 
   window.PMIProof = { build, fromCsv, load, reload, saveTweaks, clearTweaks, nextProfile, changedFrom: () => changedFrom(base), info: () => info, device: DEVICE, PROFILES, HOUSES, version: PROOF_VERSION,
-    openBar, closeBar, structChanged, propsOf, checkVersion, say, barSync: () => barSync() };
+    openBar, closeBar, structChanged, propsOf, checkVersion, say, barSync: () => barSync(),
+    b2: { applyVis, revealSection, setTemplate, callView: () => callView } };   // round B2 (tests)
   window.addEventListener('DOMContentLoaded', () => {
     // round B1 (Danny, U79): the engine's 'Layout updated to the new built-in version' pop-up (app/src/engine/56-version-badge-and-notice.js,
     // shown when the saved screen copy is from another version) is not wanted on this page: removed here and hidden by CSS (make.py).
