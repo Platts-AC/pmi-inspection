@@ -3633,7 +3633,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.19.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.20.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3643,7 +3643,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.19.0', stamp: '2026-11-22 20:15:25', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.20.0', stamp: '2026-11-22 20:38:28', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8320,7 +8320,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.19.0';
+  const PROOF_VERSION = '0.20.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8406,8 +8406,99 @@ body.light-theme .proof-box{color:#0f172a}
     { name: 'Placeholder Villa', address: '5 Placeholder Ln', phone: '555-0107' }, { name: 'Mock Townhome', address: '31 Mock Ct', phone: '555-0108' }
   ];
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const lsGet = (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } };
-  const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } };
+  // ---------- storage (0.20.0, Round C3c stage 2; the main app's 34f-big-store.js) ----------
+  // IndexedDB (database 'proof-containers', store 'kv', one record per key: {v:1, at, json}) is the MAIN store for everything the page keeps
+  // (the call, View / template state, phone customers, pins, defaults, my comments, tweaks, the last good sheet copy ...); an in-memory copy keeps
+  // every read synchronous. localStorage keeps a BACKUP copy of each key while it is under the main app's limit (1.5 million characters), with
+  // a small note per key (STORE_META: when this page last wrote it there and a fingerprint of what it wrote).
+  // Start: every 'proof-containers.' key in localStorage and every IndexedDB record is compared once, before the first draw:
+  //   same text = fine; no good IndexedDB record = the localStorage copy moves in (data saved by 0.18.0 / 0.19.0: the migration);
+  //   they differ: IndexedDB wins when the localStorage copy is this page's own OLDER write (its fingerprint matches; a backup write that
+  //   failed or was over the limit), otherwise the localStorage copy wins (written by an older build or by hand, so it is the newer one);
+  //   a key missing from localStorage: IndexedDB wins (the backup was cleared or never fit) unless this page's note says it wrote it there,
+  //   which means it was removed on purpose (the record goes too).
+  // Every copy moved in is READ BACK and compared before reads switch to IndexedDB. Anything wrong (no IndexedDB, blocked, slow over 2.5 s,
+  // a failed write, a copy that does not read back the same) = localStorage only, as 0.19.0, with one plain message. No localStorage copy is
+  // ever deleted by this code (only the per-key note of a key removed on purpose).
+  const STORE_PFX = 'proof-containers.', STORE_META = 'proof-containers.store.meta.v1', STORE_LS_MAX = 1500000, STORE_DB = 'proof-containers', STORE_OS = 'kv';
+  const STORE = { mem: {}, on: false, booted: false, failed: '', moved: 0, fromIdb: 0, pending: {}, msgShown: false };
+  const storeHash = t => { let h = 5381; for (let i = 0; i < t.length; i++) h = ((h << 5) + h + t.charCodeAt(i)) | 0; return t.length + ':' + (h >>> 0).toString(36); };
+  const storeMetaGet = () => { try { const m = JSON.parse(localStorage.getItem(STORE_META) || 'null'); return m && typeof m === 'object' ? m : {}; } catch (e) { return {}; } };
+  const storeMetaSet = m => { try { localStorage.setItem(STORE_META, JSON.stringify(m)); } catch (e) {} };
+  const STORE_START = (() => { const raw = {}; try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.indexOf(STORE_PFX) === 0 && k !== STORE_META) raw[k] = localStorage.getItem(k); } } catch (e) {} return { raw, meta: storeMetaGet() }; })();
+  // the backup write: under the limit only; the note changes only when the write worked
+  function storeLsWrite(k, json) {
+    if (json.length >= STORE_LS_MAX) return false;
+    try { localStorage.setItem(k, json); } catch (e) { return false; }
+    const m = storeMetaGet(); m[k] = { at: Date.now(), h: storeHash(json) }; storeMetaSet(m); return true;
+  }
+  function storeMsg() {
+    if (STORE.msgShown || !STORE.failed) return; STORE.msgShown = true;
+    try { say("This phone's database (IndexedDB) is not working (" + STORE.failed + '): saving in the browser storage only, as before.', 'warn', 10000); } catch (e) {}
+  }
+  function storeFail(why) { STORE.on = false; if (!STORE.failed) STORE.failed = why || 'error'; if (STORE.booted) storeMsg(); }
+  const idbOpen = ms => new Promise((res, rej) => {
+    let done = false; const t = setTimeout(() => { if (!done) { done = true; rej(new Error('no answer')); } }, ms || 2500);
+    try {
+      const r = indexedDB.open(STORE_DB, 1);
+      r.onupgradeneeded = () => { try { r.result.createObjectStore(STORE_OS); } catch (e) {} };
+      r.onsuccess = () => { clearTimeout(t); if (done) { try { r.result.close(); } catch (e) {} return; } done = true; res(r.result); };
+      r.onerror = () => { clearTimeout(t); if (!done) { done = true; rej(new Error('blocked')); } };
+      r.onblocked = () => { clearTimeout(t); if (!done) { done = true; rej(new Error('blocked')); } };
+    } catch (e) { clearTimeout(t); done = true; rej(new Error('not available')); }
+  });
+  let storeDb = null;
+  const idbAll = db => new Promise((res, rej) => { try { const out = {}, tx = db.transaction(STORE_OS), c = tx.objectStore(STORE_OS).openCursor();
+    c.onsuccess = () => { const x = c.result; if (x) { out[x.key] = x.value; x.continue(); } }; tx.oncomplete = () => res(out); tx.onerror = tx.onabort = () => rej(new Error('read failed')); } catch (e) { rej(new Error('read failed')); } });
+  const idbWrite = (puts, dels) => new Promise(res => { try { const tx = storeDb.transaction(STORE_OS, 'readwrite'), os = tx.objectStore(STORE_OS);
+    Object.keys(puts || {}).forEach(k => os.put(puts[k], k)); (dels || []).forEach(k => os.delete(k)); tx.oncomplete = () => res(true); tx.onerror = tx.onabort = () => res(false); } catch (e) { res(false); } });
+  const recOk = r => !!(r && r.v === 1 && typeof r.json === 'string' && (() => { try { JSON.parse(r.json); return true; } catch (e) { return false; } })());
+  async function storeBoot() {
+    try {
+      if (typeof indexedDB === 'undefined' || !indexedDB) throw new Error('not available');
+      storeDb = await idbOpen(2500);
+      const recs = await Promise.race([idbAll(storeDb), new Promise((_, rej) => setTimeout(() => rej(new Error('no answer')), 2500))]);
+      const raw = STORE_START.raw, meta = STORE_START.meta, mem = {}, puts = {}, dels = [], backToLs = [], now = Date.now();
+      const keys = Object.keys(raw).concat(Object.keys(recs).filter(k => !(k in raw) && k.indexOf(STORE_PFX) === 0));
+      keys.forEach(k => {
+        const r = raw[k], rec = recs[k], good = recOk(rec), m = meta[k];
+        if (r != null) {
+          if (good && rec.json === r) { mem[k] = r; return; }
+          const own = !!(m && m.h === storeHash(r));
+          if (good && own && (m.at || 0) < (rec.at || 0)) { mem[k] = rec.json; backToLs.push(k); STORE.fromIdb++; return; }   // the backup is this page's older write
+          mem[k] = r; puts[k] = { v: 1, at: now, json: r }; STORE.moved++; return;   // 0.18 / 0.19 data, or written outside this page: it moves in
+        }
+        if (!good) return;
+        if (m && m.h) { dels.push(k); return; }   // this page wrote it to localStorage and it was removed there on purpose
+        mem[k] = rec.json; backToLs.push(k); STORE.fromIdb++;   // the backup was cleared (or never fit): IndexedDB has it
+      });
+      if (Object.keys(puts).length || dels.length) {
+        if (!(await idbWrite(puts, dels))) throw new Error('write failed');
+        const back = await idbAll(storeDb);
+        if (Object.keys(puts).some(k => !recOk(back[k]) || back[k].json !== puts[k].json)) throw new Error('copy did not read back the same');
+      }
+      if (dels.length) { const m2 = storeMetaGet(); dels.forEach(k => delete m2[k]); storeMetaSet(m2); }
+      // writes made while starting (only a first device name): they give way where IndexedDB won, otherwise they go in now
+      const pend = {};
+      Object.keys(STORE.pending).forEach(k => { if (backToLs.indexOf(k) < 0) { mem[k] = STORE.pending[k]; pend[k] = { v: 1, at: Date.now(), json: STORE.pending[k] }; } });
+      backToLs.forEach(k => storeLsWrite(k, mem[k]));
+      STORE.mem = mem; STORE.pending = {}; STORE.on = true;
+      if (Object.keys(pend).length && !(await idbWrite(pend))) throw new Error('write failed');
+    } catch (e) { STORE.mem = Object.assign({}, STORE.pending); STORE.pending = {}; storeFail(e && e.message); }
+    STORE.booted = true;
+  }
+  // reads: the memory copy (IndexedDB's, or this session's writes), else localStorage
+  const lsGet = (k, d) => { try { const v = k in STORE.mem ? STORE.mem[k] : localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } };
+  // writes: memory now, the localStorage backup now, IndexedDB behind it; true = kept somewhere
+  const lsSet = (k, v) => {
+    let json; try { json = JSON.stringify(v); } catch (e) { return false; }
+    STORE.mem[k] = json; const ls = storeLsWrite(k, json);
+    if (!STORE.booted) { STORE.pending[k] = json; return ls; }
+    if (!STORE.on) return ls;
+    idbWrite({ [k]: { v: 1, at: Date.now(), json } }).then(okW => { if (!okW) storeFail('write failed'); });
+    return true;
+  };
+  const STORE_READY = storeBoot();
   const hhmm = d => { const x = d || new Date(), p = n => String(n).padStart(2, '0'); return p(x.getHours()) + ':' + p(x.getMinutes()); };
   const isTyping = () => { const a = document.activeElement; return !!(a && a.classList && a.classList.contains('proof-box')); };
 
@@ -8431,7 +8522,7 @@ body.light-theme .proof-box{color:#0f172a}
     const rnd = Array.from(crypto.getRandomValues(new Uint8Array(2))).map(b => b.toString(16).padStart(2, '0')).join('');
     d = os + ' ' + br + ' ' + rnd; lsSet(K.device, d); return d;
   }
-  const DEVICE = deviceName();
+  let DEVICE = deviceName();   // 0.20.0: read again once the store has started
 
   // ---------- profile ----------
   const chosenProfile = () => { const c = lsGet(K.profile, 'auto'); return PROFILES.indexOf(c) >= 0 ? c : 'auto'; };
@@ -10358,10 +10449,11 @@ body.light-theme .proof-box{color:#0f172a}
     n.innerHTML = '<b>' + esc(head) + '</b>' + (unsaved ? '<br><span class="proof-last">' + unsaved + ' change(s) not saved yet.</span> <button type="button" id="proof-save-now">Save tweaks</button>' : '') + (lost ? '<br><span class="proof-warn">' + esc(NOT_KEPT) + '</span>' : '') + (info.sourceText ? '<br>' + esc(info.sourceText) : '') + (lastAction ? '<br><span class="proof-last">' + esc(lastAction) + '</span>' : '') + notes.map(x => '<br>' + esc(x)).join('');
   }
 
-  window.PMIProof = { build, fromCsv, load, reload, saveTweaks, clearTweaks, nextProfile, changedFrom: () => changedFrom(base), info: () => info, device: DEVICE, PROFILES, HOUSES, version: PROOF_VERSION,
+  window.PMIProof = { build, fromCsv, load, reload, saveTweaks, clearTweaks, nextProfile, changedFrom: () => changedFrom(base), info: () => info, get device() { return DEVICE; }, PROFILES, HOUSES, version: PROOF_VERSION,
     openBar, closeBar, structChanged, propsOf, checkVersion, say, barSync: () => barSync(),
     c1: { matchCallType: q => matchCallType(q).map(x => ({ type: x.type, tier: x.tier, via: x.via })) },   // C1b (tests; the photo reader later)
-    b2: { applyVis, revealSection, hideSection, setTemplate, callView: () => callView } };   // round B2 (tests)
+    b2: { applyVis, revealSection, hideSection, setTemplate, callView: () => callView },
+    store: { ready: () => STORE_READY, state: () => ({ on: STORE.on, booted: STORE.booted, failed: STORE.failed, moved: STORE.moved, fromIdb: STORE.fromIdb, keys: Object.keys(STORE.mem).length }), put: lsSet, get: lsGet } };   // 0.20.0 (tests)   // round B2 (tests)
   window.addEventListener('DOMContentLoaded', () => {
     // round B1 (Danny, U79): the engine's 'Layout updated to the new built-in version' pop-up (app/src/engine/56-version-badge-and-notice.js,
     // shown when the saved screen copy is from another version) is not wanted on this page: removed here and hidden by CSS (make.py).
@@ -10369,13 +10461,15 @@ body.light-theme .proof-box{color:#0f172a}
     const dropBanner = () => { const x = document.getElementById('layout-replaced-banner'); if (x) x.remove(); };
     dropBanner(); setTimeout(dropBanner, 0);
     if (AUTOFILL) { setTimeout(autofillPage, 0); return; }   // the test page only: no layout read, no sheet calls
-    setTimeout(() => {
+    STORE_READY.then(() => {   // 0.20.0: the store has started (IndexedDB or localStorage only): read what was kept, then draw
+      try { DEVICE = deviceName(); call = lsGet(K.call, {}) || {}; endpoint = lsGet(K.endpoint, '') || ''; callView = Object.assign(VIEW_DEFAULT(), lsGet(K_VIEW, {}) || {});
+        if (!/^(all|template|values)$/.test(callView.view)) callView.view = 'template'; if (!callView.revealed || typeof callView.revealed !== 'object') callView.revealed = {}; } catch (e) {}
       try { if (window.innerWidth < 700) lastOpenInspectorState = 'compact'; if (inspectorWindowState !== 'closed') closeInspectorWindow(); } catch (e) {}   // the page opens in Live with the inspector shut
       try { if (!isLiveInteraction) toggleInteractionState(); } catch (e) {}
       badge(); paintLine(); watchPlain();
       checkVersion(false, true);   // round A.1 (Fix B): ask version.json at once, next to the first sheet read, so an old cached page moves on before it draws
-      load('start').then(() => { try { applyInspectorWindowUI(); } catch (e) {} if (info.offline) say('Offline: showing the saved layout', 'warn', 8000); checkVersion(); });   // 0.12.1 (BT-15): the same banner as Reload   // hides the engine's 'Open Inspector' button: the Tools row has one
-    }, 0);
+      load('start').then(() => { try { applyInspectorWindowUI(); } catch (e) {} if (info.offline) say('Offline: showing the saved layout', 'warn', 8000); storeMsg(); checkVersion(); });   // 0.12.1 (BT-15): the same banner as Reload   // hides the engine's 'Open Inspector' button: the Tools row has one
+    });
   });
 })();
 </script>
