@@ -754,6 +754,8 @@ body:not(.proof-ready) #reopen-inspector-fab{display:none!important}
 #viewport-canvas-frame .proof-cell:has(.proof-spec){position:relative}#viewport-canvas-frame .proof-spec{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:10px;line-height:1;color:#94a3b8;pointer-events:none;white-space:nowrap;z-index:3}
 #viewport-canvas-frame .proof-dbg{position:absolute;left:2px;right:2px;bottom:0;font:9px/1.2 system-ui,sans-serif;color:#9ca3af;background:rgba(15,23,42,.88);padding:0 3px;pointer-events:none;z-index:4;white-space:normal;overflow-wrap:break-word}
 #viewport-canvas-frame .proof-viewcell{display:flex;align-items:center;justify-content:center;text-align:center;height:100%;line-height:1.15;color:#7dd3fc;font-weight:600;overflow-wrap:anywhere;padding:0 2px}
+#viewport-canvas-frame .proof-box.proof-namebox{color:#9fb0c4;font-style:italic;background:transparent;border-color:transparent}
+#viewport-canvas-frame .proof-box.proof-namebox:focus{background:#0b1220;border-color:#334155;font-style:normal}
 #viewport-canvas-frame .proof-savechip{display:flex;align-items:center;justify-content:center;text-align:center;height:100%;line-height:1.15;color:#86efac;font-weight:600;overflow-wrap:anywhere;padding:0 2px;cursor:pointer}
 #viewport-canvas-frame .proof-savechip[data-st=wait],#viewport-canvas-frame .proof-savechip[data-st=saving]{color:#fcd34d}
 #viewport-canvas-frame .proof-savechip[data-st=err]{color:#fca5a5}
@@ -3685,7 +3687,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.25.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.26.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3695,7 +3697,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.25.0', stamp: '2026-11-23 13:14:04', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.26.0', stamp: '2026-11-23 17:42:04', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8372,7 +8374,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.25.0';
+  const PROOF_VERSION = '0.26.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8671,8 +8673,8 @@ body.light-theme .proof-box{color:#0f172a}
     const sw = p.proofInput === 'both' ? '<button type="button" class="proof-mode" tabindex="-1">' + (wm ? ICON.keyboard : ICON.wheel) + '</button>' : '';
     // round 7 (1): autofill fix C (Danny's Android test, 0.6.0): each value box sits in its own form with autocomplete off and has
     // autocomplete one-time-code; the form takes no space (display:contents) and never submits (Enter is stopped, see below).
-    return '<div class="proof-cell"><div class="proof-face" style="align-items:' + va + '"><form class="proof-form" autocomplete="off" onsubmit="return false">' + (nl > 1 ? '<textarea rows="' + nl + '" class="proof-box proof-ta' + (edOf(p) ? ' proof-ro-src' : '') + '"' : '<input class="proof-box"') + ' data-key="' + esc(k) + '"' + (nl > 1 ? '' : ' value="' + esc(valOf(k)) + '"') +
-      (wm || edOf(p) || (F && (F.kind === 'readonly' || commentOf(F))) ? ' inputmode="none" readonly' : tel ? ' inputmode="tel"' : num ? ' inputmode="decimal"' : '') + ' placeholder="' + esc(F ? (commentOf(F) ? 'Choose comments…' : edOf(p) === 'capacitor' ? 'Tap to test capacitors' : edOf(p) === 'filter' ? 'Choose filter size' : (F.equip ? equipLabel(F, p._eqBase || F.name) : F.name)) : (FIELD_FALLBACK[k] || 'Search')) + '"' +   /* C3b: a comment Field opens its pick list */ boxAttrs(p) + ' style="font-size:' + (nl > 1 ? Math.round(boxSize(p) * (nl === 2 ? 0.86 : 0.76)) : boxSize(p)) + 'px;text-align:' + (p.align || 'left') + '">' + (nl > 1 ? esc(valOf(k)) + '</textarea>' : '') + '</form>' + (nl > 1 && edOf(p) ? '<div class="proof-ro-text" aria-hidden="true"></div>' : '') + sw + '</div></div>';   /* 0.22.3: an editor's 2-3 row box shows its text in a plain wrapping block */   // C3c: Box lines (the main app's two-line box: smaller font)
+    return '<div class="proof-cell"><div class="proof-face" style="align-items:' + va + '"><form class="proof-form" autocomplete="off" onsubmit="return false">' + (nl > 1 ? '<textarea rows="' + nl + '" class="proof-box proof-ta' + (edOf(p) ? ' proof-ro-src' : '') + '"' : '<input class="proof-box' + (p.proofPh ? ' proof-namebox' : '') + '"') + ' data-key="' + esc(k) + '"' + (nl > 1 ? '' : ' value="' + esc(valOf(k)) + '"') +
+      (wm || edOf(p) || (F && (F.kind === 'readonly' || commentOf(F))) ? ' inputmode="none" readonly' : tel ? ' inputmode="tel"' : num ? ' inputmode="decimal"' : '') + ' placeholder="' + esc(p.proofPh ? p.proofPh : F ? (commentOf(F) ? 'Choose comments…' : edOf(p) === 'capacitor' ? 'Tap to test capacitors' : edOf(p) === 'filter' ? 'Choose filter size' : (F.equip ? equipLabel(F, p._eqBase || F.name) : F.name)) : (FIELD_FALLBACK[k] || 'Search')) + '"' +   /* C3b: a comment Field opens its pick list */ boxAttrs(p) + ' style="font-size:' + (nl > 1 ? Math.round(boxSize(p) * (nl === 2 ? 0.86 : 0.76)) : boxSize(p)) + 'px;text-align:' + (p.align || 'left') + '">' + (nl > 1 ? esc(valOf(k)) + '</textarea>' : '') + '</form>' + (nl > 1 && edOf(p) ? '<div class="proof-ro-text" aria-hidden="true"></div>' : '') + sw + '</div></div>';   /* 0.22.3: an editor's 2-3 row box shows its text in a plain wrapping block */   // C3c: Box lines (the main app's two-line box: smaller font)
   } };
   // Enter in a value box: never submit or reload (the form also says onsubmit return false); focus and caret stay
   document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target && e.target.classList && e.target.classList.contains('proof-box')) e.preventDefault(); }, true);
@@ -8726,7 +8728,7 @@ body.light-theme .proof-box{color:#0f172a}
   const allSites = () => (ONFILE ? placesForFind() : (SITES || HOUSES)).concat(phoneSites().map(x => Object.assign({ onPhone: true }, x)));   // C7a: Places first; Sites the fallback
   const PART_W = { address: 3, phone: 2, name: 1 }, PART_WORD = { address: 'Address', phone: 'Phone', name: 'Name' };
   function hasAll(text, typedText) {
-    const have = []; words(text).forEach(w => { have.push(w); if (ABBR[w]) have.push(ABBR[w]); if (LONG[w]) have.push(LONG[w]); });
+    const have = []; words(text).forEach(w => { have.push(w); if (ABBR[w]) have.push(ABBR[w]); if (LONG[w]) have.push(LONG[w]); if (/^0+\d/.test(w)) have.push(w.replace(/^0+/, '')); });   // 0.26.0 (R6): '405' finds unit 0405
     const t = words(typedText); return !!t.length && t.every(q => have.some(h => h.indexOf(q) === 0));
   }
   // 0.22.4 (F11, the main app's rule): an address = house number + direction + street name + street type (St = Street ...; unit after
@@ -8734,18 +8736,21 @@ body.light-theme .proof-box{color:#0f172a}
   // number and name equal and the type (or the direction) missing on one side ('1827 Oak' and '1827 Oak Street'); else no match.
   const ST_TYPES = Object.keys(ABBR).concat(['way', 'loop', 'square', 'path', 'pike', 'alley', 'cove', 'pass', 'ridge', 'bend', 'crossing', 'point', 'plaza']);
   const DIRS = { n: 'north', s: 'south', e: 'east', w: 'west', ne: 'northeast', nw: 'northwest', se: 'southeast', sw: 'southwest' };
+  const unitOf = a => { const m = String(a || '').split(/[,\n]/)[0].match(/(?:#|\b(?:apt|apartment|unit|ste|suite)\b\.?)\s*([a-z0-9-]+)/i); return m ? m[1].toLowerCase().replace(/^0+(?=\w)/, '') : ''; };   // 0.26.0 (R6): '#0405' = '405'
   function addrParts(a) {
+    const unit = unitOf(a);
     let w = words(String(a || '').split(/[#,\n]/)[0]); const cut = w.findIndex((x, i) => i >= 2 && /^(apt|apartment|unit|ste|suite)$/.test(x)); if (cut > 0) w = w.slice(0, cut);
     w = w.map(x => LONG[x] || (x === 'av' ? 'avenue' : x === 'str' ? 'street' : x === 'terr' ? 'terrace' : x));
     if (w.length > 2 && /^\d{5}$/.test(w[w.length - 1])) w.pop();
     if (!/^\d+[a-z]?$/.test(w[0] || '')) return null;
     let rest = w.slice(1), dir = ''; const d0 = DIRS[rest[0]] || (Object.values(DIRS).indexOf(rest[0]) >= 0 ? rest[0] : ''); if (d0 && rest.length > 1) { dir = d0; rest = rest.slice(1); }
     const ti = rest.findIndex((x, i) => i >= 1 && ST_TYPES.indexOf(x) >= 0), type = ti > 0 ? rest[ti] : ''; const name = (ti > 0 ? rest.slice(0, ti) : rest).join(' ');
-    return name ? { num: w[0], dir, name, type } : null;
+    return name ? { num: w[0], dir, name, type, unit } : null;
   }
   function addrRel(a, b) {   // 2 exact, 1 likely, 0 none
     const x = typeof a === 'string' ? addrParts(a) : a, y = addrParts(b); if (!x || !y || x.num !== y.num || x.name !== y.name) return 0;
     if ((x.type && y.type && x.type !== y.type) || (x.dir && y.dir && x.dir !== y.dir)) return 0;
+    if (x.unit && x.unit !== (y.unit || '')) return 0;   // 0.26.0 (R6): an address WITH a unit is not the same as another unit or the building itself (one typed without a unit still finds the units)
     return x.type === y.type && x.dir === y.dir ? 2 : 1;
   }
   const sameSite = (a, b) => words(a.name).join(' ') === words(b.name).join(' ') && words(a.address).map(short).join(' ') === words(b.address).map(short).join(' ');
@@ -8757,7 +8762,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (q[1] && (hasAll(h.address, q[1]) || rel)) why.push('address');
       const phs = h.phonesAll || [h.phone];   // C7a: every phone on file
       if (d.length >= 3 && phs.some(x => digits(x).includes(d))) why.push('phone');
-      if (q[0] && hasAll(h.name, q[0])) why.push('name');
+      if (q[0] && (hasAll(h.name, q[0]) || (h.alsoNames && hasAll(h.alsoNames, q[0])))) why.push('name');   // 0.26.0 (R11): a unit is also found by its building / site name
       if (!why.length) return;
       const exact = (why.indexOf('address') >= 0 && rel === 2) || (why.indexOf('phone') >= 0 && d.length >= 7 && phs.some(x => d.slice(-7) === digits(x).slice(-7))) ? 2 : why.indexOf('address') >= 0 && rel === 1 ? 1 : 0;   // 2 exact, 1 likely
       out.push({ h, i, why, exact, likely: exact === 1, score: why.reduce((a, w) => a + PART_W[w], 0) });
@@ -8860,7 +8865,12 @@ body.light-theme .proof-box{color:#0f172a}
   }
   const choicesOf = F => { const c = commentOf(F), out = []; (c ? c.list : []).concat(c ? (c.people[cmNf(DEVICE)] || c.people['everyone'] || []) : [], myComments(F.id), defaultsFor(F)).forEach(t => { if (t && out.indexOf(t) < 0) out.push(t); }); return out; };
   function commentFields() { const seen = {}, out = []; eachCell(engineState, p => { const F = p.proofField; if (F && !seen[F.id] && commentOf(F)) { seen[F.id] = 1; out.push(F); } }); return out; }
-  const untouchedDefault = k => !okOf(k) && call.__def && call.__def[k] != null && call[k] === call.__def[k];
+  const untouchedDefault = k => (call.__auto && call.__auto[k] != null && call[k] === call.__auto[k]) || (!okOf(k) && call.__def && call.__def[k] != null && call[k] === call.__def[k]);   // 0.26.0 (C1): today's date filled by the page is not 'typed'
+  function stampDate() {   // 0.26.0 (C1): every call starts with today's date in each Fields Kind date box, unless a date is already there
+    const d = new Date(), t = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); let any = false;
+    (FCTL || []).forEach(F => { if (F.kind !== 'date' || String(call[F.id] == null ? '' : call[F.id]).trim()) return; call[F.id] = t; call.__auto = call.__auto || {}; call.__auto[F.id] = t; any = true; });
+    if (any) lsSet(K.call, call); return any;
+  }
   function applyDefaults() {   // pre-fill each comment Field with this template's default (not ticked); a value the tech touched stays
     let any = false;
     commentFields().forEach(F => { const cur = String(call[F.id] || '').trim(); if (cur && !untouchedDefault(F.id)) return;
@@ -8959,9 +8969,9 @@ body.light-theme .proof-box{color:#0f172a}
   function openCap(F) {
     closeCap(); closePick(); closeAsk(); closeFilter();
     const kept = (call.__cap || {})[F.id], d = kept ? JSON.parse(JSON.stringify(kept)) : capBlank();
-    if (!kept) { const sp = specOf(F.id), cs = sp ? sp.cols : {};   // C7a: the rated µF from file are pre-picked (still changeable)
-      if (capPos(cs['Herm cap'])) d.sides.HERM.rating = String(Number(cs['Herm cap'])); if (capPos(cs['ODF cap'])) d.sides.FAN.rating = String(Number(cs['ODF cap']));
-      if (capPos(cs['IDF cap'])) { d.sides.IDF = capNewSide(d.method); d.sides.IDF.rating = String(Number(cs['IDF cap'])); d.list = capSort(d.list.concat(['IDF'])); } }
+    if (!kept) { const sp = specOf(F.id), cs = sp ? sp.cols : {}, sc = ((FCTL.find(x => x.id === F.id) || F).saveCols || []), hc = cs[sc[0]], oc = cs[sc[1]], ic = cs[sc[2]];   // C7a: the rated µF from file are pre-picked; 0.26.0 (R10): which columns = the Field's Save to (herm, outdoor fan, indoor fan)
+      if (capPos(hc)) d.sides.HERM.rating = String(Number(hc)); if (capPos(oc)) d.sides.FAN.rating = String(Number(oc));
+      if (capPos(ic)) { d.sides.IDF = capNewSide(d.method); d.sides.IDF.rating = String(Number(ic)); d.list = capSort(d.list.concat(['IDF'])); } }
     let active = d.list[0], pend = null, setOpen = false;
     const el = document.createElement('div'); el.id = 'proof-cap'; el.setAttribute('role', 'dialog');
     const mark = r => (r.status === 'pass' ? [ICON.check, '#10b981', 'pass'] : r.status === 'fail' ? [ICON.cross, '#ef4444', 'fail'] : [ICON.dot, '#8a97a8', 'pending']);
@@ -9350,6 +9360,7 @@ body.light-theme .proof-box{color:#0f172a}
     // 0.13.1 (R6): every house-Scope Field is cleared first (old tabs: the Find fill Fields), then filled from the site
     const hf = houseFields || Object.keys(FIND_FILL_FALLBACK).map(id => ({ id, find: FIND_FILL_FALLBACK[id] }));
     hf.forEach(f => { delete call[f.id]; }); delete call.__file;
+    FCTL.forEach(F => { if (F.saveTab || (F.prefill && F.prefill !== 'no')) delete call[F.id]; }); delete call.__cap; delete call.__equip;   // 0.26.0 (R2): every pick starts from no file facts
     if (x.place) prefillPlace(x.place); else hf.forEach(f => { if (f.find && x[f.find]) call[f.id] = x[f.find]; });   // C7a: a place = the Fields tab's Pre-fill
     call.__placeId = x.place ? x.place.id : (x.onPhone ? 'PH-' + x.id : (x.id || ''));   // C7b: the Visits row's Place Id (a phone-made customer: PH-<id>, given a Places row in C7c / C7e)
     if (!x.place) eachCell(engineState, p => { if (p.slot !== 'box' || FIND_KEYS[p.proofKey] || isDraft(p.proofKey)) return; const ff = findFillOf(p); if (ff && x[ff] != null) call[p.proofField ? p.proofField.id : p.proofKey] = x[ff]; });
@@ -9543,6 +9554,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (r._labelOf) cell.proofLabelOf = r._labelOf;   // C3a
       if (r._clamp) cell.proofClamp = r._clamp;   // 0.22.2 (F16)
       if (r._ct) cell.proofCt = r._ct;   // 0.23.0 (B)
+      if (r._ph) cell.proofPh = r._ph;   // 0.26.0 (C4): the name box's placeholder
       if (r._lines > 1) cell.proofLines = r._lines;   // C3c: a 2- or 3-row value box
       if (r._lines) cell.proofLinesRaw = r._lines;   // 0.22.4: what the sheet said (the debug line)
       if (fd) { cell.proofField = fd; if (r._join) cell.proofJoin = r._join; if (r._label) cell.proofLabel = r._label; }
@@ -9603,7 +9615,10 @@ body.light-theme .proof-box{color:#0f172a}
   const ITEM_B1_COLS = ['Field', 'Recipe', 'Join with', 'Join sep', 'Label size', 'Box lines'];   // Box lines: C3c   // Blueprint P18 (B1) + BD-6
   const KINDS = { text: 1, number: 1, date: 1, choice: 1, yesno: 1, comment: 1, readonly: 1, calculated: 1 };
   const SCOPES = { visit: 1, system: 1, house: 1 };
-  const PIECES = { label: 1, value: 1, unit: 1, 'sub-unit': 1, spacer: 1, 'report-value': 1, plus: 1, menu: 1, equip: 1 };   // Blueprint P22 pieces built in B1; plus, menu, equip: C4b
+  const PIECES = { label: 1, value: 1, unit: 1, 'sub-unit': 1, spacer: 1, 'report-value': 1, plus: 1, menu: 1, equip: 1, name: 1 };   // name: 0.26.0 (C4, CT-27)
+  // 0.26.0 (C4): the 'name' piece = the contact name box on the number's own line. Which Field holds the name comes from the Fields tab:
+  // the Field whose Save to is the same tab and '<column> name' (Places.Phone 2 -> Places.Phone 2 name). No list in the code.
+  const nameFieldOf = (F, FD) => F && F.saveTab && F.saveCols && F.saveCols.length ? Object.keys(FD.map).map(k => FD.map[k]).find(x => x.saveTab === F.saveTab && x.saveCols && x.saveCols[0] && x.saveCols[0].toLowerCase() === (F.saveCols[0] + ' name').toLowerCase()) || null : null;   // Blueprint P22 pieces built in B1; plus, menu, equip: C4b
   const LATER_PIECES = {};                                                                          // C4b: plus and menu are built
   const MAX_CELLS = 12;
   // ONE plain-text hint for every column Google may turn into a date, time, number or fraction (Blueprint PT1; round A.2 for Cell widths)
@@ -9716,7 +9731,7 @@ body.light-theme .proof-box{color:#0f172a}
     const words = raw.toLowerCase().split(/[\s,]+/).filter(Boolean), why = [];
     const later = words.filter(w => LATER_PIECES[w]), unknown = words.filter(w => !PIECES[w] && !LATER_PIECES[w]);
     if (later.length) why.push('the recipe piece(s) ' + later.join(', ') + ' are built in a later stage');
-    if (unknown.length) why.push('unknown recipe piece(s) ' + unknown.join(', ') + ' (use label, value, unit, sub-unit, spacer, report-value, plus, menu, equip)');
+    if (unknown.length) why.push('unknown recipe piece(s) ' + unknown.join(', ') + ' (use label, value, unit, sub-unit, spacer, report-value, plus, menu, equip, name)');
     const twice = words.filter((w, i) => words.indexOf(w) !== i); if (twice.length) why.push('the piece(s) ' + [...new Set(twice)].join(', ') + ' appear more than once');
     if (words.indexOf('value') >= 0 && words.indexOf('report-value') >= 0) why.push('value and report-value cannot be on one row');
     if (words.indexOf('sub-unit') >= 0 && words.indexOf('value') < 0) why.push('sub-unit needs value in the same Recipe');
@@ -9769,7 +9784,7 @@ body.light-theme .proof-box{color:#0f172a}
     const FD = opt.fields ? readFields(opt.fields) : null;
     if (FD) FD.msgs.forEach(m => out.push(m));
     out._house = FD ? Object.keys(FD.map).map(k => FD.map[k]).filter(f => f.scope === 'house').map(f => ({ id: f.id, find: f.find || '' })) : null;   // 0.13.1 (R6)
-    out._fctl = FD ? Object.keys(FD.map).map(k => FD.map[k]).filter(f => f.saveTab || f.inReport || f.visitsCol).map(f => ({ id: f.id, name: f.name, unit: f.unit, equip: f.equip || '', prefill: f.prefill, saveTab: f.saveTab, saveCols: f.saveCols, inReport: f.inReport, kind: f.kind, visitsCol: f.visitsCol || '' })) : null;   // C7a; C7b: every Field with a Visits column
+    out._fctl = FD ? Object.keys(FD.map).map(k => FD.map[k]).filter(f => f.saveTab || f.inReport || f.visitsCol).map(f => ({ id: f.id, name: f.name, unit: f.unit, equip: f.equip || '', prefill: f.prefill, saveTab: f.saveTab, saveCols: f.saveCols, inReport: f.inReport, kind: f.kind, visitsCol: f.visitsCol || '', fileCheck: f.fileCheck || '' })) : null;   // C7a; C7b: every Field with a Visits column
     const ids = {};
     items.forEach((r, i) => {
       const where = 'Items row ' + (i + 2), why = formulaErrors(r);
@@ -9807,6 +9822,7 @@ body.light-theme .proof-box{color:#0f172a}
             else {
               words = rc.words;
               if (J && words.indexOf('report-value') < 0) why.push('Join with needs report-value in the Recipe');
+              if (words.indexOf('name') >= 0 && !nameFieldOf(F, FD)) why.push('the name piece needs a Field saved to ' + (F.saveTab ? F.saveTab + '.' + (F.saveCols[0] || '?') + ' name' : '"<tab>.<column> name"') + ' on the Fields tab');   // 0.26.0 (C4)
               if ((inp === 'wheel' || inp === 'both') && !whl.wheel && F.find !== 'calltype') why.push('Input style ' + inp + ' needs a Wheel (a range like 20..250 step 1 start 120, or a list like 16x20x1, 16x25x1)');
               const need = words.filter(w => w !== 'sub-unit').length;
               if (/^\d+$/.test(cell) && Number(cell) >= 1 && Number(cell) + need - 1 > L.cells) why.push('the Recipe needs ' + need + ' cell(s) (' + words.filter(w => w !== 'sub-unit').join(', ') + ') from Cell ' + cell + ', but line "' + ln + '" has ' + L.cells + ' cell(s)');
@@ -9835,6 +9851,8 @@ body.light-theme .proof-box{color:#0f172a}
         else if (w === 'spacer') o = Object.assign({}, look, { 'Type': 'text', 'Content': '' });
         else if (w === 'unit') o = Object.assign({}, text, { 'Type': 'text', 'Slot': 'unit', 'Content': F.id, 'Wrap': '', _fieldDef: F });
         else if (w === 'plus' || w === 'menu' || w === 'equip') o = Object.assign({}, text, { 'Type': 'text', 'Slot': 'f-' + w, 'Content': F.id, 'Wrap': '', _fieldDef: F });   // C4b
+        else if (w === 'name') { const NF = nameFieldOf(F, FD);   // 0.26.0 (C4): an ordinary value box of the name Field, small, grey 'name' when empty
+          o = Object.assign({}, look, { 'Type': 'text', 'Slot': 'box', 'Content': NF.id, 'Font size': g(r, 'Label size') || '12', 'Min size': '6', 'Max size': '48', 'Wrap': '', 'Align': 'left', _fieldDef: NF, _label: NF.short || NF.name, _ph: 'name' }); }
         else {   // value or report-value
           o = Object.assign({}, look, { 'Type': 'text', 'Slot': w === 'value' ? 'box' : 'report-value', 'Content': F.id, 'Font size': g(r, 'Font size'), 'Min size': g(r, 'Min size'), 'Max size': g(r, 'Max size'),
             'Sub label': r['Sub label'], 'Sub label size': r['Sub label size'], 'Sub label place': r['Sub label place'], _fieldDef: F, _label: label });
@@ -9919,8 +9937,8 @@ body.light-theme .proof-box{color:#0f172a}
   async function readBundle(notes, profile) {
     let st, it, fl, ps, si = null;
     let ct = null, cm = null, sg = null, pl = null, pr = null, eq = null;
-    try { [pl, pr, eq] = await Promise.all([gviz('Places').catch(() => null), gviz('Place rules').catch(() => null), gviz('Equipment').catch(() => null)]); } catch (e) {}   // C7a (a missing tab = null; Sites stays the fallback)
-    try { [st, it, fl, ps, si, ct, cm, sg] = await Promise.all([gviz('Structure'), gviz('Items'), gviz('Fields'), gviz('Profile sizes'), gviz('Sites').catch(() => null), gviz('Call types').catch(() => null), gviz('Comments', 0, true).catch(() => null), gviz('Settings').catch(() => null)]); }   // Settings: 0.22.3
+    const onFile = Promise.all([gviz('Places').catch(() => null), gviz('Place rules').catch(() => null), gviz('Equipment').catch(() => null)]);   // C7a (a missing tab = null); 0.26.0 (R12): started together with the layout tabs below
+    try { [st, it, fl, ps, si, ct, cm, sg, [pl, pr, eq]] = await Promise.all([gviz('Structure'), gviz('Items'), gviz('Fields'), gviz('Profile sizes'), gviz('Sites').catch(() => null), gviz('Call types').catch(() => null), gviz('Comments', 0, true).catch(() => null), gviz('Settings').catch(() => null), onFile.catch(() => [null, null, null])]); }   // Settings: 0.22.3
     catch (e) { return { failed: true, why: e.message }; }
     const sitesRows = si && hasCols(si, ['Site Id']) ? si.rows : null;   // C1a
     const ctRows = ct && hasCols(ct, ['Call type']) ? ct.rows : null;   // C1b
@@ -9984,7 +10002,10 @@ body.light-theme .proof-box{color:#0f172a}
     'RLA', 'ODF FLA', 'IDF FLA', 'Herm cap', 'ODF cap', 'IDF cap', 'Target SC', 'Metering', 'Filter size', 'Rated static', 'Factory charge', 'MCA', 'Max breaker', 'Voltage', 'Phase', 'Notes', 'Created at', 'Last changed at'];
   const LEVELS = { house: 1, site: 1, building: 1, unit: 1, special: 1 }, STATUSES = { active: 1, replaced: 1, removed: 1 };
   const CTL_PREFILL = { yes: 1, spec: 1, no: 1 }, CTL_CHECK = { alert: 1, add: 1, none: 1 }, CTL_REPORT = { yes: 1, no: 1, ask: 1 }, SAVE_TO_RE = /^(Places|Equipment)\.(.+)$/;
-  const INHERIT = ['Address', 'Access codes', 'Site notes', 'Lat', 'Lng'];   // a unit / building takes these from above when its own cell is blank
+  const INHERIT = ['Address', 'Access codes', 'Site notes', 'Lat', 'Lng'];   // a unit / building takes these from above when its own cell is blank (KEPT, 0.26.0 R10: Places columns are not Fields; the C7 data model fixes this list)
+  const COMBINE = { 'Access codes': 1, 'Site notes': 1 };   // 0.26.0 (R7): these add up along site > building > unit instead of stopping at the first one
+  const TEXT_WARN = { places: ['Address', 'Address key', 'Floor', 'Access codes'], equip: ['Filter size', 'Voltage', 'Since', 'Until'] };   // 0.26.0 (R8): text a number column would change
+  const RULE_KINDS = ['floors', 'special'];   // 0.26.0 (R8): the Place rules Kinds the C7 data model defines
   let ONFILE = null, FCTL = [];
   function parsePlaces(rows, rules, equip, notes) {
     const byId = {}, list = [], ids = {};
@@ -9998,7 +10019,8 @@ body.light-theme .proof-box{color:#0f172a}
       if (act && act !== 'yes' && act !== 'no') why.push('Active "' + g('Active') + '" must be yes or no (or blank)');
       ['Place Id', 'Unit label', 'Phone 1', 'Phone 2', 'Phone 3', 'Phone 4'].forEach(c => { if (r._t && /^(date|time|number)$/.test(r._t[c] || '')) why.push(c + ' "' + g(c) + '" looks like a date, time or number. ' + PT_HINT(c)); });
       if (why.length) { notes.push('Places row ' + n + ' refused: ' + why.join('; ') + '.'); return; }
-      ids[id] = n; const o = { id, level: lv, parent: g('Parent Id'), active: act !== 'no', row: n, cols: {} }; PLACES_COLS.forEach(c => { o.cols[c] = g(c); });
+      TEXT_WARN.places.forEach(c => { if (r._t && /^(date|time|number)$/.test(r._t[c] || '')) notes.push('Places row ' + n + ': ' + c + ' "' + g(c) + '" looks like a date, time or number (a leading 0 may be lost). ' + PT_HINT(c)); });   // 0.26.0 (R8): kept, but said
+      ids[id] = n; const o = { id, level: lv, parent: g('Parent Id'), active: act !== 'no', row: n, cols: {} }; PLACES_COLS.forEach(c => { o.cols[c] = g(c); }); Object.keys(r).forEach(c => { if (c.charAt(0) !== '_' && !(c in o.cols)) o.cols[c] = g(c); });   // 0.26.0 (R10): every column (a 'Phone 5' added on the sheet travels)
       byId[id] = o; list.push(o); });
     list.forEach(o => { if (o.parent && !byId[o.parent]) { notes.push('Places row ' + o.row + ': Parent Id "' + o.parent + '" is not a Place Id; this place is used without its parent.'); o.parent = ''; } });
     const pieces = [], pids = {};
@@ -10012,21 +10034,38 @@ body.light-theme .proof-box{color:#0f172a}
       if (g('Slot') && !EQUIP_OF[g('Slot').toLowerCase()]) why.push('Slot "' + g('Slot') + '" must be Outdoor, Indoor 1 or Indoor 2');
       ['Serial', 'Mfg date', 'Model'].forEach(c => { if (r._t && /^(date|time|number)$/.test(r._t[c] || '')) why.push(c + ' "' + g(c) + '" looks like a date, time or number. ' + PT_HINT(c)); });
       if (why.length) { notes.push('Equipment row ' + n + ' refused: ' + why.join('; ') + '.'); return; }
+      TEXT_WARN.equip.forEach(c => { if (r._t && /^(date|time|number)$/.test(r._t[c] || '')) notes.push('Equipment row ' + n + ': ' + c + ' "' + g(c) + '" looks like a date, time or number (a leading 0 may be lost). ' + PT_HINT(c)); });   // 0.26.0 (R8)
       pids[id] = n; const o = { id, place: g('Place Id'), system: g('System Id') || 'A', label: g('System label'), slot: EQUIP_OF[g('Slot').toLowerCase()] || '', status: st, cols: {} }; EQUIP_COLS.forEach(c => { o.cols[c] = g(c); });
       pieces.push(o); });
-    const rl = []; (rules || []).forEach(r => { if (g2(r, 'Rule Id')) { const o = {}; RULES_COLS.forEach(c => { o[c] = g2(r, c); }); rl.push(o); } });   // read only in C7a (the floor grid is C7e)
+    const rl = []; (rules || []).forEach((r, i) => { const n = i + 2, g = c => g2(r, c); if (!Object.keys(r).some(c => c.charAt(0) !== '_' && g(c))) return;   // read only (the floor grid is C7e)
+      const fe = formulaErrors(r); if (fe.length) { notes.push('Place rules row ' + n + ' refused: ' + fe.join(', ') + '.'); return; }   // 0.26.0 (R8): checked like the other tabs
+      const why = [], kd = g('Kind').toLowerCase(), site = byId[g('Site Id')], bld = g('Building Id') && byId[g('Building Id')], act = g('Active').toLowerCase();
+      if (!g('Rule Id')) why.push('no Rule Id');
+      if (RULE_KINDS.indexOf(kd) < 0) why.push('Kind "' + g('Kind') + '" must be ' + RULE_KINDS.join(' or '));
+      if (!site || site.level !== 'site') why.push('Site Id "' + g('Site Id') + '" is not a site on the Places tab');
+      if (g('Building Id') && (!bld || bld.level !== 'building')) why.push('Building Id "' + g('Building Id') + '" is not a building on the Places tab');
+      if (act && act !== 'yes' && act !== 'no') why.push('Active "' + g('Active') + '" must be yes or no (or blank)');
+      if (why.length) { notes.push('Place rules row ' + n + ' refused: ' + why.join('; ') + '.'); return; }
+      const o = {}; RULES_COLS.forEach(c => { o[c] = g(c); }); rl.push(o); });
     return { list, pieces, rules: rl };
   }
   const placeById = id => ONFILE && ONFILE.list.find(o => o.id === id);
-  function placeCols(P) {   // the row's own cells; Address / Access codes / Site notes / Lat / Lng from above when blank; a unit's address = its building's + ' #unit'
-    const c = Object.assign({}, P.cols); let up = P.parent && placeById(P.parent), guard = 0;
-    while (up && guard++ < 5) { INHERIT.forEach(k => { if (!c[k] && up.cols[k]) c[k] = (k === 'Address' && (P.level === 'unit' || P.level === 'special') && c['Unit label'] && up === placeById(P.parent)) ? up.cols[k] + ' #' + c['Unit label'] : up.cols[k]; }); up = up.parent && placeById(up.parent); }
-    return c; }
-  const PHONE_COLS = ['Phone 1', 'Phone 2', 'Phone 3', 'Phone 4'];
+  function placeCols(P) {   // the row's own cells; Address / Lat / Lng from the nearest place above when blank (a unit's address = its building's + ' #unit');
+    // Access codes / Site notes: site + building + unit together (0.26.0, R7). c.__from = which Place Id(s) each value came from (R5, for C7c)
+    const c = Object.assign({}, P.cols), from = {}, chain = []; let up = P.parent && placeById(P.parent), guard = 0;
+    Object.keys(P.cols).forEach(k => { if (P.cols[k]) from[k] = P.id; });
+    while (up && guard++ < 5) { chain.push(up); INHERIT.forEach(k => { if (COMBINE[k] || c[k] || !up.cols[k]) return; c[k] = (k === 'Address' && (P.level === 'unit' || P.level === 'special') && c['Unit label'] && up === placeById(P.parent)) ? up.cols[k] + ' #' + c['Unit label'] : up.cols[k]; from[k] = up.id; }); up = up.parent && placeById(up.parent); }
+    Object.keys(COMBINE).forEach(k => { const all = chain.slice().reverse().concat([P]).filter(x => x.cols[k]), seen = {}; const parts = all.filter(x => { const t = x.cols[k].trim(); if (seen[t]) return false; seen[t] = 1; return true; });
+      if (parts.length) { c[k] = parts.map(x => x.cols[k].trim()).join(' \u00b7 '); from[k] = parts.map(x => x.id).join(', '); } });
+    c.__from = from; return c; }
+  const phoneCols = c => Object.keys(c).filter(k => /^Phone \d+$/.test(k)).sort((a, b) => Number(a.slice(6)) - Number(b.slice(6)));   // 0.26.0 (R10): every 'Phone N' column on Places
   function placesForFind() {   // what Find lists: houses, buildings, units and specials (a site leads to its buildings, which carry its name)
     return ONFILE.list.filter(P => P.active && P.level !== 'site').map(P => { const c = placeCols(P), site = P.level === 'building' && P.parent && placeById(P.parent);
-      const name = c['Customer'] || c['Name'] || (P.level === 'unit' || P.level === 'special' ? 'Unit ' + c['Unit label'] : '') || (site ? site.cols['Name'] : '');
-      return { id: P.id, place: P, name: name + (site && site.cols['Name'] && name.indexOf(site.cols['Name']) < 0 ? ' (' + site.cols['Name'] + ')' : ''), address: c['Address'], phone: c['Phone 1'], phonesAll: PHONE_COLS.map(k => c[k]).filter(Boolean), email: c['Email 1'], notes: c['Site notes'] }; });
+      const isUnit = P.level === 'unit' || P.level === 'special', bld = isUnit && P.parent && placeById(P.parent), usite = bld && bld.parent && placeById(bld.parent);   // 0.26.0 (R11)
+      const ctx = isUnit ? ((bld && bld.cols['Name']) || (usite && usite.cols['Name']) || '') : '';
+      const own = c['Customer'] || c['Name'], name = own || (isUnit ? 'Unit ' + c['Unit label'] + (ctx ? ', ' + ctx : '') : '') || (site ? site.cols['Name'] : '');
+      const shown = name + (site && site.cols['Name'] && name.indexOf(site.cols['Name']) < 0 ? ' (' + site.cols['Name'] + ')' : '') + (isUnit && own && ctx ? ' (' + ctx + ')' : '');
+      return { id: P.id, place: P, name: shown, alsoNames: [bld && bld.cols['Name'], usite && usite.cols['Name'], site && site.cols['Name']].filter(Boolean).join(' '), address: c['Address'], phone: c['Phone 1'], phonesAll: phoneCols(c).map(k => c[k]).filter(Boolean), email: c['Email 1'], notes: c['Site notes'] }; });
   }
   // pre-fill on pick (C7a): every Field whose Pre-fill is yes / spec gets its value from its Save to; snapshot kept as call.__file
   function prefillPlace(P) {
@@ -10036,12 +10075,15 @@ body.light-theme .proof-box{color:#0f172a}
     const s1 = sys[0] || '', mine = act.filter(x => x.system === s1);
     const pieceFor = (F, col) => (F.equip ? mine.find(x => x.slot === F.equip) : null) || (F.equip ? null : mine.find(x => x.cols[col]));
     FCTL.forEach(F => { if (F.saveTab) delete call[F.id]; });
+    const inherited = {}, from = c.__from || {};
+    call.__equip = {}; mine.forEach(pc => { const t = String(pc.cols['Type'] || '').trim().toLowerCase(), l = EQUIP_TYPES[pc.slot] || [], hit = l.find(x => x.toLowerCase() === t); if (hit) call.__equip[pc.slot] = hit; });   // 0.26.0 (R4): the piece's Type
     FCTL.forEach(F => { if (!F.prefill || F.prefill === 'no' || !F.saveTab) return;
-      if (F.saveTab === 'Places') { const v = c[F.saveCols[0]]; if (v && F.prefill === 'yes') { call[F.id] = v; vals[F.id] = v; } return; }
+      if (F.saveTab === 'Places') { const v = c[F.saveCols[0]]; if (v && F.prefill === 'yes') { call[F.id] = v; vals[F.id] = v; if (from[F.saveCols[0]] && from[F.saveCols[0]] !== P.id) inherited[F.id] = from[F.saveCols[0]]; } return; }
       if (F.prefill === 'yes') { const pc = pieceFor(F, F.saveCols[0]), v = pc ? pc.cols[F.saveCols[0]] : ''; if (v) { call[F.id] = v; vals[F.id] = v; } return; }
       const got = {}; F.saveCols.forEach(col => { const pc = pieceFor(F, col), v = pc ? pc.cols[col] : ''; if (v) got[col] = v; });   // spec: kept beside, never in the box
-      if (Object.keys(got).length) { const col = F.saveCols.find(k => got[k]); spec[F.id] = { cols: got, v: got[col], word: /^target/i.test(col) ? 'target' : 'rated', unit: F.unit || (/FLA|RLA/.test(col) ? 'A' : /Target SC/.test(col) ? '°F' : /cap/i.test(col) ? 'µF' : '') }; } });
-    call.__file = { place: P.id, system: s1, systems: sys.length, values: vals, spec, at: Date.now() };
+      if (Object.keys(got).length) { const col = F.saveCols.find(k => got[k]); spec[F.id] = { cols: got, v: got[col], word: /^target/i.test(col) ? 'target' : 'rated', unit: unitText(F.unit).trim() }; } });   // 0.26.0 (R10): the unit from the Fields Unit column only
+    const pieces = {}; mine.forEach(pc => { if (pc.slot) pieces[pc.slot] = pc.id; });
+    call.__file = { place: P.id, placeLevel: P.level, system: s1, systems: sys.length, pieces, inherited, values: vals, spec, at: Date.now() };   // 0.26.0 (R5): Piece Ids per slot, the place level, where inherited values came from
     if (sys.length > 1) setTimeout(() => say(sys.length + ' systems on file; System 1 loaded.', 'info', 4000), 50);
   }
   const specOf = id => ((call.__file || {}).spec || {})[id] || null;
@@ -10053,6 +10095,7 @@ body.light-theme .proof-box{color:#0f172a}
   }
   function specLine(x) {   // the report line from rating + measured (the main app's styled(): Rated first / Within range / Measured first / Slash)
     const sp = specOf(x.id); if (!sp || !x.v) return null;
+    if (Object.keys(sp.cols || {}).length > 1 || numOf(String(sp.v)) === null) return null;   // 0.26.0 (R1): an editor's ratings (caps, filter size) are not one plain number: its own line
     const u = sp.unit ? ' ' + sp.unit : '', sty = SETTINGS['report format'] || 'rated first', nv = numOf(String(x.v).replace(/[^\d.\-]/g, '')), nr = numOf(sp.v), mv = x.v + unitText(x.F.unit);
     const body = sty === 'measured first' ? mv + ' (' + sp.word + ' ' + sp.v + u + ')' : sty === 'slash' ? mv + ' / ' + sp.v + u
       : sty === 'within range' && nv !== null && nr !== null ? mv + (sp.word === 'target' ? ' (target ' + sp.v + u + ')' : nv <= nr ? ' within range' + ' (' + sp.v + u + ')' : ' above rating (' + sp.v + u + ')') : sp.word + ' ' + sp.v + u + ', measured ' + mv;
@@ -10323,6 +10366,7 @@ body.light-theme .proof-box{color:#0f172a}
     COMMENTS = L.rows._comments || null; try { applyDefaults(); } catch (e) {}   // C3b
     SETTINGS = L.rows._settings || {};   // 0.22.3
     ONFILE = L.rows._places || null; FCTL = Array.isArray(L.rows._fctl) ? L.rows._fctl : [];   // C7a
+    try { stampDate(); } catch (e) {}   // 0.26.0 (C1)
     SITES = Array.isArray(L.rows._sites) ? L.rows._sites : null; houseFields = Array.isArray(L.rows._house) ? L.rows._house : null;   // 0.13.1 (R10, R6): from the copy that won
     try { undoStack.length = 0; redoStack.length = 0; recordHistorySnapshot(); } catch (e) {}
     try { updateHistoryButtons(); } catch (e) {}
@@ -10430,7 +10474,7 @@ body.light-theme .proof-box{color:#0f172a}
     try { saveCall('new call'); } catch (e) {}   // C7b: the old call is saved (queued) before it is cleared (already on the first tap)
     if (typedSomething && Date.now() - newArmed > 5000) { newArmed = Date.now(); say('Tap New again to clear this call', 'warn', 5000); return; }
     newArmed = 0; prevCall = custMode() === 'yes' ? { call: JSON.parse(JSON.stringify(call)), view: JSON.parse(JSON.stringify(callView)) } : null;   /* 0.22.3: yes = Cancel on Find puts this call back */
-    call = {}; callView = Object.assign(VIEW_DEFAULT(), { view: 'all', needCust: custMode() !== 'no' });   /* 0.22.2 (F12): a new call starts in All */ try { applyDefaults(); } catch (e) {} lsSet(K.call, call); try { applyFolds(engineState); } catch (e) {}; saveView(); clearFind(); goView('find'); paintNotes();   // round B2: reveals and template belong to the call
+    call = {}; callView = Object.assign(VIEW_DEFAULT(), { view: 'all', needCust: custMode() !== 'no' });   /* 0.22.2 (F12): a new call starts in All */ try { applyDefaults(); stampDate(); } catch (e) {} lsSet(K.call, call); try { applyFolds(engineState); } catch (e) {}; saveView(); clearFind(); goView('find'); paintNotes();   // round B2: reveals and template belong to the call
   };
   // round 7 (3): Refresh page = reload the whole page past the browser's copy (new ?v=, other switches dropped). With unsaved
   // tweaks the first tap only warns; a second tap within 5 s reloads anyway.
@@ -10907,7 +10951,7 @@ body.light-theme .proof-box{color:#0f172a}
   window.addEventListener('online', () => flushOutbox());
   document.addEventListener('visibilitychange', () => { try { if (document.hidden) saveCall('hidden'); else flushOutbox(); } catch (e) {} });
   window.addEventListener('pagehide', () => { try { saveCall('hidden'); } catch (e) {} });
-  window.__proofSave = { now: why => saveCall(why || 'test'), flush: () => flushOutbox(), outbox, state: () => saveSt };   // for the tests only
+  window.__proofSave = { now: why => saveCall(why || 'test'), flush: () => flushOutbox(), outbox, state: () => saveSt, fctl: () => FCTL };   // for the tests only
 
   function reloadTo(v) { say('Reloading the newer version (' + v + ')...', 'warn'); location.replace(location.pathname + '?v=' + encodeURIComponent(v) + '&t=' + Date.now()); }
   function pendingOnPhone() { const t = lsGet(K.tweaks, {}) || {}; return Object.keys(t).some(k => t[k] && t[k].state === 'pending'); }
