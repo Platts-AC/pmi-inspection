@@ -738,6 +738,29 @@
 .proof-ct .proof-ct-item.ct-on{border-color:#f59e0b;background:#2a1a05}
 .proof-ct .proof-ct-item i{font-size:11px;color:#fbbf24;font-style:normal;margin-left:6px}
 .proof-ct .proof-empty{color:#fbbf24;font-size:13px;padding:6px 0}
+#proof-cap,#proof-filter{position:fixed;left:6px;right:6px;bottom:8px;z-index:86;max-height:86vh;overflow-y:auto;overscroll-behavior:contain;background:#0b1626;border:1px solid #38bdf8;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.6);padding:10px;font:15px system-ui,sans-serif;color:#e2e8f0}
+#proof-cap button,#proof-filter button{min-height:38px;border-radius:8px;border:1px solid #2b4f7e;background:#0f213a;color:#e2e8f0;font:600 14px system-ui,sans-serif;padding:0 10px}
+#proof-cap select{min-height:38px;border-radius:8px;background:#0f213a;color:#e2e8f0;border:1px solid #2b4f7e;font:14px system-ui,sans-serif}
+#proof-cap .pc-top{position:sticky;top:-10px;background:#0b1626;padding-top:2px;z-index:2}
+#proof-cap .pc-tabs{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+#proof-cap .pc-tab.on{border-color:#22d3ee;color:#22d3ee}
+#proof-cap .pc-add{min-height:30px;font-size:12px;padding:0 6px;color:#94a3b8}
+#proof-cap .pc-bar{margin:6px 0;padding:6px 8px;border:1px solid #1e3a5f;border-radius:8px}
+#proof-cap .pc-sum{font-weight:700}#proof-cap .pc-sum.pc-pass{color:#10b981}#proof-cap .pc-sum.pc-fail{color:#ef4444}
+#proof-cap .pc-info{font-size:12px;color:#94a3b8}
+#proof-cap .pc-settings{margin:4px 0;font-size:13px;color:#94a3b8}#proof-cap .pc-settings label{display:block;margin:4px 0}
+#proof-cap .pc-row{display:flex;gap:6px;align-items:center;margin:6px 0;flex-wrap:wrap}#proof-cap .pc-lbl{min-width:70px;color:#94a3b8}
+#proof-cap .pc-rt{margin-top:8px;color:#94a3b8;font-size:12px}#proof-cap .pc-report{font-size:13px;margin-bottom:6px}
+.pc-btns{display:flex;gap:6px;justify-content:flex-end;margin-top:6px;flex-wrap:wrap}.pc-primary{border-color:#22d3ee!important;color:#22d3ee!important}
+.pc-wheels{display:flex;align-items:center;gap:4px;justify-content:center}
+.pc-wheel{position:relative;flex:0 0 auto}
+.pc-list{height:132px;width:84px;overflow-y:auto;scroll-snap-type:y mandatory;overscroll-behavior:contain;padding:44px 0;box-sizing:border-box;scrollbar-width:none}
+.pc-list::-webkit-scrollbar{display:none}
+.pc-item{display:block;width:100%;height:44px;min-height:44px!important;scroll-snap-align:center;border:0!important;background:transparent!important;color:#e2e8f0;font:16px system-ui,sans-serif;padding:0!important}
+.pc-mark{position:absolute;left:2px;right:2px;top:44px;height:44px;border-top:1px solid #22d3ee;border-bottom:1px solid #22d3ee;pointer-events:none}
+#proof-filter .pf-read{font-weight:700;font-size:18px;margin:4px 0}#proof-filter .pf-col{display:flex;flex-direction:column;align-items:center;font-size:12px;color:#94a3b8}
+#proof-filter .pf-pair{display:flex}#proof-filter .pc-list{width:56px}#proof-filter .pf-type{width:100%;min-height:40px;font-size:16px;border-radius:8px;border:1px solid #2b4f7e;background:#0f213a;color:#e2e8f0;padding:0 8px;box-sizing:border-box}
+#proof-filter .pf-row{font-size:13px;margin:2px 0}.pc-chk{display:block;margin:6px 0;font-size:14px}
 #proof-pick{position:fixed;left:8px;right:8px;bottom:12px;z-index:86;max-height:70vh;display:flex;flex-direction:column;background:#0b1626;border:1px solid #38bdf8;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.6);padding:12px;font:15px system-ui,sans-serif;color:#e2e8f0}
 #proof-pick .pp-title{font-weight:700;margin-bottom:8px}
 #proof-pick .pp-list{overflow-y:auto;min-height:0;flex:1 1 auto}
@@ -3633,7 +3656,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.20.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.21.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3643,7 +3666,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.20.0', stamp: '2026-11-22 20:38:28', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.21.0', stamp: '2026-11-22 21:21:26', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8320,14 +8343,14 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.20.0';
+  const PROOF_VERSION = '0.21.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
   const TAB_OF = p => 'Layout ' + p, TWEAKS_TAB = 'Tweaks';
   const K = { call: 'proof-containers.call.v1', profile: 'proof-containers.profile.v1', device: 'proof-containers.device.v1',
     tweaks: 'proof-containers.tweaks.v1', endpoint: 'proof-containers.endpoint.v1', layout: p => 'proof-containers.layout.v2.' + p,
-    bundle: 'proof-containers.bundle.v1', sites: 'proof-containers.sites.v1', pins: 'proof-containers.pins.v1', defs: 'proof-containers.defaults.v1', mycm: 'proof-containers.mycomments.v1' };   // C3c: this phone's defaults per template, my comments   // pins: C3a (this phone)   // sites: round C1a, the new customers kept on this phone   // round A: the last good Structure + Items, stored together
+    bundle: 'proof-containers.bundle.v1', sites: 'proof-containers.sites.v1', pins: 'proof-containers.pins.v1', defs: 'proof-containers.defaults.v1', mycm: 'proof-containers.mycomments.v1', filterLast: 'proof-containers.filterLast.v1', filterFr: 'proof-containers.filterFractions.v1' };   // C4a: the last filter size and the Fractions switch on this phone   // C3c: this phone's defaults per template, my comments   // pins: C3a (this phone)   // sites: round C1a, the new customers kept on this phone   // round A: the last good Structure + Items, stored together
   // Round B1: field meanings come from the Fields tab. This built-in list is used ONLY when the layout comes from an old Layout tab
   // or Round A's tabs (no Fields tab): the one allowed second home (Q-016), so the old tabs keep drawing as 0.10.2 did.
   const FIELD_FALLBACK = { 'f:date': 'Date', 'f:customer': 'Customer', 'f:address': 'Address', 'f:phone': 'Phone', 'f:outdoorModel': 'Condenser model', 'f:suctionPressure': 'Suction pressure' };
@@ -8542,7 +8565,7 @@ body.light-theme .proof-box{color:#0f172a}
     // round 7 (1): autofill fix C (Danny's Android test, 0.6.0): each value box sits in its own form with autocomplete off and has
     // autocomplete one-time-code; the form takes no space (display:contents) and never submits (Enter is stopped, see below).
     return '<div class="proof-cell"><div class="proof-face" style="align-items:' + va + '"><form class="proof-form" autocomplete="off" onsubmit="return false">' + (nl > 1 ? '<textarea rows="' + nl + '" class="proof-box proof-ta"' : '<input class="proof-box"') + ' data-key="' + esc(k) + '"' + (nl > 1 ? '' : ' value="' + esc(valOf(k)) + '"') +
-      (wm || (F && (F.kind === 'readonly' || commentOf(F))) ? ' inputmode="none" readonly' : tel ? ' inputmode="tel"' : num ? ' inputmode="decimal"' : '') + ' placeholder="' + esc(F ? (commentOf(F) ? 'Choose comments…' : F.name) : (FIELD_FALLBACK[k] || 'Search')) + '"' +   /* C3b: a comment Field opens its pick list */ boxAttrs(p) + ' style="font-size:' + (nl > 1 ? Math.round(boxSize(p) * (nl === 2 ? 0.86 : 0.76)) : boxSize(p)) + 'px;text-align:' + (p.align || 'left') + '">' + (nl > 1 ? esc(valOf(k)) + '</textarea>' : '') + '</form>' + sw + '</div></div>';   // C3c: Box lines (the main app's two-line box: smaller font)
+      (wm || edOf(p) || (F && (F.kind === 'readonly' || commentOf(F))) ? ' inputmode="none" readonly' : tel ? ' inputmode="tel"' : num ? ' inputmode="decimal"' : '') + ' placeholder="' + esc(F ? (commentOf(F) ? 'Choose comments…' : edOf(p) === 'capacitor' ? 'Tap to test capacitors' : edOf(p) === 'filter' ? 'Choose filter size' : F.name) : (FIELD_FALLBACK[k] || 'Search')) + '"' +   /* C3b: a comment Field opens its pick list */ boxAttrs(p) + ' style="font-size:' + (nl > 1 ? Math.round(boxSize(p) * (nl === 2 ? 0.86 : 0.76)) : boxSize(p)) + 'px;text-align:' + (p.align || 'left') + '">' + (nl > 1 ? esc(valOf(k)) + '</textarea>' : '') + '</form>' + sw + '</div></div>';   // C3c: Box lines (the main app's two-line box: smaller font)
   } };
   // Enter in a value box: never submit or reload (the form also says onsubmit return false); focus and caret stay
   document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target && e.target.classList && e.target.classList.contains('proof-box')) e.preventDefault(); }, true);
@@ -8759,6 +8782,188 @@ body.light-theme .proof-box{color:#0f172a}
     if (ed || !String(call[id] || '').trim()) { openPick(p.proofField); return; }
     call.__ok = call.__ok || {}; if (call.__ok[id]) delete call.__ok[id]; else call.__ok[id] = true; lsSet(K.call, call); paintCm(); try { paintReport(); } catch (x) {} }, true);
   document.addEventListener('pointerdown', e => { const o = document.getElementById('proof-pick'); if (o && !o.contains(e.target)) { e.preventDefault(); e.stopPropagation(); closePick(); } }, true);
+  // ---------- Round C4a: cap-editor and filter-picker (the main app 01.12.00 tools/capacitor.js and tools/filter-size.js) ----------
+  // Chosen ONLY by the Items 'Input style' of the value box (capacitor, filter): the box is read-only and a tap opens the editor.
+  // Wheels: one scroll list of 44 px rows, 3 rows shown (the main app's default, I-176), the middle row is the value; highest on top.
+  const ED_STYLES = { capacitor: 1, filter: 1 };
+  const edOf = p => (p && ED_STYLES[p.proofInput] ? p.proofInput : '');
+  const WH = 44;
+  function wheelHtml(part, values, shown) { return '<div class="pc-wheel"><div class="pc-list" data-part="' + part + '">' + values.map(v => '<button type="button" class="pc-item" data-v="' + esc(v) + '">' + esc(shown ? shown(v) : v) + '</button>').join('') + '</div><div class="pc-mark"></div></div>'; }
+  const wheelAt = l => { const it = l.querySelectorAll('[data-v]'); const x = it[Math.max(0, Math.min(it.length - 1, Math.round(l.scrollTop / WH)))]; return x ? x.dataset.v : ''; };
+  function wheelGo(l, v) { const it = Array.from(l.querySelectorAll('[data-v]')), i = it.findIndex(x => x.dataset.v === String(v)); if (i >= 0) l.scrollTop = i * WH; }
+  function wheelWire(l, onTurn) { let t = 0; l.addEventListener('scroll', () => { onTurn(wheelAt(l)); clearTimeout(t); t = setTimeout(() => onTurn(wheelAt(l)), 120); });
+    l.addEventListener('click', e => { const b = e.target.closest('.pc-item'); if (!b) return; e.stopPropagation(); wheelGo(l, b.dataset.v); onTurn(b.dataset.v); }); }
+  const range = (hi, lo) => { const o = []; for (let i = hi; i >= lo; i--) o.push(String(i)); return o; };
+  const fracs = n => range(n === 2 ? 99 : 9, 0).map(x => x.padStart(n, '0'));
+  // ---- capacitor: the main app's numbers and words ----
+  const capPos = x => String(x == null ? '' : x).trim() !== '' && isFinite(Number(x)) && Number(x) > 0, capNon = x => String(x == null ? '' : x).trim() !== '' && isFinite(Number(x)) && Number(x) >= 0;
+  const capKind = s => { s = String(s).replace(/\s*\d+$/, ''); return s === 'ODF' ? 'FAN' : s; }, KORDER = ['HERM', 'FAN', 'IDF'];
+  const capNum = id => Number((String(id).match(/(\d+)$/) || [0, 1])[1]);
+  const capId = (k, n) => (n > 1 ? k + n : k);
+  const capSort = l => l.slice().sort((a, b) => KORDER.indexOf(capKind(a)) - KORDER.indexOf(capKind(b)) || capNum(a) - capNum(b));
+  const capBlank = () => ({ method: 'live', tolerance: '10', reportDetails: false, list: ['HERM', 'FAN'], sides: { HERM: capNewSide('live'), FAN: capNewSide('live') } });
+  function capNewSide(method) { return { rating: '', volts: '', amps: '', uf: '', mode: method === 'bench' ? 'direct' : 'live' }; }
+  const capCount = (d, id) => d.list.filter(x => capKind(x) === capKind(id)).length;
+  const capLabel = (d, id) => { const k = capKind(id), base = k === 'FAN' ? 'ODF' : k; return capCount(d, id) > 1 ? base + ' ' + capNum(id) : base; };
+  const capName = (d, id) => { const k = capKind(id), base = k === 'HERM' ? 'Herm' : k === 'FAN' ? 'Fan' : 'Indoor fan'; return capCount(d, id) > 1 ? base + ' ' + capNum(id) : base; };
+  function capResult(c, t) {   // the main app's capResult; µF from volts + amps = the calc-engine rule capacitorUf
+    const rating = Number(c.rating), tol = Number(t), okTol = capPos(t) && tol < 100;
+    const uf = c.mode === 'live' ? (capPos(c.volts) && capNon(c.amps) ? Number(CALC_RULES.capacitoruf.fn(Number(c.volts), Number(c.amps))) : null) : (capNon(c.uf) ? Number(c.uf) : null);
+    const lo = okTol && capPos(c.rating) ? rating * (1 - tol / 100) : null, hi = lo !== null ? rating * (1 + tol / 100) : null;
+    return { measured: uf, lo, hi, percent: uf !== null && capPos(c.rating) ? 100 * (uf - rating) / rating : null,
+      status: uf === null || lo === null ? 'pending' : uf >= lo - 1e-9 && uf <= hi + 1e-9 ? 'pass' : 'fail',
+      amps: lo !== null && capPos(c.volts) ? [lo * Number(c.volts) / 2652, hi * Number(c.volts) / 2652] : null, volts: lo !== null && capPos(c.amps) ? [2652 * Number(c.amps) / hi, 2652 * Number(c.amps) / lo] : null };
+  }
+  const capBull = (c, key) => (capPos(c.rating) && (key === 'amps' ? capPos(c.volts) : capPos(c.amps)) ? (key === 'amps' ? Number(c.rating) * Number(c.volts) / 2652 : 2652 * Number(c.amps) / Number(c.rating)) : null);
+  const pcOf = r => (r.percent === null ? '' : (r.percent < 0 ? '-' : '') + Math.abs(r.percent).toFixed(1) + '%');
+  function capReport(d) {   // the main app's capReport, report style 'Rated first'
+    const all = d.list.filter(s => d.sides[s]).map(s => ({ s, c: d.sides[s], r: capResult(d.sides[s], d.tolerance) })).filter(x => x.r.measured !== null);
+    if (!all.length) return '';
+    return all.map(({ s, c, r }) => { const pr = r.percent !== null ? ' (' + pcOf(r) + ')' : '', st = r.status === 'pass' ? 'within range' : r.status === 'fail' ? 'outside tolerance' : '';
+      let t = capName(d, s) + ' ' + (capPos(c.rating) ? c.rating + ' µF rated, ' : '') + r.measured.toFixed(2) + ' µF measured' + pr + (st ? ', ' + st : '');
+      if (d.reportDetails) { const bits = []; if (c.mode === 'live') bits.push(c.volts + ' V / ' + c.amps + ' A'); if (capPos(d.tolerance)) bits.push('tolerance ±' + d.tolerance + '%'); if (bits.length) t += ' [' + bits.join('; ') + ']'; }
+      return t; }).join('; ') + '.';
+  }
+  const capRatings = s => (capKind(s) === 'FAN' ? [3, 4, 5, 6, 7.5, 10, 12.5, 15, 16, 17.5, 20] : [3, 4, 5, 6, 7.5, 10, 12.5, 15, 16, 17.5, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80]).slice().reverse().map(String);
+  const CAP_NUM = { volts: { unit: 'V', max: 1000, min: 1, prec: 1, word: 'voltage' }, amps: { unit: 'A', max: 100, min: 0, prec: 2, word: 'amps' }, uf: { unit: 'µF', max: 200, min: 0, prec: 2, word: 'measured µF' } };
+  const capStart = (c, side, key) => { const b = capBull(c, key); if (b !== null && b >= CAP_NUM[key].min && b <= CAP_NUM[key].max) return b;
+    return key === 'volts' ? 340 : key === 'amps' ? (capKind(side) === 'HERM' ? 8 : 0.5) : (capPos(c.rating) ? Math.min(200, Number(c.rating)) : 5); };   // volts 340 (I-176, the main app's Fields capVolts)
+  function closeCap() { const o = document.getElementById('proof-cap'); if (o) o.remove(); }
+  function openCap(F) {
+    closeCap(); closePick(); closeAsk(); closeFilter();
+    const kept = (call.__cap || {})[F.id], d = kept ? JSON.parse(JSON.stringify(kept)) : capBlank();
+    let active = d.list[0], pend = null, setOpen = false;
+    const el = document.createElement('div'); el.id = 'proof-cap'; el.setAttribute('role', 'dialog');
+    const mark = r => (r.status === 'pass' ? ['✓', '#10b981'] : r.status === 'fail' ? ['✕', '#ef4444'] : ['•', '#8a97a8']);
+    function settle() { if (pend) { pend.c[pend.key] = pend.before; pend = null; } }
+    function paint() {
+      const c = d.sides[active], r = capResult(c, d.tolerance);
+      el.querySelectorAll('.pc-tab').forEach(t => { const s = t.dataset.side, m = mark(capResult(d.sides[s], d.tolerance)); t.querySelector('.pc-m').textContent = ' ' + m[0]; t.querySelector('.pc-m').style.color = m[1]; });
+      const sum = el.querySelector('.pc-sum'); sum.className = 'pc-sum ' + (r.status === 'pass' ? 'pc-pass' : r.status === 'fail' ? 'pc-fail' : '');
+      sum.textContent = (r.measured === null ? 'Awaiting readings' : r.measured.toFixed(2) + ' µF') + (r.percent !== null ? ' · ' + (r.percent >= 0 ? '+' : '') + r.percent.toFixed(2) + '%' : '') + ' · ' + (r.status === 'pass' ? '✓ PASS' : r.status === 'fail' ? '✕ FAIL' : 'PENDING');
+      const bv = capBull(c, 'volts'), ba = capBull(c, 'amps');
+      el.querySelector('.pc-info').textContent = [r.lo !== null ? 'OK ' + r.lo.toFixed(2) + '–' + r.hi.toFixed(2) + ' µF' : 'choose rating and tolerance', r.volts ? 'V ' + r.volts.map(v => v.toFixed(0)).join('–') + (bv !== null ? ' (' + bv.toFixed(1) + ')' : '') : '', r.amps ? 'A ' + r.amps.map(v => v.toFixed(2)).join('–') + (ba !== null ? ' (' + ba.toFixed(2) + ')' : '') : ''].filter(Boolean).join(' · ');
+      el.querySelector('.pc-report').textContent = capReport(d) || '—';
+      const st = el.querySelector('.pc-settings summary'); if (st) st.textContent = (d.method === 'live' ? 'Under load' : 'Bench test') + ' · ' + (capPos(d.tolerance) ? '±' + d.tolerance + '%' : 'no tolerance') + (d.reportDetails ? ' · details in report' : '') + ' ▾';
+    }
+    function render() {
+      settle(); if (!d.sides[active]) active = d.list.filter(s => d.sides[s])[0];
+      const c = d.sides[active], lab = capLabel(d, active);
+      const adds = KORDER.filter(k => d.list.filter(x => capKind(x) === k).length < 4).map(k => '<button type="button" class="pc-add" data-kind="' + k + '">+ ' + (k === 'FAN' ? 'ODF' : k) + '</button>').join('');
+      const tabs = d.list.filter(s => d.sides[s]).map(s => '<button type="button" class="pc-tab' + (s === active ? ' on' : '') + '" data-side="' + s + '">' + esc(capLabel(d, s)) + '<span class="pc-m"></span></button>').join('');
+      const opt = (v, t, cur) => '<option value="' + v + '"' + (String(cur) === v ? ' selected' : '') + '>' + t + '</option>';
+      const valRow = key => '<div class="pc-row"><span class="pc-lbl">' + (key === 'volts' ? 'Volts' : key === 'amps' ? 'Amps' : 'Measured') + '</span><button type="button" class="pc-choose" data-key="' + key + '">' + (String(c[key] || '').trim() ? esc(c[key]) + ' ' + CAP_NUM[key].unit + ' ▾' : 'Choose ' + CAP_NUM[key].word + ' ▾') + '</button></div><div class="pc-pick" data-for="' + key + '"></div>';
+      el.innerHTML = '<div class="pc-top"><div class="pc-tabs">' + tabs + adds + '</div><div class="pc-bar"><div class="pc-sum"></div><div class="pc-info"></div></div></div>' +
+        '<details class="pc-settings"' + (setOpen ? ' open' : '') + '><summary></summary><label>Test method <select class="pc-method">' + opt('live', 'Under load', d.method) + opt('bench', 'Bench test', d.method) + '</select></label>' +
+        '<label>Tolerance <select class="pc-tol">' + opt('', 'Select tolerance', d.tolerance) + opt('5', '±5%', d.tolerance) + opt('6', '±6%', d.tolerance) + opt('10', '±10%', d.tolerance) + '</select></label>' +
+        '<label class="pc-chk"><input type="checkbox" class="pc-det"' + (d.reportDetails ? ' checked' : '') + '> Include volts, amps and tolerance in report</label></details>' +
+        '<div class="pc-side"><div class="pc-row"><button type="button" class="pc-rated">' + (capPos(c.rating) ? 'Rated: ' + esc(c.rating) + ' µF ▾' : 'Choose rated µF ▾') + '</button>' +
+        '<select class="pc-mode" aria-label="' + esc(lab) + ' measurement">' + opt('live', 'From volts + amps', c.mode) + opt('direct', 'Enter measured µF', c.mode) + '</select><button type="button" class="pc-remove">Remove</button></div>' +
+        '<div class="pc-pick" data-for="rating"></div>' + (c.mode === 'live' ? valRow('volts') + valRow('amps') : valRow('uf')) + '</div>' +
+        '<div class="pc-rt">Report</div><div class="pc-report"></div><div class="pc-btns"><button type="button" data-a="cancel">Cancel</button><button type="button" data-a="clear">Clear test</button><button type="button" data-a="use" class="pc-primary">Use results</button></div>';
+      const det = el.querySelector('.pc-settings'); det.addEventListener('toggle', () => { setOpen = det.open; });
+      el.querySelector('.pc-method').onchange = e => { d.method = e.target.value; d.tolerance = d.method === 'live' ? '10' : ''; Object.keys(d.sides).forEach(s => { d.sides[s].mode = d.method === 'live' ? 'live' : 'direct'; }); render(); };
+      el.querySelector('.pc-tol').onchange = e => { d.tolerance = e.target.value; paint(); };
+      el.querySelector('.pc-det').onchange = e => { d.reportDetails = e.target.checked; paint(); };
+      el.querySelector('.pc-mode').onchange = e => { c.mode = e.target.value; render(); };
+      paint();
+    }
+    function openNum(key) {   // the main app's number picker: whole + decimal wheels, live result while turning, kept only on Use
+      const c = d.sides[active], N = CAP_NUM[key], host = el.querySelector('.pc-pick[data-for="' + key + '"]'); closePicks(); settle();
+      const start = String(c[key] || '').trim() !== '' ? Number(c[key]) : capStart(c, active, key), sc = Math.pow(10, N.prec), v0 = Math.round(start * sc) / sc;
+      pend = { c, key, before: c[key] };
+      host.innerHTML = '<div class="pc-wheels">' + wheelHtml('whole', range(N.max, N.min)) + '<span class="pc-dot">.</span>' + wheelHtml('frac', fracs(N.prec)) + '<span class="pc-unit">' + N.unit + '</span></div><div class="pc-btns"><button type="button" data-w="cancel">Cancel</button><button type="button" data-w="use" class="pc-primary">Use</button></div>';
+      const W = host.querySelector('.pc-list[data-part="whole"]'), Fr = host.querySelector('.pc-list[data-part="frac"]');
+      wheelGo(W, String(Math.trunc(v0))); wheelGo(Fr, String(Math.round((v0 - Math.trunc(v0)) * sc)).padStart(N.prec, '0'));
+      const now = () => String(Number(wheelAt(W) + '.' + wheelAt(Fr)));
+      const turnNow = () => { c[key] = now(); paint(); }; wheelWire(W, turnNow); wheelWire(Fr, turnNow);
+      host.addEventListener('click', e => { const b = e.target.closest('[data-w]'); if (!b) return; e.stopPropagation(); if (b.dataset.w === 'use') { c[key] = now(); pend = null; render(); } else { settle(); render(); } });
+      host.scrollIntoView({ block: 'nearest' });
+    }
+    function openRating() {
+      const c = d.sides[active], host = el.querySelector('.pc-pick[data-for="rating"]'); closePicks(); settle();
+      const list = capRatings(active); if (capPos(c.rating) && list.indexOf(String(c.rating)) < 0) list.push(String(c.rating));
+      host.innerHTML = '<div class="pc-wheels">' + wheelHtml('rating', list, v => v + ' µF') + '</div><div class="pc-btns"><button type="button" data-w="cancel">Cancel</button><button type="button" data-w="use" class="pc-primary">Use</button></div>';
+      const W = host.querySelector('.pc-list'); wheelGo(W, capPos(c.rating) ? String(c.rating) : capKind(active) === 'HERM' ? '45' : '5'); wheelWire(W, () => {});
+      host.addEventListener('click', e => { const b = e.target.closest('[data-w]'); if (!b) return; e.stopPropagation(); if (b.dataset.w === 'use') c.rating = wheelAt(W); render(); });
+      host.scrollIntoView({ block: 'nearest' });
+    }
+    function closePicks() { el.querySelectorAll('.pc-pick').forEach(x => { x.innerHTML = ''; }); }
+    el.addEventListener('click', e => {
+      const b = e.target.closest('button'); if (!b || b.closest('.pc-pick')) return; e.stopPropagation();
+      if (b.classList.contains('pc-tab')) { active = b.dataset.side; render(); return; }
+      if (b.classList.contains('pc-add')) { const k = b.dataset.kind; let n = 1; while (d.list.indexOf(capId(k, n)) >= 0) n++; const id = capId(k, n); d.sides[id] = capNewSide(d.method); d.list = capSort(d.list.concat([id])); active = id; render(); return; }
+      if (b.classList.contains('pc-remove')) { if (d.list.length < 2) { say('Keep at least one capacitor (or Clear test).', 'warn'); return; } d.list = d.list.filter(x => x !== active); delete d.sides[active]; active = d.list[0]; render(); return; }
+      if (b.classList.contains('pc-rated')) { openRating(); return; }
+      if (b.classList.contains('pc-choose')) { openNum(b.dataset.key); return; }
+      const a = b.dataset.a; if (!a) return;
+      if (a === 'cancel') { settle(); closeCap(); return; }
+      if (a === 'clear') { if (call.__cap) delete call.__cap[F.id]; delete call[F.id]; lsSet(K.call, call); closeCap(); refreshEd(); return; }
+      if (a === 'use') { settle(); const txt = capReport(d); if (!txt) { say('Enter at least one valid measurement.', 'warn'); return; }
+        call.__cap = call.__cap || {}; call.__cap[F.id] = JSON.parse(JSON.stringify(d)); call[F.id] = txt; includeOnUse(F.id); lsSet(K.call, call); closeCap(); refreshEd(); }
+    });
+    document.body.appendChild(el); render();
+  }
+  // Use results / Done: the line goes in the report (the main app's tool sets the value approved and in the report)
+  function includeOnUse(id) { callView.included = callView.included || {}; callView.included[id] = true; saveView(); }
+  function refreshEd() { try { document.querySelectorAll('#viewport-canvas-frame .proof-box').forEach(bx => { const k = bx.dataset.key; if (k && k in call || k) bx.value = valOf(k); }); applyVis(); paintInc(); paintReport(); paintNotes(); } catch (e) {} }
+  // ---- filter size: the main app's three wheels ----
+  const F_WHOLE = range(40, 6), F_THICK = ['5', '4', '3', '2', '1'], F_FR = ['7/8', '3/4', '5/8', '1/2', '3/8', '1/4', '1/8', '0'];
+  const fNorm = f => ({ '0/8': '0', '2/8': '1/4', '4/8': '1/2', '6/8': '3/4' }[f] || f);
+  const fDim = t => { t = String(t).trim(); let m = /^(\d{1,2})(?:\s+([1-7])\/([248]))?$/.exec(t); if (m) { if (!m[2]) return { w: m[1], f: '0' }; const x = Number(m[2]) * 8 / Number(m[3]); return x === Math.round(x) ? { w: m[1], f: fNorm(x + '/8') } : null; }
+    m = /^(\d{1,2})\.(\d+)$/.exec(t); if (m) { const x = Number('0.' + m[2]) * 8; return Math.abs(x - Math.round(x)) < 1e-9 ? { w: m[1], f: fNorm(Math.round(x) + '/8') } : null; } return null; };
+  function fParse(text) { const m = /^\s*(.+?)\s*[x×*]\s*(.+?)\s*[x×*]\s*(\d(?:\.5)?)\s*(?:"|in|inch)?\s*$/i.exec(String(text || '').replace(/["”]/g, '')); if (!m) return null;
+    const a = fDim(m[1]), b = fDim(m[2]); if (!a || !b || F_THICK.indexOf(m[3]) < 0 || F_WHOLE.indexOf(a.w) < 0 || F_WHOLE.indexOf(b.w) < 0) return null; return { w: a.w, wf: a.f, l: b.w, lf: b.f, t: m[3] }; }
+  const fFormat = (z, fr) => { const dd = (w, f) => w + (fr && f && f !== '0' ? ' ' + f : ''); return dd(z.w, z.wf) + 'x' + dd(z.l, z.lf) + 'x' + z.t; };
+  const fSplit = t => String(t || '').split(/\s*(?:,|;|\band\b|&|\+)\s*/i).map(x => x.trim()).filter(Boolean);
+  function closeFilter() { const o = document.getElementById('proof-filter'); if (o) o.remove(); }
+  function openFilter(F) {
+    closeFilter(); closePick(); closeAsk(); closeCap();
+    const have = fSplit(call[F.id]), parsed = have.map(fParse); let done = [], cur = null, startTyped = false;
+    if (have.length && parsed.every(Boolean)) { done = have.slice(0, -1); cur = parsed[parsed.length - 1]; } else if (have.length) startTyped = true;
+    const base = cur || fParse(lsGet(K.filterLast, '')) || { w: '20', wf: '0', l: '20', lf: '0', t: '1' };
+    let fr = !!lsGet(K.filterFr, false) || [base].concat(parsed).some(z => z && (z.wf !== '0' || z.lf !== '0'));
+    const el = document.createElement('div'); el.id = 'proof-filter'; el.setAttribute('role', 'dialog');
+    el.innerHTML = '<div class="pp-title">' + esc(F.name) + '</div><div class="pf-read"></div><div class="pf-done"></div>' +
+      '<div class="pc-wheels pf-wheels"><div class="pf-col"><span>Width</span><div class="pf-pair">' + wheelHtml('w', F_WHOLE) + wheelHtml('wf', F_FR, v => (v === '0' ? '—' : v)) + '</div></div>' +
+      '<div class="pf-col"><span>Length</span><div class="pf-pair">' + wheelHtml('l', F_WHOLE) + wheelHtml('lf', F_FR, v => (v === '0' ? '—' : v)) + '</div></div><div class="pf-col"><span>Thick</span>' + wheelHtml('t', F_THICK) + '</div></div>' +
+      '<label class="pc-chk"><input type="checkbox" class="pf-frac"> Fractions</label><div class="pf-typing"><input class="pf-type" placeholder="e.g. 20x25x1" autocomplete="off"></div>' +
+      '<div class="pc-btns"><button type="button" data-f="add">Add another</button><button type="button" data-f="type">Type instead</button></div>' +
+      '<div class="pc-btns"><button type="button" data-f="cancel">Cancel</button><button type="button" data-f="clear">Clear</button><button type="button" data-f="done" class="pc-primary">Done</button></div>';
+    document.body.appendChild(el);
+    const Ls = {}; ['w', 'wf', 'l', 'lf', 't'].forEach(k => { Ls[k] = el.querySelector('.pc-list[data-part="' + k + '"]'); });
+    const typing = el.querySelector('.pf-typing'), inp = el.querySelector('.pf-type'); let typed = startTyped;
+    const sizeNow = () => ({ w: wheelAt(Ls.w), wf: fr ? wheelAt(Ls.wf) : '0', l: wheelAt(Ls.l), lf: fr ? wheelAt(Ls.lf) : '0', t: wheelAt(Ls.t) });
+    const text = () => (typed ? inp.value.trim() : done.concat(fFormat(sizeNow(), fr)).join(', '));
+    function paintF() {
+      el.querySelector('.pf-read').textContent = text() || '—'; el.querySelector('.pf-frac').checked = fr;
+      el.querySelectorAll('.pc-list[data-part="wf"], .pc-list[data-part="lf"]').forEach(x => { x.parentElement.style.display = fr ? '' : 'none'; });
+      el.querySelector('.pf-wheels').style.display = typed ? 'none' : ''; typing.style.display = typed ? '' : 'none';
+      el.querySelector('.pf-done').innerHTML = typed ? '' : done.map((s, i) => '<div class="pf-row">Size ' + (i + 1) + ': ' + esc(s) + ' <button type="button" data-rm="' + i + '">Remove</button></div>').join('');
+    }
+    wheelGo(Ls.w, base.w); wheelGo(Ls.wf, base.wf); wheelGo(Ls.l, base.l); wheelGo(Ls.lf, base.lf); wheelGo(Ls.t, base.t);
+    Object.keys(Ls).forEach(k => wheelWire(Ls[k], paintF));
+    el.querySelector('.pf-frac').onchange = e => { fr = e.target.checked; lsSet(K.filterFr, fr); paintF(); };
+    inp.addEventListener('input', paintF);
+    if (startTyped) inp.value = call[F.id] || '';
+    el.addEventListener('click', e => {
+      const b = e.target.closest('button'); if (!b || b.closest('.pc-list')) return; e.stopPropagation();
+      if (b.dataset.rm != null) { done.splice(Number(b.dataset.rm), 1); paintF(); return; }
+      const a = b.dataset.f; if (!a) return;
+      if (a === 'add') { if (typed) return; done.push(fFormat(sizeNow(), fr)); paintF(); return; }
+      if (a === 'type') { typed = !typed; if (typed) { inp.value = ''; inp.focus(); } paintF(); b.textContent = typed ? 'Use wheels' : 'Type instead'; return; }
+      if (a === 'cancel') { closeFilter(); return; }
+      if (a === 'clear') { delete call[F.id]; lsSet(K.call, call); closeFilter(); refreshEd(); return; }
+      if (a === 'done') { const t = text(); if (!typed) lsSet(K.filterLast, fFormat(sizeNow(), fr)); if (t) { call[F.id] = t; includeOnUse(F.id); } else delete call[F.id]; lsSet(K.call, call); closeFilter(); refreshEd(); }
+    });
+    paintF(); requestAnimationFrame(() => { Object.keys(Ls).forEach(k => { const v = wheelAt(Ls[k]); wheelGo(Ls[k], v); }); });
+  }
+  // a tap on an editor's box opens its editor (capture, before the wheel / keyboard)
+  document.addEventListener('click', e => { if (!isLiveInteraction) return;
+    const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b) return;
+    const p = cellOfPart(b.closest('.grid-split-partition')), st = edOf(p); if (!st || !p.proofField || isDraft(p.proofKey)) return;
+    e.preventDefault(); e.stopPropagation(); b.blur(); if (st === 'capacitor') openCap(p.proofField); else openFilter(p.proofField); }, true);
+  document.addEventListener('pointerdown', e => { ['proof-cap', 'proof-filter'].forEach(id => { const o = document.getElementById(id); if (o && !o.contains(e.target) && !(e.target.closest && e.target.closest('.proof-box'))) { e.preventDefault(); e.stopPropagation(); if (id === 'proof-cap') closeCap(); else closeFilter(); } }); }, true);
   // Pending (the main app 37h / report.js): an included Field that is empty, or a comment not ticked yet, is 'Pending' on the Report page
   // and is left out of the copied text. The Report page order is Entry order unless arrows changed it (callView.order, per call).
   function reportItems() {
@@ -9222,7 +9427,7 @@ body.light-theme .proof-box{color:#0f172a}
     const bad = names.filter(n => !TPL_NAME.test(n)); if (bad.length) return { err: col + ' "' + raw + '": a template name may hold letters, digits, space . _ - (30 at most), not "' + bad[0] + '"' };
     return { tpl: minus.length ? { except: names } : { only: names } };
   }
-  const INPUT_STYLES = { type: 1, wheel: 1, both: 1 };
+  const INPUT_STYLES = { type: 1, wheel: 1, both: 1, capacitor: 1, filter: 1 };   // capacitor, filter: C4a (the editors)
   const WHEEL_MAX = 2000;
   // Wheel: a range '20..250 step 1 start 120' (numbers) or a list '16x20x1, 16x25x1, 20x20x1' (plain text items)
   function parseWheel(r) {
@@ -9373,7 +9578,7 @@ body.light-theme .proof-box{color:#0f172a}
         if (converted(r, 'Join sep')) why.push('Join sep "' + g(r, 'Join sep') + '" looks like a date, time or number. ' + PT_HINT('Join sep'));
         var itp = parseTpl(r, 'Templates'); if (itp.err) why.push(itp.err);   // round B2
         var inp = (g(r, 'Input style') || '').toLowerCase(), whl = parseWheel(r);
-        if (inp && !INPUT_STYLES[inp]) why.push('Input style "' + g(r, 'Input style') + '" must be type, wheel or both');
+        if (inp && !INPUT_STYLES[inp]) why.push('Input style "' + g(r, 'Input style') + '" must be type, wheel, both, capacitor or filter');
         if (whl.err) why.push(whl.err);
         if (fid && !FD) why.push('it has a Field (' + fid + ') but there is no Fields tab, so it cannot be drawn');
         else if (fid) {
@@ -9420,6 +9625,7 @@ body.light-theme .proof-box{color:#0f172a}
           if (w === 'value' && words.indexOf('sub-unit') >= 0 && F.unit && !g(r, 'Sub label')) { o['Sub label'] = F.unit; if (!g(r, 'Sub label size')) o['Sub label size'] = '10'; if (!g(r, 'Sub label place')) o['Sub label place'] = 'middle-right'; }   // BD-4: the unit in the corner of the box
           if (J) o._join = J;
           if (w === 'value' && (inp === 'wheel' || inp === 'both')) { o._input = inp; o._wheel = whl.wheel; }   // round B2
+          if (w === 'value' && ED_STYLES[inp]) o._input = inp;   // C4a: capacitor / filter editor
           if (w === 'value' && g(r, 'Box lines') !== '') o._lines = Number(g(r, 'Box lines'));   // C3c
         }
         o._item = id; o._tpl = itp.tpl || null;
@@ -10360,7 +10566,7 @@ body.light-theme .proof-box{color:#0f172a}
 
   // ---------- the wheel (Input style wheel / both; BD-5: one simple scroll list) ----------
   const inputModes = () => lsGet(K_INPUT, {}) || {};
-  const modeOf = p => { if (!p.proofInput || p.proofInput === 'type') return 'type'; if (p.proofInput === 'wheel') return 'wheel'; const m = inputModes()[p.proofField ? p.proofField.id : p.proofKey]; return m === 'type' || m === 'wheel' ? m : 'wheel'; };
+  const modeOf = p => { if (!p.proofInput || p.proofInput === 'type' || ED_STYLES[p.proofInput]) return 'type'; if (p.proofInput === 'wheel') return 'wheel'; const m = inputModes()[p.proofField ? p.proofField.id : p.proofKey]; return m === 'type' || m === 'wheel' ? m : 'wheel'; };
   function boxCell(box) { const part = box.closest('.grid-split-partition'), ix = part && partIdx(part); if (!ix) return null; const r = engineState.rows[ix[0]]; return r && r.containers[ix[1]] && r.containers[ix[1]].stacks[ix[2]] && r.containers[ix[1]].stacks[ix[2]].splits[ix[3]]; }
   // Hard min / Hard max (Fields, P21): an amber note in the value box; it never blocks and never changes the value
   function limitNote(F, v) {
@@ -10425,8 +10631,8 @@ body.light-theme .proof-box{color:#0f172a}
   }, true);
   document.addEventListener('focusin', e => { const box = e.target; if (!isBox(box) || !isLiveInteraction) return; const p = boxCell(box); if (p && p.proofInput && modeOf(p) === 'wheel') { box.blur(); } }, true);
   function setBoxMode(box, p) {
-    const m = modeOf(p); box.readOnly = m === 'wheel'; const km = keypadOf(p);   // 0.12.2 (R10): the same keypad rule as the first draw
-    if (m === 'wheel') box.setAttribute('inputmode', 'none'); else if (km) box.setAttribute('inputmode', km); else box.removeAttribute('inputmode');
+    const m = modeOf(p); box.readOnly = m === 'wheel' || !!edOf(p); const km = keypadOf(p);   /* C4a: an editor's box stays read-only */   // 0.12.2 (R10): the same keypad rule as the first draw
+    if (m === 'wheel' || edOf(p)) box.setAttribute('inputmode', 'none'); else if (km) box.setAttribute('inputmode', km); else box.removeAttribute('inputmode');
     const sw = box.parentElement && box.parentElement.parentElement && box.parentElement.parentElement.querySelector('.proof-mode');
     if (sw) { sw.textContent = m === 'wheel' ? '⌨' : '◎'; sw.title = m === 'wheel' ? 'Type instead' : 'Use the wheel'; }
   }
