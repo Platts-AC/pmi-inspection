@@ -750,6 +750,7 @@ body:not(.proof-ready) #reopen-inspector-fab{display:none!important}
 #viewport-canvas-frame .proof-face:has(.proof-ro-text){position:relative}
 #viewport-canvas-frame .proof-ro-text{position:absolute;box-sizing:border-box;overflow-y:auto;overflow-x:hidden;white-space:normal;overflow-wrap:break-word;word-break:normal;pointer-events:none;color:#e2e8f0;margin:0}
 #viewport-canvas-frame .proof-cell:has(.proof-dbg){position:relative}
+#viewport-canvas-frame textarea.proof-ta[data-ph]:placeholder-shown:not(:focus){font-size:var(--ph-fs)!important;line-height:1.2!important;padding-top:var(--ph-pad)!important;padding-bottom:0!important}
 #viewport-canvas-frame .proof-dbg{position:absolute;left:2px;right:2px;bottom:0;font:9px/1.2 system-ui,sans-serif;color:#9ca3af;background:rgba(15,23,42,.88);padding:0 3px;pointer-events:none;z-index:4;white-space:normal;overflow-wrap:break-word}
 #viewport-canvas-frame .proof-viewcell{display:flex;align-items:center;justify-content:center;text-align:center;height:100%;line-height:1.15;color:#7dd3fc;font-weight:600;overflow-wrap:anywhere;padding:0 2px}
 #proof-nocust{position:sticky;z-index:30;display:block;width:100%;box-sizing:border-box;text-align:left;padding:6px 12px;margin:0;border:0;border-bottom:1px solid #f59e0b;border-radius:6px;background:#1f1406;color:#fbbf24;font:600 13px system-ui,sans-serif}
@@ -760,8 +761,8 @@ body:not(.proof-ready) #reopen-inspector-fab{display:none!important}
 #proof-fmenu{position:fixed;left:8px;right:8px;bottom:12px;z-index:86;display:flex;flex-direction:column;gap:8px;background:#0b1626;border:1px solid #38bdf8;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.6);padding:12px;font:15px system-ui,sans-serif;color:#e2e8f0}
 #proof-fmenu button{min-height:44px;border-radius:8px;border:1px solid #2b4f7e;background:#0f213a;color:#e2e8f0;font:600 15px system-ui,sans-serif;text-align:left;padding:6px 12px}#proof-fmenu small{display:block;font-weight:400;font-size:12px;color:#94a3b8}
 .proof-fbtn{min-width:34px;min-height:34px;border-radius:8px;border:1px solid #2b4f7e;background:#0f213a;color:#e2e8f0;font:700 17px system-ui,sans-serif;padding:0 6px}
-#proof-cap,#proof-filter{position:fixed;left:6px;right:6px;bottom:8px;z-index:86;max-height:86vh;overflow-y:auto;overscroll-behavior:contain;background:#0b1626;border:1px solid #38bdf8;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.6);padding:10px;font:15px system-ui,sans-serif;color:#e2e8f0}
-#proof-cap button,#proof-filter button{min-height:38px;border-radius:8px;border:1px solid #2b4f7e;background:#0f213a;color:#e2e8f0;font:600 14px system-ui,sans-serif;padding:0 10px}
+#proof-cap,#proof-filter,#proof-ctwheel{position:fixed;left:6px;right:6px;bottom:8px;z-index:86;max-height:86vh;overflow-y:auto;overscroll-behavior:contain;background:#0b1626;border:1px solid #38bdf8;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.6);padding:10px;font:15px system-ui,sans-serif;color:#e2e8f0}
+#proof-cap button,#proof-filter button,#proof-ctwheel button{min-height:38px;border-radius:8px;border:1px solid #2b4f7e;background:#0f213a;color:#e2e8f0;font:600 14px system-ui,sans-serif;padding:0 10px}
 #proof-cap select{min-height:38px;border-radius:8px;background:#0f213a;color:#e2e8f0;border:1px solid #2b4f7e;font:14px system-ui,sans-serif}
 #proof-cap .pc-top{position:sticky;top:-10px;background:#0b1626;padding-top:2px;z-index:2}
 #proof-cap .pc-tabs{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
@@ -782,6 +783,7 @@ body:not(.proof-ready) #reopen-inspector-fab{display:none!important}
 .pc-mark{position:absolute;left:2px;right:2px;top:44px;height:44px;border-top:1px solid #22d3ee;border-bottom:1px solid #22d3ee;pointer-events:none}
 #proof-filter .pf-read{font-weight:700;font-size:18px;margin:4px 0}#proof-filter .pf-col{display:flex;flex-direction:column;align-items:center;font-size:12px;color:#94a3b8}
 #proof-filter .pf-pair{display:flex}#proof-filter .pc-list{width:56px}#proof-filter .pf-type{width:100%;min-height:40px;font-size:16px;border-radius:8px;border:1px solid #2b4f7e;background:#0f213a;color:#e2e8f0;padding:0 8px;box-sizing:border-box}
+#proof-ctwheel .pc-wheel{display:block;width:100%}#proof-ctwheel .pc-list{width:100%}#proof-ctwheel .pc-item{width:100%}
 #proof-filter .pf-row{font-size:13px;margin:2px 0}.pc-chk{display:block;margin:6px 0;font-size:14px}
 #proof-pick{position:fixed;left:8px;right:8px;bottom:12px;z-index:86;max-height:70vh;display:flex;flex-direction:column;background:#0b1626;border:1px solid #38bdf8;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.6);padding:12px;font:15px system-ui,sans-serif;color:#e2e8f0}
 #proof-pick .pp-title{font-weight:700;margin-bottom:8px}
@@ -3678,7 +3680,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.22.4", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.23.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3688,7 +3690,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.22.4', stamp: '2026-11-23 05:08:28', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.23.0', stamp: '2026-11-23 07:53:59', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8365,7 +8367,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.22.4';
+  const PROOF_VERSION = '0.23.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8495,7 +8497,10 @@ body.light-theme .proof-box{color:#0f172a}
     if (after && el.previousElementSibling !== after) after.insertAdjacentElement('afterend', el); else if (!after && el.parentElement !== frame) frame.prepend(el);
     el.style.top = top + 'px'; el.style.display = '';
   }
-  document.addEventListener('input', () => { try { paintNoCust(); } catch (e) {} });
+  // 0.23.0 (no. 153, C1): run AFTER the page has stored the keystroke (this listener ran first, so the last Backspace still saw the old
+  // text and the line stayed hidden); also when a box is left (the keyboard closed)
+  document.addEventListener('input', () => { setTimeout(() => { try { paintNoCust(); } catch (e) {} }, 0); });
+  document.addEventListener('focusout', () => { setTimeout(() => { try { paintNoCust(); } catch (e) {} }, 0); }, true);
   // 0.22.2 (no. 150, F13): every symbol is a small inline SVG drawing (any phone draws it; text symbols and CSS codes were not safe)
   const svgI = (d, extra) => '<svg class="pi" viewBox="0 0 24 24" width="1em" height="1em" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"' + (extra || '') + '>' + d + '</svg>';
   const ICON = {
@@ -9089,6 +9094,7 @@ body.light-theme .proof-box{color:#0f172a}
   window.EngineSlots['f-plus'] = { render(p) { const F = p.proofField; if (!F || !commentOf(F)) return '<div class="proof-cell proof-piece"></div>';   // the main app: + only on a comment Field
     return '<div class="proof-cell proof-piece" style="' + btnStyle(p) + '"><button type="button" class="proof-fbtn" data-fact="plus" data-fid="' + esc(F.id) + '" aria-label="Edit ' + esc(F.name) + ' comments">+</button></div>'; } };
   window.EngineSlots['f-menu'] = { render(p) { const F = p.proofField; if (!F) return '';
+    if (F.find === 'calltype') return '<div class="proof-cell proof-piece" style="' + btnStyle(p) + '"><button type="button" class="proof-fbtn" data-fact="ct" data-fid="' + esc(F.id) + '" aria-label="Choose the call type">' + ICON.caret + '</button></div>';   // 0.23.0 (B)
     return '<div class="proof-cell proof-piece" style="' + btnStyle(p) + '"><button type="button" class="proof-fbtn" data-fact="menu" data-fid="' + esc(F.id) + '" aria-label="Options for ' + esc(F.name) + '">' + ICON.more + '</button></div>'; } };
   window.EngineSlots['f-equip'] = { render(p) { const F = p.proofField; if (!F || !F.equip) return '<div class="proof-cell proof-piece"></div>'; const cur = equipNow(F.equip);
     return '<div class="proof-cell proof-piece" style="' + btnStyle(p) + '"><button type="button" class="proof-fbtn" data-fact="equip" data-fid="' + esc(F.id) + '" data-slot2="' + F.equip + '" aria-label="Equipment type: ' + esc(cur) + '. Tap to change" title="' + esc(cur) + ': tap to change">' + ICON.cycle + '</button></div>'; } };
@@ -9104,6 +9110,7 @@ body.light-theme .proof-box{color:#0f172a}
     e.preventDefault(); e.stopPropagation(); const F = fieldById(b.dataset.fid); if (!F) return;
     if (b.dataset.fact === 'plus') openPick(F);
     else if (b.dataset.fact === 'menu') openFMenu(F);
+    else if (b.dataset.fact === 'ct') { let st = 'list'; eachCell(engineState, q => { if (q.slot === 'box' && q.proofField && q.proofField.id === F.id && q.proofCt) st = q.proofCt; }); openCallType(st); }
     else if (b.dataset.fact === 'equip') { const sl = F.equip, l = EQUIP_TYPES[sl], i = l.indexOf(equipNow(sl)); call.__equip = call.__equip || {}; call.__equip[sl] = l[(i + 1) % l.length]; lsSet(K.call, call); renderCanvas(); } }, true);
   document.addEventListener('pointerdown', e => { const o = document.getElementById('proof-fmenu'); if (o && !o.contains(e.target)) { e.preventDefault(); e.stopPropagation(); closeFMenu(); } }, true);
   // 0.22.1 (no. 149, fix 7 + Danny b): every editable box is 16 px while it is being typed in (iPhone zooms in on a box under 16 px),
@@ -9117,7 +9124,9 @@ body.light-theme .proof-box{color:#0f172a}
   // a tap on an editor's box opens its editor (capture, before the wheel / keyboard)
   document.addEventListener('click', e => { if (!isLiveInteraction) return;
     const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b) return;
-    const p = cellOfPart(b.closest('.grid-split-partition')), st = edOf(p); if (!st || !p.proofField || isDraft(p.proofKey)) return;
+    const p = cellOfPart(b.closest('.grid-split-partition'));
+    if (p && p.proofField && p.proofField.find === 'calltype' && !isDraft(p.proofKey)) { e.preventDefault(); e.stopPropagation(); b.blur(); openCallType(p.proofCt); return; }   // 0.23.0 (B)
+    const st = edOf(p); if (!st || !p.proofField || isDraft(p.proofKey)) return;
     e.preventDefault(); e.stopPropagation(); b.blur(); if (st === 'capacitor') openCap(p.proofField); else openFilter(p.proofField); }, true);
   document.addEventListener('pointerdown', e => { ['proof-cap', 'proof-filter'].forEach(id => { const o = document.getElementById(id); if (o && !o.contains(e.target) && !(e.target.closest && e.target.closest('.proof-box'))) { e.preventDefault(); e.stopPropagation(); if (id === 'proof-cap') closeCap(); else closeFilter(); } }); }, true);
   // Pending (the main app 37h / report.js): an included Field that is empty, or a comment not ticked yet, is 'Pending' on the Report page
@@ -9269,6 +9278,20 @@ body.light-theme .proof-box{color:#0f172a}
     lsSet(K.call, call); ctFilter = '';
     goView('entry'); try { applyVis(); markActive(); } catch (e) {} paintNotes(); say('Call type: ' + t.type + ' (template ' + t.template + ')', 'done');
   }
+  // 0.23.0 (no. 153, B): the call type line works like the other lines: a tap on its value or its small caret opens the call types as the
+  // Items row's Input style says: blank / list = the call-type list (the screen with the call-types Slot); wheel = a wheel with Use / Cancel
+  function closeCtWheel() { const o = document.getElementById('proof-ctwheel'); if (o) o.remove(); }
+  function openCallType(style) {
+    if (style !== 'wheel') { window.EngineActions['open-call-type'](); return; }
+    const list = activeTypes(); if (!list.length) { say('No call types on the sheet (a Call types tab).', 'warn'); return; }
+    closeCtWheel(); try { closePick(); closeAsk(); closeCap(); closeFilter(); closeFMenu(); } catch (e) {}
+    const el = document.createElement('div'); el.id = 'proof-ctwheel'; el.setAttribute('role', 'dialog');
+    el.innerHTML = '<div class="pp-title">Call type</div>' + wheelHtml('ct', list.map(t => t.type)) + '<div class="pc-btns"><button type="button" data-w="cancel">Cancel</button><button type="button" data-w="use" class="pc-primary">Use</button></div>';
+    document.body.appendChild(el); const l = el.querySelector('.pc-list'); wheelGo(l, callView.callType || list[0].type); wheelWire(l, () => {});
+    el.addEventListener('click', e => { const b = e.target.closest('[data-w]'); if (!b) return; e.stopPropagation();
+      if (b.dataset.w === 'use') { const t = list.find(x => x.type === wheelAt(l)); closeCtWheel(); if (t) pickCallType(t); } else closeCtWheel(); });
+  }
+  document.addEventListener('pointerdown', e => { const o = document.getElementById('proof-ctwheel'); if (o && !o.contains(e.target)) { e.preventDefault(); e.stopPropagation(); closeCtWheel(); } }, true);
   window.EngineActions['open-call-type'] = () => {
     if (!ctView || !activeTypes().length) { say('No call types on the sheet (a Call types tab and a Screen with the call-types Slot).', 'warn'); return; }
     ctFilter = ''; ctFrom = currentView !== ctView ? currentView : ctFrom; goView(ctView);   // 0.14.1: Back returns here
@@ -9294,7 +9317,7 @@ body.light-theme .proof-box{color:#0f172a}
   let trayPinned = false;
   try { const tt = toggleTray; toggleTray = function () { const sc = document.getElementById('viewport-outer-scroller'); const wasPinned = trayPinned; trayPinned = !document.body.classList.contains('proof-tray-open') && !!(sc && sc.scrollTop > 4);
     if (trayPinned || wasPinned) keepPlace(() => tt.apply(this, arguments)); else tt.apply(this, arguments); }; } catch (e) {}
-  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; try { closeWheel(); closeAsk(); closePick(); } catch (e) {}   /* 0.12.2 (R6) */ try { applyEquip(); } catch (e) {} /* C4b */ const r = rc.apply(this, arguments); try { decorate(); } catch (e) {} try { paintFolds(); } catch (e) {} try { paintInc(); calcCells().forEach(paintCalcBox); paintCm(); } catch (e) {} try { paintClamp(); fitBoxLines(); syncMirrors(); pinTray(); } catch (e) {} /* 0.22.2 */ try { paintDebug(); } catch (e) {} /* 0.22.4 */ try { paintNoCust(); } catch (e) {} /* 0.22.3 */ return r; }; }
+  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; try { closeWheel(); closeAsk(); closePick(); } catch (e) {}   /* 0.12.2 (R6) */ try { applyEquip(); } catch (e) {} /* C4b */ const r = rc.apply(this, arguments); try { decorate(); } catch (e) {} try { paintFolds(); } catch (e) {} try { paintInc(); calcCells().forEach(paintCalcBox); paintCm(); } catch (e) {} try { paintClamp(); fitBoxLines(); syncMirrors(); pinTray(); } catch (e) {} /* 0.22.2 */ try { paintDebug(); } catch (e) {} /* 0.22.4 */ try { paintEmptyTa(); } catch (e) {} /* 0.23.0 */ try { paintNoCust(); } catch (e) {} /* 0.22.3 */ return r; }; }
 
   document.addEventListener('input', e => {
     const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b) return;
@@ -9504,6 +9527,7 @@ body.light-theme .proof-box{color:#0f172a}
         if (r._input === 'both' && cell.subLabel && cell.subLabel.enabled && cell.subLabel.align === 'right') cell.subLabel.nudgeX = (Number(cell.subLabel.nudgeX) || 0) - BOTH_SWITCH_W; }   // 0.12.2 (F1): the unit sits left of the switch
       if (r._labelOf) cell.proofLabelOf = r._labelOf;   // C3a
       if (r._clamp) cell.proofClamp = r._clamp;   // 0.22.2 (F16)
+      if (r._ct) cell.proofCt = r._ct;   // 0.23.0 (B)
       if (r._lines > 1) cell.proofLines = r._lines;   // C3c: a 2- or 3-row value box
       if (r._lines) cell.proofLinesRaw = r._lines;   // 0.22.4: what the sheet said (the debug line)
       if (fd) { cell.proofField = fd; if (r._join) cell.proofJoin = r._join; if (r._label) cell.proofLabel = r._label; }
@@ -9592,7 +9616,7 @@ body.light-theme .proof-box{color:#0f172a}
     const bad = names.filter(n => !TPL_NAME.test(n)); if (bad.length) return { err: col + ' "' + raw + '": a template name may hold letters, digits, space . _ - (30 at most), not "' + bad[0] + '"' };
     return { tpl: minus.length ? { except: names } : { only: names } };
   }
-  const INPUT_STYLES = { type: 1, wheel: 1, both: 1, capacitor: 1, filter: 1 };   // capacitor, filter: C4a (the editors)
+  const INPUT_STYLES = { type: 1, wheel: 1, both: 1, capacitor: 1, filter: 1, list: 1 };   // list: 0.23.0 (the call type line's list; = type elsewhere)   // capacitor, filter: C4a (the editors)
   const WHEEL_MAX = 2000;
   // Wheel: a range '20..250 step 1 start 120' (numbers) or a list '16x20x1, 16x25x1, 20x20x1' (plain text items)
   function parseWheel(r) {
@@ -9745,7 +9769,7 @@ body.light-theme .proof-box{color:#0f172a}
         if (converted(r, 'Join sep')) why.push('Join sep "' + g(r, 'Join sep') + '" looks like a date, time or number. ' + PT_HINT('Join sep'));
         var itp = parseTpl(r, 'Templates'); if (itp.err) why.push(itp.err);   // round B2
         var inp = (g(r, 'Input style') || '').toLowerCase(), whl = parseWheel(r);
-        if (inp && !INPUT_STYLES[inp]) why.push('Input style "' + g(r, 'Input style') + '" must be type, wheel, both, capacitor or filter');
+        if (inp && !INPUT_STYLES[inp]) why.push('Input style "' + g(r, 'Input style') + '" must be type, wheel, both, capacitor, filter or list');
         if (whl.err) why.push(whl.err);
         if (fid && !FD) why.push('it has a Field (' + fid + ') but there is no Fields tab, so it cannot be drawn');
         else if (fid) {
@@ -9759,7 +9783,7 @@ body.light-theme .proof-box{color:#0f172a}
             else {
               words = rc.words;
               if (J && words.indexOf('report-value') < 0) why.push('Join with needs report-value in the Recipe');
-              if ((inp === 'wheel' || inp === 'both') && !whl.wheel) why.push('Input style ' + inp + ' needs a Wheel (a range like 20..250 step 1 start 120, or a list like 16x20x1, 16x25x1)');
+              if ((inp === 'wheel' || inp === 'both') && !whl.wheel && F.find !== 'calltype') why.push('Input style ' + inp + ' needs a Wheel (a range like 20..250 step 1 start 120, or a list like 16x20x1, 16x25x1)');
               const need = words.filter(w => w !== 'sub-unit').length;
               if (/^\d+$/.test(cell) && Number(cell) >= 1 && Number(cell) + need - 1 > L.cells) why.push('the Recipe needs ' + need + ' cell(s) (' + words.filter(w => w !== 'sub-unit').join(', ') + ') from Cell ' + cell + ', but line "' + ln + '" has ' + L.cells + ' cell(s)');
             }
@@ -9793,7 +9817,8 @@ body.light-theme .proof-box{color:#0f172a}
           if (w === 'value') o['Wrap'] = '';   // a value box has no wrap (the row's Wrap is for the label)
           if (w === 'value' && words.indexOf('sub-unit') >= 0 && F.unit && !g(r, 'Sub label')) { o['Sub label'] = F.unit; if (!g(r, 'Sub label size')) o['Sub label size'] = '10'; if (!g(r, 'Sub label place')) o['Sub label place'] = 'middle-right'; }   // BD-4: the unit in the corner of the box
           if (J) o._join = J;
-          if (w === 'value' && (inp === 'wheel' || inp === 'both')) { o._input = inp; o._wheel = whl.wheel; }   // round B2
+          if (w === 'value' && F.find === 'calltype') o._ct = inp === 'wheel' ? 'wheel' : 'list';   // 0.23.0 (B): the call type line opens the list or a wheel
+          else if (w === 'value' && (inp === 'wheel' || inp === 'both')) { o._input = inp; o._wheel = whl.wheel; }   // round B2
           if (w === 'value' && ED_STYLES[inp]) o._input = inp;   // C4a: capacitor / filter editor
           if (w === 'value' && g(r, 'Box lines') !== '') o._lines = Number(g(r, 'Box lines'));   // C3c
         }
@@ -10017,23 +10042,35 @@ body.light-theme .proof-box{color:#0f172a}
     const failed = [];
     await Promise.all(list.map(async ([tab, g]) => {
       if (!g || !g.disp || !g.disp.length) return;
-      let L; try { const tb = await gvizCall(tab, 'headers=' + (g.disp.length + 1), 6000); if (tb.rows && tb.rows.length) throw new Error('an answer with rows'); L = tb.cols.map(c => String(c.label || '')); }
+      // 0.23.0 (no. 153, C3): Google leaves a fully blank row out of its answer but counts it as a header row, so 'headers = the rows it
+      // sent + 1' is short by the blank rows and Google answers with that many rows: ask again with that many more header rows (once).
+      // The blank rows also move the sheet row numbers: blank = how many, and the one-row reads look that far further down.
+      let L, blank = 0; try { let tb = await gvizCall(tab, 'headers=' + (g.disp.length + 1), 6000);
+        if (tb.rows && tb.rows.length) { blank = tb.rows.length; tb = await gvizCall(tab, 'headers=' + (g.disp.length + 1 + blank), 6000); }
+        if (tb.rows && tb.rows.length) throw new Error('Google still answered with ' + tb.rows.length + ' row' + (tb.rows.length > 1 ? 's' : '')); L = tb.cols.map(c => String(c.label || '')); }
       catch (e) { failed.push(tab + ' (' + e.message + ')'); return; }
       const h = hiddenCols(g, L);
       h.vague.forEach(v => { HIDDEN.lost++; notes.push(tab + ', ' + v.label + ': Google hid text in this column (text among numbers, or a number among words); it is NOT used. Retype it so the column is one kind (e.g. plain numbers).'); });
-      const want = [...new Set([].concat(...h.found.map(f => f.rows)))].slice(0, 25), txt = {};
-      await Promise.all(want.map(async k => { try { const tb = await gvizCall(tab, 'headers=1&range=' + (k + 2) + ':' + (k + 2), 5000); if (!(tb.rows && tb.rows.length)) txt[k] = tb.cols.map(c => String(c.label || '').trim()); } catch (e) {} }));
-      h.found.forEach(f => {
-        let use = null;   // [[row index, text]]
-        if (f.rows.every(k => txt[k])) { const got = f.rows.filter(k => toks(txt[k][f.col]).length); if (got.length && got.map(k => toks(txt[k][f.col]).join(' ')).join(' ') === f.text) use = got.map(k => [k, txt[k][f.col]]); }
-        else if (f.rows.length === 1 && !txt[f.rows[0]]) use = [[f.rows[0], f.text]];   // one empty cell between two that Google sent: it is that one
-        if (!use) { HIDDEN.lost++; const a = f.rows[0] + 2, z = f.rows[f.rows.length - 1] + 2;
+      // which sheet row holds the hidden text: the gap's sheet rows (a blank row moves them down by up to 'blank') are halved with
+      // range reads whose rows are all header rows (the column's label = the text of those rows), then one row read gives that row's
+      // cells, matched to the row Google did send (every sent cell equal). About log2(rows) small reads per hidden cell.
+      const sameRow = (k, lab) => g.disp[k].every((v, i) => v == null || toks(lab[i]).join(' ') === toks(v).join(' '));
+      const labs = async (a, z, n) => { const tb = await gvizCall(tab, 'headers=' + n + '&range=' + a + ':' + z, 5000); if (tb.rows && tb.rows.length) throw new Error('rows'); return tb.cols.map(c => String(c.label || '')); };
+      async function locate(f) {
+        let a = f.rows[0] + 2, z = f.rows[f.rows.length - 1] + 2 + blank;
+        while (z > a) { const m = Math.floor((a + z) / 2), L1 = await labs(a, m, m - a + 1); if (toks(L1[f.col]).join(' ').indexOf(f.text) >= 0) z = m; else a = m + 1; }
+        const L2 = (await labs(a, a, 1)).map(x => x.trim()); if (toks(L2[f.col]).join(' ') !== f.text) return null;
+        const k = f.rows.find(j => sameRow(j, L2)); return k == null ? null : { k, r: a, v: L2[f.col] };
+      }
+      await Promise.all(h.found.map(async f => {
+        let got = null; try { got = await locate(f); } catch (e) { got = null; }
+        if (!got) { HIDDEN.lost++; const a = f.rows[0] + 2, z = f.rows[f.rows.length - 1] + 2 + blank;
           notes.push(tab + ', ' + f.label + ', ' + (a === z ? 'row ' + a : 'rows ' + a + ' to ' + z) + ': Google hid text here ("' + f.text + '"); it is NOT used. Retype it as a plain number (or tap Reload).'); return; }
-        use.forEach(([k, v]) => { const r = g.rows[k]; if (!r) return; r[f.label] = v; if (r._t) delete r._t[f.label]; g.disp[k][f.col] = v; HIDDEN.fixed++;
-          notes.push(tab + ' row ' + (k + 2) + ', ' + f.label + ': Google sends this cell empty (the text "' + v + '" in a column of numbers, or a number among words); read anyway. Tip: retype it so the column is one kind.'); });
-      });
+        const r = g.rows[got.k]; if (!r) return; r[f.label] = got.v; if (r._t) delete r._t[f.label]; g.disp[got.k][f.col] = got.v; HIDDEN.fixed++;
+        notes.push(tab + ' row ' + got.r + ', ' + f.label + ': Google sends this cell empty (the text "' + got.v + '" in a column of numbers, or a number among words); read anyway. Tip: retype it so the column is one kind.');
+      }));
     }));
-    if (failed.length) notes.push('Could not double-check ' + failed.join(', ') + ' for text Google hides; tap Reload to try again.');
+    if (failed.length) notes.push('Not checked for text Google hides: ' + failed.join(', ') + '. A text cell in a column of numbers (or a number among words) there may be missing; tap Reload to try again.');
   }
   function fromCsv(text) {
     const lines = []; let row = [], f = '', q = false;
@@ -10596,6 +10633,17 @@ body.light-theme .proof-box{color:#0f172a}
       ['fontSize', 'fontFamily', 'fontWeight', 'lineHeight', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'textAlign', 'color'].forEach(k => { m.style[k] = k === 'color' ? '' : cs[k]; });
       const fr = face.getBoundingClientRect(), r = ta.getBoundingClientRect(); m.style.left = (r.left - fr.left) + 'px'; m.style.top = (r.top - fr.top) + 'px'; m.style.width = r.width + 'px'; m.style.height = r.height + 'px'; });
   }
+  // 0.23.0 (no. 153, C2): an EMPTY multi-row box shows its placeholder like a one-line box: the font size of the nearest one-line value
+  // box and in the vertical middle (left aligned); the CSS rule applies only while the placeholder shows and the box is not being typed in
+  function paintEmptyTa() {
+    const ins = Array.from(document.querySelectorAll('#viewport-canvas-frame input.proof-box')).filter(x => x.offsetParent);
+    document.querySelectorAll('#viewport-canvas-frame textarea.proof-ta').forEach(ta => { if (!ta.offsetParent) return;
+      const y = ta.getBoundingClientRect().top; let best = null, bd = Infinity; ins.forEach(x => { const d = Math.abs(x.getBoundingClientRect().top - y); if (d < bd) { bd = d; best = x; } });
+      if (!best) { delete ta.dataset.ph; return; }
+      const fs = parseFloat(best.dataset.fs != null && best.dataset.fs ? best.dataset.fs : getComputedStyle(best).fontSize) || 0; if (!fs) return;
+      const pad = Math.max(0, (ta.clientHeight - fs * 1.2) / 2);
+      ta.style.setProperty('--ph-fs', fs + 'px'); ta.style.setProperty('--ph-pad', Math.floor(pad) + 'px'); ta.dataset.ph = '1'; });
+  }
   // 0.22.4 (no. 152, fix 1): Settings 'Debug boxes' = yes: a small grey line on each multi-row, comment and editor box with what the
   // phone really drew: box height, its Line's height, rows asked / rows that fit, font size, TEXTAREA or INPUT, the Box lines the page got
   // from the sheet (blank = none) and Max size. Laid over the bottom of the cell (it takes no room, so the layout is the same as without it).
@@ -10605,10 +10653,12 @@ body.light-theme .proof-box{color:#0f172a}
     document.querySelectorAll('#viewport-canvas-frame .proof-box').forEach(bx => { const p = boxCell(bx); if (!p) return;
       const F = p.proofField; if (!(p.proofLines > 1 || edOf(p) || (F && commentOf(F)) || bx.tagName === 'TEXTAREA')) return;
       const cell = bx.closest('.proof-cell'); if (!cell) return; let d = cell.querySelector('.proof-dbg'); if (!d) { d = document.createElement('div'); d.className = 'proof-dbg'; d.setAttribute('aria-hidden', 'true'); cell.appendChild(d); }
+      const ph = bx.dataset.ph; if (ph != null) delete bx.dataset.ph;   // 0.23.0: the box's own look, not the empty-placeholder look
       const cs = getComputedStyle(bx), fs = parseFloat(cs.fontSize) || 0, lh = parseFloat(cs.lineHeight) || fs * 1.15, px = k => parseFloat(cs[k]) || 0, line = bx.closest('.grid-stack-row');
       const asked = bx.tagName === 'TEXTAREA' ? bx.rows : 1, shown = bx.tagName === 'TEXTAREA' ? Math.max(0, Math.floor((bx.clientHeight - px('paddingTop') - px('paddingBottom') + 1) / lh)) : 1;
       const t = 'box ' + Math.round(bx.offsetHeight) + ' px · line ' + Math.round(line ? line.offsetHeight : 0) + ' px · rows asked ' + asked + ' / shown ' + shown + ' · font ' + (Math.round(fs * 10) / 10) + ' px · ' + bx.tagName +
         ' · Box lines ' + (p.proofLinesRaw || 'blank') + ' · Max size ' + limits(p).hi;
+      if (ph != null) bx.dataset.ph = ph;
       if (d.textContent !== t) d.textContent = t; });
   }
   // 0.22.2 (F16): a label with the 2-line default is clamped to 2 lines ('…' after)
@@ -10622,11 +10672,13 @@ body.light-theme .proof-box{color:#0f172a}
     // undo the last fit first (each fit starts from the engine's own sizes, so running it again never adds up)
     document.querySelectorAll('#viewport-canvas-frame [data-fit0]').forEach(el => { const v = el.dataset.fit0; if (el.classList.contains('grid-stack-row')) el.style.flex = v; else el.style.height = v; delete el.dataset.fit0; });
     document.querySelectorAll('#viewport-canvas-frame textarea.proof-ta').forEach(ta => { if (!ta.offsetParent || ta.dataset.fs != null) return;
+      if (ta.dataset.ph != null) delete ta.dataset.ph;   // 0.23.0: measure with the box's own font and padding, not the empty-placeholder look (paintEmptyTa puts it back)
       const cs = getComputedStyle(ta), lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.15, px = k => parseFloat(cs[k]) || 0;
       const need = Math.ceil(ta.rows * lh + px('paddingTop') + px('paddingBottom') + px('borderTopWidth') + px('borderBottomWidth')), d = need - ta.offsetHeight; if (d <= 1) return;
       const line = ta.closest('.grid-stack-row'), band = ta.closest('.grid-row-band'); if (!line || !band) return;
       if (line.dataset.fit0 == null) line.dataset.fit0 = line.style.flex; if (band.dataset.fit0 == null) band.dataset.fit0 = band.style.height;
       line.style.flex = '0 0 ' + (line.offsetHeight + d) + 'px'; band.style.height = (band.offsetHeight + d) + 'px'; });
+    try { paintEmptyTa(); } catch (e) {}   // 0.23.0: the empty-placeholder look back on
   }
   // 0.22.2 (F19): opening / closing the tray redraws the page; the line at the top of the screen is put back where it was
   function keepPlace(fn) {
@@ -10817,7 +10869,7 @@ body.light-theme .proof-box{color:#0f172a}
       try { stackFrozen(); } catch (e) {}
     } finally { visBusy = false; }
     pinChips(); try { paintFolds(); } catch (e) {}
-    try { document.querySelectorAll('#viewport-canvas-frame [data-fit0]').forEach(el => { if (el.classList.contains('grid-stack-row')) el.style.flex = el.dataset.fit0; delete el.dataset.fit0; }); fitBoxLines(); syncMirrors(); paintDebug(); } catch (e) {}   // 0.22.2 (F15); 0.22.4: the debug line: the band sizes above are the base; fit on top of them
+    try { document.querySelectorAll('#viewport-canvas-frame [data-fit0]').forEach(el => { if (el.classList.contains('grid-stack-row')) el.style.flex = el.dataset.fit0; delete el.dataset.fit0; }); fitBoxLines(); syncMirrors(); paintDebug(); paintEmptyTa(); } catch (e) {}   // 0.22.2 (F15); 0.22.4: the debug line; 0.23.0: empty boxes: the band sizes above are the base; fit on top of them
   }
   // 0.12.3 (F3): a chip stays reachable while its Section is on screen: it slides down to just below the frozen header (and the top of
   // what the phone shows when the keyboard is up), never past its Section's bottom. Only the chip moves: no scroll, no redraw.
