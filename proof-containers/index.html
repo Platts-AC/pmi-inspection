@@ -759,6 +759,13 @@
 .grid-split-partition:has(.proof-results){align-items:stretch}
 .grid-split-partition:has(.proof-results) > *{height:100%;align-self:stretch}
 .grid-stack-row:has(> .proof-fold-status){position:relative}
+#viewport-canvas-frame .grid-stack-row:has(.grid-split-partition.proof-inc){background:rgba(8,145,178,.55);border-radius:8px}
+#viewport-canvas-frame .grid-stack-row:has(.grid-split-partition.proof-pin.proof-inc){background:rgba(6,182,212,.75);box-shadow:inset 4px 0 0 #67e8f9}
+#viewport-canvas-frame .grid-split-partition.proof-inc{color:#fff}
+#viewport-canvas-frame .grid-split-partition.proof-pin{position:relative}
+#viewport-canvas-frame .grid-split-partition.proof-pin::after{content:'F4CC';position:absolute;top:1px;right:2px;font-size:10px;line-height:1;pointer-events:none}
+#viewport-canvas-frame .grid-split-partition:has(> .proof-cell) {user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.proof-calc-mark{position:absolute;top:2px;left:9px;font:700 9px/1 system-ui,sans-serif;color:#fbbf24;letter-spacing:.03em;pointer-events:none}
 .proof-fold-status{position:absolute;right:10px;top:50%;transform:translateY(-50%);font:600 11px/1.2 system-ui,sans-serif;color:#94a3b8;white-space:nowrap;pointer-events:none}
 .grid-split-partition:has(.proof-report-body){align-items:stretch}
 .grid-split-partition:has(.proof-report-body) > *{height:100%;align-self:stretch}
@@ -3596,7 +3603,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.16.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.17.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3606,7 +3613,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.16.0', stamp: '2026-11-22 16:56:58', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.17.0', stamp: '2026-11-22 19:30:25', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8283,14 +8290,14 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.16.0';
+  const PROOF_VERSION = '0.17.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
   const TAB_OF = p => 'Layout ' + p, TWEAKS_TAB = 'Tweaks';
   const K = { call: 'proof-containers.call.v1', profile: 'proof-containers.profile.v1', device: 'proof-containers.device.v1',
     tweaks: 'proof-containers.tweaks.v1', endpoint: 'proof-containers.endpoint.v1', layout: p => 'proof-containers.layout.v2.' + p,
-    bundle: 'proof-containers.bundle.v1', sites: 'proof-containers.sites.v1' };   // sites: round C1a, the new customers kept on this phone   // round A: the last good Structure + Items, stored together
+    bundle: 'proof-containers.bundle.v1', sites: 'proof-containers.sites.v1', pins: 'proof-containers.pins.v1' };   // pins: C3a (this phone)   // sites: round C1a, the new customers kept on this phone   // round A: the last good Structure + Items, stored together
   // Round B1: field meanings come from the Fields tab. This built-in list is used ONLY when the layout comes from an old Layout tab
   // or Round A's tabs (no Fields tab): the one allowed second home (Q-016), so the old tabs keep drawing as 0.10.2 did.
   const FIELD_FALLBACK = { 'f:date': 'Date', 'f:customer': 'Customer', 'f:address': 'Address', 'f:phone': 'Phone', 'f:outdoorModel': 'Condenser model', 'f:suctionPressure': 'Suction pressure' };
@@ -8404,7 +8411,7 @@ body.light-theme .proof-box{color:#0f172a}
   // ---------- the slots ----------
   window.EngineSlots = window.EngineSlots || {};
   // the keypad of a value box: tel by the old rule on the key (6c), decimal for a Fields 'number' (old tabs: the old suction rule)
-  function keypadOf(p) { const k = p.proofKey || '', F = p.proofField; return /phone/.test(k) ? 'tel' : (F ? F.kind === 'number' : /suction/i.test(k)) ? 'decimal' : ''; }
+  function keypadOf(p) { const k = p.proofKey || '', F = p.proofField; return /phone/.test(k) ? 'tel' : (F ? (F.kind === 'number' || !!F.calc) : /suction/i.test(k)) ? 'decimal' : ''; }   // C3a: a calc box types numbers
   window.EngineSlots['box'] = { render(p) {
     // keypad: tel by the old rule on the key (6c, unchanged in B1); decimal for a Fields 'number' (old tabs: the old suction rule)
     const k = p.proofKey, F = p.proofField, km = keypadOf(p), tel = km === 'tel', num = km === 'decimal';
@@ -8414,7 +8421,7 @@ body.light-theme .proof-box{color:#0f172a}
     // round 7 (1): autofill fix C (Danny's Android test, 0.6.0): each value box sits in its own form with autocomplete off and has
     // autocomplete one-time-code; the form takes no space (display:contents) and never submits (Enter is stopped, see below).
     return '<div class="proof-cell"><div class="proof-face" style="align-items:' + va + '"><form class="proof-form" autocomplete="off" onsubmit="return false"><input class="proof-box" data-key="' + esc(k) + '" value="' + esc(valOf(k)) + '"' +
-      (wm || (F && (F.kind === 'readonly' || F.calc)) ? ' inputmode="none" readonly' : tel ? ' inputmode="tel"' : num ? ' inputmode="decimal"' : '') + ' placeholder="' + esc(F ? F.name : (FIELD_FALLBACK[k] || 'Search')) + '"' + boxAttrs(p) + ' style="font-size:' + boxSize(p) + 'px;text-align:' + (p.align || 'left') + '"></form>' + sw + '</div></div>';
+      (wm || (F && F.kind === 'readonly') ? ' inputmode="none" readonly' : tel ? ' inputmode="tel"' : num ? ' inputmode="decimal"' : '') + ' placeholder="' + esc(F ? F.name : (FIELD_FALLBACK[k] || 'Search')) + '"' + boxAttrs(p) + ' style="font-size:' + boxSize(p) + 'px;text-align:' + (p.align || 'left') + '"></form>' + sw + '</div></div>';
   } };
   // Enter in a value box: never submit or reload (the form also says onsubmit return false); focus and caret stay
   document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target && e.target.classList && e.target.classList.contains('proof-box')) e.preventDefault(); }, true);
@@ -8504,10 +8511,28 @@ body.light-theme .proof-box{color:#0f172a}
   ].forEach(([name, inputs, fn]) => { CALC_RULES[name.toLowerCase()] = { name, inputs, fn }; });
   const numOf = v => { const t = String(v == null ? '' : v).trim(); return t !== '' && isFinite(Number(t)) ? Number(t) : null; };
   function calcCells() { const seen = {}, out = []; eachCell(engineState, p => { const F = p.proofField; if (F && F.calc && !seen[F.id]) { seen[F.id] = 1; out.push(F); } }); return out; }
+  // C3a (I-199, main app 03-slots.js / calculations.js): a calc box can be typed over (the main app's 'Manual'); the call keeps where each
+  // calc value came from in call.__src (typed; a later 'gauge' source will win over the calculation too); clearing it = the calculation
+  // again. An empty calc box says what it still needs: 'Needs A + B' (the missing inputs, by their Field names).
+  const srcOf = id => ((call.__src || {})[id] || '');
+  function setSrc(id, v) { call.__src = call.__src || {}; if (v) call.__src[id] = v; else delete call.__src[id]; }
+  const fieldName = id => { let n = id; eachCell(engineState, p => { if (p.proofField && p.proofField.id === id) n = p.proofField.name; }); return n; };
+  const calcNeeds = F => F.calc.inputs.filter(id => numOf(call[id]) === null).map(fieldName);
   function runCalcs() {   // every calc value from the call's inputs; the boxes are updated in place (no redraw)
-    calcCells().forEach(F => { const xs = F.calc.inputs.map(id => numOf(call[id])), v = xs.every(x => x !== null) ? F.calc.rule.fn(...xs) : '';
+    calcCells().forEach(F => {
+      if (srcOf(F.id)) { paintCalcBox(F); return; }   // typed (or later gauge): kept, never overwritten by the calculation
+      const xs = F.calc.inputs.map(id => numOf(call[id])), v = xs.every(x => x !== null) ? F.calc.rule.fn(...xs) : '';
       if (v === '') delete call[F.id]; else call[F.id] = v;
-      document.querySelectorAll('input.proof-box').forEach(b => { if (b.dataset.key === F.id && b.value !== v) b.value = v; }); });
+      document.querySelectorAll('input.proof-box').forEach(b => { if (b.dataset.key === F.id && b.value !== v) b.value = v; });
+      paintCalcBox(F); });
+  }
+  function paintCalcBox(F) {
+    const need = call[F.id] ? '' : 'Needs ' + calcNeeds(F).join(' + '), manual = srcOf(F.id) === 'typed' && !!call[F.id];
+    document.querySelectorAll('input.proof-box').forEach(b => { if (b.dataset.key !== F.id) return;
+      const ph = need === 'Needs ' ? '' : need; if (b.placeholder !== ph) b.placeholder = ph;
+      const face = b.closest('.proof-face') || b.parentElement; let m = face && face.querySelector('.proof-calc-mark');
+      if (manual && !m && face) { m = document.createElement('span'); m.className = 'proof-calc-mark'; m.textContent = 'Manual'; face.appendChild(m); }
+      if (!manual && m) m.remove(); });
   }
   // fold-section: Structure 'Fold' (open / closed) on a Section's first Line = the engine's own collapsible Section (as the main app's
   // PMI sections): its first Line is the title bar; a tap folds / opens it. Kept per call (callView.folds); New = the sheet value.
@@ -8519,10 +8544,13 @@ body.light-theme .proof-box{color:#0f172a}
   { const tr = toggleRowCollapse; toggleRowCollapse = function (rIdx) { const r = tr.apply(this, arguments), row = engineState.rows[rIdx];
       if (row && row.proofFold) { callView.folds = callView.folds || {}; callView.folds[foldKey(row)] = !!row.isCollapsed; saveView(); } return r; }; }
   // the title shows 'N of M filled' (the main app's Section badge counts its fields); painted in place, no redraw
+  let foldPlan = null;
   function paintFolds() {
+    foldPlan = null;
     const bands = document.querySelectorAll('#viewport-canvas-frame .grid-row-band');
     (engineState.rows || []).forEach((row, ri) => { if (!row.proofFold || !bands[ri]) return;
-      const ids = {}; row.containers.forEach(c => c.stacks.forEach(st => st.splits.forEach(p => { if (p.slot === 'box' && p.proofField && !isDraft(p.proofKey)) ids[p.proofField.id] = 1; })));
+      const plan = foldPlan || (foldPlan = visPlan()), ids = {};   // C3a (I-199): only the Lines the View / template shows
+      row.containers.forEach(c => c.stacks.forEach(st => { const pl = plan.get(st); if (pl && pl.hide) return; st.splits.forEach(p => { if (p.slot === 'box' && p.proofField && !isDraft(p.proofKey) && !(pl && pl.blank && pl.blank.has(p.proofItem))) ids[p.proofField.id] = 1; }); }));
       const all = Object.keys(ids), n = all.filter(id => callVal(id)).length, text = n + ' of ' + all.length + ' filled';
       const head = bands[ri].querySelector('.grid-stack-row'); if (!head) return;
       let s = head.querySelector(':scope > .proof-fold-status'); if (!s) { s = document.createElement('span'); s.className = 'proof-fold-status'; head.appendChild(s); }
@@ -8530,19 +8558,43 @@ body.light-theme .proof-box{color:#0f172a}
       const chip = bands[ri].querySelector(':scope > .proof-chip'), right = chip && chip.offsetParent ? (chip.offsetWidth + 16) + 'px' : ''; if (s.style.right !== right) s.style.right = right; });   // beside the '+N hidden' chip, never under it
   }
 
+  // ---------- Round C3a: include (tap a Field's label) and pin (press and hold), as the main app (app/src/bridge/08-live-behavior.js) ----------
+  // Included = this call (callView.included); pinned = this phone (proof-containers.pins.v1), included on every new call and after Reload;
+  // a tap on a pinned label turns it off for this call only. The report holds only included lines; everything filled stays in the call.
+  const pinsNow = () => { const o = lsGet(K.pins, {}); return o && typeof o === 'object' ? o : {}; };
+  const isPinned = id => !!pinsNow()[id];
+  const isIncluded = id => { const m = callView.included || {}; return id in m ? !!m[id] : isPinned(id); };
+  function setIncluded(id, v) { callView.included = callView.included || {}; callView.included[id] = !!v; saveView(); }
+  function togglePin(id) { const o = pinsNow(), cur = isIncluded(id); if (o[id]) { delete o[id]; lsSet(K.pins, o); setIncluded(id, cur); } else { o[id] = true; lsSet(K.pins, o); setIncluded(id, true); } }
+  function paintInc() {
+    eachCell(engineState, p => { if (!p.proofLabelOf || !p.proofId) return; const el = document.querySelector('#viewport-canvas-frame .grid-split-partition[data-pid="' + CSS.escape(p.proofId) + '"]'); if (!el) return;
+      el.classList.toggle('proof-inc', isIncluded(p.proofLabelOf)); el.classList.toggle('proof-pin', isPinned(p.proofLabelOf)); });
+  }
+  const labelOf = e => { const el = e.target && e.target.closest && e.target.closest('#viewport-canvas-frame .grid-split-partition'); const p = el && cellOfPart(el); return p && p.proofLabelOf ? p.proofLabelOf : ''; };
+  let pressT = null, pressAt = null, holdSuppress = 0;
+  const clearPress = () => { clearTimeout(pressT); pressT = null; };
+  document.addEventListener('pointerdown', e => { if (!isLiveInteraction) return; const id = labelOf(e); if (!id) return;
+    clearPress(); pressAt = [e.clientX, e.clientY];
+    pressT = setTimeout(() => { pressT = null; holdSuppress = Date.now() + 500; togglePin(id); paintInc(); paintNotes(); }, 550); }, true);   // the main app's 550 ms
+  document.addEventListener('pointermove', e => { if (pressT && pressAt && Math.hypot(e.clientX - pressAt[0], e.clientY - pressAt[1]) > 10) clearPress(); }, true);
+  ['pointerup', 'pointercancel'].forEach(t => document.addEventListener(t, clearPress, true));
+  document.addEventListener('click', e => { if (!isLiveInteraction) return; const id = labelOf(e); if (!id) return; e.preventDefault(); e.stopPropagation();
+    if (Date.now() < holdSuppress) return;   // that press was a hold (pin)
+    setIncluded(id, !isIncluded(id)); paintInc(); }, true);
+
   // ---------- Round C2b: report-body (Slot) and copy-report (Action) ----------
   // The main app's report wording (app/tools/report.js reportLine, app/tools/fields.js P.text): one line per filled Field,
   // '►' + label + ':' + ' ' + value + unit (' ' + unit; ':1' with no space). Sections in sheet order, each with its name in capitals
   // above its lines, a blank line between Sections; only Fields that have a value (calc values included); New customer drafts never.
   const unitText = u => (u ? (u === ':1' ? ':1' : ' ' + u) : '');
+  // C3a (I-199 d, e): no Section titles; only the INCLUDED lines that have a value, in Entry order (the main app)
   function reportBody() {
-    const secs = [];
-    (engineState.rows || []).forEach(row => { if (row.isTray) return; const lines = [], seen = {};
+    const lines = [], seen = {};
+    (engineState.rows || []).forEach(row => { if (row.isTray) return;
       (row.containers || []).forEach(c => (c.stacks || []).forEach(st => (st.splits || []).forEach(p => {
         const F = p.proofField; if (p.slot !== 'box' || !F || isDraft(p.proofKey) || seen[F.id]) return; seen[F.id] = 1;
-        const v = String(call[F.id] == null ? '' : call[F.id]).trim(); if (v) lines.push('►' + (p.proofLabel || F.name) + ': ' + v + unitText(F.unit)); })));
-      if (lines.length) secs.push([String(row.name || '').toUpperCase()].concat(lines).join('\n')); });
-    return secs.join('\n\n');
+        const v = String(call[F.id] == null ? '' : call[F.id]).trim(); if (v && isIncluded(F.id)) lines.push('►' + (p.proofLabel || F.name) + ': ' + v + unitText(F.unit)); }))); });
+    return lines.join('\n');
   }
   window.EngineSlots['report-body'] = { render() { const t = reportBody(); return '<div class="proof-report-body">' + (t ? esc(t) : '<span class="proof-report-empty">Nothing in the report yet.</span>') + '</div>'; } };
   // copy-report: the main app's copy (clipboard, then the old select-and-copy way) and its messages
@@ -8637,13 +8689,13 @@ body.light-theme .proof-box{color:#0f172a}
   }
   const paintResults = () => document.querySelectorAll('.proof-results').forEach(el => { el.innerHTML = resultsHtml(); });
   window.__proofRepaints = 0;
-  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; try { closeWheel(); closeAsk(); } catch (e) {}   /* 0.12.2 (R6) */ const r = rc.apply(this, arguments); try { decorate(); } catch (e) {} try { paintFolds(); } catch (e) {} return r; }; }
+  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; try { closeWheel(); closeAsk(); } catch (e) {}   /* 0.12.2 (R6) */ const r = rc.apply(this, arguments); try { decorate(); } catch (e) {} try { paintFolds(); } catch (e) {} try { paintInc(); calcCells().forEach(paintCalcBox); } catch (e) {} return r; }; }
 
   document.addEventListener('input', e => {
     const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b) return;
     const k = b.dataset.key;
     if (k in find || isDraft(k)) { find[k] = b.value; if (FIND_KEYS[k]) paintResults(); }   // C1a: a New customer box fills the draft
-    else { call[k] = b.value; runCalcs(); lsSet(K.call, call); try { paintLimit(b); applyVis(); paintFolds(); } catch (e) {} }   // C2a: calc values and fold status, no redraw   // round B2: Hard min / max note; when-filled Lines
+    else { call[k] = b.value; { const p = cellOfPart(b.closest('.grid-split-partition')); if (p && p.proofField && p.proofField.calc) setSrc(k, String(b.value).trim() ? 'typed' : ''); } runCalcs(); lsSet(K.call, call); try { paintLimit(b); applyVis(); paintFolds(); } catch (e) {} }   // C2a: calc values and fold status, no redraw   // round B2: Hard min / max note; when-filled Lines
   });
   document.addEventListener('click', e => {
     const h = e.target && e.target.closest && e.target.closest('.proof-hit'); if (!h) return;
@@ -8843,6 +8895,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (r._ltpl) cell.proofLTpl = r._ltpl;
       if (r._input) { cell.proofInput = r._input; cell.proofWheel = r._wheel || null;
         if (r._input === 'both' && cell.subLabel && cell.subLabel.enabled && cell.subLabel.align === 'right') cell.subLabel.nudgeX = (Number(cell.subLabel.nudgeX) || 0) - BOTH_SWITCH_W; }   // 0.12.2 (F1): the unit sits left of the switch
+      if (r._labelOf) cell.proofLabelOf = r._labelOf;   // C3a
       if (fd) { cell.proofField = fd; if (r._join) cell.proofJoin = r._join; if (r._label) cell.proofLabel = r._label; }
       if (slot === 'box') { cell.slot = 'box'; cell.proofKey = fd && draftScreen && screen === draftScreen ? DRAFT + fd.id : content; cell.label = ''; }   // C1a: a draft box
       else if (slot === 'unit' || slot === 'report-value') { cell.slot = slot; cell.proofKey = content; cell.label = ''; }
@@ -9116,7 +9169,7 @@ body.light-theme .proof-box{color:#0f172a}
       const text = Object.assign({}, look, { 'Font size': g(r, 'Label size') });
       pieces.forEach((w, k) => {
         let o;
-        if (w === 'label') o = Object.assign({}, text, { 'Type': 'text', 'Content': label });
+        if (w === 'label') o = Object.assign({}, text, { 'Type': 'text', 'Content': label, _labelOf: F.id });   // C3a: tap = include, hold = pin
         else if (w === 'spacer') o = Object.assign({}, look, { 'Type': 'text', 'Content': '' });
         else if (w === 'unit') o = Object.assign({}, text, { 'Type': 'text', 'Slot': 'unit', 'Content': F.id, 'Wrap': '', _fieldDef: F });
         else {   // value or report-value
@@ -9926,7 +9979,7 @@ body.light-theme .proof-box{color:#0f172a}
   // by the same amount so the box does not move. Edit / Adjust shows everything (as the engine does). Only one-Column Sections
   // collapse a Line; in a Section with several Columns a hidden Line just leaves its cells blank.
   const K_VIEW = 'proof-containers.callview.v1', K_INPUT = 'proof-containers.inputStyle.v1';
-  const VIEW_DEFAULT = () => ({ view: 'template', tpl: '', revealed: {}, folds: {} });   // folds: C2a (per call)
+  const VIEW_DEFAULT = () => ({ view: 'template', tpl: '', revealed: {}, folds: {}, included: {} });   // included: C3a (per call; pins on the phone)   // folds: C2a (per call)
   let callView = Object.assign(VIEW_DEFAULT(), lsGet(K_VIEW, {}) || {});
   if (!/^(all|template|values)$/.test(callView.view)) callView.view = 'template';
   if (!callView.revealed || typeof callView.revealed !== 'object') callView.revealed = {};
