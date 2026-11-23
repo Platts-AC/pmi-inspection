@@ -749,6 +749,8 @@ body:not(.proof-ready) #reopen-inspector-fab{display:none!important}
 #viewport-canvas-frame textarea.proof-box.proof-ro-src{color:transparent!important;-webkit-text-fill-color:transparent;caret-color:transparent}
 #viewport-canvas-frame .proof-face:has(.proof-ro-text){position:relative}
 #viewport-canvas-frame .proof-ro-text{position:absolute;box-sizing:border-box;overflow-y:auto;overflow-x:hidden;white-space:normal;overflow-wrap:break-word;word-break:normal;pointer-events:none;color:#e2e8f0;margin:0}
+#viewport-canvas-frame .proof-cell:has(.proof-dbg){position:relative}
+#viewport-canvas-frame .proof-dbg{position:absolute;left:2px;right:2px;bottom:0;font:9px/1.2 system-ui,sans-serif;color:#9ca3af;background:rgba(15,23,42,.88);padding:0 3px;pointer-events:none;z-index:4;white-space:normal;overflow-wrap:break-word}
 #viewport-canvas-frame .proof-viewcell{display:flex;align-items:center;justify-content:center;text-align:center;height:100%;line-height:1.15;color:#7dd3fc;font-weight:600;overflow-wrap:anywhere;padding:0 2px}
 #proof-nocust{position:sticky;z-index:30;display:block;width:100%;box-sizing:border-box;text-align:left;padding:6px 12px;margin:0;border:0;border-bottom:1px solid #f59e0b;border-radius:6px;background:#1f1406;color:#fbbf24;font:600 13px system-ui,sans-serif}
 #proof-nocust b{color:#22d3ee;text-decoration:underline}
@@ -3676,7 +3678,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.22.3", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.22.4", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3686,7 +3688,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.22.3', stamp: '2026-11-23 01:28:20', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.22.4', stamp: '2026-11-23 05:08:28', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8363,7 +8365,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.22.3';
+  const PROOF_VERSION = '0.22.4';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8466,11 +8468,12 @@ body.light-theme .proof-box{color:#0f172a}
   // ---------- 0.22.3 (Prompts no. 151): the 'Settings' tab (columns Setting, Value), read like Sites / Call types ----------
   // Customer required: no / remind (start value: blank or missing) / yes
   let SETTINGS = {};
-  const SETTING_VALUES = { 'customer required': ['no', 'remind', 'yes'] };
+  const SETTING_VALUES = { 'customer required': ['no', 'remind', 'yes'], 'debug boxes': ['no', 'yes'] };   // Debug boxes: 0.22.4 (no by default)
+  const SETTING_START = { 'customer required': 'remind', 'debug boxes': 'no' };
   function parseSettings(rows, notes) {
     const out = {}; (rows || []).forEach((r, i) => { const k = g2(r, 'Setting').toLowerCase(), v = g2(r, 'Value').toLowerCase(); if (!k) return;
       if (!SETTING_VALUES[k]) { notes.push('Settings row ' + (i + 2) + ': "' + g2(r, 'Setting') + '" is not a setting this page knows; not used.'); return; }
-      if (v && SETTING_VALUES[k].indexOf(v) < 0) { notes.push('Settings row ' + (i + 2) + ': ' + g2(r, 'Setting') + ' must be ' + SETTING_VALUES[k].join(', ') + ' (not "' + g2(r, 'Value') + '"); remind is used.'); return; }
+      if (v && SETTING_VALUES[k].indexOf(v) < 0) { notes.push('Settings row ' + (i + 2) + ': ' + g2(r, 'Setting') + ' must be ' + SETTING_VALUES[k].join(', ') + ' (not "' + g2(r, 'Value') + '"); ' + SETTING_START[k] + ' is used.'); return; }
       if (v) out[k] = v; }); return out;
   }
   const custMode = () => SETTINGS['customer required'] || 'remind';
@@ -8480,8 +8483,9 @@ body.light-theme .proof-box{color:#0f172a}
   // remind / yes: after New, Entry shows 'No customer yet · Find' pinned under the top rows until the call has a customer
   function paintNoCust() {
     let el = document.getElementById('proof-nocust');
-    if (hasCustomer()) { if (callView.needCust) { callView.needCust = false; saveView(); } prevCall = null; }
-    const show = isLiveInteraction && custMode() !== 'no' && callView.needCust && currentView === 'entry';
+    // 0.22.4 (no. 152, fix 2): typed text only hides the line (empty the box and it is back); only PICKING a customer (a Find result, or
+    // Save on New customer) ends it, see loadSite
+    const show = isLiveInteraction && custMode() !== 'no' && callView.needCust && !hasCustomer() && currentView === 'entry';
     if (!show) { if (el) el.style.display = 'none'; return; }
     if (!el) { el = document.createElement('button'); el.type = 'button'; el.id = 'proof-nocust'; el.innerHTML = 'No customer yet \u00b7 <b>Find</b>';
       el.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); goView('find'); }); }
@@ -8698,7 +8702,8 @@ body.light-theme .proof-box{color:#0f172a}
   // both ways (St = Street); north / south / east / west stay words. (R2) the Phone box uses digits only, from 3 digits on.
   // (R5) exact = the house number + street equal (unit after # / Apt / Unit / Suite, city after a comma and a zip ignored), or the
   // last 7 digits of the phone equal.
-  const ABBR = { street: 'st', avenue: 'ave', road: 'rd', drive: 'dr', boulevard: 'blvd', lane: 'ln', court: 'ct', place: 'pl' };
+  // 0.22.4 (F11): the street types of the main app 01.12.00 (bridge/38-house-search.js), long form = short form
+  const ABBR = { street: 'st', avenue: 'ave', road: 'rd', drive: 'dr', boulevard: 'blvd', lane: 'ln', court: 'ct', place: 'pl', terrace: 'ter', circle: 'cir', highway: 'hwy', parkway: 'pkwy', trail: 'trl' };
   const LONG = Object.keys(ABBR).reduce((o, k) => { o[ABBR[k]] = k; return o; }, {});
   const words = t => String(t || '').toLowerCase().replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(Boolean);
   const short = w => ABBR[w] || w;
@@ -8712,23 +8717,37 @@ body.light-theme .proof-box{color:#0f172a}
     const have = []; words(text).forEach(w => { have.push(w); if (ABBR[w]) have.push(ABBR[w]); if (LONG[w]) have.push(LONG[w]); });
     const t = words(typedText); return !!t.length && t.every(q => have.some(h => h.indexOf(q) === 0));
   }
-  function streetKey(a) {
-    const w = words(String(a || '').split(/[#,]/)[0]), cut = w.findIndex(x => /^(apt|unit|ste|suite)$/.test(x));
-    const k = (cut >= 0 ? w.slice(0, cut) : w).map(short); if (k.length > 2 && /^\d{5}$/.test(k[k.length - 1])) k.pop();
-    return k.length >= 2 && /^\d/.test(k[0]) ? k.join(' ') : '';
+  // 0.22.4 (F11, the main app's rule): an address = house number + direction + street name + street type (St = Street ...; unit after
+  // # / Apt / Unit / Suite, city after a comma and a zip ignored; words after the type ignored). Two addresses: exact = all equal; likely =
+  // number and name equal and the type (or the direction) missing on one side ('1827 Oak' and '1827 Oak Street'); else no match.
+  const ST_TYPES = Object.keys(ABBR).concat(['way', 'loop', 'square', 'path', 'pike', 'alley', 'cove', 'pass', 'ridge', 'bend', 'crossing', 'point', 'plaza']);
+  const DIRS = { n: 'north', s: 'south', e: 'east', w: 'west', ne: 'northeast', nw: 'northwest', se: 'southeast', sw: 'southwest' };
+  function addrParts(a) {
+    let w = words(String(a || '').split(/[#,\n]/)[0]); const cut = w.findIndex((x, i) => i >= 2 && /^(apt|apartment|unit|ste|suite)$/.test(x)); if (cut > 0) w = w.slice(0, cut);
+    w = w.map(x => LONG[x] || (x === 'av' ? 'avenue' : x === 'str' ? 'street' : x === 'terr' ? 'terrace' : x));
+    if (w.length > 2 && /^\d{5}$/.test(w[w.length - 1])) w.pop();
+    if (!/^\d+[a-z]?$/.test(w[0] || '')) return null;
+    let rest = w.slice(1), dir = ''; const d0 = DIRS[rest[0]] || (Object.values(DIRS).indexOf(rest[0]) >= 0 ? rest[0] : ''); if (d0 && rest.length > 1) { dir = d0; rest = rest.slice(1); }
+    const ti = rest.findIndex((x, i) => i >= 1 && ST_TYPES.indexOf(x) >= 0), type = ti > 0 ? rest[ti] : ''; const name = (ti > 0 ? rest.slice(0, ti) : rest).join(' ');
+    return name ? { num: w[0], dir, name, type } : null;
+  }
+  function addrRel(a, b) {   // 2 exact, 1 likely, 0 none
+    const x = typeof a === 'string' ? addrParts(a) : a, y = addrParts(b); if (!x || !y || x.num !== y.num || x.name !== y.name) return 0;
+    if ((x.type && y.type && x.type !== y.type) || (x.dir && y.dir && x.dir !== y.dir)) return 0;
+    return x.type === y.type && x.dir === y.dir ? 2 : 1;
   }
   const sameSite = (a, b) => words(a.name).join(' ') === words(b.name).join(' ') && words(a.address).map(short).join(' ') === words(b.address).map(short).join(' ');
   function matches() {
     const q = typed(); if (!q.some(Boolean)) return null;
-    const d = digits(q[2]), ka = streetKey(q[1]), out = [];
+    const d = digits(q[2]), ka = addrParts(q[1]), out = [];
     allSites().forEach((h, i) => {
-      const why = [];
-      if (q[1] && hasAll(h.address, q[1])) why.push('address');
+      const why = [], rel = ka ? addrRel(ka, h.address) : 0;   // 0.22.4 (F11): '1827 Oak Street' also finds '1827 Oak' (likely)
+      if (q[1] && (hasAll(h.address, q[1]) || rel)) why.push('address');
       if (d.length >= 3 && digits(h.phone).includes(d)) why.push('phone');
       if (q[0] && hasAll(h.name, q[0])) why.push('name');
       if (!why.length) return;
-      const exact = (why.indexOf('address') >= 0 && !!ka && ka === streetKey(h.address)) || (why.indexOf('phone') >= 0 && d.length >= 7 && d.slice(-7) === digits(h.phone).slice(-7));
-      out.push({ h, i, why, exact, score: why.reduce((a, w) => a + PART_W[w], 0) });
+      const exact = (why.indexOf('address') >= 0 && rel === 2) || (why.indexOf('phone') >= 0 && d.length >= 7 && d.slice(-7) === digits(h.phone).slice(-7)) ? 2 : why.indexOf('address') >= 0 && rel === 1 ? 1 : 0;   // 2 exact, 1 likely
+      out.push({ h, i, why, exact, likely: exact === 1, score: why.reduce((a, w) => a + PART_W[w], 0) });
     });
     return out.sort((a, b) => (b.exact - a.exact) || (b.why.length - a.why.length) || (b.score - a.score) || (a.i - b.i));
   }
@@ -9001,7 +9020,7 @@ body.light-theme .proof-box{color:#0f172a}
   }
   // Use results / Done: the line goes in the report (the main app's tool sets the value approved and in the report)
   function includeOnUse(id) { callView.included = callView.included || {}; callView.included[id] = true; saveView(); }
-  function refreshEd() { try { setTimeout(() => { try { syncMirrors(); } catch (x) {} }, 0); document.querySelectorAll('#viewport-canvas-frame .proof-box').forEach(bx => { const k = bx.dataset.key; if (k && k in call || k) bx.value = valOf(k); }); applyVis(); paintInc(); paintReport(); paintNotes(); } catch (e) {} }
+  function refreshEd() { try { setTimeout(() => { try { syncMirrors(); paintDebug(); } catch (x) {} }, 0); document.querySelectorAll('#viewport-canvas-frame .proof-box').forEach(bx => { const k = bx.dataset.key; if (k && k in call || k) bx.value = valOf(k); }); applyVis(); paintInc(); paintReport(); paintNotes(); } catch (e) {} }
   // ---- filter size: the main app's three wheels ----
   const F_WHOLE = range(40, 6), F_THICK = ['5', '4', '3', '2', '1'], F_FR = ['7/8', '3/4', '5/8', '1/2', '3/8', '1/4', '1/8', '0'];
   const fNorm = f => ({ '0/8': '0', '2/8': '1/4', '4/8': '1/2', '6/8': '3/4' }[f] || f);
@@ -9266,7 +9285,7 @@ body.light-theme .proof-box{color:#0f172a}
     if (!all.length) return '<div class="proof-empty">No match. Change what you typed' + (hasNewCustomer() ? ', or tap New customer.' : '.') + '</div>';
     const m = all.slice(0, LIST_MAX);
     const count = all.length > LIST_MAX ? LIST_MAX + ' of ' + all.length + ': keep typing' : all.length + (all.length === 1 ? ' match' : ' matches');
-    return '<div class="proof-count">' + count + '</div><div class="proof-list">' + m.map(x => '<button type="button" class="proof-hit" data-i="' + x.i + '"><em class="proof-why">Matched: ' + x.why.map(w => PART_WORD[w]).join(', ') + '</em><b>' + esc(x.h.name) + '</b>' + (x.h.onPhone ? ' <i>on this phone</i>' : '') +
+    return '<div class="proof-count">' + count + '</div><div class="proof-list">' + m.map(x => '<button type="button" class="proof-hit" data-i="' + x.i + '"><em class="proof-why">Matched: ' + x.why.map(w => PART_WORD[w]).join(', ') + (x.likely ? ' (likely)' : '') + '</em><b>' + esc(x.h.name) + '</b>' + (x.h.onPhone ? ' <i>on this phone</i>' : '') +
       '<span>' + esc(x.h.address) + (x.h.phone ? ' · ' + esc(x.h.phone) : '') + '</span></button>').join('') + '</div>';
   }
   const paintResults = () => document.querySelectorAll('.proof-results').forEach(el => { el.innerHTML = resultsHtml(); });
@@ -9275,7 +9294,7 @@ body.light-theme .proof-box{color:#0f172a}
   let trayPinned = false;
   try { const tt = toggleTray; toggleTray = function () { const sc = document.getElementById('viewport-outer-scroller'); const wasPinned = trayPinned; trayPinned = !document.body.classList.contains('proof-tray-open') && !!(sc && sc.scrollTop > 4);
     if (trayPinned || wasPinned) keepPlace(() => tt.apply(this, arguments)); else tt.apply(this, arguments); }; } catch (e) {}
-  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; try { closeWheel(); closeAsk(); closePick(); } catch (e) {}   /* 0.12.2 (R6) */ try { applyEquip(); } catch (e) {} /* C4b */ const r = rc.apply(this, arguments); try { decorate(); } catch (e) {} try { paintFolds(); } catch (e) {} try { paintInc(); calcCells().forEach(paintCalcBox); paintCm(); } catch (e) {} try { paintClamp(); fitBoxLines(); syncMirrors(); pinTray(); } catch (e) {} /* 0.22.2 */ try { paintNoCust(); } catch (e) {} /* 0.22.3 */ return r; }; }
+  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; try { closeWheel(); closeAsk(); closePick(); } catch (e) {}   /* 0.12.2 (R6) */ try { applyEquip(); } catch (e) {} /* C4b */ const r = rc.apply(this, arguments); try { decorate(); } catch (e) {} try { paintFolds(); } catch (e) {} try { paintInc(); calcCells().forEach(paintCalcBox); paintCm(); } catch (e) {} try { paintClamp(); fitBoxLines(); syncMirrors(); pinTray(); } catch (e) {} /* 0.22.2 */ try { paintDebug(); } catch (e) {} /* 0.22.4 */ try { paintNoCust(); } catch (e) {} /* 0.22.3 */ return r; }; }
 
   document.addEventListener('input', e => {
     const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b) return;
@@ -9297,6 +9316,7 @@ body.light-theme .proof-box{color:#0f172a}
     hf.forEach(f => { delete call[f.id]; }); hf.forEach(f => { if (f.find && x[f.find]) call[f.id] = x[f.find]; });
     eachCell(engineState, p => { if (p.slot !== 'box' || FIND_KEYS[p.proofKey] || isDraft(p.proofKey)) return; const ff = findFillOf(p); if (ff && x[ff] != null) call[p.proofField ? p.proofField.id : p.proofKey] = x[ff]; });
     if (extra) Object.keys(extra).forEach(k => { call[k] = extra[k]; });
+    if (callView.needCust) { callView.needCust = false; saveView(); } prevCall = null;   // 0.22.4: a customer was picked
     runCalcs(); lsSet(K.call, call);
     ctFrom = ''; clearFind(); goView(ctView && activeTypes().length ? ctView : 'entry');   // C1b: then 'What kind of call is this?'
   }
@@ -9318,7 +9338,8 @@ body.light-theme .proof-box{color:#0f172a}
     const twin = allSites().find(x => sameSite(x, site));   // 0.13.1 (R3): no duplicates; the one already kept is loaded
     if (twin) { say('Already saved: ' + twin.name + ' (loaded it).', 'done'); loadSite(twin); return; }
     // C1b (F10): the same house number + street under a DIFFERENT name: ask before keeping a second customer there
-    const sk = streetKey(site.address), near = sk && allSites().find(x => streetKey(x.address) === sk && words(x.name).join(' ') !== words(site.name).join(' '));
+    // 0.22.4 (F11): exact or likely ('1827 Oak' / '1827 Oak Street'), the exact one first
+    const near = (addrParts(site.address) && allSites().filter(x => addrRel(site.address, x.address)).sort((a, b) => addrRel(site.address, b.address) - addrRel(site.address, a.address))[0]) || null;
     if (near) { ask('There is already a customer at ' + near.address + ' (' + near.name + '). Use that one?', [['Use that one', () => loadSite(near)], ['Save as new', () => keepNew(site, extra)], ['Cancel', () => {}]]   /* 0.14.1 (C1B-52): Cancel keeps the draft */); return; }
     keepNew(site, extra);
   };
@@ -9484,6 +9505,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (r._labelOf) cell.proofLabelOf = r._labelOf;   // C3a
       if (r._clamp) cell.proofClamp = r._clamp;   // 0.22.2 (F16)
       if (r._lines > 1) cell.proofLines = r._lines;   // C3c: a 2- or 3-row value box
+      if (r._lines) cell.proofLinesRaw = r._lines;   // 0.22.4: what the sheet said (the debug line)
       if (fd) { cell.proofField = fd; if (r._join) cell.proofJoin = r._join; if (r._label) cell.proofLabel = r._label; }
       if (slot === 'box') { cell.slot = 'box'; cell.proofKey = fd && draftScreen && screen === draftScreen ? DRAFT + fd.id : content; cell.label = ''; }   // C1a: a draft box
       else if (slot === 'unit' || slot === 'report-value' || FIELD_SLOTS[slot]) { cell.slot = slot; cell.proofKey = content; cell.label = ''; }   // C4b: f-plus, f-menu, f-equip
@@ -9854,6 +9876,8 @@ body.light-theme .proof-box{color:#0f172a}
     const ctRows = ct && hasCols(ct, ['Call type']) ? ct.rows : null;   // C1b
     const sgRows = sg && hasCols(sg, ['Setting', 'Value']) ? sg.rows : null;   // 0.22.3
     const hasS = st.labels.indexOf('Line name') >= 0, hasI = it.labels.indexOf('Id') >= 0 && it.labels.indexOf('Line') >= 0;
+    HIDDEN = { fixed: 0, lost: 0 };   // 0.22.4: read the cells Google sent empty (text in a column of numbers) before anything uses them
+    if (hasS && hasI) await hiddenCheck([['Structure', st], ['Items', it], ['Fields', fl.labels.indexOf('Field Id') >= 0 ? fl : null], ['Profile sizes', hasCols(ps, ['Profile', 'Target']) ? ps : null], ['Sites', sitesRows ? si : null], ['Call types', ctRows ? ct : null], ['Settings', sgRows ? sg : null]], notes);
     if (!hasS || !hasI) { if (hasS || hasI) notes.push((hasS ? 'Structure found but Items is missing or has no Id / Line heading' : 'Items found but Structure is missing or has no Line name heading') + ': both are needed, so the old layout tab is used.'); return { missing: true }; }
     const hasF = fl.labels.indexOf('Field Id') >= 0, hasP = hasCols(ps, ['Profile', 'Target']);
     let items = it, itemsTab = 'Items';
@@ -9934,7 +9958,8 @@ body.light-theme .proof-box{color:#0f172a}
   // ---------- reading: Google's gviz answer (JSONP, no key; needs the test sheet shared 'Anyone with the link: Viewer') ----------
   // 0.22.1 (no. 149, fix 4): an empty cell can come as null or as {v:null} (real Google): both are '' (never the word 'null')
   function cellText(c, str) { if (c == null) return ''; const v = c.f != null && typeof c.v !== 'number' ? c.f : c.v; return v == null ? '' : (str ? String(v) : v); }
-  function gviz(tab, timeoutMs, asGrid) {   // asGrid (C3c): headers=0, every row as an array (the Comments tab has two header rows)
+  // 0.22.4: one gviz call (JSONP); extra = more URL parameters (headers=, range=); answers Google's table
+  function gvizCall(tab, extra, timeoutMs) {
     return new Promise((res, rej) => {
       const cb = '__proofCb' + Date.now() + Math.floor(Math.random() * 1e6), s = document.createElement('script');
       const t = setTimeout(() => { cleanup(); rej(new Error('no answer')); }, timeoutMs || 8000);
@@ -9942,18 +9967,73 @@ body.light-theme .proof-box{color:#0f172a}
       window[cb] = d => {
         cleanup();
         if (!(d && d.status === 'ok' && d.table)) return rej(new Error((d && d.errors && d.errors[0] && d.errors[0].detailed_message) || 'the sheet refused'));
-        const labels = d.table.cols.map(c => String(c.label || '').trim());
-        // round B1 (PT1): Google says in its answer when it turned a cell into a number, date or time; kept as r._t for the plain-text guard
-        const typeOf = v => typeof v === 'number' ? 'number' : Array.isArray(v) ? 'time' : /^Date\(/.test(String(v)) ? 'date' : '';
-        const rows = d.table.rows.map(r => { const o = {}; (r.c || []).forEach((c, i) => { o[labels[i]] = cellText(c, false); const t = c == null ? '' : typeOf(c.v); if (t) (o._t = o._t || {})[labels[i]] = t; }); return o; });
-        if (asGrid) { const g = d.table.rows.map(r => (r.c || []).map(c => cellText(c, true)));
-          return res({ grid: labels.some(Boolean) ? [labels].concat(g) : g }); }   // a header row Google kept anyway goes back on top
-        res({ labels, rows });
+        res(d.table);
       };
       s.onerror = () => { cleanup(); rej(new Error('could not load')); };
-      s.src = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?headers=' + (asGrid ? 0 : 1) + '&sheet=' + encodeURIComponent(tab) + '&tqx=responseHandler:' + cb + '&t=' + Date.now();
+      s.src = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?' + extra + '&sheet=' + encodeURIComponent(tab) + '&tqx=responseHandler:' + cb + '&t=' + Date.now();
       document.head.appendChild(s);
     });
+  }
+  function gviz(tab, timeoutMs, asGrid) {   // asGrid (C3c): headers=0, every row as an array (the Comments tab has two header rows)
+    return gvizCall(tab, 'headers=' + (asGrid ? 0 : 1), timeoutMs).then(table => {
+      const labels = table.cols.map(c => String(c.label || '').trim());
+      // round B1 (PT1): Google says in its answer when it turned a cell into a number, date or time; kept as r._t for the plain-text guard
+      const typeOf = v => typeof v === 'number' ? 'number' : Array.isArray(v) ? 'time' : /^Date\(/.test(String(v)) ? 'date' : '';
+      const rows = table.rows.map(r => { const o = {}; (r.c || []).forEach((c, i) => { o[labels[i]] = cellText(c, false); const t = c == null ? '' : typeOf(c.v); if (t) (o._t = o._t || {})[labels[i]] = t; }); return o; });
+      if (asGrid) { const g = table.rows.map(r => (r.c || []).map(c => cellText(c, true)));
+        return { grid: labels.some(Boolean) ? [labels].concat(g) : g }; }   // a header row Google kept anyway goes back on top
+      // 0.22.4: each cell as Google shows it (null = empty in the answer), for the hidden-text check
+      const disp = table.rows.map(r => labels.map((_, i) => { const c = (r.c || [])[i]; return c == null || (c.v == null && c.f == null) ? null : String(c.f != null ? c.f : c.v); }));
+      return { labels, rows, disp };
+    });
+  }
+  // ---------- 0.22.4 (Prompts no. 152, Danny): text Google hides ----------
+  // Google gives each column ONE type (the kind most of its cells have); a cell of the other kind (the text '3' in a column of numbers,
+  // a number among words) comes back EMPTY. Header rows keep their text, so a second read with every row as a header row (headers = all
+  // the rows) gives each column's whole text in its label: a column whose label holds more than its cells has a hidden cell, between two
+  // cells Google did send. A one-row read (range=R:R, headers=1) then gives that row's cells as text. Found = used, and the footer says so;
+  // not found = a warning naming the tab, row(s) and column, and the cell is not used. A setting is never lost without a word.
+  let HIDDEN = { fixed: 0, lost: 0 };
+  const toks = t => String(t == null ? '' : t).trim().split(/\s+/).filter(Boolean);
+  function hiddenCols(g, L) {
+    const found = [], vague = [];
+    g.labels.forEach((lab, i) => {
+      const all = toks(L[i]), head = toks(lab), out = []; let p = head.length, gap = [], bad = head.some((x, j) => all[j] !== x);
+      for (let k = 0; k < g.disp.length && !bad; k++) {
+        const T = toks(g.disp[k][i]); if (!T.length) { gap.push(k); continue; }
+        let q = -1; for (let j = p; j + T.length <= all.length; j++) if (T.every((x, m) => all[j + m] === x)) { q = j; break; }
+        if (q < 0) { bad = true; break; }
+        if (q > p) out.push({ rows: gap.slice(), text: all.slice(p, q).join(' ') });
+        p = q + T.length; gap = [];
+      }
+      if (!bad && p < all.length) out.push({ rows: gap.slice(), text: all.slice(p).join(' ') });
+      if (bad || out.some(o => !o.rows.length)) {   // Google wrote a cell differently in the label: only the count can tell
+        const sent = g.disp.reduce((n, r) => n + toks(r[i]).length, 0); if (all.length > head.length + sent) vague.push({ col: i, label: lab || ('column ' + (i + 1)) }); return; }
+      out.forEach(o => found.push({ col: i, label: lab || ('column ' + (i + 1)), rows: o.rows, text: o.text }));
+    });
+    return { found, vague };
+  }
+  async function hiddenCheck(list, notes) {   // list: [[tab name, gviz answer]]
+    const failed = [];
+    await Promise.all(list.map(async ([tab, g]) => {
+      if (!g || !g.disp || !g.disp.length) return;
+      let L; try { const tb = await gvizCall(tab, 'headers=' + (g.disp.length + 1), 6000); if (tb.rows && tb.rows.length) throw new Error('an answer with rows'); L = tb.cols.map(c => String(c.label || '')); }
+      catch (e) { failed.push(tab + ' (' + e.message + ')'); return; }
+      const h = hiddenCols(g, L);
+      h.vague.forEach(v => { HIDDEN.lost++; notes.push(tab + ', ' + v.label + ': Google hid text in this column (text among numbers, or a number among words); it is NOT used. Retype it so the column is one kind (e.g. plain numbers).'); });
+      const want = [...new Set([].concat(...h.found.map(f => f.rows)))].slice(0, 25), txt = {};
+      await Promise.all(want.map(async k => { try { const tb = await gvizCall(tab, 'headers=1&range=' + (k + 2) + ':' + (k + 2), 5000); if (!(tb.rows && tb.rows.length)) txt[k] = tb.cols.map(c => String(c.label || '').trim()); } catch (e) {} }));
+      h.found.forEach(f => {
+        let use = null;   // [[row index, text]]
+        if (f.rows.every(k => txt[k])) { const got = f.rows.filter(k => toks(txt[k][f.col]).length); if (got.length && got.map(k => toks(txt[k][f.col]).join(' ')).join(' ') === f.text) use = got.map(k => [k, txt[k][f.col]]); }
+        else if (f.rows.length === 1 && !txt[f.rows[0]]) use = [[f.rows[0], f.text]];   // one empty cell between two that Google sent: it is that one
+        if (!use) { HIDDEN.lost++; const a = f.rows[0] + 2, z = f.rows[f.rows.length - 1] + 2;
+          notes.push(tab + ', ' + f.label + ', ' + (a === z ? 'row ' + a : 'rows ' + a + ' to ' + z) + ': Google hid text here ("' + f.text + '"); it is NOT used. Retype it as a plain number (or tap Reload).'); return; }
+        use.forEach(([k, v]) => { const r = g.rows[k]; if (!r) return; r[f.label] = v; if (r._t) delete r._t[f.label]; g.disp[k][f.col] = v; HIDDEN.fixed++;
+          notes.push(tab + ' row ' + (k + 2) + ', ' + f.label + ': Google sends this cell empty (the text "' + v + '" in a column of numbers, or a number among words); read anyway. Tip: retype it so the column is one kind.'); });
+      });
+    }));
+    if (failed.length) notes.push('Could not double-check ' + failed.join(', ') + ' for text Google hides; tap Reload to try again.');
   }
   function fromCsv(text) {
     const lines = []; let row = [], f = '', q = false;
@@ -10516,6 +10596,21 @@ body.light-theme .proof-box{color:#0f172a}
       ['fontSize', 'fontFamily', 'fontWeight', 'lineHeight', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'textAlign', 'color'].forEach(k => { m.style[k] = k === 'color' ? '' : cs[k]; });
       const fr = face.getBoundingClientRect(), r = ta.getBoundingClientRect(); m.style.left = (r.left - fr.left) + 'px'; m.style.top = (r.top - fr.top) + 'px'; m.style.width = r.width + 'px'; m.style.height = r.height + 'px'; });
   }
+  // 0.22.4 (no. 152, fix 1): Settings 'Debug boxes' = yes: a small grey line on each multi-row, comment and editor box with what the
+  // phone really drew: box height, its Line's height, rows asked / rows that fit, font size, TEXTAREA or INPUT, the Box lines the page got
+  // from the sheet (blank = none) and Max size. Laid over the bottom of the cell (it takes no room, so the layout is the same as without it).
+  function paintDebug() {
+    const on = SETTINGS['debug boxes'] === 'yes';
+    document.querySelectorAll('#viewport-canvas-frame .proof-dbg').forEach(d => { if (!on) d.remove(); }); if (!on) return;
+    document.querySelectorAll('#viewport-canvas-frame .proof-box').forEach(bx => { const p = boxCell(bx); if (!p) return;
+      const F = p.proofField; if (!(p.proofLines > 1 || edOf(p) || (F && commentOf(F)) || bx.tagName === 'TEXTAREA')) return;
+      const cell = bx.closest('.proof-cell'); if (!cell) return; let d = cell.querySelector('.proof-dbg'); if (!d) { d = document.createElement('div'); d.className = 'proof-dbg'; d.setAttribute('aria-hidden', 'true'); cell.appendChild(d); }
+      const cs = getComputedStyle(bx), fs = parseFloat(cs.fontSize) || 0, lh = parseFloat(cs.lineHeight) || fs * 1.15, px = k => parseFloat(cs[k]) || 0, line = bx.closest('.grid-stack-row');
+      const asked = bx.tagName === 'TEXTAREA' ? bx.rows : 1, shown = bx.tagName === 'TEXTAREA' ? Math.max(0, Math.floor((bx.clientHeight - px('paddingTop') - px('paddingBottom') + 1) / lh)) : 1;
+      const t = 'box ' + Math.round(bx.offsetHeight) + ' px · line ' + Math.round(line ? line.offsetHeight : 0) + ' px · rows asked ' + asked + ' / shown ' + shown + ' · font ' + (Math.round(fs * 10) / 10) + ' px · ' + bx.tagName +
+        ' · Box lines ' + (p.proofLinesRaw || 'blank') + ' · Max size ' + limits(p).hi;
+      if (d.textContent !== t) d.textContent = t; });
+  }
   // 0.22.2 (F16): a label with the 2-line default is clamped to 2 lines ('…' after)
   // a word longer than the cell (e.g. 'Condenser' in a narrow label) makes the text a little smaller (whole words kept, 9 px at least)
   function paintClamp() { eachCell(engineState, p => { if (!p.proofClamp || !p.proofId) return; const el = document.querySelector('#viewport-canvas-frame .grid-split-partition[data-pid="' + p.proofId + '"]'); if (!el) return;
@@ -10722,7 +10817,7 @@ body.light-theme .proof-box{color:#0f172a}
       try { stackFrozen(); } catch (e) {}
     } finally { visBusy = false; }
     pinChips(); try { paintFolds(); } catch (e) {}
-    try { document.querySelectorAll('#viewport-canvas-frame [data-fit0]').forEach(el => { if (el.classList.contains('grid-stack-row')) el.style.flex = el.dataset.fit0; delete el.dataset.fit0; }); fitBoxLines(); syncMirrors(); } catch (e) {}   // 0.22.2 (F15): the band sizes above are the base; fit on top of them
+    try { document.querySelectorAll('#viewport-canvas-frame [data-fit0]').forEach(el => { if (el.classList.contains('grid-stack-row')) el.style.flex = el.dataset.fit0; delete el.dataset.fit0; }); fitBoxLines(); syncMirrors(); paintDebug(); } catch (e) {}   // 0.22.2 (F15); 0.22.4: the debug line: the band sizes above are the base; fit on top of them
   }
   // 0.12.3 (F3): a chip stays reachable while its Section is on screen: it slides down to just below the frozen header (and the top of
   // what the phone shows when the keyboard is up), never past its Section's bottom. Only the chip moves: no scroll, no redraw.
@@ -10864,8 +10959,9 @@ body.light-theme .proof-box{color:#0f172a}
       if (e.target && e.target.id === 'proof-save-now') { e.stopPropagation(); window.EngineActions['proof-save-tweaks'](); return; }   // the inspector can cover the Tools row on a phone
       n.classList.toggle('small'); footRoom(n); }); document.body.appendChild(n); }
     const viewFirst = usesB2 && !document.querySelector('#viewport-canvas-frame .proof-viewcell') ? viewText() + ' · ' : '';   // 0.22.3: no view-line row = the view starts the footer
-    const head = viewFirst + 'proof ' + PROOF_VERSION + ' · profile ' + (info.profile || '?') + (chosenProfile() === 'auto' ? ' (auto)' : '') + ' · ' + DEVICE +
-      (info.offline ? ' · sheet not read (offline) ' + hhmm(info.readAt) : ' · read ' + (info.readAt ? hhmm(info.readAt) : '-')) + ' · ' + info.rows + ' rows, ' + (info.refused + (notes || []).filter(x => /^(Sites|Call types|Comments) row \d+ refused/.test(String(x && x._note || x))).length) + ' refused · ' + info.tweaks + ' tweaks applied' + (info.pending ? ' (not saved yet)' : '') + (usesB2 ? ' · view ' + viewWord() + ', template ' + (callView.tpl || 'none') + (callView.callType ? ', call type ' + callView.callType : '') : '');   // C1b: the call type
+    const hl = HIDDEN.lost, hf = HIDDEN.fixed;   // 0.22.4: cells Google sent empty: not read = a warning first on the line; read anyway = said after the refused count
+    const head = (hl ? '\u26a0 ' + hl + ' sheet cell' + (hl > 1 ? 's' : '') + ' not read (tap) · ' : '') + viewFirst + 'proof ' + PROOF_VERSION + ' · profile ' + (info.profile || '?') + (chosenProfile() === 'auto' ? ' (auto)' : '') + ' · ' + DEVICE +
+      (info.offline ? ' · sheet not read (offline) ' + hhmm(info.readAt) : ' · read ' + (info.readAt ? hhmm(info.readAt) : '-')) + ' · ' + info.rows + ' rows, ' + (info.refused + (notes || []).filter(x => /^(Sites|Call types|Comments) row \d+ refused/.test(String(x && x._note || x))).length) + ' refused' + (hf ? ' · ' + hf + ' text cell' + (hf > 1 ? 's' : '') + ' read' : '') + ' · ' + info.tweaks + ' tweaks applied' + (info.pending ? ' (not saved yet)' : '') + (usesB2 ? ' · view ' + viewWord() + ', template ' + (callView.tpl || 'none') + (callView.callType ? ', call type ' + callView.callType : '') : '');   // C1b: the call type
     const unsaved = info.readAt ? changedFrom(applied).length : 0;
     const lost = info.readAt && structChanged();
     n.innerHTML = '<b>' + esc(head) + '</b>' + (unsaved ? '<br><span class="proof-last">' + unsaved + ' change(s) not saved yet.</span> <button type="button" id="proof-save-now">Save tweaks</button>' : '') + (lost ? '<br><span class="proof-warn">' + esc(NOT_KEPT) + '</span>' : '') + (info.sourceText ? '<br>' + esc(info.sourceText) : '') + (lastAction ? '<br><span class="proof-last">' + esc(lastAction) + '</span>' : '') + notes.map(x => '<br>' + esc(x)).join('');
