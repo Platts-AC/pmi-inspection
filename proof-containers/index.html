@@ -738,6 +738,9 @@
 .proof-ct .proof-ct-item.ct-on{border-color:#f59e0b;background:#2a1a05}
 .proof-ct .proof-ct-item i{font-size:11px;color:#fbbf24;font-style:normal;margin-left:6px}
 .proof-ct .proof-empty{color:#fbbf24;font-size:13px;padding:6px 0}
+#proof-tabcover{position:fixed;inset:0;z-index:200;background:rgba(2,6,23,.92);display:flex;align-items:center;justify-content:center;font:16px system-ui,sans-serif;color:#e2e8f0}
+#proof-tabcover .ptc-box{max-width:320px;margin:16px;padding:18px;border:1px solid #38bdf8;border-radius:12px;background:#0b1626;text-align:center}
+#proof-tabcover button{min-height:44px;padding:0 18px;border-radius:8px;border:1px solid #22d3ee;background:#0f213a;color:#22d3ee;font:600 16px system-ui,sans-serif}
 #proof-fmenu{position:fixed;left:8px;right:8px;bottom:12px;z-index:86;display:flex;flex-direction:column;gap:8px;background:#0b1626;border:1px solid #38bdf8;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.6);padding:12px;font:15px system-ui,sans-serif;color:#e2e8f0}
 #proof-fmenu button{min-height:44px;border-radius:8px;border:1px solid #2b4f7e;background:#0f213a;color:#e2e8f0;font:600 15px system-ui,sans-serif;text-align:left;padding:6px 12px}#proof-fmenu small{display:block;font-weight:400;font-size:12px;color:#94a3b8}
 .proof-fbtn{min-width:34px;min-height:34px;border-radius:8px;border:1px solid #2b4f7e;background:#0f213a;color:#e2e8f0;font:700 17px system-ui,sans-serif;padding:0 6px}
@@ -816,7 +819,7 @@
 #viewport-canvas-frame .proof-face.proof-cm.is-approved .proof-box{padding-left:12px}
 #viewport-canvas-frame .proof-face.proof-cm:has(.proof-ta){border-radius:14px}
 .proof-cm-edit{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:24px;height:24px;border-radius:9999px;border:1px solid #2b4f7e;background:#0f213a;color:#94a3b8;font:12px/1 system-ui,sans-serif;padding:0}
-#viewport-canvas-frame textarea.proof-box.proof-ta{resize:none;line-height:1.15;overflow:hidden;overflow-wrap:anywhere;height:100%;display:block;padding-top:4px;padding-bottom:4px}
+#viewport-canvas-frame textarea.proof-box.proof-ta{resize:none;line-height:1.15;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-y;overflow-wrap:anywhere;height:100%;display:block;padding-top:4px;padding-bottom:4px}
 #proof-pick .pp-who{font-size:11px;color:#94a3b8;margin:-4px 0 8px}
 #proof-pick .pp-add{display:flex;gap:6px;margin-top:6px}
 #proof-pick .pp-add .pp-new{flex:1;min-width:0;padding:8px 10px;border-radius:8px;border:1px solid #234d82;background:#0c1a2e;color:#e2e8f0;font-size:16px}
@@ -3659,7 +3662,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.22.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.22.1", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3669,7 +3672,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.22.0', stamp: '2026-11-22 21:47:06', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.22.1', stamp: '2026-11-22 22:27:47', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8346,7 +8349,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.22.0';
+  const PROOF_VERSION = '0.22.1';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8447,22 +8450,21 @@ body.light-theme .proof-box{color:#0f172a}
   // a failed write, a copy that does not read back the same) = localStorage only, as 0.19.0, with one plain message. No localStorage copy is
   // ever deleted by this code (only the per-key note of a key removed on purpose).
   const STORE_PFX = 'proof-containers.', STORE_META = 'proof-containers.store.meta.v1', STORE_LS_MAX = 1500000, STORE_DB = 'proof-containers', STORE_OS = 'kv';
-  const STORE = { mem: {}, on: false, booted: false, failed: '', moved: 0, fromIdb: 0, pending: {}, msgShown: false };
-  const storeHash = t => { let h = 5381; for (let i = 0; i < t.length; i++) h = ((h << 5) + h + t.charCodeAt(i)) | 0; return t.length + ':' + (h >>> 0).toString(36); };
+  const STORE = { mem: {}, on: false, booted: false, failed: '', moved: 0, fromIdb: 0, pending: {}, msgShown: false, dead: false };
+  const storeHash = t => { if (t == null) return 'none'; let h = 5381; for (let i = 0; i < t.length; i++) h = ((h << 5) + h + t.charCodeAt(i)) | 0; return t.length + ':' + (h >>> 0).toString(36); };
   const storeMetaGet = () => { try { const m = JSON.parse(localStorage.getItem(STORE_META) || 'null'); return m && typeof m === 'object' ? m : {}; } catch (e) { return {}; } };
-  const storeMetaSet = m => { try { localStorage.setItem(STORE_META, JSON.stringify(m)); } catch (e) {} };
   const STORE_START = (() => { const raw = {}; try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.indexOf(STORE_PFX) === 0 && k !== STORE_META) raw[k] = localStorage.getItem(k); } } catch (e) {} return { raw, meta: storeMetaGet() }; })();
-  // the backup write: under the limit only; the note changes only when the write worked
-  function storeLsWrite(k, json) {
-    if (json.length >= STORE_LS_MAX) return false;
-    try { localStorage.setItem(k, json); } catch (e) { return false; }
-    const m = storeMetaGet(); m[k] = { at: Date.now(), h: storeHash(json) }; storeMetaSet(m); return true;
-  }
+  // 0.22.1 (no. 149, fix 2): the backup write; no separate note any more. What localStorage holds after a save is written INTO the
+  // IndexedDB record (lsH = its fingerprint), so a failed note write can never make an older copy look newer.
+  function storeLsWrite(k, json) { if (json.length >= STORE_LS_MAX) return false; try { localStorage.setItem(k, json); return true; } catch (e) { return false; } }
+  const lsNowH = k => { try { return storeHash(localStorage.getItem(k)); } catch (e) { return 'none'; } };
   function storeMsg() {
     if (STORE.msgShown || !STORE.failed) return; STORE.msgShown = true;
     try { say("This phone's database (IndexedDB) is not working (" + STORE.failed + '): saving in the browser storage only, as before.', 'warn', 10000); } catch (e) {}
   }
   function storeFail(why) { STORE.on = false; if (!STORE.failed) STORE.failed = why || 'error'; if (STORE.booted) storeMsg(); }
+  // 0.22.1 (fix 1): every IndexedDB step has a time limit
+  const tl = (p, ms, why) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error(why || 'no answer')), ms))]);
   const idbOpen = ms => new Promise((res, rej) => {
     let done = false; const t = setTimeout(() => { if (!done) { done = true; rej(new Error('no answer')); } }, ms || 2500);
     try {
@@ -8476,54 +8478,89 @@ body.light-theme .proof-box{color:#0f172a}
   let storeDb = null;
   const idbAll = db => new Promise((res, rej) => { try { const out = {}, tx = db.transaction(STORE_OS), c = tx.objectStore(STORE_OS).openCursor();
     c.onsuccess = () => { const x = c.result; if (x) { out[x.key] = x.value; x.continue(); } }; tx.oncomplete = () => res(out); tx.onerror = tx.onabort = () => rej(new Error('read failed')); } catch (e) { rej(new Error('read failed')); } });
-  const idbWrite = (puts, dels) => new Promise(res => { try { const tx = storeDb.transaction(STORE_OS, 'readwrite'), os = tx.objectStore(STORE_OS);
-    Object.keys(puts || {}).forEach(k => os.put(puts[k], k)); (dels || []).forEach(k => os.delete(k)); tx.oncomplete = () => res(true); tx.onerror = tx.onabort = () => res(false); } catch (e) { res(false); } });
+  const idbWrite = (puts, dels) => tl(new Promise(res => { try { const tx = storeDb.transaction(STORE_OS, 'readwrite'), os = tx.objectStore(STORE_OS);
+    Object.keys(puts || {}).forEach(k => os.put(puts[k], k)); (dels || []).forEach(k => os.delete(k)); tx.oncomplete = () => res(true); tx.onerror = tx.onabort = () => res(false); } catch (e) { res(false); } }), 2500).catch(() => false);
   const recOk = r => !!(r && r.v === 1 && typeof r.json === 'string' && (() => { try { JSON.parse(r.json); return true; } catch (e) { return false; } })());
-  async function storeBoot() {
-    try {
-      if (typeof indexedDB === 'undefined' || !indexedDB) throw new Error('not available');
-      storeDb = await idbOpen(2500);
-      const recs = await Promise.race([idbAll(storeDb), new Promise((_, rej) => setTimeout(() => rej(new Error('no answer')), 2500))]);
-      const raw = STORE_START.raw, meta = STORE_START.meta, mem = {}, puts = {}, dels = [], backToLs = [], now = Date.now();
-      const keys = Object.keys(raw).concat(Object.keys(recs).filter(k => !(k in raw) && k.indexOf(STORE_PFX) === 0));
-      keys.forEach(k => {
-        const r = raw[k], rec = recs[k], good = recOk(rec), m = meta[k];
-        if (r != null) {
-          if (good && rec.json === r) { mem[k] = r; return; }
-          const own = !!(m && m.h === storeHash(r));
-          if (good && own && (m.at || 0) < (rec.at || 0)) { mem[k] = rec.json; backToLs.push(k); STORE.fromIdb++; return; }   // the backup is this page's older write
-          mem[k] = r; puts[k] = { v: 1, at: now, json: r }; STORE.moved++; return;   // 0.18 / 0.19 data, or written outside this page: it moves in
-        }
-        if (!good) return;
-        if (m && m.h) { dels.push(k); return; }   // this page wrote it to localStorage and it was removed there on purpose
-        mem[k] = rec.json; backToLs.push(k); STORE.fromIdb++;   // the backup was cleared (or never fit): IndexedDB has it
-      });
-      if (Object.keys(puts).length || dels.length) {
-        if (!(await idbWrite(puts, dels))) throw new Error('write failed');
-        const back = await idbAll(storeDb);
-        if (Object.keys(puts).some(k => !recOk(back[k]) || back[k].json !== puts[k].json)) throw new Error('copy did not read back the same');
+  let bootMem = {};   // what the start has decided so far: kept in memory whatever happens next (fix 1)
+  async function storeBootInner() {
+    if (typeof indexedDB === 'undefined' || !indexedDB) throw new Error('not available');
+    storeDb = await idbOpen(2500);
+    const recs = await tl(idbAll(storeDb), 2500);
+    const raw = STORE_START.raw, meta = STORE_START.meta, mem = bootMem, puts = {}, dels = [], backToLs = [], now = Date.now();
+    const cleared = !Object.keys(raw).length;   // the whole backup is gone (cleared or evicted): IndexedDB has it all
+    const keys = Object.keys(raw).concat(Object.keys(recs).filter(k => !(k in raw) && k.indexOf(STORE_PFX) === 0));
+    keys.forEach(k => {
+      const r = raw[k], rec = recs[k], good = recOk(rec), m = meta[k], hasH = good && typeof rec.lsH === 'string';
+      if (r != null) {
+        if (good && rec.json === r) { mem[k] = r; if (!hasH) puts[k] = { v: 1, at: rec.at || now, json: r, lsH: storeHash(r) }; return; }
+        // fix 2: the backup is this page's own last write (its fingerprint is in the record) = IndexedDB is newer; else it was changed after (older page, hand edit) = it is newer
+        const own = good && (hasH ? rec.lsH === storeHash(r) : !!(m && m.h === storeHash(r) && (m.at || 0) <= (rec.at || 0)));
+        if (own) { mem[k] = rec.json; backToLs.push(k); STORE.fromIdb++; return; }
+        mem[k] = r; puts[k] = { v: 1, at: now, json: r, lsH: storeHash(r) }; STORE.moved++; return;
       }
-      if (dels.length) { const m2 = storeMetaGet(); dels.forEach(k => delete m2[k]); storeMetaSet(m2); }
-      // writes made while starting (only a first device name): they give way where IndexedDB won, otherwise they go in now
-      const pend = {};
-      Object.keys(STORE.pending).forEach(k => { if (backToLs.indexOf(k) < 0) { mem[k] = STORE.pending[k]; pend[k] = { v: 1, at: Date.now(), json: STORE.pending[k] }; } });
-      backToLs.forEach(k => storeLsWrite(k, mem[k]));
-      STORE.mem = mem; STORE.pending = {}; STORE.on = true;
-      if (Object.keys(pend).length && !(await idbWrite(pend))) throw new Error('write failed');
-    } catch (e) { STORE.mem = Object.assign({}, STORE.pending); STORE.pending = {}; storeFail(e && e.message); }
+      if (!good) return;
+      // fix 6: a key removed from localStorage by hand deletes the record ONLY when the record held exactly that copy and fits the backup
+      const same = hasH ? rec.lsH === storeHash(rec.json) : !!(m && m.h && m.h === storeHash(rec.json));
+      if (!cleared && same && rec.json.length < STORE_LS_MAX) { dels.push(k); return; }
+      mem[k] = rec.json; backToLs.push(k); STORE.fromIdb++;
+    });
+    // writes made while starting (only a first device name): they give way where IndexedDB won, otherwise they go in now
+    Object.keys(STORE.pending).forEach(k => { const p = STORE.pending[k]; if (backToLs.indexOf(k) >= 0) return; mem[k] = p.json; puts[k] = { v: 1, at: now, json: p.json, lsH: p.lsH }; });
+    backToLs.forEach(k => { const rec = recs[k], okLs = storeLsWrite(k, mem[k]); puts[k] = { v: 1, at: rec.at || now, json: mem[k], lsH: okLs ? storeHash(mem[k]) : lsNowH(k) }; });
+    if (Object.keys(puts).length || dels.length) {
+      if (!(await idbWrite(puts, dels))) throw new Error('write failed');
+      const back = await tl(idbAll(storeDb), 2500);
+      if (Object.keys(puts).some(k => !recOk(back[k]) || back[k].json !== puts[k].json)) throw new Error('copy did not read back the same');
+    }
+    if (STORE.dead) return;
+    STORE.mem = Object.assign({}, mem); STORE.pending = {}; STORE.on = true;
+  }
+  async function storeBoot() {
+    const cap = new Promise(res => setTimeout(() => res('cap'), 6000));
+    const r = await Promise.race([storeBootInner().then(() => 'ok', e => e), cap]);
+    if (r !== 'ok') { STORE.dead = true;   // fix 1: localStorage only, and nothing read so far is dropped
+      const keep = {}; Object.keys(STORE.pending).forEach(k => { keep[k] = STORE.pending[k].json; });
+      STORE.mem = Object.assign({}, bootMem, keep); STORE.pending = {}; storeFail(r === 'cap' ? 'no answer' : (r && r.message) || 'error'); }
     STORE.booted = true;
   }
   // reads: the memory copy (IndexedDB's, or this session's writes), else localStorage
   const lsGet = (k, d) => { try { const v = k in STORE.mem ? STORE.mem[k] : localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } };
-  // writes: memory now, the localStorage backup now, IndexedDB behind it; true = kept somewhere
+  // writes: memory now, the localStorage backup now, IndexedDB behind it (with what localStorage holds now); true = kept somewhere.
+  // 0.22.1 (fix 3): a tab that is not the active one saves nothing.
   const lsSet = (k, v) => {
+    if (TAB.passive) return false;
     let json; try { json = JSON.stringify(v); } catch (e) { return false; }
-    STORE.mem[k] = json; const ls = storeLsWrite(k, json);
-    if (!STORE.booted) { STORE.pending[k] = json; return ls; }
+    STORE.mem[k] = json; const ls = storeLsWrite(k, json), lsH = ls ? storeHash(json) : lsNowH(k);
+    if (!STORE.booted) { STORE.pending[k] = { json, lsH }; return ls; }
     if (!STORE.on) return ls;
-    idbWrite({ [k]: { v: 1, at: Date.now(), json } }).then(okW => { if (!okW) storeFail('write failed'); });
+    idbWrite({ [k]: { v: 1, at: Date.now(), json, lsH } }).then(okW => { if (!okW) storeFail('write failed'); });
     return true;
   };
+  // ---------- 0.22.1 (no. 149, fix 3; Danny's rule): two tabs. The NEWEST tab wins: it first shows 'This page is also open in another tab'
+  // with Continue here; then the older tab is covered ('This page moved to another tab. You can close this tab.', Use this tab) and saves
+  // nothing. Tabs talk through two small localStorage keys outside the saved data (the storage event reaches every other tab).
+  const TAB_OWNER = 'proofc-tab-owner', TAB_PING = 'proofc-tab-ping', TAB_PONG = 'proofc-tab-pong';
+  const TAB = { id: '', passive: false, owner: false };
+  try { TAB.id = sessionStorage.getItem('proofc-tab-id') || ''; if (!TAB.id) { TAB.id = 't' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); sessionStorage.setItem('proofc-tab-id', TAB.id); } } catch (e) { TAB.id = 't' + Math.random().toString(36).slice(2); }
+  const tabPut = (k, o) => { try { localStorage.setItem(k, JSON.stringify(Object.assign({ at: Date.now(), n: Math.random() }, o))); } catch (e) {} };
+  const tabRead = v => { try { return JSON.parse(v || 'null'); } catch (e) { return null; } };
+  function tabClaim() { TAB.owner = true; TAB.passive = false; tabPut(TAB_OWNER, { id: TAB.id }); }
+  function tabCover(kind) {
+    const old = document.getElementById('proof-tabcover'); if (old) old.remove();
+    const el = document.createElement('div'); el.id = 'proof-tabcover'; el.setAttribute('role', 'dialog');
+    el.innerHTML = kind === 'moved' ? '<div class="ptc-box"><p>This page moved to another tab. You can close this tab.</p><button type="button" data-t="use">Use this tab</button></div>'
+      : '<div class="ptc-box"><p>This page is also open in another tab.</p><button type="button" data-t="here">Continue here</button></div>';
+    el.addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (!b) return; e.stopPropagation(); tabClaim(); try { location.reload(); } catch (x) {} });
+    (document.body || document.documentElement).appendChild(el);
+  }
+  window.addEventListener('storage', e => {
+    if (e.key === TAB_PING && TAB.owner && !TAB.passive) { const p = tabRead(e.newValue); if (p && p.id !== TAB.id) tabPut(TAB_PONG, { id: TAB.id, to: p.id }); }
+    else if (e.key === TAB_PONG) { const p = tabRead(e.newValue); if (p && p.to === TAB.id) TAB.heard = true; }
+    else if (e.key === TAB_OWNER && TAB.owner) { const p = tabRead(e.newValue); if (p && p.id !== TAB.id) { TAB.owner = false; TAB.passive = true; try { closeWheel(); closePick(); closeCap(); closeFilter(); } catch (x) {} tabCover('moved'); } }
+  });
+  // start: ask whether another active tab answers (400 ms); none = this tab owns the page; one = the heads-up first
+  const TAB_READY = new Promise(res => { if (new URLSearchParams(location.search).get('autofill') === '1') { TAB.owner = true; res(true); return; } TAB.heard = false; tabPut(TAB_PING, { id: TAB.id });
+    setTimeout(() => { if (TAB.heard) { TAB.passive = true; res(false); } else { tabClaim(); res(true); } }, 400); });
   const STORE_READY = storeBoot();
   const hhmm = d => { const x = d || new Date(), p = n => String(n).padStart(2, '0'); return p(x.getHours()) + ':' + p(x.getMinutes()); };
   const isTyping = () => { const a = document.activeElement; return !!(a && a.classList && a.classList.contains('proof-box')); };
@@ -8715,6 +8752,8 @@ body.light-theme .proof-box{color:#0f172a}
   function parseComments(tab, fieldRows, notes) {
     const names = {}; (fieldRows || []).forEach(r => { const n = cmNf(g2(r, 'Name')); if (n) names[n] = 1; });
     const grid = tab.grid ? tab.grid.map(r => r.map(x => String(x == null ? '' : x).trim())) : [tab.labels.map(String)].concat((tab.rows || []).map(r => tab.labels.map(l => String(r[l] == null ? '' : r[l]).trim())));
+    // 0.22.1 (no. 149, fix 9): a formula error (#VALUE!, #REF! ...) is refused like on the other tabs: left out, named in the footer, counted
+    grid.forEach((r, ri) => r.forEach((x, ci) => { if (FORMULA_ERR.test(x)) { notes.push('Comments row ' + (ri + 1) + ' refused: formula error "' + x + '" in column ' + String.fromCharCode(65 + ci) + '.'); r[ci] = ''; } }));
     const sec = grid.findIndex(r => cmNf(r[0]) === 'section'), out = {};
     const head = sec >= 0 ? grid[sec + 1] || [] : grid[0] || [], first = sec >= 0 ? 1 : 0, body = grid.slice(sec >= 0 ? sec + 2 : 1);
     head.forEach((l, ci) => { if (ci < first || !l) return; const k = cmNf(l); if (!names[k]) { notes.push('Comments column "' + l + '" matches no Field Name; not used.'); return; }
@@ -8752,7 +8791,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (b.value !== String(call[F.id] || '')) b.value = String(call[F.id] || '');
       const face = b.closest('.proof-face') || b.parentElement; if (!face) return; face.classList.add('proof-cm'); face.classList.toggle('is-approved', okOf(F.id) && !!String(call[F.id] || '').trim());
       if (!face.querySelector('.proof-cm-edit')) { const e = document.createElement('button'); e.type = 'button'; e.className = 'proof-cm-edit'; e.setAttribute('aria-label', 'Choose comments'); e.textContent = '▾'; face.appendChild(e); }
-      const show = !!String(call[F.id] || '').trim() && !okOf(F.id); let m = face.querySelector('.proof-calc-mark');
+      const show = !!String(call[F.id] || '').trim() && untouchedDefault(F.id); let m = face.querySelector('.proof-calc-mark');   /* 0.22.1 (fix 8): only an untouched default */
       if (show && !m) { m = document.createElement('span'); m.className = 'proof-calc-mark'; face.appendChild(m); } if (m) { if (show) m.textContent = 'Default'; else m.remove(); } }));
   }
   // the pick list: comments on / off, my own comment (Save to my list), Make default (this template, this phone), Clear, Cancel, Done = ticked
@@ -8995,6 +9034,14 @@ body.light-theme .proof-box{color:#0f172a}
     else if (b.dataset.fact === 'menu') openFMenu(F);
     else if (b.dataset.fact === 'equip') { const sl = F.equip, l = EQUIP_TYPES[sl], i = l.indexOf(equipNow(sl)); call.__equip = call.__equip || {}; call.__equip[sl] = l[(i + 1) % l.length]; lsSet(K.call, call); renderCanvas(); } }, true);
   document.addEventListener('pointerdown', e => { const o = document.getElementById('proof-fmenu'); if (o && !o.contains(e.target)) { e.preventDefault(); e.stopPropagation(); closeFMenu(); } }, true);
+  // 0.22.1 (no. 149, fix 7 + Danny b): every editable box is 16 px while it is being typed in (iPhone zooms in on a box under 16 px),
+  // set the moment it is touched (before the keyboard) and back to the sheet's size when it is left
+  function bigFont(b) { if (!b || b.readOnly || !b.classList || !b.classList.contains('proof-box')) return; if (b.dataset.fs == null) b.dataset.fs = b.style.fontSize || ''; b.style.fontSize = '16px'; }
+  function smallFont(b) { if (!b || !b.dataset || b.dataset.fs == null) return; b.style.fontSize = b.dataset.fs; delete b.dataset.fs; }
+  ['pointerdown', 'touchstart'].forEach(ev => document.addEventListener(ev, e => { const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b) return; bigFont(b);
+    setTimeout(() => { if (document.activeElement !== b) smallFont(b); }, 600); }, { capture: true, passive: true }));
+  document.addEventListener('focusin', e => bigFont(e.target), true);
+  document.addEventListener('focusout', e => smallFont(e.target), true);
   // a tap on an editor's box opens its editor (capture, before the wheel / keyboard)
   document.addEventListener('click', e => { if (!isLiveInteraction) return;
     const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b) return;
@@ -9048,7 +9095,8 @@ body.light-theme .proof-box{color:#0f172a}
   const isPinned = id => !!pinsNow()[id];
   const isIncluded = id => { const m = callView.included || {}; return id in m ? !!m[id] : isPinned(id); };
   function setIncluded(id, v) { callView.included = callView.included || {}; callView.included[id] = !!v; saveView(); }
-  function togglePin(id) { const all = pinsAll(), k = 't:' + tplKey(), o = Object.assign({}, pinsNow()), cur = isIncluded(id); if (o[id]) delete o[id]; else o[id] = true; all[k] = o; if (k === 't:') all[''] = o; lsSet(K.pins, all); setIncluded(id, o[id] ? true : cur); }
+  function togglePin(id) { const all = pinsAll(), k = 't:' + tplKey(), o = Object.assign({}, pinsNow()), cur = isIncluded(id); if (o[id]) delete o[id]; else o[id] = true; all[k] = o; if (k === 't:') all[''] = o; lsSet(K.pins, all);
+    callView.included = callView.included || {}; delete callView.included[id]; saveView(); }   // 0.22.1 (fix 5): a pin includes only on its own template; the call's list keeps taps only
   function paintInc() {
     eachCell(engineState, p => { if (!p.proofLabelOf || !p.proofId) return; const el = document.querySelector('#viewport-canvas-frame .grid-split-partition[data-pid="' + CSS.escape(p.proofId) + '"]'); if (!el) return;
       el.classList.toggle('proof-inc', isIncluded(p.proofLabelOf)); el.classList.toggle('proof-pin', isPinned(p.proofLabelOf)); });
@@ -9637,7 +9685,7 @@ body.light-theme .proof-box{color:#0f172a}
             }
           }
         } else {
-          ['Recipe', 'Join with', 'Join sep', 'Label size', 'Input style', 'Wheel'].forEach(c => { if (g(r, c) && !(c === 'Input style' && g(r, c).toLowerCase() === 'type')) out.push({ _note: where + ': ' + c + ' "' + g(r, c) + '" not used (it is used only on a row with a Field).' }); });
+          ['Recipe', 'Join with', 'Join sep', 'Label size', 'Input style', 'Wheel', 'Box lines'].forEach(c => { if (g(r, c) && !(c === 'Input style' && g(r, c).toLowerCase() === 'type')) out.push({ _note: where + ': ' + c + ' "' + g(r, c) + '" not used (it is used only on a row with a Field).' }); });
         }
       }
       // the cells this row takes, all free?
@@ -9763,7 +9811,7 @@ body.light-theme .proof-box{color:#0f172a}
     if (unknown.length) notes.push('Column(s) this page does not know: ' + unknown.join(', ') + '. This page may be out of date: tap Reload, or refresh the browser.');
     rows._sites = sitesRows ? parseSites(sitesRows, notes) : null;   // 0.13.1 (R10): travels with this copy
     rows._ctypes = ctRows ? parseCallTypes(ctRows, notes) : null;   // C1b: the same
-    const cmTab = cm && fl && cm.grid && cm.grid.some(r => r.slice(1).some(l => l && fl.rows.some(x => cmNf(g2(x, 'Name')) === cmNf(l)))) ? { grid: cm.grid } : null;   // C3b / C3c (a wrong-tab answer matches no Field Name)
+    const cmTab = cm && fl && cm.grid && cm.grid.some(r => r.some(l => l && fl.rows.some(x => cmNf(g2(x, 'Name')) === cmNf(l)))) ? { grid: cm.grid } : null;   // C3b / C3c (a wrong-tab answer matches no Field Name)
     rows._comments = cmTab ? parseComments(cmTab, fl.rows, notes) : null;
     lsSet(K.bundle, { at: Date.now(), structure: st.rows, items: items.rows, itemsTab, fields: opt.fields, sizes: opt.sizes, sites: sitesRows, ctypes: ctRows, comments: cmTab });
     return { rows, source: 'bundle', sourceText: bundleText(opt, itemsTab, 'Layout read from ') };
@@ -9822,6 +9870,8 @@ body.light-theme .proof-box{color:#0f172a}
   const structChanged = () => !!baseSig && structSig(engineState) !== baseSig;
 
   // ---------- reading: Google's gviz answer (JSONP, no key; needs the test sheet shared 'Anyone with the link: Viewer') ----------
+  // 0.22.1 (no. 149, fix 4): an empty cell can come as null or as {v:null} (real Google): both are '' (never the word 'null')
+  function cellText(c, str) { if (c == null) return ''; const v = c.f != null && typeof c.v !== 'number' ? c.f : c.v; return v == null ? '' : (str ? String(v) : v); }
   function gviz(tab, timeoutMs, asGrid) {   // asGrid (C3c): headers=0, every row as an array (the Comments tab has two header rows)
     return new Promise((res, rej) => {
       const cb = '__proofCb' + Date.now() + Math.floor(Math.random() * 1e6), s = document.createElement('script');
@@ -9833,8 +9883,8 @@ body.light-theme .proof-box{color:#0f172a}
         const labels = d.table.cols.map(c => String(c.label || '').trim());
         // round B1 (PT1): Google says in its answer when it turned a cell into a number, date or time; kept as r._t for the plain-text guard
         const typeOf = v => typeof v === 'number' ? 'number' : Array.isArray(v) ? 'time' : /^Date\(/.test(String(v)) ? 'date' : '';
-        const rows = d.table.rows.map(r => { const o = {}; (r.c || []).forEach((c, i) => { o[labels[i]] = c == null ? '' : (c.f != null && typeof c.v !== 'number' ? c.f : c.v); const t = c == null ? '' : typeOf(c.v); if (t) (o._t = o._t || {})[labels[i]] = t; }); return o; });
-        if (asGrid) { const g = d.table.rows.map(r => (r.c || []).map(c => c == null ? '' : String(c.f != null && typeof c.v !== 'number' ? c.f : c.v)));
+        const rows = d.table.rows.map(r => { const o = {}; (r.c || []).forEach((c, i) => { o[labels[i]] = cellText(c, false); const t = c == null ? '' : typeOf(c.v); if (t) (o._t = o._t || {})[labels[i]] = t; }); return o; });
+        if (asGrid) { const g = d.table.rows.map(r => (r.c || []).map(c => cellText(c, true)));
           return res({ grid: labels.some(Boolean) ? [labels].concat(g) : g }); }   // a header row Google kept anyway goes back on top
         res({ labels, rows });
       };
@@ -10689,7 +10739,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (e.target && e.target.id === 'proof-save-now') { e.stopPropagation(); window.EngineActions['proof-save-tweaks'](); return; }   // the inspector can cover the Tools row on a phone
       n.classList.toggle('small'); }); document.body.appendChild(n); }
     const head = 'proof ' + PROOF_VERSION + ' · profile ' + (info.profile || '?') + (chosenProfile() === 'auto' ? ' (auto)' : '') + ' · ' + DEVICE +
-      (info.offline ? ' · sheet not read (offline) ' + hhmm(info.readAt) : ' · read ' + (info.readAt ? hhmm(info.readAt) : '-')) + ' · ' + info.rows + ' rows, ' + (info.refused + (notes || []).filter(x => /^(Sites|Call types) row \d+ refused/.test(String(x && x._note || x))).length) + ' refused · ' + info.tweaks + ' tweaks applied' + (info.pending ? ' (not saved yet)' : '') + (usesB2 ? ' · view ' + viewWord() + ', template ' + (callView.tpl || 'none') + (callView.callType ? ', call type ' + callView.callType : '') : '');   // C1b: the call type
+      (info.offline ? ' · sheet not read (offline) ' + hhmm(info.readAt) : ' · read ' + (info.readAt ? hhmm(info.readAt) : '-')) + ' · ' + info.rows + ' rows, ' + (info.refused + (notes || []).filter(x => /^(Sites|Call types|Comments) row \d+ refused/.test(String(x && x._note || x))).length) + ' refused · ' + info.tweaks + ' tweaks applied' + (info.pending ? ' (not saved yet)' : '') + (usesB2 ? ' · view ' + viewWord() + ', template ' + (callView.tpl || 'none') + (callView.callType ? ', call type ' + callView.callType : '') : '');   // C1b: the call type
     const unsaved = info.readAt ? changedFrom(applied).length : 0;
     const lost = info.readAt && structChanged();
     n.innerHTML = '<b>' + esc(head) + '</b>' + (unsaved ? '<br><span class="proof-last">' + unsaved + ' change(s) not saved yet.</span> <button type="button" id="proof-save-now">Save tweaks</button>' : '') + (lost ? '<br><span class="proof-warn">' + esc(NOT_KEPT) + '</span>' : '') + (info.sourceText ? '<br>' + esc(info.sourceText) : '') + (lastAction ? '<br><span class="proof-last">' + esc(lastAction) + '</span>' : '') + notes.map(x => '<br>' + esc(x)).join('');
@@ -10707,7 +10757,8 @@ body.light-theme .proof-box{color:#0f172a}
     const dropBanner = () => { const x = document.getElementById('layout-replaced-banner'); if (x) x.remove(); };
     dropBanner(); setTimeout(dropBanner, 0);
     if (AUTOFILL) { setTimeout(autofillPage, 0); return; }   // the test page only: no layout read, no sheet calls
-    STORE_READY.then(() => {   // 0.20.0: the store has started (IndexedDB or localStorage only): read what was kept, then draw
+    Promise.all([STORE_READY, TAB_READY]).then(([, mine]) => { if (!mine) { tabCover('also'); return; }   // 0.22.1: another tab is open: the heads-up first
+      // 0.20.0: the store has started (IndexedDB or localStorage only): read what was kept, then draw
       try { DEVICE = deviceName(); call = lsGet(K.call, {}) || {}; endpoint = lsGet(K.endpoint, '') || ''; callView = Object.assign(VIEW_DEFAULT(), lsGet(K_VIEW, {}) || {});
         if (!/^(all|template|values)$/.test(callView.view)) callView.view = 'template'; if (!callView.revealed || typeof callView.revealed !== 'object') callView.revealed = {}; } catch (e) {}
       try { if (window.innerWidth < 700) lastOpenInspectorState = 'compact'; if (inspectorWindowState !== 'closed') closeInspectorWindow(); } catch (e) {}   // the page opens in Live with the inspector shut
