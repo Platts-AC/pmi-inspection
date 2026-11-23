@@ -738,6 +738,24 @@
 .proof-ct .proof-ct-item.ct-on{border-color:#f59e0b;background:#2a1a05}
 .proof-ct .proof-ct-item i{font-size:11px;color:#fbbf24;font-style:normal;margin-left:6px}
 .proof-ct .proof-empty{color:#fbbf24;font-size:13px;padding:6px 0}
+#proof-pick{position:fixed;left:8px;right:8px;bottom:12px;z-index:86;max-height:70vh;display:flex;flex-direction:column;background:#0b1626;border:1px solid #38bdf8;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.6);padding:12px;font:15px system-ui,sans-serif;color:#e2e8f0}
+#proof-pick .pp-title{font-weight:700;margin-bottom:8px}
+#proof-pick .pp-list{overflow-y:auto;min-height:0;flex:1 1 auto}
+#proof-pick .pp-item{display:block;width:100%;text-align:left;margin:0 0 6px;padding:10px 12px 10px 34px;position:relative;border-radius:8px;border:1px solid #234d82;background:#0c1a2e;color:#e2e8f0;font-size:15px}
+#proof-pick .pp-item::before{content:'';position:absolute;left:10px;top:50%;width:14px;height:14px;margin-top:-7px;border-radius:4px;border:2px solid #64748b;box-sizing:border-box}
+#proof-pick .pp-item.on{border-color:#38bdf8;background:#082f49}
+#proof-pick .pp-item.on::before{background:#38bdf8;border-color:#38bdf8}
+#proof-pick .pp-btns{display:flex;gap:8px;margin-top:8px}
+#proof-pick .pp-btns button{flex:1;min-height:44px;border-radius:8px;border:1px solid #2b4f7e;background:#0f213a;color:#e2e8f0;font:600 15px system-ui,sans-serif}
+.proof-report-body .proof-rp-all{display:block;width:100%;margin:0 0 8px;min-height:40px;border-radius:8px;border:1px solid #f59e0b;background:#2a1a05;color:#fbbf24;font:600 14px system-ui,sans-serif}
+.proof-report-body .proof-rp-row{display:flex;align-items:flex-start;gap:6px;padding:4px 0;border-bottom:1px solid rgba(43,79,126,.35)}
+.proof-report-body .proof-rp-text{flex:1 1 auto;min-width:0;white-space:pre-wrap}
+.proof-report-body .proof-rp-row.pending .proof-rp-text{color:#38bdf8;cursor:pointer}
+.proof-report-body .proof-rp-btns{flex:0 0 auto;display:flex;gap:4px}
+.proof-report-body .proof-rp-btns button{min-width:30px;min-height:30px;border-radius:6px;border:1px solid #2b4f7e;background:#0f213a;color:#e2e8f0;font:600 13px system-ui,sans-serif}
+.proof-report-body .proof-rp-open{margin:4px 0 8px 12px;padding:8px;border-radius:8px;border:1px solid #38bdf8;background:#082f49;font-family:system-ui,sans-serif}
+.proof-report-body .proof-rp-open .rp-val{margin-bottom:6px}
+.proof-report-body .proof-rp-open button{margin-right:8px;min-height:36px;padding:0 14px;border-radius:8px;border:1px solid #2b4f7e;background:#0f213a;color:#e2e8f0;font:600 14px system-ui,sans-serif}
 #proof-ask{position:fixed;left:8px;right:8px;bottom:12px;z-index:85;background:#0b1626;border:1px solid #f59e0b;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.6);padding:12px;font:15px system-ui,sans-serif;color:#e2e8f0}
 #proof-ask .pa-btns{display:flex;gap:8px;margin-top:10px}
 #proof-ask .pa-btns button{flex:1;min-height:44px;border-radius:8px;border:1px solid #2b4f7e;background:#0f213a;color:#e2e8f0;font:600 15px system-ui,sans-serif}
@@ -3603,7 +3621,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.17.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.18.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3613,7 +3631,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.17.0', stamp: '2026-11-22 19:30:25', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.18.0', stamp: '2026-11-22 19:39:43', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8290,7 +8308,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.17.0';
+  const PROOF_VERSION = '0.18.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8421,7 +8439,7 @@ body.light-theme .proof-box{color:#0f172a}
     // round 7 (1): autofill fix C (Danny's Android test, 0.6.0): each value box sits in its own form with autocomplete off and has
     // autocomplete one-time-code; the form takes no space (display:contents) and never submits (Enter is stopped, see below).
     return '<div class="proof-cell"><div class="proof-face" style="align-items:' + va + '"><form class="proof-form" autocomplete="off" onsubmit="return false"><input class="proof-box" data-key="' + esc(k) + '" value="' + esc(valOf(k)) + '"' +
-      (wm || (F && F.kind === 'readonly') ? ' inputmode="none" readonly' : tel ? ' inputmode="tel"' : num ? ' inputmode="decimal"' : '') + ' placeholder="' + esc(F ? F.name : (FIELD_FALLBACK[k] || 'Search')) + '"' + boxAttrs(p) + ' style="font-size:' + boxSize(p) + 'px;text-align:' + (p.align || 'left') + '"></form>' + sw + '</div></div>';
+      (wm || (F && (F.kind === 'readonly' || commentOf(F))) ? ' inputmode="none" readonly' : tel ? ' inputmode="tel"' : num ? ' inputmode="decimal"' : '') + ' placeholder="' + esc(F ? (commentOf(F) ? 'Choose comments…' : F.name) : (FIELD_FALLBACK[k] || 'Search')) + '"' +   /* C3b: a comment Field opens its pick list */ boxAttrs(p) + ' style="font-size:' + boxSize(p) + 'px;text-align:' + (p.align || 'left') + '"></form>' + sw + '</div></div>';
   } };
   // Enter in a value box: never submit or reload (the form also says onsubmit return false); focus and caret stay
   document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target && e.target.classList && e.target.classList.contains('proof-box')) e.preventDefault(); }, true);
@@ -8558,6 +8576,96 @@ body.light-theme .proof-box{color:#0f172a}
       const chip = bands[ri].querySelector(':scope > .proof-chip'), right = chip && chip.offsetParent ? (chip.offsetWidth + 16) + 'px' : ''; if (s.style.right !== right) s.style.right = right; });   // beside the '+N hidden' chip, never under it
   }
 
+  // ---------- Round C3b: Comments tab, pick list, default comments to tick, Pending, Report page controls ----------
+  // Comments tab (like the main app's, with ONE header row = the Field Name; the main app's tab also has the section name above it):
+  // the comments of a Field of Kind 'comment' stacked below its Name; a leading '*' = a default comment, pre-filled on a new call and
+  // to be ticked (the main app's approved). A header that matches no Field Name is noted and not used.
+  const cmNf = t => String(t == null ? '' : t).replace(/\s*\([^)]*\)\s*$/, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();   // the main app's cmNf
+  let COMMENTS = null;
+  function parseComments(tab, fieldRows, notes) {
+    const names = {}; (fieldRows || []).forEach(r => { const n = cmNf(g2(r, 'Name')); if (n) names[n] = 1; });
+    const out = {};
+    (tab.labels || []).forEach((l, ci) => { if (!l) return; const k = cmNf(l); if (!names[k]) { notes.push('Comments column "' + l + '" matches no Field Name; not used.'); return; }
+      const list = [], defs = []; (tab.rows || []).forEach(r => { let t = String(r[l] == null ? '' : r[l]).trim(); if (!t) return; const d = t.charAt(0) === '*'; if (d) t = t.slice(1).trim(); if (t && list.indexOf(t) < 0) { list.push(t); if (d) defs.push(t); } });
+      out[k] = { list, defs }; });
+    return out;
+  }
+  const commentOf = F => (F && F.kind === 'comment' && COMMENTS && COMMENTS[cmNf(F.name)]) || null;
+  const sentence = t => { t = String(t || '').trim(); if (!t) return ''; t = t.charAt(0).toUpperCase() + t.slice(1); return /[.!?]$/.test(t) ? t : t + '.'; };   // the main app's P.sentence
+  const cmText = sel => sel.map(sentence).join(' ');
+  const okOf = id => !!(call.__ok || {})[id];
+  function commentFields() { const seen = {}, out = []; eachCell(engineState, p => { const F = p.proofField; if (F && !seen[F.id] && commentOf(F)) { seen[F.id] = 1; out.push(F); } }); return out; }
+  const defaultText = id => { const F = commentFields().find(x => x.id === id), c = F && commentOf(F); return c ? cmText(c.defs) : ''; };
+  const untouchedDefault = k => !okOf(k) && !!defaultText(k) && call[k] === defaultText(k);
+  function applyDefaults() {   // a new call: each comment Field gets its default comments, not ticked yet
+    if (call.__init) return; let any = false;
+    commentFields().forEach(F => { const c = commentOf(F); if (c.defs.length && !String(call[F.id] || '').trim()) { call[F.id] = cmText(c.defs); (call.__cm = call.__cm || {})[F.id] = c.defs.slice(); any = true; } });
+    if (any || commentFields().length) { call.__init = 1; lsSet(K.call, call); }
+  }
+  function paintCm() {   // a default not ticked yet carries the mark 'Default' (amber); a ticked comment has none
+    commentFields().forEach(F => document.querySelectorAll('input.proof-box').forEach(b => { if (b.dataset.key !== F.id) return;
+      if (b.value !== String(call[F.id] || '')) b.value = String(call[F.id] || '');
+      const face = b.closest('.proof-face') || b.parentElement, show = !!String(call[F.id] || '').trim() && !okOf(F.id); let m = face && face.querySelector('.proof-calc-mark');
+      if (show && !m && face) { m = document.createElement('span'); m.className = 'proof-calc-mark'; face.appendChild(m); } if (m) { if (show) m.textContent = 'Default'; else m.remove(); } }));
+  }
+  // the pick list (a sheet over the page, like the same-address question): tap comments on / off; Done = those comments, ticked
+  function closePick() { const o = document.getElementById('proof-pick'); if (o) o.remove(); }
+  function openPick(F) {
+    closePick(); closeAsk(); const c = commentOf(F); if (!c) return;
+    const cur = ((call.__cm || {})[F.id] || []).slice(), el = document.createElement('div'); el.id = 'proof-pick'; el.setAttribute('role', 'dialog');
+    el.innerHTML = '<div class="pp-title">' + esc(F.name) + '</div><div class="pp-list">' + c.list.map(t => '<button type="button" class="pp-item' + (cur.indexOf(t) >= 0 ? ' on' : '') + '" data-text="' + esc(t) + '">' + esc(t) + '</button>').join('') +
+      '</div><div class="pp-btns"><button type="button" data-pp="clear">Clear</button><button type="button" data-pp="cancel">Cancel</button><button type="button" data-pp="done">Done</button></div>';
+    el.addEventListener('click', e => { const it = e.target.closest('.pp-item'); if (it) { e.stopPropagation(); it.classList.toggle('on'); return; }
+      const bt = e.target.closest('[data-pp]'); if (!bt) return; e.stopPropagation(); const a = bt.dataset.pp;
+      if (a === 'clear') { el.querySelectorAll('.pp-item.on').forEach(x => x.classList.remove('on')); return; }
+      if (a === 'done') { const sel = Array.from(el.querySelectorAll('.pp-item.on')).map(x => x.dataset.text), v = cmText(sel);
+        call.__cm = call.__cm || {}; call.__ok = call.__ok || {}; call.__cm[F.id] = sel; if (v) { call[F.id] = v; call.__ok[F.id] = true; } else { delete call[F.id]; delete call.__ok[F.id]; }
+        lsSet(K.call, call); try { paintCm(); applyVis(); paintFolds(); } catch (x) {} }
+      closePick(); });
+    document.body.appendChild(el);
+  }
+  document.addEventListener('click', e => { const b = e.target && e.target.closest && e.target.closest('input.proof-box'); if (!b || !isLiveInteraction) return;
+    const p = cellOfPart(b.closest('.grid-split-partition')); if (!p || !p.proofField || !commentOf(p.proofField) || isDraft(p.proofKey)) return;
+    e.preventDefault(); b.blur(); openPick(p.proofField); }, true);
+  document.addEventListener('pointerdown', e => { const o = document.getElementById('proof-pick'); if (o && !o.contains(e.target)) { e.preventDefault(); e.stopPropagation(); closePick(); } }, true);
+  // Pending (the main app 37h / report.js): an included Field that is empty, or a comment not ticked yet, is 'Pending' on the Report page
+  // and is left out of the copied text. The Report page order is Entry order unless arrows changed it (callView.order, per call).
+  function reportItems() {
+    const out = [], seen = {}; let n = 0;
+    (engineState.rows || []).forEach(row => { if (row.isTray) return;
+      (row.containers || []).forEach(c => (c.stacks || []).forEach(st => (st.splits || []).forEach(p => {
+        const F = p.proofField; if (p.slot !== 'box' || !F || isDraft(p.proofKey) || seen[F.id]) return; seen[F.id] = 1; n++;
+        if (!isIncluded(F.id)) return; const v = String(call[F.id] == null ? '' : call[F.id]).trim();
+        out.push({ id: F.id, F, label: p.proofLabel || F.name, v, pending: !v || (!!commentOf(F) && !okOf(F.id)), at: n }); }))); });
+    const ord = callView.order || [], rank = x => { const i = ord.indexOf(x.id); return i >= 0 ? i : 10000 + x.at; };
+    return out.sort((a, b) => rank(a) - rank(b));
+  }
+  const lineOf = x => '►' + x.label + ': ' + x.v + unitText(x.F.unit);
+  let rpOpen = '';
+  function reportHtml() {
+    const items = reportItems();
+    if (!items.length) return '<div class="proof-report-body"><span class="proof-report-empty">Nothing in the report yet.</span></div>';
+    const all = items.some(x => x.pending && x.v) ? '<button type="button" class="proof-rp-all" data-act="all">Approve all</button>' : '';
+    return '<div class="proof-report-body">' + all + items.map(x => '<div class="proof-rp-row' + (x.pending ? ' pending' : '') + '" data-id="' + esc(x.id) + '"><span class="proof-rp-text" data-act="open">' + esc(x.pending ? '►' + x.label + ': Pending' : lineOf(x)) + '</span>' +
+      '<span class="proof-rp-btns"><button type="button" data-act="up" aria-label="Up">\u2191</button><button type="button" data-act="down" aria-label="Down">\u2193</button><button type="button" data-act="x" aria-label="Drop from the report">\u2715</button></span></div>' +
+      (rpOpen === x.id && x.pending ? '<div class="proof-rp-open" data-id="' + esc(x.id) + '"><div class="rp-val">' + esc(x.v || 'No value yet') + '</div>' + (x.v ? '<button type="button" data-act="approve">Approve</button>' : '') + '<button type="button" data-act="edit">Edit</button></div>' : '')).join('') + '</div>';
+  }
+  const paintReport = () => document.querySelectorAll('#viewport-canvas-frame .proof-report-body').forEach(el => { el.outerHTML = reportHtml(); });
+  document.addEventListener('click', e => {
+    const t = e.target && e.target.closest && e.target.closest('.proof-report-body [data-act]'); if (!t) return;
+    e.preventDefault(); e.stopPropagation(); const act = t.dataset.act, host = t.closest('[data-id]'), id = host ? host.dataset.id : '';
+    if (act === 'all') { reportItems().forEach(x => { if (x.pending && x.v) (call.__ok = call.__ok || {})[x.id] = true; }); lsSet(K.call, call); rpOpen = ''; }
+    else if (act === 'open') { const x = reportItems().find(y => y.id === id); rpOpen = x && x.pending && rpOpen !== id ? id : ''; }
+    else if (act === 'approve') { (call.__ok = call.__ok || {})[id] = true; lsSet(K.call, call); rpOpen = ''; }
+    else if (act === 'x') { setIncluded(id, false); rpOpen = ''; }
+    else if (act === 'up' || act === 'down') { const ids = reportItems().map(x => x.id), i = ids.indexOf(id), j = act === 'up' ? i - 1 : i + 1;
+      if (i >= 0 && j >= 0 && j < ids.length) { ids.splice(j, 0, ids.splice(i, 1)[0]); callView.order = ids; saveView(); } }
+    else if (act === 'edit') { rpOpen = ''; let v = ''; eachCell(engineState, (p, r) => { if (!v && p.slot === 'box' && p.proofField && p.proofField.id === id && !isDraft(p.proofKey)) v = r.view; });
+      if (v) { goView(v); setTimeout(() => { const b = Array.from(document.querySelectorAll('input.proof-box')).find(x => x.dataset.key === id && x.offsetParent);
+        if (b) { b.scrollIntoView({ block: 'center' }); const p = cellOfPart(b.closest('.grid-split-partition')); if (p && commentOf(p.proofField)) openPick(p.proofField); else b.focus(); } }, 350); return; } }
+    paintReport(); paintCm();
+  }, true);
+
   // ---------- Round C3a: include (tap a Field's label) and pin (press and hold), as the main app (app/src/bridge/08-live-behavior.js) ----------
   // Included = this call (callView.included); pinned = this phone (proof-containers.pins.v1), included on every new call and after Reload;
   // a tap on a pinned label turns it off for this call only. The report holds only included lines; everything filled stays in the call.
@@ -8587,24 +8695,22 @@ body.light-theme .proof-box{color:#0f172a}
   // '►' + label + ':' + ' ' + value + unit (' ' + unit; ':1' with no space). Sections in sheet order, each with its name in capitals
   // above its lines, a blank line between Sections; only Fields that have a value (calc values included); New customer drafts never.
   const unitText = u => (u ? (u === ':1' ? ':1' : ' ' + u) : '');
-  // C3a (I-199 d, e): no Section titles; only the INCLUDED lines that have a value, in Entry order (the main app)
-  function reportBody() {
-    const lines = [], seen = {};
-    (engineState.rows || []).forEach(row => { if (row.isTray) return;
-      (row.containers || []).forEach(c => (c.stacks || []).forEach(st => (st.splits || []).forEach(p => {
-        const F = p.proofField; if (p.slot !== 'box' || !F || isDraft(p.proofKey) || seen[F.id]) return; seen[F.id] = 1;
-        const v = String(call[F.id] == null ? '' : call[F.id]).trim(); if (v && isIncluded(F.id)) lines.push('►' + (p.proofLabel || F.name) + ': ' + v + unitText(F.unit)); }))); });
-    return lines.join('\n');
-  }
-  window.EngineSlots['report-body'] = { render() { const t = reportBody(); return '<div class="proof-report-body">' + (t ? esc(t) : '<span class="proof-report-empty">Nothing in the report yet.</span>') + '</div>'; } };
+  // C3a (I-199 d, e): no Section titles; only the INCLUDED lines that have a value; C3b: in the Report page order, Pending lines left out
+  function reportBody() { return reportItems().filter(x => !x.pending).map(lineOf).join('\n'); }
+  window.EngineSlots['report-body'] = { render() { return reportHtml(); } };   // C3b: lines with Pending, X, arrows, Approve / Edit
   // copy-report: the main app's copy (clipboard, then the old select-and-copy way) and its messages
   function copyText(text) {
     const fallback = () => { try { const ta = document.createElement('textarea'); ta.value = text; ta.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); const ok = document.execCommand('copy'); ta.remove(); return ok; } catch (e) { return false; } };
     if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(text).then(() => true, () => fallback());
     return Promise.resolve(fallback());
   }
+  // C3b: the main app's rule with Pending lines: the first tap warns ('N pending: tap Copy again to copy anyway', 4 s); a second tap
+  // copies without the Pending lines ('Copied with N pending')
+  let copyArmed = 0;
   window.EngineActions['copy-report'] = () => { const t = reportBody(); if (!t) { say('Nothing in the report yet', 'warn'); return; }
-    copyText(t).then(ok => say(ok ? 'Report copied ✓' : 'Copy failed: select the text instead', ok ? 'done' : 'warn')); };
+    const n = reportItems().filter(x => x.pending).length;
+    if (n && Date.now() - copyArmed > 4000) { copyArmed = Date.now(); say(n + ' pending: tap Copy again to copy anyway', 'warn', 4000); return; }
+    copyArmed = 0; copyText(t).then(ok => say(ok ? (n ? 'Copied with ' + n + ' pending' : 'Report copied ✓') : 'Copy failed: select the text instead', ok ? 'done' : 'warn')); };
 
   // ---------- Round C1b: the Call types tab, the call-type question (Slot call-types, Action open-call-type) ----------
   // Call types: Call type | Template | Aliases (separated by |) | Active | Order | Notes. Missing tab = no question (Entry as before).
@@ -8689,7 +8795,7 @@ body.light-theme .proof-box{color:#0f172a}
   }
   const paintResults = () => document.querySelectorAll('.proof-results').forEach(el => { el.innerHTML = resultsHtml(); });
   window.__proofRepaints = 0;
-  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; try { closeWheel(); closeAsk(); } catch (e) {}   /* 0.12.2 (R6) */ const r = rc.apply(this, arguments); try { decorate(); } catch (e) {} try { paintFolds(); } catch (e) {} try { paintInc(); calcCells().forEach(paintCalcBox); } catch (e) {} return r; }; }
+  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; try { closeWheel(); closeAsk(); closePick(); } catch (e) {}   /* 0.12.2 (R6) */ const r = rc.apply(this, arguments); try { decorate(); } catch (e) {} try { paintFolds(); } catch (e) {} try { paintInc(); calcCells().forEach(paintCalcBox); paintCm(); } catch (e) {} return r; }; }
 
   document.addEventListener('input', e => {
     const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b) return;
@@ -9252,8 +9358,8 @@ body.light-theme .proof-box{color:#0f172a}
   }
   async function readBundle(notes, profile) {
     let st, it, fl, ps, si = null;
-    let ct = null;
-    try { [st, it, fl, ps, si, ct] = await Promise.all([gviz('Structure'), gviz('Items'), gviz('Fields'), gviz('Profile sizes'), gviz('Sites').catch(() => null), gviz('Call types').catch(() => null)]); }
+    let ct = null, cm = null;
+    try { [st, it, fl, ps, si, ct, cm] = await Promise.all([gviz('Structure'), gviz('Items'), gviz('Fields'), gviz('Profile sizes'), gviz('Sites').catch(() => null), gviz('Call types').catch(() => null), gviz('Comments').catch(() => null)]); }
     catch (e) { return { failed: true, why: e.message }; }
     const sitesRows = si && hasCols(si, ['Site Id']) ? si.rows : null;   // C1a
     const ctRows = ct && hasCols(ct, ['Call type']) ? ct.rows : null;   // C1b
@@ -9275,7 +9381,9 @@ body.light-theme .proof-box{color:#0f172a}
     if (unknown.length) notes.push('Column(s) this page does not know: ' + unknown.join(', ') + '. This page may be out of date: tap Reload, or refresh the browser.');
     rows._sites = sitesRows ? parseSites(sitesRows, notes) : null;   // 0.13.1 (R10): travels with this copy
     rows._ctypes = ctRows ? parseCallTypes(ctRows, notes) : null;   // C1b: the same
-    lsSet(K.bundle, { at: Date.now(), structure: st.rows, items: items.rows, itemsTab, fields: opt.fields, sizes: opt.sizes, sites: sitesRows, ctypes: ctRows });
+    const cmTab = cm && fl && cm.labels.some(l => l && fl.rows.some(r => cmNf(g2(r, 'Name')) === cmNf(l))) ? { labels: cm.labels, rows: cm.rows } : null;   // C3b (a wrong-tab answer matches no Field Name)
+    rows._comments = cmTab ? parseComments(cmTab, fl.rows, notes) : null;
+    lsSet(K.bundle, { at: Date.now(), structure: st.rows, items: items.rows, itemsTab, fields: opt.fields, sizes: opt.sizes, sites: sitesRows, ctypes: ctRows, comments: cmTab });
     return { rows, source: 'bundle', sourceText: bundleText(opt, itemsTab, 'Layout read from ') };
   }
   function bundleText(opt, itemsTab, lead) {
@@ -9289,6 +9397,7 @@ body.light-theme .proof-box{color:#0f172a}
     const rows = bundleRows(c.structure, c.items, opt);
     const siteNotes = []; rows._sites = Array.isArray(c.sites) ? parseSites(c.sites, siteNotes) : null;   // 0.13.1 (R10): with its notes
     rows._ctypes = Array.isArray(c.ctypes) ? parseCallTypes(c.ctypes, siteNotes) : null;   // C1b
+    rows._comments = c.comments && c.fields ? parseComments(c.comments, c.fields, siteNotes) : null;   // C3b
     return build(rows).used ? { rows, at: c.at, notes: siteNotes, text: bundleText(opt, c.itemsTab || 'Items', 'Layout from the last good copy of ') } : null;
   }
   // ---------- end of round A / B1 ----------
@@ -9482,6 +9591,7 @@ body.light-theme .proof-box{color:#0f172a}
     engineState = b.state; reselect(keepSel);
     newView = b.state.proofNewView || ''; ctView = b.state.proofCtView || '';   // 0.13.1 (R8); C1b
     CALL_TYPES = Array.isArray(L.rows._ctypes) ? L.rows._ctypes : null;   // C1b: from the copy that won
+    COMMENTS = L.rows._comments || null; try { applyDefaults(); } catch (e) {}   // C3b
     SITES = Array.isArray(L.rows._sites) ? L.rows._sites : null; houseFields = Array.isArray(L.rows._house) ? L.rows._house : null;   // 0.13.1 (R10, R6): from the copy that won
     try { undoStack.length = 0; redoStack.length = 0; recordHistorySnapshot(); } catch (e) {}
     try { updateHistoryButtons(); } catch (e) {}
@@ -9583,9 +9693,9 @@ body.light-theme .proof-box{color:#0f172a}
   // When something is typed, the first tap only asks; a second tap within 5 s clears.
   let newArmed = 0;
   window.EngineActions['new-call'] = () => {
-    const typedSomething = Object.keys(call).some(k => String(call[k] == null ? '' : call[k]).trim());
+    const typedSomething = Object.keys(call).some(k => k.indexOf('__') !== 0 && String(call[k] == null ? '' : call[k]).trim() && !untouchedDefault(k));   // C3b: untouched default comments are not 'typed'
     if (typedSomething && Date.now() - newArmed > 5000) { newArmed = Date.now(); say('Tap New again to clear this call', 'warn', 5000); return; }
-    newArmed = 0; call = {}; lsSet(K.call, call); callView = VIEW_DEFAULT(); try { applyFolds(engineState); } catch (e) {}; saveView(); clearFind(); goView('find'); paintNotes();   // round B2: reveals and template belong to the call
+    newArmed = 0; call = {}; try { applyDefaults(); } catch (e) {} lsSet(K.call, call); callView = VIEW_DEFAULT(); try { applyFolds(engineState); } catch (e) {}; saveView(); clearFind(); goView('find'); paintNotes();   // round B2: reveals and template belong to the call
   };
   // round 7 (3): Refresh page = reload the whole page past the browser's copy (new ?v=, other switches dropped). With unsaved
   // tweaks the first tap only warns; a second tap within 5 s reloads anyway.
@@ -9979,7 +10089,7 @@ body.light-theme .proof-box{color:#0f172a}
   // by the same amount so the box does not move. Edit / Adjust shows everything (as the engine does). Only one-Column Sections
   // collapse a Line; in a Section with several Columns a hidden Line just leaves its cells blank.
   const K_VIEW = 'proof-containers.callview.v1', K_INPUT = 'proof-containers.inputStyle.v1';
-  const VIEW_DEFAULT = () => ({ view: 'template', tpl: '', revealed: {}, folds: {}, included: {} });   // included: C3a (per call; pins on the phone)   // folds: C2a (per call)
+  const VIEW_DEFAULT = () => ({ view: 'template', tpl: '', revealed: {}, folds: {}, included: {}, order: [] });   // order: C3b (the report order)   // included: C3a (per call; pins on the phone)   // folds: C2a (per call)
   let callView = Object.assign(VIEW_DEFAULT(), lsGet(K_VIEW, {}) || {});
   if (!/^(all|template|values)$/.test(callView.view)) callView.view = 'template';
   if (!callView.revealed || typeof callView.revealed !== 'object') callView.revealed = {};
@@ -10130,7 +10240,7 @@ body.light-theme .proof-box{color:#0f172a}
   let wheel = null;
   function closeWheel() { if (wheel) { const padded = wheel.padded; wheel.el.remove(); wheel = null; document.body.classList.remove('proof-wheel-open'); if (padded && !isTyping()) kbPad(0); } }
   // 0.12.2 (R6): the wheel closes on any screen change, a redraw, Adjust / Advanced and a tap outside it
-  { const sv = setView; setView = function () { closeWheel(); closeAsk(); tapGuardUntil = Date.now() + TAP_GUARD_MS; return sv.apply(this, arguments); }; }   // 0.14.1: C1B-43, C1B-52
+  { const sv = setView; setView = function () { closeWheel(); closeAsk(); closePick(); tapGuardUntil = Date.now() + TAP_GUARD_MS; return sv.apply(this, arguments); }; }   // 0.14.1: C1B-43, C1B-52
   document.addEventListener('pointerdown', e => { if (wheel && !wheel.el.contains(e.target)) closeWheel(); }, true);
   function openWheel(box) {
     const p = boxCell(box); if (!p || !p.proofWheel) return;
