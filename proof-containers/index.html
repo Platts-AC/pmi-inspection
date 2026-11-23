@@ -746,6 +746,12 @@
 #viewport-canvas-frame textarea.proof-box.proof-ta{-webkit-appearance:none;appearance:none;border-radius:inherit;margin:0}
 .proof-tray-pinned{position:fixed!important;left:0;right:0;z-index:58;max-height:60vh;overflow-y:auto;background:#060c16;box-shadow:0 6px 18px rgba(0,0,0,.55)}
 body:not(.proof-ready) #reopen-inspector-fab{display:none!important}
+#viewport-canvas-frame textarea.proof-box.proof-ro-src{color:transparent!important;-webkit-text-fill-color:transparent;caret-color:transparent}
+#viewport-canvas-frame .proof-face:has(.proof-ro-text){position:relative}
+#viewport-canvas-frame .proof-ro-text{position:absolute;box-sizing:border-box;overflow-y:auto;overflow-x:hidden;white-space:normal;overflow-wrap:break-word;word-break:normal;pointer-events:none;color:#e2e8f0;margin:0}
+#viewport-canvas-frame .proof-viewcell{display:flex;align-items:center;justify-content:center;text-align:center;height:100%;line-height:1.15;color:#7dd3fc;font-weight:600;overflow-wrap:anywhere;padding:0 2px}
+#proof-nocust{position:sticky;z-index:30;display:block;width:100%;box-sizing:border-box;text-align:left;padding:6px 12px;margin:0;border:0;border-bottom:1px solid #f59e0b;border-radius:6px;background:#1f1406;color:#fbbf24;font:600 13px system-ui,sans-serif}
+#proof-nocust b{color:#22d3ee;text-decoration:underline}
 #proof-tabcover{position:fixed;inset:0;z-index:200;background:rgba(2,6,23,.92);display:flex;align-items:center;justify-content:center;font:16px system-ui,sans-serif;color:#e2e8f0}
 #proof-tabcover .ptc-box{max-width:320px;margin:16px;padding:18px;border:1px solid #38bdf8;border-radius:12px;background:#0b1626;text-align:center}
 #proof-tabcover button{min-height:44px;padding:0 18px;border-radius:8px;border:1px solid #22d3ee;background:#0f213a;color:#22d3ee;font:600 16px system-ui,sans-serif}
@@ -3670,7 +3676,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.22.2", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.22.3", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3680,7 +3686,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.22.2', stamp: '2026-11-23 00:35:05', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.22.3', stamp: '2026-11-23 01:28:20', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8357,7 +8363,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.22.2';
+  const PROOF_VERSION = '0.22.3';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8457,6 +8463,35 @@ body.light-theme .proof-box{color:#0f172a}
   // Every copy moved in is READ BACK and compared before reads switch to IndexedDB. Anything wrong (no IndexedDB, blocked, slow over 2.5 s,
   // a failed write, a copy that does not read back the same) = localStorage only, as 0.19.0, with one plain message. No localStorage copy is
   // ever deleted by this code (only the per-key note of a key removed on purpose).
+  // ---------- 0.22.3 (Prompts no. 151): the 'Settings' tab (columns Setting, Value), read like Sites / Call types ----------
+  // Customer required: no / remind (start value: blank or missing) / yes
+  let SETTINGS = {};
+  const SETTING_VALUES = { 'customer required': ['no', 'remind', 'yes'] };
+  function parseSettings(rows, notes) {
+    const out = {}; (rows || []).forEach((r, i) => { const k = g2(r, 'Setting').toLowerCase(), v = g2(r, 'Value').toLowerCase(); if (!k) return;
+      if (!SETTING_VALUES[k]) { notes.push('Settings row ' + (i + 2) + ': "' + g2(r, 'Setting') + '" is not a setting this page knows; not used.'); return; }
+      if (v && SETTING_VALUES[k].indexOf(v) < 0) { notes.push('Settings row ' + (i + 2) + ': ' + g2(r, 'Setting') + ' must be ' + SETTING_VALUES[k].join(', ') + ' (not "' + g2(r, 'Value') + '"); remind is used.'); return; }
+      if (v) out[k] = v; }); return out;
+  }
+  const custMode = () => SETTINGS['customer required'] || 'remind';
+  function hasCustomer() { const hf = houseFields || Object.keys(FIND_FILL_FALLBACK).map(id => ({ id, find: FIND_FILL_FALLBACK[id] }));
+    return hf.some(f => f.find === 'name' && String(call[f.id] == null ? '' : call[f.id]).trim()); }
+  let prevCall = null;   // yes: the call New replaced, put back by Cancel on Find until a customer is picked
+  // remind / yes: after New, Entry shows 'No customer yet · Find' pinned under the top rows until the call has a customer
+  function paintNoCust() {
+    let el = document.getElementById('proof-nocust');
+    if (hasCustomer()) { if (callView.needCust) { callView.needCust = false; saveView(); } prevCall = null; }
+    const show = isLiveInteraction && custMode() !== 'no' && callView.needCust && currentView === 'entry';
+    if (!show) { if (el) el.style.display = 'none'; return; }
+    if (!el) { el = document.createElement('button'); el.type = 'button'; el.id = 'proof-nocust'; el.innerHTML = 'No customer yet \u00b7 <b>Find</b>';
+      el.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); goView('find'); }); }
+    // in the page's flow right under the frozen top rows (it takes its own room, so nothing is covered) and sticky there when scrolled
+    const frame = document.getElementById('viewport-canvas-frame'); if (!frame) return; let top = 0, after = null;
+    Array.from(frame.querySelectorAll('.grid-row-band.section-band-frame')).forEach(b => { if (b.classList.contains('row-sticky') && b.offsetParent) { top += b.getBoundingClientRect().height; after = b; } });
+    if (after && el.previousElementSibling !== after) after.insertAdjacentElement('afterend', el); else if (!after && el.parentElement !== frame) frame.prepend(el);
+    el.style.top = top + 'px'; el.style.display = '';
+  }
+  document.addEventListener('input', () => { try { paintNoCust(); } catch (e) {} });
   // 0.22.2 (no. 150, F13): every symbol is a small inline SVG drawing (any phone draws it; text symbols and CSS codes were not safe)
   const svgI = (d, extra) => '<svg class="pi" viewBox="0 0 24 24" width="1em" height="1em" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"' + (extra || '') + '>' + d + '</svg>';
   const ICON = {
@@ -8620,8 +8655,8 @@ body.light-theme .proof-box{color:#0f172a}
     const sw = p.proofInput === 'both' ? '<button type="button" class="proof-mode" tabindex="-1">' + (wm ? ICON.keyboard : ICON.wheel) + '</button>' : '';
     // round 7 (1): autofill fix C (Danny's Android test, 0.6.0): each value box sits in its own form with autocomplete off and has
     // autocomplete one-time-code; the form takes no space (display:contents) and never submits (Enter is stopped, see below).
-    return '<div class="proof-cell"><div class="proof-face" style="align-items:' + va + '"><form class="proof-form" autocomplete="off" onsubmit="return false">' + (nl > 1 ? '<textarea rows="' + nl + '" class="proof-box proof-ta"' : '<input class="proof-box"') + ' data-key="' + esc(k) + '"' + (nl > 1 ? '' : ' value="' + esc(valOf(k)) + '"') +
-      (wm || edOf(p) || (F && (F.kind === 'readonly' || commentOf(F))) ? ' inputmode="none" readonly' : tel ? ' inputmode="tel"' : num ? ' inputmode="decimal"' : '') + ' placeholder="' + esc(F ? (commentOf(F) ? 'Choose comments…' : edOf(p) === 'capacitor' ? 'Tap to test capacitors' : edOf(p) === 'filter' ? 'Choose filter size' : (F.equip ? equipLabel(F, p._eqBase || F.name) : F.name)) : (FIELD_FALLBACK[k] || 'Search')) + '"' +   /* C3b: a comment Field opens its pick list */ boxAttrs(p) + ' style="font-size:' + (nl > 1 ? Math.round(boxSize(p) * (nl === 2 ? 0.86 : 0.76)) : boxSize(p)) + 'px;text-align:' + (p.align || 'left') + '">' + (nl > 1 ? esc(valOf(k)) + '</textarea>' : '') + '</form>' + sw + '</div></div>';   // C3c: Box lines (the main app's two-line box: smaller font)
+    return '<div class="proof-cell"><div class="proof-face" style="align-items:' + va + '"><form class="proof-form" autocomplete="off" onsubmit="return false">' + (nl > 1 ? '<textarea rows="' + nl + '" class="proof-box proof-ta' + (edOf(p) ? ' proof-ro-src' : '') + '"' : '<input class="proof-box"') + ' data-key="' + esc(k) + '"' + (nl > 1 ? '' : ' value="' + esc(valOf(k)) + '"') +
+      (wm || edOf(p) || (F && (F.kind === 'readonly' || commentOf(F))) ? ' inputmode="none" readonly' : tel ? ' inputmode="tel"' : num ? ' inputmode="decimal"' : '') + ' placeholder="' + esc(F ? (commentOf(F) ? 'Choose comments…' : edOf(p) === 'capacitor' ? 'Tap to test capacitors' : edOf(p) === 'filter' ? 'Choose filter size' : (F.equip ? equipLabel(F, p._eqBase || F.name) : F.name)) : (FIELD_FALLBACK[k] || 'Search')) + '"' +   /* C3b: a comment Field opens its pick list */ boxAttrs(p) + ' style="font-size:' + (nl > 1 ? Math.round(boxSize(p) * (nl === 2 ? 0.86 : 0.76)) : boxSize(p)) + 'px;text-align:' + (p.align || 'left') + '">' + (nl > 1 ? esc(valOf(k)) + '</textarea>' : '') + '</form>' + (nl > 1 && edOf(p) ? '<div class="proof-ro-text" aria-hidden="true"></div>' : '') + sw + '</div></div>';   /* 0.22.3: an editor's 2-3 row box shows its text in a plain wrapping block */   // C3c: Box lines (the main app's two-line box: smaller font)
   } };
   // Enter in a value box: never submit or reload (the form also says onsubmit return false); focus and caret stay
   document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target && e.target.classList && e.target.classList.contains('proof-box')) e.preventDefault(); }, true);
@@ -8966,7 +9001,7 @@ body.light-theme .proof-box{color:#0f172a}
   }
   // Use results / Done: the line goes in the report (the main app's tool sets the value approved and in the report)
   function includeOnUse(id) { callView.included = callView.included || {}; callView.included[id] = true; saveView(); }
-  function refreshEd() { try { document.querySelectorAll('#viewport-canvas-frame .proof-box').forEach(bx => { const k = bx.dataset.key; if (k && k in call || k) bx.value = valOf(k); }); applyVis(); paintInc(); paintReport(); paintNotes(); } catch (e) {} }
+  function refreshEd() { try { setTimeout(() => { try { syncMirrors(); } catch (x) {} }, 0); document.querySelectorAll('#viewport-canvas-frame .proof-box').forEach(bx => { const k = bx.dataset.key; if (k && k in call || k) bx.value = valOf(k); }); applyVis(); paintInc(); paintReport(); paintNotes(); } catch (e) {} }
   // ---- filter size: the main app's three wheels ----
   const F_WHOLE = range(40, 6), F_THICK = ['5', '4', '3', '2', '1'], F_FR = ['7/8', '3/4', '5/8', '1/2', '3/8', '1/4', '1/8', '0'];
   const fNorm = f => ({ '0/8': '0', '2/8': '1/4', '4/8': '1/2', '6/8': '3/4' }[f] || f);
@@ -9240,7 +9275,7 @@ body.light-theme .proof-box{color:#0f172a}
   let trayPinned = false;
   try { const tt = toggleTray; toggleTray = function () { const sc = document.getElementById('viewport-outer-scroller'); const wasPinned = trayPinned; trayPinned = !document.body.classList.contains('proof-tray-open') && !!(sc && sc.scrollTop > 4);
     if (trayPinned || wasPinned) keepPlace(() => tt.apply(this, arguments)); else tt.apply(this, arguments); }; } catch (e) {}
-  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; try { closeWheel(); closeAsk(); closePick(); } catch (e) {}   /* 0.12.2 (R6) */ try { applyEquip(); } catch (e) {} /* C4b */ const r = rc.apply(this, arguments); try { decorate(); } catch (e) {} try { paintFolds(); } catch (e) {} try { paintInc(); calcCells().forEach(paintCalcBox); paintCm(); } catch (e) {} try { paintClamp(); fitBoxLines(); pinTray(); } catch (e) {} /* 0.22.2 */ return r; }; }
+  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; try { closeWheel(); closeAsk(); closePick(); } catch (e) {}   /* 0.12.2 (R6) */ try { applyEquip(); } catch (e) {} /* C4b */ const r = rc.apply(this, arguments); try { decorate(); } catch (e) {} try { paintFolds(); } catch (e) {} try { paintInc(); calcCells().forEach(paintCalcBox); paintCm(); } catch (e) {} try { paintClamp(); fitBoxLines(); syncMirrors(); pinTray(); } catch (e) {} /* 0.22.2 */ try { paintNoCust(); } catch (e) {} /* 0.22.3 */ return r; }; }
 
   document.addEventListener('input', e => {
     const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b) return;
@@ -9410,7 +9445,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (g('Align') && !/^(left|center|right)$/i.test(g('Align'))) why.push('Align "' + g('Align') + '" must be left, center or right');   // 0.12.1 (BT-48): no silent center
       if (!TYPES[type]) why.push('unknown Type "' + type + '"');
       const fd = r._fieldDef || null;   // round B1: the Field this piece belongs to (made by bundleRows from the Fields tab)
-      if (slot && slot !== 'box' && slot !== 'results' && slot !== 'call-types' && slot !== 'report-body' && !((slot === 'unit' || slot === 'report-value' || FIELD_SLOTS[slot]) && fd)) why.push('unknown Slot "' + slot + '"');
+      if (slot && slot !== 'box' && slot !== 'results' && slot !== 'call-types' && slot !== 'report-body' && slot !== 'view-line' && !((slot === 'unit' || slot === 'report-value' || FIELD_SLOTS[slot]) && fd)) why.push('unknown Slot "' + slot + '"');
       if (slot === 'box' && !fd && !FIELD_FALLBACK[content] && !FIND_KEYS[content]) why.push('unknown field "' + content + '"');
       if (type === 'button') { const a = content; const ok = ACTIONS[a] || (/^set-view:/.test(a) && screens[a.slice(9)]) || /^set-show:(all|template|values)$/.test(a) || TPL_ACTION.test(a); /* round B2 actions */ if (!ok) why.push('unknown action "' + a + '" (this page may be out of date: tap Reload, or refresh the browser)'); }
       if (!VIS_RULES[vis]) why.push('Visible when must be always, never, when-filled or reserved');   // round B2: when-filled, reserved (Blueprint P9)
@@ -9452,7 +9487,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (fd) { cell.proofField = fd; if (r._join) cell.proofJoin = r._join; if (r._label) cell.proofLabel = r._label; }
       if (slot === 'box') { cell.slot = 'box'; cell.proofKey = fd && draftScreen && screen === draftScreen ? DRAFT + fd.id : content; cell.label = ''; }   // C1a: a draft box
       else if (slot === 'unit' || slot === 'report-value' || FIELD_SLOTS[slot]) { cell.slot = slot; cell.proofKey = content; cell.label = ''; }   // C4b: f-plus, f-menu, f-equip
-      else if (slot === 'results' || slot === 'call-types' || slot === 'report-body') { cell.slot = slot; cell.label = ''; }   // C2b: report-body   // C1b: call-types (a list, like results)
+      else if (slot === 'results' || slot === 'call-types' || slot === 'report-body' || slot === 'view-line') { cell.slot = slot; cell.label = ''; }   // 0.22.3: view-line   // C2b: report-body   // C1b: call-types (a list, like results)
       else if (type === 'button') { cell.label = g('Label') || content;
         // round 9 migration: on older tabs New (Id hdr.newcall) only opened Find (set-view:find); it now clears the call first
         cell.clickAction = (id === 'hdr.newcall' && content === 'set-view:find') ? 'new-call' : content; }
@@ -9812,11 +9847,12 @@ body.light-theme .proof-box{color:#0f172a}
   }
   async function readBundle(notes, profile) {
     let st, it, fl, ps, si = null;
-    let ct = null, cm = null;
-    try { [st, it, fl, ps, si, ct, cm] = await Promise.all([gviz('Structure'), gviz('Items'), gviz('Fields'), gviz('Profile sizes'), gviz('Sites').catch(() => null), gviz('Call types').catch(() => null), gviz('Comments', 0, true).catch(() => null)]); }
+    let ct = null, cm = null, sg = null;
+    try { [st, it, fl, ps, si, ct, cm, sg] = await Promise.all([gviz('Structure'), gviz('Items'), gviz('Fields'), gviz('Profile sizes'), gviz('Sites').catch(() => null), gviz('Call types').catch(() => null), gviz('Comments', 0, true).catch(() => null), gviz('Settings').catch(() => null)]); }   // Settings: 0.22.3
     catch (e) { return { failed: true, why: e.message }; }
     const sitesRows = si && hasCols(si, ['Site Id']) ? si.rows : null;   // C1a
     const ctRows = ct && hasCols(ct, ['Call type']) ? ct.rows : null;   // C1b
+    const sgRows = sg && hasCols(sg, ['Setting', 'Value']) ? sg.rows : null;   // 0.22.3
     const hasS = st.labels.indexOf('Line name') >= 0, hasI = it.labels.indexOf('Id') >= 0 && it.labels.indexOf('Line') >= 0;
     if (!hasS || !hasI) { if (hasS || hasI) notes.push((hasS ? 'Structure found but Items is missing or has no Id / Line heading' : 'Items found but Structure is missing or has no Line name heading') + ': both are needed, so the old layout tab is used.'); return { missing: true }; }
     const hasF = fl.labels.indexOf('Field Id') >= 0, hasP = hasCols(ps, ['Profile', 'Target']);
@@ -9835,9 +9871,10 @@ body.light-theme .proof-box{color:#0f172a}
     if (unknown.length) notes.push('Column(s) this page does not know: ' + unknown.join(', ') + '. This page may be out of date: tap Reload, or refresh the browser.');
     rows._sites = sitesRows ? parseSites(sitesRows, notes) : null;   // 0.13.1 (R10): travels with this copy
     rows._ctypes = ctRows ? parseCallTypes(ctRows, notes) : null;   // C1b: the same
+    rows._settings = parseSettings(sgRows, notes);   // 0.22.3
     const cmTab = cm && fl && cm.grid && cm.grid.some(r => r.some(l => l && fl.rows.some(x => cmNf(g2(x, 'Name')) === cmNf(l)))) ? { grid: cm.grid } : null;   // C3b / C3c (a wrong-tab answer matches no Field Name)
     rows._comments = cmTab ? parseComments(cmTab, fl.rows, notes) : null;
-    lsSet(K.bundle, { at: Date.now(), structure: st.rows, items: items.rows, itemsTab, fields: opt.fields, sizes: opt.sizes, sites: sitesRows, ctypes: ctRows, comments: cmTab });
+    lsSet(K.bundle, { at: Date.now(), structure: st.rows, items: items.rows, itemsTab, fields: opt.fields, sizes: opt.sizes, sites: sitesRows, ctypes: ctRows, comments: cmTab, settings: sgRows });
     return { rows, source: 'bundle', sourceText: bundleText(opt, itemsTab, 'Layout read from ') };
   }
   function bundleText(opt, itemsTab, lead) {
@@ -9852,6 +9889,7 @@ body.light-theme .proof-box{color:#0f172a}
     const siteNotes = []; rows._sites = Array.isArray(c.sites) ? parseSites(c.sites, siteNotes) : null;   // 0.13.1 (R10): with its notes
     rows._ctypes = Array.isArray(c.ctypes) ? parseCallTypes(c.ctypes, siteNotes) : null;   // C1b
     rows._comments = c.comments && c.fields ? parseComments(c.comments, c.fields, siteNotes) : null;   // C3b
+    rows._settings = parseSettings(Array.isArray(c.settings) ? c.settings : null, siteNotes);   // 0.22.3
     return build(rows).used ? { rows, at: c.at, notes: siteNotes, text: bundleText(opt, c.itemsTab || 'Items', 'Layout from the last good copy of ') } : null;
   }
   // ---------- end of round A / B1 ----------
@@ -10050,6 +10088,7 @@ body.light-theme .proof-box{color:#0f172a}
     newView = b.state.proofNewView || ''; ctView = b.state.proofCtView || '';   // 0.13.1 (R8); C1b
     CALL_TYPES = Array.isArray(L.rows._ctypes) ? L.rows._ctypes : null;   // C1b: from the copy that won
     COMMENTS = L.rows._comments || null; try { applyDefaults(); } catch (e) {}   // C3b
+    SETTINGS = L.rows._settings || {};   // 0.22.3
     SITES = Array.isArray(L.rows._sites) ? L.rows._sites : null; houseFields = Array.isArray(L.rows._house) ? L.rows._house : null;   // 0.13.1 (R10, R6): from the copy that won
     try { undoStack.length = 0; redoStack.length = 0; recordHistorySnapshot(); } catch (e) {}
     try { updateHistoryButtons(); } catch (e) {}
@@ -10137,7 +10176,9 @@ body.light-theme .proof-box{color:#0f172a}
   // ---------- actions ----------
   window.EngineActions = window.EngineActions || {};
   window.EngineActions['proof-find'] = () => { paintResults(); blurNow(); };
-  window.EngineActions['proof-cancel'] = () => { clearFind(); goView('entry'); };
+  window.EngineActions['proof-cancel'] = () => { clearFind();
+    if (custMode() === 'yes' && prevCall && !hasCustomer()) { call = prevCall.call; callView = Object.assign(VIEW_DEFAULT(), prevCall.view); prevCall = null; lsSet(K.call, call); saveView(); try { applyFolds(engineState); } catch (e) {} say('Back to the call you were on', 'done'); }   // 0.22.3
+    goView('entry'); };
   window.EngineActions['reload-layout'] = () => runBusy('reload-layout', 'Reloading...', () => reload()).then(() => reloadIfNewer());   // 0.14.1 (F8)
   // 0.14.1 (F8): Reload also asks version.json; a newer published version is loaded as a badge tap does
   async function reloadIfNewer() { try { const r = await fetch('version.json?t=' + Date.now(), { cache: 'no-store' }); if (!r.ok) return; const v = String(((await r.json()) || {}).version || '').trim();
@@ -10153,7 +10194,8 @@ body.light-theme .proof-box{color:#0f172a}
   window.EngineActions['new-call'] = () => {
     const typedSomething = Object.keys(call).some(k => k.indexOf('__') !== 0 && String(call[k] == null ? '' : call[k]).trim() && !untouchedDefault(k));   // C3b: untouched default comments are not 'typed'
     if (typedSomething && Date.now() - newArmed > 5000) { newArmed = Date.now(); say('Tap New again to clear this call', 'warn', 5000); return; }
-    newArmed = 0; call = {}; callView = Object.assign(VIEW_DEFAULT(), { view: 'all' });   /* 0.22.2 (F12): a new call starts in All */ try { applyDefaults(); } catch (e) {} lsSet(K.call, call); try { applyFolds(engineState); } catch (e) {}; saveView(); clearFind(); goView('find'); paintNotes();   // round B2: reveals and template belong to the call
+    newArmed = 0; prevCall = custMode() === 'yes' ? { call: JSON.parse(JSON.stringify(call)), view: JSON.parse(JSON.stringify(callView)) } : null;   /* 0.22.3: yes = Cancel on Find puts this call back */
+    call = {}; callView = Object.assign(VIEW_DEFAULT(), { view: 'all', needCust: custMode() !== 'no' });   /* 0.22.2 (F12): a new call starts in All */ try { applyDefaults(); } catch (e) {} lsSet(K.call, call); try { applyFolds(engineState); } catch (e) {}; saveView(); clearFind(); goView('find'); paintNotes();   // round B2: reveals and template belong to the call
   };
   // round 7 (3): Refresh page = reload the whole page past the browser's copy (new ?v=, other switches dropped). With unsaved
   // tweaks the first tap only warns; a second tap within 5 s reloads anyway.
@@ -10465,6 +10507,15 @@ body.light-theme .proof-box{color:#0f172a}
     e.title = staleV ? 'A newer version (' + staleV + ') is available: tap to reload' : 'Version ' + PROOF_VERSION;
     paintViewLine();
   }
+  // 0.22.3 (no. 151, fix 1): the box of a read-only editor field with Box lines (capacitor, filter) shows its text in a plain wrapping
+  // block laid exactly over the textarea (the textarea keeps the value and the tap; its own text is not drawn): a block wraps the same on
+  // every browser, the iPhone's read-only textarea did not
+  function syncMirrors() {
+    document.querySelectorAll('#viewport-canvas-frame .proof-ro-text').forEach(m => { const face = m.parentElement, ta = face && face.querySelector('textarea.proof-ro-src'); if (!ta) return;
+      if (m.textContent !== ta.value) m.textContent = ta.value; const cs = getComputedStyle(ta);
+      ['fontSize', 'fontFamily', 'fontWeight', 'lineHeight', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'textAlign', 'color'].forEach(k => { m.style[k] = k === 'color' ? '' : cs[k]; });
+      const fr = face.getBoundingClientRect(), r = ta.getBoundingClientRect(); m.style.left = (r.left - fr.left) + 'px'; m.style.top = (r.top - fr.top) + 'px'; m.style.width = r.width + 'px'; m.style.height = r.height + 'px'; });
+  }
   // 0.22.2 (F16): a label with the 2-line default is clamped to 2 lines ('…' after)
   // a word longer than the cell (e.g. 'Condenser' in a narrow label) makes the text a little smaller (whole words kept, 9 px at least)
   function paintClamp() { eachCell(engineState, p => { if (!p.proofClamp || !p.proofId) return; const el = document.querySelector('#viewport-canvas-frame .grid-split-partition[data-pid="' + p.proofId + '"]'); if (!el) return;
@@ -10504,8 +10555,12 @@ body.light-theme .proof-box{color:#0f172a}
       b.style.top = Math.max(0, top) + 'px'; b.style.left = fr.left + 'px'; b.style.width = fr.width + 'px'; top += b.getBoundingClientRect().height; });
   }
   // 0.22.2 (F12): which view and template the page is in, always visible: a small second line in the version badge (top row, frozen)
-  function paintViewLine() { if (!usesB2) return; const e = document.getElementById('proof-badge'); if (!e) return; let v = e.querySelector('.proof-viewline');
-    if (!v) { v = document.createElement('span'); v.className = 'proof-viewline'; e.appendChild(v); } const t = viewWord() + ' \u00b7 ' + (callView.tpl || 'none'); if (v.textContent !== t) v.textContent = t; }
+  // 0.22.3 (no. 151, fix 2): the view and template have their own cell (Slot 'view-line', placed by a sheet row); the badge shows only
+  // the version. A sheet without that row: the view starts the one-line footer.
+  const viewText = () => viewWord() + ' · ' + (callView.tpl || 'none');
+  function paintViewLine() { const old = document.querySelector('#proof-badge .proof-viewline'); if (old) old.remove();
+    document.querySelectorAll('#viewport-canvas-frame .proof-viewcell').forEach(c => { const t = viewText(); if (c.textContent !== t) c.textContent = t; }); }
+  window.EngineSlots['view-line'] = { render(p) { return '<div class="proof-cell proof-viewcell" style="font-size:' + Math.min(11, p.fontSize || 10) + 'px">' + esc(viewText()) + '</div>'; } };
 
   function reloadTo(v) { say('Reloading the newer version (' + v + ')...', 'warn'); location.replace(location.pathname + '?v=' + encodeURIComponent(v) + '&t=' + Date.now()); }
   function pendingOnPhone() { const t = lsGet(K.tweaks, {}) || {}; return Object.keys(t).some(k => t[k] && t[k].state === 'pending'); }
@@ -10667,7 +10722,7 @@ body.light-theme .proof-box{color:#0f172a}
       try { stackFrozen(); } catch (e) {}
     } finally { visBusy = false; }
     pinChips(); try { paintFolds(); } catch (e) {}
-    try { document.querySelectorAll('#viewport-canvas-frame [data-fit0]').forEach(el => { if (el.classList.contains('grid-stack-row')) el.style.flex = el.dataset.fit0; delete el.dataset.fit0; }); fitBoxLines(); } catch (e) {}   // 0.22.2 (F15): the band sizes above are the base; fit on top of them
+    try { document.querySelectorAll('#viewport-canvas-frame [data-fit0]').forEach(el => { if (el.classList.contains('grid-stack-row')) el.style.flex = el.dataset.fit0; delete el.dataset.fit0; }); fitBoxLines(); syncMirrors(); } catch (e) {}   // 0.22.2 (F15): the band sizes above are the base; fit on top of them
   }
   // 0.12.3 (F3): a chip stays reachable while its Section is on screen: it slides down to just below the frozen header (and the top of
   // what the phone shows when the keyboard is up), never past its Section's bottom. Only the chip moves: no scroll, no redraw.
@@ -10808,7 +10863,8 @@ body.light-theme .proof-box{color:#0f172a}
     if (!n) { n = document.createElement('div'); n.id = 'proof-notes'; n.className = 'small'; n.title = 'Tap to see all the notes (tap again for one line)';   /* 0.22.2 (F23): one line by default */ n.addEventListener('click', e => {
       if (e.target && e.target.id === 'proof-save-now') { e.stopPropagation(); window.EngineActions['proof-save-tweaks'](); return; }   // the inspector can cover the Tools row on a phone
       n.classList.toggle('small'); footRoom(n); }); document.body.appendChild(n); }
-    const head = 'proof ' + PROOF_VERSION + ' · profile ' + (info.profile || '?') + (chosenProfile() === 'auto' ? ' (auto)' : '') + ' · ' + DEVICE +
+    const viewFirst = usesB2 && !document.querySelector('#viewport-canvas-frame .proof-viewcell') ? viewText() + ' · ' : '';   // 0.22.3: no view-line row = the view starts the footer
+    const head = viewFirst + 'proof ' + PROOF_VERSION + ' · profile ' + (info.profile || '?') + (chosenProfile() === 'auto' ? ' (auto)' : '') + ' · ' + DEVICE +
       (info.offline ? ' · sheet not read (offline) ' + hhmm(info.readAt) : ' · read ' + (info.readAt ? hhmm(info.readAt) : '-')) + ' · ' + info.rows + ' rows, ' + (info.refused + (notes || []).filter(x => /^(Sites|Call types|Comments) row \d+ refused/.test(String(x && x._note || x))).length) + ' refused · ' + info.tweaks + ' tweaks applied' + (info.pending ? ' (not saved yet)' : '') + (usesB2 ? ' · view ' + viewWord() + ', template ' + (callView.tpl || 'none') + (callView.callType ? ', call type ' + callView.callType : '') : '');   // C1b: the call type
     const unsaved = info.readAt ? changedFrom(applied).length : 0;
     const lost = info.readAt && structChanged();
