@@ -738,6 +738,14 @@
 .proof-ct .proof-ct-item.ct-on{border-color:#f59e0b;background:#2a1a05}
 .proof-ct .proof-ct-item i{font-size:11px;color:#fbbf24;font-style:normal;margin-left:6px}
 .proof-ct .proof-empty{color:#fbbf24;font-size:13px;padding:6px 0}
+.pi{display:inline-block;width:1em;height:1em;vertical-align:-0.15em;flex:0 0 auto}
+#proof-pick .pp-item .pp-num{position:absolute;right:10px;top:50%;transform:translateY(-50%);min-width:20px;height:20px;border-radius:10px;background:#22d3ee;color:#0b1626;font:700 12px/20px system-ui,sans-serif;text-align:center}
+#proof-badge .proof-viewline{display:block;font-size:9px;line-height:1.1;font-weight:600;color:#7dd3fc;white-space:nowrap;letter-spacing:0}
+#viewport-canvas-frame .proof-clamp2 span.font-medium{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:normal}
+#viewport-canvas-frame .proof-face.has-mark textarea.proof-box.proof-ta{padding-top:13px}   /* 0.22.2 (F14): the Default mark has its own strip on top */
+#viewport-canvas-frame textarea.proof-box.proof-ta{-webkit-appearance:none;appearance:none;border-radius:inherit;margin:0}
+.proof-tray-pinned{position:fixed!important;left:0;right:0;z-index:58;max-height:60vh;overflow-y:auto;background:#060c16;box-shadow:0 6px 18px rgba(0,0,0,.55)}
+body:not(.proof-ready) #reopen-inspector-fab{display:none!important}
 #proof-tabcover{position:fixed;inset:0;z-index:200;background:rgba(2,6,23,.92);display:flex;align-items:center;justify-content:center;font:16px system-ui,sans-serif;color:#e2e8f0}
 #proof-tabcover .ptc-box{max-width:320px;margin:16px;padding:18px;border:1px solid #38bdf8;border-radius:12px;background:#0b1626;text-align:center}
 #proof-tabcover button{min-height:44px;padding:0 18px;border-radius:8px;border:1px solid #22d3ee;background:#0f213a;color:#22d3ee;font:600 16px system-ui,sans-serif}
@@ -810,12 +818,12 @@
 #viewport-canvas-frame .grid-stack-row:has(.grid-split-partition.proof-pin.proof-inc){background:rgba(6,182,212,.75);box-shadow:inset 4px 0 0 #67e8f9}
 #viewport-canvas-frame .grid-split-partition.proof-inc{color:#fff}
 #viewport-canvas-frame .grid-split-partition.proof-pin{position:relative}
-#viewport-canvas-frame .grid-split-partition.proof-pin::after{content:'F4CC';position:absolute;top:1px;right:2px;font-size:10px;line-height:1;pointer-events:none}
+#viewport-canvas-frame .grid-split-partition.proof-pin::after{content:'';position:absolute;top:1px;right:2px;width:11px;height:11px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23f59e0b' d='M15 2l7 7-2.5.8-4 4 .8 5.2-2 2-4.2-4.2L4 22l-2-2 5.2-5.1L3 10.7l2-2 5.2.8 4-4z'/%3E%3C/svg%3E") center/contain no-repeat;pointer-events:none}   /* 0.22.2 (F13): a drawing, not the character code */
 #viewport-canvas-frame .grid-split-partition:has(> .proof-cell) {user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 #viewport-canvas-frame .proof-face.proof-cm{border-radius:9999px;border-color:#475569;background:rgba(15,23,42,.6);padding-right:30px}
 #viewport-canvas-frame .proof-face.proof-cm.is-approved{border-color:#10b981;background:rgba(6,78,59,.35)}
 #viewport-canvas-frame .proof-face.proof-cm.is-approved .proof-box{color:#a7f3d0}
-#viewport-canvas-frame .proof-face.proof-cm.is-approved::before{content:'¹3';position:absolute;left:8px;top:50%;transform:translateY(-50%);color:#10b981;font:700 12px/1 system-ui,sans-serif;pointer-events:none}
+#viewport-canvas-frame .proof-face.proof-cm.is-approved::before{content:'';position:absolute;left:7px;top:50%;transform:translateY(-50%);width:12px;height:12px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 12.5l5 5L20 6.5' fill='none' stroke='%2310b981' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;pointer-events:none}   /* 0.22.2 (F13) */
 #viewport-canvas-frame .proof-face.proof-cm.is-approved .proof-box{padding-left:12px}
 #viewport-canvas-frame .proof-face.proof-cm:has(.proof-ta){border-radius:14px}
 .proof-cm-edit{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:24px;height:24px;border-radius:9999px;border:1px solid #2b4f7e;background:#0f213a;color:#94a3b8;font:12px/1 system-ui,sans-serif;padding:0}
@@ -3662,7 +3670,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.22.1", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.22.2", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3672,7 +3680,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.22.1', stamp: '2026-11-22 22:27:47', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.22.2', stamp: '2026-11-23 00:35:05', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8349,7 +8357,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.22.1';
+  const PROOF_VERSION = '0.22.2';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8449,6 +8457,14 @@ body.light-theme .proof-box{color:#0f172a}
   // Every copy moved in is READ BACK and compared before reads switch to IndexedDB. Anything wrong (no IndexedDB, blocked, slow over 2.5 s,
   // a failed write, a copy that does not read back the same) = localStorage only, as 0.19.0, with one plain message. No localStorage copy is
   // ever deleted by this code (only the per-key note of a key removed on purpose).
+  // 0.22.2 (no. 150, F13): every symbol is a small inline SVG drawing (any phone draws it; text symbols and CSS codes were not safe)
+  const svgI = (d, extra) => '<svg class="pi" viewBox="0 0 24 24" width="1em" height="1em" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"' + (extra || '') + '>' + d + '</svg>';
+  const ICON = {
+    check: svgI('<path d="M4 12.5l5 5L20 6.5"/>'), cross: svgI('<path d="M6 6l12 12M18 6L6 18"/>'), dot: svgI('<circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/>'),
+    caret: svgI('<path d="M6 9l6 6 6-6"/>'), up: svgI('<path d="M12 19V5M6 11l6-6 6 6"/>'), down: svgI('<path d="M12 5v14M6 13l6 6 6-6"/>'),
+    cycle: svgI('<path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v5h-5"/>'), more: svgI('<circle cx="5" cy="12" r="1.8" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.8" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.8" fill="currentColor" stroke="none"/>'),
+    keyboard: svgI('<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h.01M11 10h.01M15 10h.01M7 14h10"/>'), wheel: svgI('<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/>')
+  };
   const STORE_PFX = 'proof-containers.', STORE_META = 'proof-containers.store.meta.v1', STORE_LS_MAX = 1500000, STORE_DB = 'proof-containers', STORE_OS = 'kv';
   const STORE = { mem: {}, on: false, booted: false, failed: '', moved: 0, fromIdb: 0, pending: {}, msgShown: false, dead: false };
   const storeHash = t => { if (t == null) return 'none'; let h = 5381; for (let i = 0; i < t.length; i++) h = ((h << 5) + h + t.charCodeAt(i)) | 0; return t.length + ':' + (h >>> 0).toString(36); };
@@ -8601,11 +8617,11 @@ body.light-theme .proof-box{color:#0f172a}
     const k = p.proofKey, F = p.proofField, km = keypadOf(p), tel = km === 'tel', num = km === 'decimal', nl = p.proofLines > 1 ? p.proofLines : 1;
     const va = p.vAlign === 'top' ? 'flex-start' : p.vAlign === 'bottom' ? 'flex-end' : 'center';
     const wm = p.proofInput && p.proofInput !== 'type' && modeOf(p) === 'wheel';   // round B2: a box in wheel mode never opens the keyboard
-    const sw = p.proofInput === 'both' ? '<button type="button" class="proof-mode" tabindex="-1">' + (wm ? '⌨' : '◎') + '</button>' : '';
+    const sw = p.proofInput === 'both' ? '<button type="button" class="proof-mode" tabindex="-1">' + (wm ? ICON.keyboard : ICON.wheel) + '</button>' : '';
     // round 7 (1): autofill fix C (Danny's Android test, 0.6.0): each value box sits in its own form with autocomplete off and has
     // autocomplete one-time-code; the form takes no space (display:contents) and never submits (Enter is stopped, see below).
     return '<div class="proof-cell"><div class="proof-face" style="align-items:' + va + '"><form class="proof-form" autocomplete="off" onsubmit="return false">' + (nl > 1 ? '<textarea rows="' + nl + '" class="proof-box proof-ta"' : '<input class="proof-box"') + ' data-key="' + esc(k) + '"' + (nl > 1 ? '' : ' value="' + esc(valOf(k)) + '"') +
-      (wm || edOf(p) || (F && (F.kind === 'readonly' || commentOf(F))) ? ' inputmode="none" readonly' : tel ? ' inputmode="tel"' : num ? ' inputmode="decimal"' : '') + ' placeholder="' + esc(F ? (commentOf(F) ? 'Choose comments…' : edOf(p) === 'capacitor' ? 'Tap to test capacitors' : edOf(p) === 'filter' ? 'Choose filter size' : F.name) : (FIELD_FALLBACK[k] || 'Search')) + '"' +   /* C3b: a comment Field opens its pick list */ boxAttrs(p) + ' style="font-size:' + (nl > 1 ? Math.round(boxSize(p) * (nl === 2 ? 0.86 : 0.76)) : boxSize(p)) + 'px;text-align:' + (p.align || 'left') + '">' + (nl > 1 ? esc(valOf(k)) + '</textarea>' : '') + '</form>' + sw + '</div></div>';   // C3c: Box lines (the main app's two-line box: smaller font)
+      (wm || edOf(p) || (F && (F.kind === 'readonly' || commentOf(F))) ? ' inputmode="none" readonly' : tel ? ' inputmode="tel"' : num ? ' inputmode="decimal"' : '') + ' placeholder="' + esc(F ? (commentOf(F) ? 'Choose comments…' : edOf(p) === 'capacitor' ? 'Tap to test capacitors' : edOf(p) === 'filter' ? 'Choose filter size' : (F.equip ? equipLabel(F, p._eqBase || F.name) : F.name)) : (FIELD_FALLBACK[k] || 'Search')) + '"' +   /* C3b: a comment Field opens its pick list */ boxAttrs(p) + ' style="font-size:' + (nl > 1 ? Math.round(boxSize(p) * (nl === 2 ? 0.86 : 0.76)) : boxSize(p)) + 'px;text-align:' + (p.align || 'left') + '">' + (nl > 1 ? esc(valOf(k)) + '</textarea>' : '') + '</form>' + sw + '</div></div>';   // C3c: Box lines (the main app's two-line box: smaller font)
   } };
   // Enter in a value box: never submit or reload (the form also says onsubmit return false); focus and caret stay
   document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target && e.target.classList && e.target.classList.contains('proof-box')) e.preventDefault(); }, true);
@@ -8790,25 +8806,27 @@ body.light-theme .proof-box{color:#0f172a}
     commentFields().forEach(F => document.querySelectorAll('.proof-box').forEach(b => { if (b.dataset.key !== F.id) return;
       if (b.value !== String(call[F.id] || '')) b.value = String(call[F.id] || '');
       const face = b.closest('.proof-face') || b.parentElement; if (!face) return; face.classList.add('proof-cm'); face.classList.toggle('is-approved', okOf(F.id) && !!String(call[F.id] || '').trim());
-      if (!face.querySelector('.proof-cm-edit')) { const e = document.createElement('button'); e.type = 'button'; e.className = 'proof-cm-edit'; e.setAttribute('aria-label', 'Choose comments'); e.textContent = '▾'; face.appendChild(e); }
+      if (!face.querySelector('.proof-cm-edit')) { const e = document.createElement('button'); e.type = 'button'; e.className = 'proof-cm-edit'; e.setAttribute('aria-label', 'Choose comments'); e.innerHTML = ICON.caret; face.appendChild(e); }
       const show = !!String(call[F.id] || '').trim() && untouchedDefault(F.id); let m = face.querySelector('.proof-calc-mark');   /* 0.22.1 (fix 8): only an untouched default */
-      if (show && !m) { m = document.createElement('span'); m.className = 'proof-calc-mark'; face.appendChild(m); } if (m) { if (show) m.textContent = 'Default'; else m.remove(); } }));
+      face.classList.toggle('has-mark', show); setTimeout(fitBoxLines, 0); if (show && !m) { m = document.createElement('span'); m.className = 'proof-calc-mark'; face.appendChild(m); } if (m) { if (show) m.textContent = 'Default'; else m.remove(); } }));
   }
   // the pick list: comments on / off, my own comment (Save to my list), Make default (this template, this phone), Clear, Cancel, Done = ticked
   function closePick() { const o = document.getElementById('proof-pick'); if (o) o.remove(); }
   function openPick(F) {
     closePick(); closeAsk(); if (!commentOf(F)) return;
     const cur = ((call.__cm || {})[F.id] || []).slice(), el = document.createElement('div'); el.id = 'proof-pick'; el.setAttribute('role', 'dialog');
-    const items = () => choicesOf(F).map(t => '<button type="button" class="pp-item' + (cur.indexOf(t) >= 0 ? ' on' : '') + '" data-text="' + esc(t) + '">' + esc(t) + '</button>').join('');
+    // 0.22.2 (F22, the main app): picks are numbered 1, 2, 3 in the order tapped and joined in that order (cur = that order)
+    const items = () => choicesOf(F).map(t => { const n = cur.indexOf(t); return '<button type="button" class="pp-item' + (n >= 0 ? ' on' : '') + '" data-text="' + esc(t) + '">' + esc(t) + (n >= 0 ? '<span class="pp-num">' + (n + 1) + '</span>' : '') + '</button>'; }).join('');
     el.innerHTML = '<div class="pp-title">' + esc(F.name) + '</div><div class="pp-who">Defaults for ' + esc(DEVICE) + ' · template ' + esc(tplKey() || 'none') + '</div><div class="pp-list">' + items() + '</div>' +
       '<div class="pp-add"><input class="pp-new" placeholder="Type a comment" autocomplete="off"><button type="button" data-pp="mine">Save to my list</button></div>' +
       '<div class="pp-btns"><button type="button" data-pp="def">Make default</button><button type="button" data-pp="clear">Clear</button></div><div class="pp-btns"><button type="button" data-pp="cancel">Cancel</button><button type="button" data-pp="done">Done</button></div>';
-    const picked = () => Array.from(el.querySelectorAll('.pp-item.on')).map(x => x.dataset.text);
-    el.addEventListener('click', e => { const it = e.target.closest('.pp-item'); if (it) { e.stopPropagation(); it.classList.toggle('on'); return; }
+    const picked = () => cur.slice();
+    const relist = () => { el.querySelector('.pp-list').innerHTML = items(); };
+    el.addEventListener('click', e => { const it = e.target.closest('.pp-item'); if (it) { e.stopPropagation(); const t = it.dataset.text, n = cur.indexOf(t); if (n >= 0) cur.splice(n, 1); else cur.push(t); relist(); return; }
       const bt = e.target.closest('[data-pp]'); if (!bt) return; e.stopPropagation(); const a = bt.dataset.pp;
-      if (a === 'clear') { el.querySelectorAll('.pp-item.on').forEach(x => x.classList.remove('on')); return; }
+      if (a === 'clear') { cur.splice(0, cur.length); relist(); return; }
       if (a === 'mine') { const t = el.querySelector('.pp-new').value.trim(); if (!t) return; const o = lsGet(K.mycm, {}) || {}; o[F.id] = (o[F.id] || []).filter(x => x !== t).concat([t]); lsSet(K.mycm, o);
-        cur.splice(0, cur.length, ...picked()); el.querySelector('.pp-list').innerHTML = items(); el.querySelector('.pp-new').value = ''; say('Saved to my list: ' + t, 'done'); return; }
+        relist(); el.querySelector('.pp-new').value = ''; say('Saved to my list: ' + t, 'done'); return; }
       if (a === 'def') { const o = phoneDefs(), k = tplKey(); o[k] = o[k] || {}; o[k][F.id] = picked(); lsSet(K.defs, o); say('Default for ' + F.name + ' (template ' + (k || 'none') + ') saved on this phone', 'done'); try { applyDefaults(); } catch (x) {} return; }
       if (a === 'done') { const sel = picked(), v = cmText(sel);
         call.__cm = call.__cm || {}; call.__ok = call.__ok || {}; call.__cm[F.id] = sel; if (call.__def) delete call.__def[F.id]; if (v) { call[F.id] = v; call.__ok[F.id] = true; } else { delete call[F.id]; delete call.__ok[F.id]; }
@@ -8876,17 +8894,17 @@ body.light-theme .proof-box{color:#0f172a}
     const kept = (call.__cap || {})[F.id], d = kept ? JSON.parse(JSON.stringify(kept)) : capBlank();
     let active = d.list[0], pend = null, setOpen = false;
     const el = document.createElement('div'); el.id = 'proof-cap'; el.setAttribute('role', 'dialog');
-    const mark = r => (r.status === 'pass' ? ['✓', '#10b981'] : r.status === 'fail' ? ['✕', '#ef4444'] : ['•', '#8a97a8']);
+    const mark = r => (r.status === 'pass' ? [ICON.check, '#10b981', 'pass'] : r.status === 'fail' ? [ICON.cross, '#ef4444', 'fail'] : [ICON.dot, '#8a97a8', 'pending']);
     function settle() { if (pend) { pend.c[pend.key] = pend.before; pend = null; } }
     function paint() {
       const c = d.sides[active], r = capResult(c, d.tolerance);
-      el.querySelectorAll('.pc-tab').forEach(t => { const s = t.dataset.side, m = mark(capResult(d.sides[s], d.tolerance)); t.querySelector('.pc-m').textContent = ' ' + m[0]; t.querySelector('.pc-m').style.color = m[1]; });
+      el.querySelectorAll('.pc-tab').forEach(t => { const s = t.dataset.side, m = mark(capResult(d.sides[s], d.tolerance)); t.querySelector('.pc-m').innerHTML = m[0]; t.querySelector('.pc-m').style.color = m[1]; t.dataset.mark = m[2]; });
       const sum = el.querySelector('.pc-sum'); sum.className = 'pc-sum ' + (r.status === 'pass' ? 'pc-pass' : r.status === 'fail' ? 'pc-fail' : '');
-      sum.textContent = (r.measured === null ? 'Awaiting readings' : r.measured.toFixed(2) + ' µF') + (r.percent !== null ? ' · ' + (r.percent >= 0 ? '+' : '') + r.percent.toFixed(2) + '%' : '') + ' · ' + (r.status === 'pass' ? '✓ PASS' : r.status === 'fail' ? '✕ FAIL' : 'PENDING');
+      sum.textContent = (r.measured === null ? 'Awaiting readings' : r.measured.toFixed(2) + ' µF') + (r.percent !== null ? ' · ' + (r.percent >= 0 ? '+' : '') + r.percent.toFixed(2) + '%' : '') + ' · '; sum.insertAdjacentHTML('beforeend', r.status === 'pass' ? ICON.check + ' PASS' : r.status === 'fail' ? ICON.cross + ' FAIL' : 'PENDING');
       const bv = capBull(c, 'volts'), ba = capBull(c, 'amps');
       el.querySelector('.pc-info').textContent = [r.lo !== null ? 'OK ' + r.lo.toFixed(2) + '–' + r.hi.toFixed(2) + ' µF' : 'choose rating and tolerance', r.volts ? 'V ' + r.volts.map(v => v.toFixed(0)).join('–') + (bv !== null ? ' (' + bv.toFixed(1) + ')' : '') : '', r.amps ? 'A ' + r.amps.map(v => v.toFixed(2)).join('–') + (ba !== null ? ' (' + ba.toFixed(2) + ')' : '') : ''].filter(Boolean).join(' · ');
       el.querySelector('.pc-report').textContent = capReport(d) || '—';
-      const st = el.querySelector('.pc-settings summary'); if (st) st.textContent = (d.method === 'live' ? 'Under load' : 'Bench test') + ' · ' + (capPos(d.tolerance) ? '±' + d.tolerance + '%' : 'no tolerance') + (d.reportDetails ? ' · details in report' : '') + ' ▾';
+      const st = el.querySelector('.pc-settings summary'); if (st) st.textContent = (d.method === 'live' ? 'Under load' : 'Bench test') + ' · ' + (capPos(d.tolerance) ? '±' + d.tolerance + '%' : 'no tolerance') + (d.reportDetails ? ' · details in report' : '') + ' '; if (st) st.insertAdjacentHTML('beforeend', ICON.caret);
     }
     function render() {
       settle(); if (!d.sides[active]) active = d.list.filter(s => d.sides[s])[0];
@@ -8894,12 +8912,12 @@ body.light-theme .proof-box{color:#0f172a}
       const adds = KORDER.filter(k => d.list.filter(x => capKind(x) === k).length < 4).map(k => '<button type="button" class="pc-add" data-kind="' + k + '">+ ' + (k === 'FAN' ? 'ODF' : k) + '</button>').join('');
       const tabs = d.list.filter(s => d.sides[s]).map(s => '<button type="button" class="pc-tab' + (s === active ? ' on' : '') + '" data-side="' + s + '">' + esc(capLabel(d, s)) + '<span class="pc-m"></span></button>').join('');
       const opt = (v, t, cur) => '<option value="' + v + '"' + (String(cur) === v ? ' selected' : '') + '>' + t + '</option>';
-      const valRow = key => '<div class="pc-row"><span class="pc-lbl">' + (key === 'volts' ? 'Volts' : key === 'amps' ? 'Amps' : 'Measured') + '</span><button type="button" class="pc-choose" data-key="' + key + '">' + (String(c[key] || '').trim() ? esc(c[key]) + ' ' + CAP_NUM[key].unit + ' ▾' : 'Choose ' + CAP_NUM[key].word + ' ▾') + '</button></div><div class="pc-pick" data-for="' + key + '"></div>';
+      const valRow = key => '<div class="pc-row"><span class="pc-lbl">' + (key === 'volts' ? 'Volts' : key === 'amps' ? 'Amps' : 'Measured') + '</span><button type="button" class="pc-choose" data-key="' + key + '">' + (String(c[key] || '').trim() ? esc(c[key]) + ' ' + CAP_NUM[key].unit + ' ' + ICON.caret : 'Choose ' + CAP_NUM[key].word + ' ' + ICON.caret) + '</button></div><div class="pc-pick" data-for="' + key + '"></div>';
       el.innerHTML = '<div class="pc-top"><div class="pc-tabs">' + tabs + adds + '</div><div class="pc-bar"><div class="pc-sum"></div><div class="pc-info"></div></div></div>' +
         '<details class="pc-settings"' + (setOpen ? ' open' : '') + '><summary></summary><label>Test method <select class="pc-method">' + opt('live', 'Under load', d.method) + opt('bench', 'Bench test', d.method) + '</select></label>' +
         '<label>Tolerance <select class="pc-tol">' + opt('', 'Select tolerance', d.tolerance) + opt('5', '±5%', d.tolerance) + opt('6', '±6%', d.tolerance) + opt('10', '±10%', d.tolerance) + '</select></label>' +
         '<label class="pc-chk"><input type="checkbox" class="pc-det"' + (d.reportDetails ? ' checked' : '') + '> Include volts, amps and tolerance in report</label></details>' +
-        '<div class="pc-side"><div class="pc-row"><button type="button" class="pc-rated">' + (capPos(c.rating) ? 'Rated: ' + esc(c.rating) + ' µF ▾' : 'Choose rated µF ▾') + '</button>' +
+        '<div class="pc-side"><div class="pc-row"><button type="button" class="pc-rated">' + (capPos(c.rating) ? 'Rated: ' + esc(c.rating) + ' µF ' : 'Choose rated µF ') + ICON.caret + '</button>' +
         '<select class="pc-mode" aria-label="' + esc(lab) + ' measurement">' + opt('live', 'From volts + amps', c.mode) + opt('direct', 'Enter measured µF', c.mode) + '</select><button type="button" class="pc-remove">Remove</button></div>' +
         '<div class="pc-pick" data-for="rating"></div>' + (c.mode === 'live' ? valRow('volts') + valRow('amps') : valRow('uf')) + '</div>' +
         '<div class="pc-rt">Report</div><div class="pc-report"></div><div class="pc-btns"><button type="button" data-a="cancel">Cancel</button><button type="button" data-a="clear">Clear test</button><button type="button" data-a="use" class="pc-primary">Use results</button></div>';
@@ -9017,9 +9035,9 @@ body.light-theme .proof-box{color:#0f172a}
   window.EngineSlots['f-plus'] = { render(p) { const F = p.proofField; if (!F || !commentOf(F)) return '<div class="proof-cell proof-piece"></div>';   // the main app: + only on a comment Field
     return '<div class="proof-cell proof-piece" style="' + btnStyle(p) + '"><button type="button" class="proof-fbtn" data-fact="plus" data-fid="' + esc(F.id) + '" aria-label="Edit ' + esc(F.name) + ' comments">+</button></div>'; } };
   window.EngineSlots['f-menu'] = { render(p) { const F = p.proofField; if (!F) return '';
-    return '<div class="proof-cell proof-piece" style="' + btnStyle(p) + '"><button type="button" class="proof-fbtn" data-fact="menu" data-fid="' + esc(F.id) + '" aria-label="Options for ' + esc(F.name) + '">⋯</button></div>'; } };
+    return '<div class="proof-cell proof-piece" style="' + btnStyle(p) + '"><button type="button" class="proof-fbtn" data-fact="menu" data-fid="' + esc(F.id) + '" aria-label="Options for ' + esc(F.name) + '">' + ICON.more + '</button></div>'; } };
   window.EngineSlots['f-equip'] = { render(p) { const F = p.proofField; if (!F || !F.equip) return '<div class="proof-cell proof-piece"></div>'; const cur = equipNow(F.equip);
-    return '<div class="proof-cell proof-piece" style="' + btnStyle(p) + '"><button type="button" class="proof-fbtn" data-fact="equip" data-fid="' + esc(F.id) + '" data-slot2="' + F.equip + '" aria-label="Equipment type: ' + esc(cur) + '. Tap to change" title="' + esc(cur) + ': tap to change">⟳</button></div>'; } };
+    return '<div class="proof-cell proof-piece" style="' + btnStyle(p) + '"><button type="button" class="proof-fbtn" data-fact="equip" data-fid="' + esc(F.id) + '" data-slot2="' + F.equip + '" aria-label="Equipment type: ' + esc(cur) + '. Tap to change" title="' + esc(cur) + ': tap to change">' + ICON.cycle + '</button></div>'; } };
   function closeFMenu() { const o = document.getElementById('proof-fmenu'); if (o) o.remove(); }
   function openFMenu(F) {   // the main app's field menu: Pin / Unpin for future reports (here: for this template), Close
     closeFMenu(); closePick(); closeAsk(); closeCap(); closeFilter();
@@ -9067,7 +9085,7 @@ body.light-theme .proof-box{color:#0f172a}
     if (!items.length) return '<div class="proof-report-body"><span class="proof-report-empty">Nothing in the report yet.</span></div>';
     const all = items.some(x => x.pending && x.v) ? '<button type="button" class="proof-rp-all" data-act="all">Approve all</button>' : '';
     return '<div class="proof-report-body">' + all + items.map(x => '<div class="proof-rp-row' + (x.pending ? ' pending' : '') + '" data-id="' + esc(x.id) + '"><span class="proof-rp-text" data-act="open">' + esc(x.pending ? '►' + x.label + ': Pending' : lineOf(x)) + '</span>' +
-      '<span class="proof-rp-btns"><button type="button" data-act="up" aria-label="Up">\u2191</button><button type="button" data-act="down" aria-label="Down">\u2193</button><button type="button" data-act="x" aria-label="Drop from the report">\u2715</button></span></div>' +
+      '<span class="proof-rp-btns"><button type="button" data-act="up" aria-label="Up">' + ICON.up + '</button><button type="button" data-act="down" aria-label="Down">' + ICON.down + '</button><button type="button" data-act="x" aria-label="Drop from the report">' + ICON.cross + '</button></span></div>' +
       (rpOpen === x.id && x.pending ? '<div class="proof-rp-open" data-id="' + esc(x.id) + '"><div class="rp-val">' + esc(x.v || 'No value yet') + '</div>' + (x.v ? '<button type="button" data-act="approve">Approve</button>' : '') + '<button type="button" data-act="edit">Edit</button></div>' : '')).join('') + '</div>';
   }
   const paintReport = () => document.querySelectorAll('#viewport-canvas-frame .proof-report-body').forEach(el => { el.outerHTML = reportHtml(); });
@@ -9218,7 +9236,11 @@ body.light-theme .proof-box{color:#0f172a}
   }
   const paintResults = () => document.querySelectorAll('.proof-results').forEach(el => { el.innerHTML = resultsHtml(); });
   window.__proofRepaints = 0;
-  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; try { closeWheel(); closeAsk(); closePick(); } catch (e) {}   /* 0.12.2 (R6) */ try { applyEquip(); } catch (e) {} /* C4b */ const r = rc.apply(this, arguments); try { decorate(); } catch (e) {} try { paintFolds(); } catch (e) {} try { paintInc(); calcCells().forEach(paintCalcBox); paintCm(); } catch (e) {} return r; }; }
+  // 0.22.2 (F19): opened while the page is scrolled down, the tray is pinned under the top row (else it opens in place, as before)
+  let trayPinned = false;
+  try { const tt = toggleTray; toggleTray = function () { const sc = document.getElementById('viewport-outer-scroller'); const wasPinned = trayPinned; trayPinned = !document.body.classList.contains('proof-tray-open') && !!(sc && sc.scrollTop > 4);
+    if (trayPinned || wasPinned) keepPlace(() => tt.apply(this, arguments)); else tt.apply(this, arguments); }; } catch (e) {}
+  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; try { closeWheel(); closeAsk(); closePick(); } catch (e) {}   /* 0.12.2 (R6) */ try { applyEquip(); } catch (e) {} /* C4b */ const r = rc.apply(this, arguments); try { decorate(); } catch (e) {} try { paintFolds(); } catch (e) {} try { paintInc(); calcCells().forEach(paintCalcBox); paintCm(); } catch (e) {} try { paintClamp(); fitBoxLines(); pinTray(); } catch (e) {} /* 0.22.2 */ return r; }; }
 
   document.addEventListener('input', e => {
     const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b) return;
@@ -9425,6 +9447,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (r._input) { cell.proofInput = r._input; cell.proofWheel = r._wheel || null;
         if (r._input === 'both' && cell.subLabel && cell.subLabel.enabled && cell.subLabel.align === 'right') cell.subLabel.nudgeX = (Number(cell.subLabel.nudgeX) || 0) - BOTH_SWITCH_W; }   // 0.12.2 (F1): the unit sits left of the switch
       if (r._labelOf) cell.proofLabelOf = r._labelOf;   // C3a
+      if (r._clamp) cell.proofClamp = r._clamp;   // 0.22.2 (F16)
       if (r._lines > 1) cell.proofLines = r._lines;   // C3c: a 2- or 3-row value box
       if (fd) { cell.proofField = fd; if (r._join) cell.proofJoin = r._join; if (r._label) cell.proofLabel = r._label; }
       if (slot === 'box') { cell.slot = 'box'; cell.proofKey = fd && draftScreen && screen === draftScreen ? DRAFT + fd.id : content; cell.label = ''; }   // C1a: a draft box
@@ -9702,7 +9725,8 @@ body.light-theme .proof-box{color:#0f172a}
       const text = Object.assign({}, look, { 'Font size': g(r, 'Label size') });
       pieces.forEach((w, k) => {
         let o;
-        if (w === 'label') o = Object.assign({}, text, { 'Type': 'text', 'Content': label, _labelOf: F.id });   // C3a: tap = include, hold = pin
+        if (w === 'label') { o = Object.assign({}, text, { 'Type': 'text', 'Content': label, _labelOf: F.id });   // C3a: tap = include, hold = pin
+          if (g(r, 'Wrap') === '') { o['Wrap'] = 'yes'; o._clamp = 2; } }   // 0.22.2 (F16): a label wraps to 2 lines unless the row says Wrap no (yes = no limit)
         else if (w === 'spacer') o = Object.assign({}, look, { 'Type': 'text', 'Content': '' });
         else if (w === 'unit') o = Object.assign({}, text, { 'Type': 'text', 'Slot': 'unit', 'Content': F.id, 'Wrap': '', _fieldDef: F });
         else if (w === 'plus' || w === 'menu' || w === 'equip') o = Object.assign({}, text, { 'Type': 'text', 'Slot': 'f-' + w, 'Content': F.id, 'Wrap': '', _fieldDef: F });   // C4b
@@ -10129,7 +10153,7 @@ body.light-theme .proof-box{color:#0f172a}
   window.EngineActions['new-call'] = () => {
     const typedSomething = Object.keys(call).some(k => k.indexOf('__') !== 0 && String(call[k] == null ? '' : call[k]).trim() && !untouchedDefault(k));   // C3b: untouched default comments are not 'typed'
     if (typedSomething && Date.now() - newArmed > 5000) { newArmed = Date.now(); say('Tap New again to clear this call', 'warn', 5000); return; }
-    newArmed = 0; call = {}; callView = VIEW_DEFAULT(); try { applyDefaults(); } catch (e) {} lsSet(K.call, call); try { applyFolds(engineState); } catch (e) {}; saveView(); clearFind(); goView('find'); paintNotes();   // round B2: reveals and template belong to the call
+    newArmed = 0; call = {}; callView = Object.assign(VIEW_DEFAULT(), { view: 'all' });   /* 0.22.2 (F12): a new call starts in All */ try { applyDefaults(); } catch (e) {} lsSet(K.call, call); try { applyFolds(engineState); } catch (e) {}; saveView(); clearFind(); goView('find'); paintNotes();   // round B2: reveals and template belong to the call
   };
   // round 7 (3): Refresh page = reload the whole page past the browser's copy (new ?v=, other switches dropped). With unsaved
   // tweaks the first tap only warns; a second tap within 5 s reloads anyway.
@@ -10180,7 +10204,7 @@ body.light-theme .proof-box{color:#0f172a}
   function makeBar() {
     if (bar) return bar;
     bar = document.createElement('div'); bar.id = 'proof-bar';
-    bar.innerHTML = '<div class="pb-top"><span id="pb-sel"></span><button type="button" data-pb="close" aria-label="Close">✕</button></div>' +
+    bar.innerHTML = '<div class="pb-top"><span id="pb-sel"></span><button type="button" data-pb="close" aria-label="Close">' + ICON.cross + '</button></div>' +
       '<div class="pb-groups">' + GROUPS.map(g => '<button type="button" data-pb="group" data-g="' + g[0] + '">' + g[1] + '</button>').join('') + '</div>' +
       '<div class="pb-body" id="pb-body"></div>' +
       '<div class="pb-foot"><button type="button" data-pb="revert">Revert</button><span id="pb-status"></span><button type="button" data-pb="save" class="pb-save">Save</button></div>';
@@ -10439,7 +10463,49 @@ body.light-theme .proof-box{color:#0f172a}
     if (e.id !== 'proof-badge') e.id = 'proof-badge';
     e.classList.toggle('stale', !!staleV);
     e.title = staleV ? 'A newer version (' + staleV + ') is available: tap to reload' : 'Version ' + PROOF_VERSION;
+    paintViewLine();
   }
+  // 0.22.2 (F16): a label with the 2-line default is clamped to 2 lines ('…' after)
+  // a word longer than the cell (e.g. 'Condenser' in a narrow label) makes the text a little smaller (whole words kept, 9 px at least)
+  function paintClamp() { eachCell(engineState, p => { if (!p.proofClamp || !p.proofId) return; const el = document.querySelector('#viewport-canvas-frame .grid-split-partition[data-pid="' + p.proofId + '"]'); if (!el) return;
+    el.classList.add('proof-clamp2'); const sp = el.querySelector('span.font-medium'); if (!sp || !sp.offsetParent) return;
+    let fs = parseFloat(getComputedStyle(sp).fontSize) || 12; for (let i = 0; i < 12 && fs > 9 && (sp.scrollWidth > sp.clientWidth + 1 || sp.scrollHeight > sp.clientHeight + 1); i++) { fs -= 0.5; sp.style.fontSize = fs + 'px'; } }); }
+  // 0.22.2 (F15): a box with Box lines always shows its rows: when its Line is too short for them, that Line (and its Section) grows by the
+  // missing pixels; the other Lines keep their size
+  function fitBoxLines() {
+    // undo the last fit first (each fit starts from the engine's own sizes, so running it again never adds up)
+    document.querySelectorAll('#viewport-canvas-frame [data-fit0]').forEach(el => { const v = el.dataset.fit0; if (el.classList.contains('grid-stack-row')) el.style.flex = v; else el.style.height = v; delete el.dataset.fit0; });
+    document.querySelectorAll('#viewport-canvas-frame textarea.proof-ta').forEach(ta => { if (!ta.offsetParent || ta.dataset.fs != null) return;
+      const cs = getComputedStyle(ta), lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.15, px = k => parseFloat(cs[k]) || 0;
+      const need = Math.ceil(ta.rows * lh + px('paddingTop') + px('paddingBottom') + px('borderTopWidth') + px('borderBottomWidth')), d = need - ta.offsetHeight; if (d <= 1) return;
+      const line = ta.closest('.grid-stack-row'), band = ta.closest('.grid-row-band'); if (!line || !band) return;
+      if (line.dataset.fit0 == null) line.dataset.fit0 = line.style.flex; if (band.dataset.fit0 == null) band.dataset.fit0 = band.style.height;
+      line.style.flex = '0 0 ' + (line.offsetHeight + d) + 'px'; band.style.height = (band.offsetHeight + d) + 'px'; });
+  }
+  // 0.22.2 (F19): opening / closing the tray redraws the page; the line at the top of the screen is put back where it was
+  function keepPlace(fn) {
+    const sc = document.getElementById('viewport-outer-scroller'), frame = document.getElementById('viewport-canvas-frame'); if (!sc || !frame) { fn(); return; }
+    let top = 0; frame.querySelectorAll('.grid-row-band.row-sticky').forEach(el => { if (el.offsetParent) top = Math.max(top, el.getBoundingClientRect().bottom); });
+    const a = Array.from(frame.querySelectorAll('.grid-split-partition[data-pid]')).find(e => e.offsetParent && !e.closest('.row-sticky') && !e.closest('.proof-tray-pinned') && e.getBoundingClientRect().top >= top);
+    const id = a && a.dataset.pid, y0 = a ? a.getBoundingClientRect().top : 0;
+    fn();
+    if (!id) return; const b = frame.querySelector('.grid-split-partition[data-pid="' + id + '"]'); if (b && b.offsetParent) sc.scrollTop += b.getBoundingClientRect().top - y0;
+  }
+  // 0.22.2 (F19): the Tools tray (Structure Screen 'tray') opens pinned right under the frozen top rows, wherever the page is scrolled;
+  // it is taken out of the page's flow, so the page keeps its place
+  function pinTray() {
+    const frame = document.getElementById('viewport-canvas-frame'); if (!frame || !engineState || !engineState.rows) return;
+    const bands = Array.from(frame.querySelectorAll('.grid-row-band.section-band-frame')); if (bands.length !== engineState.rows.length) return;
+    let top = 0; frame.querySelectorAll('.grid-row-band.row-sticky').forEach(el => { if (el.offsetParent) top = Math.max(top, el.getBoundingClientRect().bottom); });
+    const hb = frame.querySelector('.grid-row-band.row-sticky'), fr = hb ? hb.getBoundingClientRect() : frame.getBoundingClientRect();   // the same left and width as the top rows
+    const open = engineState.rows.some((row, i) => row.isTray && bands[i].offsetParent); document.body.classList.toggle('proof-tray-open', open); if (!open) trayPinned = false;
+    engineState.rows.forEach((row, i) => { const b = bands[i]; if (!row.isTray) return; b.classList.toggle('proof-tray-pinned', trayPinned); if (!trayPinned) { b.style.top = b.style.left = b.style.width = ''; return; }
+      if (!b.offsetParent && getComputedStyle(b).display === 'none') return;
+      b.style.top = Math.max(0, top) + 'px'; b.style.left = fr.left + 'px'; b.style.width = fr.width + 'px'; top += b.getBoundingClientRect().height; });
+  }
+  // 0.22.2 (F12): which view and template the page is in, always visible: a small second line in the version badge (top row, frozen)
+  function paintViewLine() { if (!usesB2) return; const e = document.getElementById('proof-badge'); if (!e) return; let v = e.querySelector('.proof-viewline');
+    if (!v) { v = document.createElement('span'); v.className = 'proof-viewline'; e.appendChild(v); } const t = viewWord() + ' \u00b7 ' + (callView.tpl || 'none'); if (v.textContent !== t) v.textContent = t; }
 
   function reloadTo(v) { say('Reloading the newer version (' + v + ')...', 'warn'); location.replace(location.pathname + '?v=' + encodeURIComponent(v) + '&t=' + Date.now()); }
   function pendingOnPhone() { const t = lsGet(K.tweaks, {}) || {}; return Object.keys(t).some(k => t[k] && t[k].state === 'pending'); }
@@ -10566,6 +10632,7 @@ body.light-theme .proof-box{color:#0f172a}
   const partIdx = part => { const m = /handleSplitClick\((\d+), (\d+), (\d+), (\d+)/.exec(part.getAttribute('onclick') || ''); return m ? m.slice(1, 5).map(Number) : null; };
   let visBusy = false;
   function applyVis() {
+    try { paintViewLine(); } catch (e) {}   // 0.22.2 (F12)
     const frame = document.getElementById('viewport-canvas-frame'); if (!frame || visBusy) return;
     visBusy = true;
     try {
@@ -10600,6 +10667,7 @@ body.light-theme .proof-box{color:#0f172a}
       try { stackFrozen(); } catch (e) {}
     } finally { visBusy = false; }
     pinChips(); try { paintFolds(); } catch (e) {}
+    try { document.querySelectorAll('#viewport-canvas-frame [data-fit0]').forEach(el => { if (el.classList.contains('grid-stack-row')) el.style.flex = el.dataset.fit0; delete el.dataset.fit0; }); fitBoxLines(); } catch (e) {}   // 0.22.2 (F15): the band sizes above are the base; fit on top of them
   }
   // 0.12.3 (F3): a chip stays reachable while its Section is on screen: it slides down to just below the frozen header (and the top of
   // what the phone shows when the keyboard is up), never past its Section's bottom. Only the chip moves: no scroll, no redraw.
@@ -10724,7 +10792,7 @@ body.light-theme .proof-box{color:#0f172a}
     const m = modeOf(p); box.readOnly = m === 'wheel' || !!edOf(p); const km = keypadOf(p);   /* C4a: an editor's box stays read-only */   // 0.12.2 (R10): the same keypad rule as the first draw
     if (m === 'wheel' || edOf(p)) box.setAttribute('inputmode', 'none'); else if (km) box.setAttribute('inputmode', km); else box.removeAttribute('inputmode');
     const sw = box.parentElement && box.parentElement.parentElement && box.parentElement.parentElement.querySelector('.proof-mode');
-    if (sw) { sw.textContent = m === 'wheel' ? '⌨' : '◎'; sw.title = m === 'wheel' ? 'Type instead' : 'Use the wheel'; }
+    if (sw) { sw.innerHTML = m === 'wheel' ? ICON.keyboard : ICON.wheel; sw.title = m === 'wheel' ? 'Type instead' : 'Use the wheel'; }
   }
   // after each draw: wheel boxes, limit notes, hidden Lines
   function decorateB2() {
@@ -10733,16 +10801,19 @@ body.light-theme .proof-box{color:#0f172a}
   }
 
   // ---------- the bottom line ----------
+  // 0.22.2 (F23): the page can always scroll its last line above the footer
+  function footRoom(n) { try { const sc = document.getElementById('viewport-outer-scroller'); if (sc && n) sc.style.paddingBottom = (n.offsetHeight + 20) + 'px'; } catch (e) {} }
   function paintNotes() {
     let n = document.getElementById('proof-notes');
-    if (!n) { n = document.createElement('div'); n.id = 'proof-notes'; n.title = 'Tap to make this smaller or bigger'; n.addEventListener('click', e => {
+    if (!n) { n = document.createElement('div'); n.id = 'proof-notes'; n.className = 'small'; n.title = 'Tap to see all the notes (tap again for one line)';   /* 0.22.2 (F23): one line by default */ n.addEventListener('click', e => {
       if (e.target && e.target.id === 'proof-save-now') { e.stopPropagation(); window.EngineActions['proof-save-tweaks'](); return; }   // the inspector can cover the Tools row on a phone
-      n.classList.toggle('small'); }); document.body.appendChild(n); }
+      n.classList.toggle('small'); footRoom(n); }); document.body.appendChild(n); }
     const head = 'proof ' + PROOF_VERSION + ' · profile ' + (info.profile || '?') + (chosenProfile() === 'auto' ? ' (auto)' : '') + ' · ' + DEVICE +
       (info.offline ? ' · sheet not read (offline) ' + hhmm(info.readAt) : ' · read ' + (info.readAt ? hhmm(info.readAt) : '-')) + ' · ' + info.rows + ' rows, ' + (info.refused + (notes || []).filter(x => /^(Sites|Call types|Comments) row \d+ refused/.test(String(x && x._note || x))).length) + ' refused · ' + info.tweaks + ' tweaks applied' + (info.pending ? ' (not saved yet)' : '') + (usesB2 ? ' · view ' + viewWord() + ', template ' + (callView.tpl || 'none') + (callView.callType ? ', call type ' + callView.callType : '') : '');   // C1b: the call type
     const unsaved = info.readAt ? changedFrom(applied).length : 0;
     const lost = info.readAt && structChanged();
     n.innerHTML = '<b>' + esc(head) + '</b>' + (unsaved ? '<br><span class="proof-last">' + unsaved + ' change(s) not saved yet.</span> <button type="button" id="proof-save-now">Save tweaks</button>' : '') + (lost ? '<br><span class="proof-warn">' + esc(NOT_KEPT) + '</span>' : '') + (info.sourceText ? '<br>' + esc(info.sourceText) : '') + (lastAction ? '<br><span class="proof-last">' + esc(lastAction) + '</span>' : '') + notes.map(x => '<br>' + esc(x)).join('');
+    footRoom(n);
   }
 
   window.PMIProof = { build, fromCsv, load, reload, saveTweaks, clearTweaks, nextProfile, changedFrom: () => changedFrom(base), info: () => info, get device() { return DEVICE; }, PROFILES, HOUSES, version: PROOF_VERSION,
@@ -10756,7 +10827,7 @@ body.light-theme .proof-box{color:#0f172a}
     // The engine still sets the old copy aside under proof_containers_backup_v1_replaced (nothing is lost; nothing here reads it).
     const dropBanner = () => { const x = document.getElementById('layout-replaced-banner'); if (x) x.remove(); };
     dropBanner(); setTimeout(dropBanner, 0);
-    if (AUTOFILL) { setTimeout(autofillPage, 0); return; }   // the test page only: no layout read, no sheet calls
+    if (AUTOFILL) { document.body.classList.add('proof-ready'); setTimeout(autofillPage, 0); return; }   // the test page only: no layout read, no sheet calls
     Promise.all([STORE_READY, TAB_READY]).then(([, mine]) => { if (!mine) { tabCover('also'); return; }   // 0.22.1: another tab is open: the heads-up first
       // 0.20.0: the store has started (IndexedDB or localStorage only): read what was kept, then draw
       try { DEVICE = deviceName(); call = lsGet(K.call, {}) || {}; endpoint = lsGet(K.endpoint, '') || ''; callView = Object.assign(VIEW_DEFAULT(), lsGet(K_VIEW, {}) || {});
@@ -10765,7 +10836,7 @@ body.light-theme .proof-box{color:#0f172a}
       try { if (!isLiveInteraction) toggleInteractionState(); } catch (e) {}
       badge(); paintLine(); watchPlain();
       checkVersion(false, true);   // round A.1 (Fix B): ask version.json at once, next to the first sheet read, so an old cached page moves on before it draws
-      load('start').then(() => { try { applyInspectorWindowUI(); } catch (e) {} if (info.offline) say('Offline: showing the saved layout', 'warn', 8000); storeMsg(); checkVersion(); });   // 0.12.1 (BT-15): the same banner as Reload   // hides the engine's 'Open Inspector' button: the Tools row has one
+      load('start').then(() => { document.body.classList.add('proof-ready');   /* 0.22.2 (F20) */ try { applyInspectorWindowUI(); } catch (e) {} if (info.offline) say('Offline: showing the saved layout', 'warn', 8000); storeMsg(); checkVersion(); });   // 0.12.1 (BT-15): the same banner as Reload   // hides the engine's 'Open Inspector' button: the Tools row has one
     });
   });
 })();
