@@ -754,6 +754,10 @@ body:not(.proof-ready) #reopen-inspector-fab{display:none!important}
 #viewport-canvas-frame .proof-cell:has(.proof-spec){position:relative}#viewport-canvas-frame .proof-spec{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:10px;line-height:1;color:#94a3b8;pointer-events:none;white-space:nowrap;z-index:3}
 #viewport-canvas-frame .proof-dbg{position:absolute;left:2px;right:2px;bottom:0;font:9px/1.2 system-ui,sans-serif;color:#9ca3af;background:rgba(15,23,42,.88);padding:0 3px;pointer-events:none;z-index:4;white-space:normal;overflow-wrap:break-word}
 #viewport-canvas-frame .proof-viewcell{display:flex;align-items:center;justify-content:center;text-align:center;height:100%;line-height:1.15;color:#7dd3fc;font-weight:600;overflow-wrap:anywhere;padding:0 2px}
+#viewport-canvas-frame .proof-savechip{display:flex;align-items:center;justify-content:center;text-align:center;height:100%;line-height:1.15;color:#86efac;font-weight:600;overflow-wrap:anywhere;padding:0 2px;cursor:pointer}
+#viewport-canvas-frame .proof-savechip[data-st=wait],#viewport-canvas-frame .proof-savechip[data-st=saving]{color:#fcd34d}
+#viewport-canvas-frame .proof-savechip[data-st=err]{color:#fca5a5}
+#viewport-canvas-frame .proof-savechip[data-st=off]{color:#94a3b8;font-weight:400}
 #proof-nocust{position:sticky;z-index:30;display:block;width:100%;box-sizing:border-box;text-align:left;padding:6px 12px;margin:0;border:0;border-bottom:1px solid #f59e0b;border-radius:6px;background:#1f1406;color:#fbbf24;font:600 13px system-ui,sans-serif}
 #proof-nocust b{color:#22d3ee;text-decoration:underline}
 #proof-tabcover{position:fixed;inset:0;z-index:200;background:rgba(2,6,23,.92);display:flex;align-items:center;justify-content:center;font:16px system-ui,sans-serif;color:#e2e8f0}
@@ -3681,7 +3685,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.24.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.25.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3691,7 +3695,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.24.0', stamp: '2026-11-23 10:08:51', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.25.0', stamp: '2026-11-23 13:14:04', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8368,7 +8372,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.24.0';
+  const PROOF_VERSION = '0.25.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8471,11 +8475,13 @@ body.light-theme .proof-box{color:#0f172a}
   // ---------- 0.22.3 (Prompts no. 151): the 'Settings' tab (columns Setting, Value), read like Sites / Call types ----------
   // Customer required: no / remind (start value: blank or missing) / yes
   let SETTINGS = {};
-  const SETTING_VALUES = { 'customer required': ['no', 'remind', 'yes'], 'debug boxes': ['no', 'yes'], 'report format': ['rated first', 'within range', 'measured first', 'slash'] };   // Debug boxes: 0.22.4; Report format: 0.24.0 (C7a)
-  const SETTING_START = { 'customer required': 'remind', 'debug boxes': 'no', 'report format': 'rated first' };
+  const SETTING_VALUES = { 'customer required': ['no', 'remind', 'yes'], 'debug boxes': ['no', 'yes'], 'report format': ['rated first', 'within range', 'measured first', 'slash'],
+    'script url': '*', 'save chip': '*', 'tech name': '*' };   // '*' = free text, kept as typed (C7b, 0.25.0)   // Debug boxes: 0.22.4; Report format: 0.24.0 (C7a)
+  const SETTING_START = { 'customer required': 'remind', 'debug boxes': 'no', 'report format': 'rated first', 'script url': '', 'save chip': 'Saved {time}', 'tech name': '' };
   function parseSettings(rows, notes) {
     const out = {}; (rows || []).forEach((r, i) => { const k = g2(r, 'Setting').toLowerCase(), v = g2(r, 'Value').toLowerCase(); if (!k) return;
       if (!SETTING_VALUES[k]) { notes.push('Settings row ' + (i + 2) + ': "' + g2(r, 'Setting') + '" is not a setting this page knows; not used.'); return; }
+      if (SETTING_VALUES[k] === '*') { if (g2(r, 'Value')) out[k] = g2(r, 'Value'); return; }
       if (v && SETTING_VALUES[k].indexOf(v) < 0) { notes.push('Settings row ' + (i + 2) + ': ' + g2(r, 'Setting') + ' must be ' + SETTING_VALUES[k].join(', ') + ' (not "' + g2(r, 'Value') + '"); ' + SETTING_START[k] + ' is used.'); return; }
       if (v) out[k] = v; }); return out;
   }
@@ -9220,7 +9226,8 @@ body.light-theme .proof-box{color:#0f172a}
   window.EngineActions['copy-report'] = () => { const t = reportBody(); if (!t) { say('Nothing in the report yet', 'warn'); return; }
     const n = reportItems().filter(x => x.pending).length;
     if (n && Date.now() - copyArmed > 4000) { copyArmed = Date.now(); say(n + ' pending: tap Copy again to copy anyway', 'warn', 4000); return; }
-    copyArmed = 0; copyText(t).then(ok => say(ok ? (n ? 'Copied with ' + n + ' pending' : 'Report copied ✓') : 'Copy failed: select the text instead', ok ? 'done' : 'warn')); };
+    copyArmed = 0; copyText(t).then(ok => { say(ok ? (n ? 'Copied with ' + n + ' pending' : 'Report copied ✓') : 'Copy failed: select the text instead', ok ? 'done' : 'warn');
+      if (ok) { try { visitOf().done = true; lsSet(K.call, call); saveCall('copy'); } catch (e) {} } }); };   // C7b: Copy report = Done (stays Done on later edits)
 
   // ---------- Round C1b: the Call types tab, the call-type question (Slot call-types, Action open-call-type) ----------
   // Call types: Call type | Template | Aliases (separated by |) | Active | Order | Notes. Missing tab = no question (Entry as before).
@@ -9344,6 +9351,7 @@ body.light-theme .proof-box{color:#0f172a}
     const hf = houseFields || Object.keys(FIND_FILL_FALLBACK).map(id => ({ id, find: FIND_FILL_FALLBACK[id] }));
     hf.forEach(f => { delete call[f.id]; }); delete call.__file;
     if (x.place) prefillPlace(x.place); else hf.forEach(f => { if (f.find && x[f.find]) call[f.id] = x[f.find]; });   // C7a: a place = the Fields tab's Pre-fill
+    call.__placeId = x.place ? x.place.id : (x.onPhone ? 'PH-' + x.id : (x.id || ''));   // C7b: the Visits row's Place Id (a phone-made customer: PH-<id>, given a Places row in C7c / C7e)
     if (!x.place) eachCell(engineState, p => { if (p.slot !== 'box' || FIND_KEYS[p.proofKey] || isDraft(p.proofKey)) return; const ff = findFillOf(p); if (ff && x[ff] != null) call[p.proofField ? p.proofField.id : p.proofKey] = x[ff]; });
     if (extra) Object.keys(extra).forEach(k => { call[k] = extra[k]; });
     if (callView.needCust) { callView.needCust = false; saveView(); } prevCall = null;   // 0.22.4: a customer was picked
@@ -9496,7 +9504,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (g('Align') && !/^(left|center|right)$/i.test(g('Align'))) why.push('Align "' + g('Align') + '" must be left, center or right');   // 0.12.1 (BT-48): no silent center
       if (!TYPES[type]) why.push('unknown Type "' + type + '"');
       const fd = r._fieldDef || null;   // round B1: the Field this piece belongs to (made by bundleRows from the Fields tab)
-      if (slot && slot !== 'box' && slot !== 'results' && slot !== 'call-types' && slot !== 'report-body' && slot !== 'view-line' && !((slot === 'unit' || slot === 'report-value' || FIELD_SLOTS[slot]) && fd)) why.push('unknown Slot "' + slot + '"');
+      if (slot && slot !== 'box' && slot !== 'results' && slot !== 'call-types' && slot !== 'report-body' && slot !== 'view-line' && slot !== 'save-chip' && !((slot === 'unit' || slot === 'report-value' || FIELD_SLOTS[slot]) && fd)) why.push('unknown Slot "' + slot + '"');
       if (slot === 'box' && !fd && !FIELD_FALLBACK[content] && !FIND_KEYS[content]) why.push('unknown field "' + content + '"');
       if (type === 'button') { const a = content; const ok = ACTIONS[a] || (/^set-view:/.test(a) && screens[a.slice(9)]) || /^set-show:(all|template|values)$/.test(a) || TPL_ACTION.test(a); /* round B2 actions */ if (!ok) why.push('unknown action "' + a + '" (this page may be out of date: tap Reload, or refresh the browser)'); }
       if (!VIS_RULES[vis]) why.push('Visible when must be always, never, when-filled or reserved');   // round B2: when-filled, reserved (Blueprint P9)
@@ -9540,7 +9548,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (fd) { cell.proofField = fd; if (r._join) cell.proofJoin = r._join; if (r._label) cell.proofLabel = r._label; }
       if (slot === 'box') { cell.slot = 'box'; cell.proofKey = fd && draftScreen && screen === draftScreen ? DRAFT + fd.id : content; cell.label = ''; }   // C1a: a draft box
       else if (slot === 'unit' || slot === 'report-value' || FIELD_SLOTS[slot]) { cell.slot = slot; cell.proofKey = content; cell.label = ''; }   // C4b: f-plus, f-menu, f-equip
-      else if (slot === 'results' || slot === 'call-types' || slot === 'report-body' || slot === 'view-line') { cell.slot = slot; cell.label = ''; }   // 0.22.3: view-line   // C2b: report-body   // C1b: call-types (a list, like results)
+      else if (slot === 'results' || slot === 'call-types' || slot === 'report-body' || slot === 'view-line' || slot === 'save-chip') { cell.slot = slot; cell.label = ''; }   // 0.22.3: view-line   // C2b: report-body   // C1b: call-types (a list, like results)
       else if (type === 'button') { cell.label = g('Label') || content;
         // round 9 migration: on older tabs New (Id hdr.newcall) only opened Find (set-view:find); it now clears the call first
         cell.clickAction = (id === 'hdr.newcall' && content === 'set-view:find') ? 'new-call' : content; }
@@ -9761,7 +9769,7 @@ body.light-theme .proof-box{color:#0f172a}
     const FD = opt.fields ? readFields(opt.fields) : null;
     if (FD) FD.msgs.forEach(m => out.push(m));
     out._house = FD ? Object.keys(FD.map).map(k => FD.map[k]).filter(f => f.scope === 'house').map(f => ({ id: f.id, find: f.find || '' })) : null;   // 0.13.1 (R6)
-    out._fctl = FD ? Object.keys(FD.map).map(k => FD.map[k]).filter(f => f.saveTab || f.inReport).map(f => ({ id: f.id, name: f.name, unit: f.unit, equip: f.equip || '', prefill: f.prefill, saveTab: f.saveTab, saveCols: f.saveCols, inReport: f.inReport, kind: f.kind })) : null;   // C7a
+    out._fctl = FD ? Object.keys(FD.map).map(k => FD.map[k]).filter(f => f.saveTab || f.inReport || f.visitsCol).map(f => ({ id: f.id, name: f.name, unit: f.unit, equip: f.equip || '', prefill: f.prefill, saveTab: f.saveTab, saveCols: f.saveCols, inReport: f.inReport, kind: f.kind, visitsCol: f.visitsCol || '' })) : null;   // C7a; C7b: every Field with a Visits column
     const ids = {};
     items.forEach((r, i) => {
       const where = 'Items row ' + (i + 2), why = formulaErrors(r);
@@ -10419,6 +10427,7 @@ body.light-theme .proof-box{color:#0f172a}
   let newArmed = 0;
   window.EngineActions['new-call'] = () => {
     const typedSomething = Object.keys(call).some(k => k.indexOf('__') !== 0 && String(call[k] == null ? '' : call[k]).trim() && !untouchedDefault(k));   // C3b: untouched default comments are not 'typed'
+    try { saveCall('new call'); } catch (e) {}   // C7b: the old call is saved (queued) before it is cleared (already on the first tap)
     if (typedSomething && Date.now() - newArmed > 5000) { newArmed = Date.now(); say('Tap New again to clear this call', 'warn', 5000); return; }
     newArmed = 0; prevCall = custMode() === 'yes' ? { call: JSON.parse(JSON.stringify(call)), view: JSON.parse(JSON.stringify(callView)) } : null;   /* 0.22.3: yes = Cancel on Find puts this call back */
     call = {}; callView = Object.assign(VIEW_DEFAULT(), { view: 'all', needCust: custMode() !== 'no' });   /* 0.22.2 (F12): a new call starts in All */ try { applyDefaults(); } catch (e) {} lsSet(K.call, call); try { applyFolds(engineState); } catch (e) {}; saveView(); clearFind(); goView('find'); paintNotes();   // round B2: reveals and template belong to the call
@@ -10818,6 +10827,88 @@ body.light-theme .proof-box{color:#0f172a}
     document.querySelectorAll('#viewport-canvas-frame .proof-viewcell').forEach(c => { const t = viewText(); if (c.textContent !== t) c.textContent = t; }); }
   window.EngineSlots['view-line'] = { render(p) { return '<div class="proof-cell proof-viewcell" style="font-size:' + Math.min(11, p.fontSize || 10) + 'px">' + esc(viewText()) + '</div>'; } };
 
+  // ---------- Round C7b (0.25.0, Prompts no. 159): the Visits saver. One Visits row per call + system + tech, through the test door
+  // (test-script/Code.gs, op saveVisit). The phone makes the Visit Id (V-<date>-<6 letters>) and Call token; every save sends the whole row
+  // (fixed columns, every Field with a Visits column, the ratings from the call's file snapshot) with a new client id, kept in an OUTBOX
+  // (the saved store, so a closed page keeps it): the newest copy per Visit Id, sent in order, retried on signal / visible / every 30 s.
+  // Saves: every 30 s when changed, Copy report (Status Done, kept Done), New (before clearing), page hidden / closed, a tap on the chip.
+  // The chip (Slot save-chip): Saving… / Saved hh:mm:ss / Waiting for signal (N) / Not saved: why / Saving off. Never a pop-up.
+  const RATING_HEAD = { 'RLA': 'Rated RLA', 'ODF FLA': 'Rated ODF FLA', 'IDF FLA': 'Rated IDF FLA', 'Herm cap': 'Herm cap rated', 'ODF cap': 'ODF cap rated', 'IDF cap': 'IDF cap rated', 'Target SC': 'Target SC', 'Filter size': 'Rated filter size' };
+  const VISIT_FIXED = ['Visit Id', 'Call token', 'Date', 'Time', 'Tech', 'Call type', 'Template', 'Place Id', 'System Id', 'System label', 'Status', 'Team tag', 'Merged into', 'Revision of', 'Follow-up', 'Area temp', 'Lat', 'Lng', 'Created', 'Last saved'];
+  const K_OUTBOX = 'proof-containers.outbox.v1', K_SAVED = 'proof-containers.visitSaved.v1';
+  const rand = (n, abc) => { abc = abc || 'ABCDEFGHJKLMNPQRSTUVWXYZ'; let t = ''; const a = new Uint32Array(n); try { crypto.getRandomValues(a); } catch (e) { for (let i = 0; i < n; i++) a[i] = Math.floor(Math.random() * 1e9); } for (let i = 0; i < n; i++) t += abc[a[i] % abc.length]; return t; };
+  const ymd = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  const hms = d => [d.getHours(), d.getMinutes(), d.getSeconds()].map(x => String(x).padStart(2, '0')).join(':');
+  let saveSt = { st: '', why: '', at: '', missing: [] }, sending = false;
+  const scriptUrl = () => String(SETTINGS['script url'] || '').trim() || endpoint || '';
+  const savingOn = () => (FCTL || []).some(F => F.visitsCol);   // a sheet with Visits columns (0.24.0 on); an older sheet never saves visits
+  const callHasContent = () => Object.keys(call).some(k => k.indexOf('__') !== 0 && String(call[k] == null ? '' : call[k]).trim() && !untouchedDefault(k));
+  const outbox = () => { const o = lsGet(K_OUTBOX, []); return Array.isArray(o) ? o : []; };
+  function visitOf() {   // the call's Visit Id and Call token, made once (on the first save)
+    if (!call.__visit) { const d = new Date(); call.__visit = { id: 'V-' + ymd(d).replace(/-/g, '') + '-' + rand(6), token: 'CT-' + rand(8, 'abcdefghjkmnpqrstuvwxyz23456789'), date: ymd(d), time: hms(d).slice(0, 5), created: ymd(d) + ' ' + hms(d), done: false }; lsSet(K.call, call); }
+    return call.__visit;
+  }
+  const valText = v => v == null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v);
+  function visitBody() {   // the whole row (no client id: that is added per send)
+    const V = visitOf(), file = call.__file || {}, fixed = {}, values = [];
+    const sys = file.system || 'A', piece = (ONFILE && ONFILE.pieces || []).find(x => x.place === file.place && x.system === sys && x.label);
+    fixed['Call token'] = V.token; fixed['Date'] = valText(call['f:date']).trim() || V.date; fixed['Time'] = V.time; fixed['Tech'] = String(SETTINGS['tech name'] || '').trim() || DEVICE;
+    fixed['Call type'] = callView.callType || valText(call['f:callType']); fixed['Template'] = callView.tpl || ''; fixed['Place Id'] = file.place || call.__placeId || '';
+    fixed['System Id'] = sys; fixed['System label'] = piece ? piece.label : ''; fixed['Status'] = V.done ? 'Done' : 'In progress'; fixed['Created'] = V.created;
+    (FCTL || []).forEach(F => { if (!F.visitsCol || VISIT_FIXED.indexOf(F.visitsCol) >= 0) return; values.push({ id: F.id, col: F.visitsCol, v: valText(call[F.id]), num: F.kind === 'number' || F.kind === 'calculated' }); });
+    const spec = file.spec || {}, seen = {};   // ratings: one column each, from the file snapshot (never typed)
+    Object.keys(spec).forEach(fid => { const cols = (spec[fid] && spec[fid].cols) || {}; Object.keys(cols).forEach(c => { if (seen[c]) return; seen[c] = 1;
+      values.push({ kind: 'rating', id: c, col: RATING_HEAD[c] || ('Rated ' + c), v: valText(cols[c]), num: c !== 'Filter size' }); }); });
+    return { op: 'saveVisit', visitId: V.id, fixed, values };
+  }
+  function saveCall(why) {   // queue the call when it changed since its last queued copy; then send
+    if (!savingOn() || TAB.passive) return;
+    if (!call.__visit && !callHasContent()) return;
+    if (!scriptUrl()) { saveSt = { st: 'off', why: '', at: '', missing: [] }; paintChip(); return; }
+    const body = visitBody(), sig = JSON.stringify(body), last = lsGet(K_SAVED, {}) || {};
+    if (last[body.visitId] === sig && !/^tap/.test(why)) { flushOutbox(); return; }
+    const ob = outbox().filter(x => x.vid !== body.visitId || x.inFlight);   // the newest copy per Visit Id
+    ob.push({ vid: body.visitId, cid: body.visitId.slice(2) + '-' + Date.now().toString(36) + '-' + rand(4), body: sig, why, at: Date.now() });
+    lsSet(K_OUTBOX, ob); last[body.visitId] = sig; Object.keys(last).slice(0, -20).forEach(k => { delete last[k]; }); lsSet(K_SAVED, last);
+    flushOutbox(why === 'hidden');
+  }
+  async function flushOutbox(keep) {
+    if (sending || TAB.passive) return; const url = scriptUrl(); if (!url) return;
+    let ob = outbox(); if (!ob.length) { paintChip(); return; }
+    sending = true; saveSt.st = 'saving'; paintChip();
+    try {
+      while ((ob = outbox()).length) {
+        const x = ob[0]; x.inFlight = true; lsSet(K_OUTBOX, ob);
+        let r = null;
+        try { const b = Object.assign(JSON.parse(x.body), { token: TOKEN, clientId: x.cid });
+          r = await withTimeout(fetch(url, { method: 'POST', keepalive: !!keep, headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(b) }).then(a => a.json()), 20000);
+        } catch (e) { const o2 = outbox(); if (o2[0]) delete o2[0].inFlight; lsSet(K_OUTBOX, o2); saveSt = { st: 'wait', why: '', at: saveSt.at, missing: saveSt.missing }; return; }
+        const o3 = outbox().filter(y => y.cid !== x.cid); lsSet(K_OUTBOX, o3);
+        if (r && r.ok) saveSt = { st: 'saved', why: '', at: String(r.at || '').slice(-8) || hms(new Date()), row: r.row, missing: r.missing || [] };
+        else { saveSt = { st: 'error', why: String(r && r.error || 'no answer'), at: '', missing: [] }; const l = lsGet(K_SAVED, {}) || {}; delete l[x.vid]; lsSet(K_SAVED, l); }
+      }
+    } finally { sending = false; paintChip(); try { paintNotes(); } catch (e) {} }
+  }
+  function chipText() {
+    if (!scriptUrl()) return 'Saving off';
+    const n = outbox().length;
+    if (saveSt.st === 'saving') return 'Saving…';
+    if (n && !sending) return 'Waiting for signal (' + n + ')';
+    if (saveSt.st === 'error') return 'Not saved: ' + saveSt.why;
+    if (saveSt.st === 'saved') return String(SETTINGS['save chip'] || 'Saved {time}').replace('{time}', saveSt.at);
+    return call.__visit ? 'Not saved yet' : '';
+  }
+  function paintChip() { const t = chipText(), k = !scriptUrl() ? 'off' : saveSt.st === 'error' ? 'err' : outbox().length && !sending ? 'wait' : saveSt.st;
+    document.querySelectorAll('#viewport-canvas-frame .proof-savechip').forEach(c => { if (c.textContent !== t) c.textContent = t; c.setAttribute('data-st', k || ''); }); }
+  const visitNote = () => !savingOn() ? '' : !scriptUrl() ? 'Saving to the sheet is off (no script address)' : saveSt.missing && saveSt.missing.length ? 'The Visits tab has no column for: ' + saveSt.missing.join(', ') : '';
+  window.EngineSlots['save-chip'] = { render(p) { return '<div class="proof-cell proof-savechip" role="button" tabindex="0" style="font-size:' + Math.min(11, p.fontSize || 10) + 'px">' + esc(chipText()) + '</div>'; } };
+  document.addEventListener('click', e => { const c = e.target && e.target.closest && e.target.closest('.proof-savechip'); if (!c || !isLiveInteraction) return; e.stopPropagation(); saveCall('tap'); flushOutbox(); }, true);
+  setInterval(() => { try { saveCall('timer'); flushOutbox(); } catch (e) {} }, 30000);
+  window.addEventListener('online', () => flushOutbox());
+  document.addEventListener('visibilitychange', () => { try { if (document.hidden) saveCall('hidden'); else flushOutbox(); } catch (e) {} });
+  window.addEventListener('pagehide', () => { try { saveCall('hidden'); } catch (e) {} });
+  window.__proofSave = { now: why => saveCall(why || 'test'), flush: () => flushOutbox(), outbox, state: () => saveSt };   // for the tests only
+
   function reloadTo(v) { say('Reloading the newer version (' + v + ')...', 'warn'); location.replace(location.pathname + '?v=' + encodeURIComponent(v) + '&t=' + Date.now()); }
   function pendingOnPhone() { const t = lsGet(K.tweaks, {}) || {}; return Object.keys(t).some(k => t[k] && t[k].state === 'pending'); }
   function whyNotSafe(atStart) {   // atStart (round A.1): the first sheet read is still running and nothing is drawn yet, so that is not a reason to wait
@@ -10943,7 +11034,7 @@ body.light-theme .proof-box{color:#0f172a}
   const partIdx = part => { const m = /handleSplitClick\((\d+), (\d+), (\d+), (\d+)/.exec(part.getAttribute('onclick') || ''); return m ? m.slice(1, 5).map(Number) : null; };
   let visBusy = false;
   function applyVis() {
-    try { paintViewLine(); } catch (e) {}   // 0.22.2 (F12)
+    try { paintViewLine(); paintChip(); } catch (e) {}   // 0.22.2 (F12); C7b: the save chip
     const frame = document.getElementById('viewport-canvas-frame'); if (!frame || visBusy) return;
     visBusy = true;
     try {
@@ -11125,7 +11216,7 @@ body.light-theme .proof-box{color:#0f172a}
       (info.offline ? ' · sheet not read (offline) ' + hhmm(info.readAt) : ' · read ' + (info.readAt ? hhmm(info.readAt) : '-')) + ' · ' + info.rows + ' rows, ' + (info.refused + (notes || []).filter(x => /^(Sites|Call types|Comments) row \d+ refused/.test(String(x && x._note || x))).length) + ' refused' + (hf ? ' · ' + hf + ' text cell' + (hf > 1 ? 's' : '') + ' read' : '') + ' · ' + info.tweaks + ' tweaks applied' + (info.pending ? ' (not saved yet)' : '') + (usesB2 ? ' · view ' + viewWord() + ', template ' + (callView.tpl || 'none') + (callView.callType ? ', call type ' + callView.callType : '') : '');   // C1b: the call type
     const unsaved = info.readAt ? changedFrom(applied).length : 0;
     const lost = info.readAt && structChanged();
-    n.innerHTML = '<b>' + esc(head) + '</b>' + (unsaved ? '<br><span class="proof-last">' + unsaved + ' change(s) not saved yet.</span> <button type="button" id="proof-save-now">Save tweaks</button>' : '') + (lost ? '<br><span class="proof-warn">' + esc(NOT_KEPT) + '</span>' : '') + (info.sourceText ? '<br>' + esc(info.sourceText) : '') + (lastAction ? '<br><span class="proof-last">' + esc(lastAction) + '</span>' : '') + notes.map(x => '<br>' + esc(x)).join('');
+    n.innerHTML = '<b>' + esc(head) + '</b>' + (unsaved ? '<br><span class="proof-last">' + unsaved + ' change(s) not saved yet.</span> <button type="button" id="proof-save-now">Save tweaks</button>' : '') + (lost ? '<br><span class="proof-warn">' + esc(NOT_KEPT) + '</span>' : '') + (info.sourceText ? '<br>' + esc(info.sourceText) : '') + (lastAction ? '<br><span class="proof-last">' + esc(lastAction) + '</span>' : '') + (visitNote() ? '<br><span class="proof-warn">' + esc(visitNote()) + '</span>' : '') + notes.map(x => '<br>' + esc(x)).join('');
     footRoom(n);
   }
 
