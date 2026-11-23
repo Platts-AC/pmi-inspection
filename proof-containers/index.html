@@ -738,6 +738,9 @@
 .proof-ct .proof-ct-item.ct-on{border-color:#f59e0b;background:#2a1a05}
 .proof-ct .proof-ct-item i{font-size:11px;color:#fbbf24;font-style:normal;margin-left:6px}
 .proof-ct .proof-empty{color:#fbbf24;font-size:13px;padding:6px 0}
+#proof-fmenu{position:fixed;left:8px;right:8px;bottom:12px;z-index:86;display:flex;flex-direction:column;gap:8px;background:#0b1626;border:1px solid #38bdf8;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.6);padding:12px;font:15px system-ui,sans-serif;color:#e2e8f0}
+#proof-fmenu button{min-height:44px;border-radius:8px;border:1px solid #2b4f7e;background:#0f213a;color:#e2e8f0;font:600 15px system-ui,sans-serif;text-align:left;padding:6px 12px}#proof-fmenu small{display:block;font-weight:400;font-size:12px;color:#94a3b8}
+.proof-fbtn{min-width:34px;min-height:34px;border-radius:8px;border:1px solid #2b4f7e;background:#0f213a;color:#e2e8f0;font:700 17px system-ui,sans-serif;padding:0 6px}
 #proof-cap,#proof-filter{position:fixed;left:6px;right:6px;bottom:8px;z-index:86;max-height:86vh;overflow-y:auto;overscroll-behavior:contain;background:#0b1626;border:1px solid #38bdf8;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.6);padding:10px;font:15px system-ui,sans-serif;color:#e2e8f0}
 #proof-cap button,#proof-filter button{min-height:38px;border-radius:8px;border:1px solid #2b4f7e;background:#0f213a;color:#e2e8f0;font:600 14px system-ui,sans-serif;padding:0 10px}
 #proof-cap select{min-height:38px;border-radius:8px;background:#0f213a;color:#e2e8f0;border:1px solid #2b4f7e;font:14px system-ui,sans-serif}
@@ -3656,7 +3659,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.21.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.22.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3666,7 +3669,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.21.0', stamp: '2026-11-22 21:21:26', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.22.0', stamp: '2026-11-22 21:47:06', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8343,7 +8346,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.21.0';
+  const PROOF_VERSION = '0.22.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8958,6 +8961,40 @@ body.light-theme .proof-box{color:#0f172a}
     });
     paintF(); requestAnimationFrame(() => { Object.keys(Ls).forEach(k => { const v = wheelAt(Ls[k]); wheelGo(Ls[k], v); }); });
   }
+  // ---------- Round C4b: field-menu (pieces plus, menu) and equip-cycle (piece equip; the main app 03-slots.js pmi.plus / pmi.menu / pmi.equip,
+  // 04-sheet-and-hooks.js openMenu, tools/fields.js equipTypes / cycleEquip / applyEquipLabels) ----------
+  const FIELD_SLOTS = { 'f-plus': 1, 'f-menu': 1, 'f-equip': 1 };
+  const EQUIP_OF = { outdoor: 'outdoor', 'indoor 1': 'indoor1', indoor1: 'indoor1', 'indoor 2': 'indoor2', indoor2: 'indoor2' };
+  const EQUIP_TYPES = { outdoor: ['Condenser', 'Heat pump', 'Package unit', 'RTU', 'Mini-split'], indoor1: ['Air handler', 'Coil', 'High wall', 'Cassette', 'Furnace'], indoor2: ['Furnace', 'Coil', 'Air handler', 'High wall', 'Cassette'] };
+  const equipNow = slot => { const t = (call.__equip || {})[slot]; return EQUIP_TYPES[slot].indexOf(t) >= 0 ? t : EQUIP_TYPES[slot][0]; };
+  // the label of an equipment Field follows its slot's type: a Name that starts with the slot's first type ('Condenser model') gets the
+  // type now ('Heat pump model'); the main app writes '<type> Model' / '<type> Serial'
+  function equipLabel(F, base) { const d = EQUIP_TYPES[F.equip][0], now = equipNow(F.equip); return base.toLowerCase().indexOf(d.toLowerCase()) === 0 ? now + base.slice(d.length) : base; }
+  function applyEquip() { eachCell(engineState, p => { const F = p.proofField || (p.proofLabelOf && fieldById(p.proofLabelOf)); if (!F || !F.equip) return;
+    if (p.proofLabelOf && p.slot !== 'box') { if (p._eqBase == null) p._eqBase = p.label; p.label = equipLabel(F, p._eqBase); }
+    if (p.slot === 'box') { if (p._eqBase == null) p._eqBase = p.proofLabel || F.name; p.proofLabel = equipLabel(F, p._eqBase); } }); }
+  function fieldById(id) { let f = null; eachCell(engineState, p => { if (!f && p.proofField && p.proofField.id === id) f = p.proofField; }); return f; }
+  const btnStyle = p => cellStyle(p) + ';display:flex;align-items:center;justify-content:center';
+  window.EngineSlots['f-plus'] = { render(p) { const F = p.proofField; if (!F || !commentOf(F)) return '<div class="proof-cell proof-piece"></div>';   // the main app: + only on a comment Field
+    return '<div class="proof-cell proof-piece" style="' + btnStyle(p) + '"><button type="button" class="proof-fbtn" data-fact="plus" data-fid="' + esc(F.id) + '" aria-label="Edit ' + esc(F.name) + ' comments">+</button></div>'; } };
+  window.EngineSlots['f-menu'] = { render(p) { const F = p.proofField; if (!F) return '';
+    return '<div class="proof-cell proof-piece" style="' + btnStyle(p) + '"><button type="button" class="proof-fbtn" data-fact="menu" data-fid="' + esc(F.id) + '" aria-label="Options for ' + esc(F.name) + '">⋯</button></div>'; } };
+  window.EngineSlots['f-equip'] = { render(p) { const F = p.proofField; if (!F || !F.equip) return '<div class="proof-cell proof-piece"></div>'; const cur = equipNow(F.equip);
+    return '<div class="proof-cell proof-piece" style="' + btnStyle(p) + '"><button type="button" class="proof-fbtn" data-fact="equip" data-fid="' + esc(F.id) + '" data-slot2="' + F.equip + '" aria-label="Equipment type: ' + esc(cur) + '. Tap to change" title="' + esc(cur) + ': tap to change">⟳</button></div>'; } };
+  function closeFMenu() { const o = document.getElementById('proof-fmenu'); if (o) o.remove(); }
+  function openFMenu(F) {   // the main app's field menu: Pin / Unpin for future reports (here: for this template), Close
+    closeFMenu(); closePick(); closeAsk(); closeCap(); closeFilter();
+    const pinned = isPinned(F.id), el = document.createElement('div'); el.id = 'proof-fmenu'; el.setAttribute('role', 'dialog');
+    el.innerHTML = '<div class="pp-title">' + esc(fieldName(F.id)) + '</div><button type="button" data-m="pin">' + (pinned ? 'Unpin from future reports' : 'Pin for future reports') + '<small>Template: ' + esc(tplKey() || 'none') + '</small></button><button type="button" data-m="close">Close</button>';
+    el.addEventListener('click', e => { const b = e.target.closest('[data-m]'); if (!b) return; e.stopPropagation(); if (b.dataset.m === 'pin') { togglePin(F.id); try { paintInc(); paintReport(); } catch (x) {} } closeFMenu(); });
+    document.body.appendChild(el);
+  }
+  document.addEventListener('click', e => { if (!isLiveInteraction) return; const b = e.target && e.target.closest && e.target.closest('.proof-fbtn'); if (!b) return;
+    e.preventDefault(); e.stopPropagation(); const F = fieldById(b.dataset.fid); if (!F) return;
+    if (b.dataset.fact === 'plus') openPick(F);
+    else if (b.dataset.fact === 'menu') openFMenu(F);
+    else if (b.dataset.fact === 'equip') { const sl = F.equip, l = EQUIP_TYPES[sl], i = l.indexOf(equipNow(sl)); call.__equip = call.__equip || {}; call.__equip[sl] = l[(i + 1) % l.length]; lsSet(K.call, call); renderCanvas(); } }, true);
+  document.addEventListener('pointerdown', e => { const o = document.getElementById('proof-fmenu'); if (o && !o.contains(e.target)) { e.preventDefault(); e.stopPropagation(); closeFMenu(); } }, true);
   // a tap on an editor's box opens its editor (capture, before the wheel / keyboard)
   document.addEventListener('click', e => { if (!isLiveInteraction) return;
     const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b) return;
@@ -9133,7 +9170,7 @@ body.light-theme .proof-box{color:#0f172a}
   }
   const paintResults = () => document.querySelectorAll('.proof-results').forEach(el => { el.innerHTML = resultsHtml(); });
   window.__proofRepaints = 0;
-  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; try { closeWheel(); closeAsk(); closePick(); } catch (e) {}   /* 0.12.2 (R6) */ const r = rc.apply(this, arguments); try { decorate(); } catch (e) {} try { paintFolds(); } catch (e) {} try { paintInc(); calcCells().forEach(paintCalcBox); paintCm(); } catch (e) {} return r; }; }
+  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; try { closeWheel(); closeAsk(); closePick(); } catch (e) {}   /* 0.12.2 (R6) */ try { applyEquip(); } catch (e) {} /* C4b */ const r = rc.apply(this, arguments); try { decorate(); } catch (e) {} try { paintFolds(); } catch (e) {} try { paintInc(); calcCells().forEach(paintCalcBox); paintCm(); } catch (e) {} return r; }; }
 
   document.addEventListener('input', e => {
     const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b) return;
@@ -9303,7 +9340,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (g('Align') && !/^(left|center|right)$/i.test(g('Align'))) why.push('Align "' + g('Align') + '" must be left, center or right');   // 0.12.1 (BT-48): no silent center
       if (!TYPES[type]) why.push('unknown Type "' + type + '"');
       const fd = r._fieldDef || null;   // round B1: the Field this piece belongs to (made by bundleRows from the Fields tab)
-      if (slot && slot !== 'box' && slot !== 'results' && slot !== 'call-types' && slot !== 'report-body' && !((slot === 'unit' || slot === 'report-value') && fd)) why.push('unknown Slot "' + slot + '"');
+      if (slot && slot !== 'box' && slot !== 'results' && slot !== 'call-types' && slot !== 'report-body' && !((slot === 'unit' || slot === 'report-value' || FIELD_SLOTS[slot]) && fd)) why.push('unknown Slot "' + slot + '"');
       if (slot === 'box' && !fd && !FIELD_FALLBACK[content] && !FIND_KEYS[content]) why.push('unknown field "' + content + '"');
       if (type === 'button') { const a = content; const ok = ACTIONS[a] || (/^set-view:/.test(a) && screens[a.slice(9)]) || /^set-show:(all|template|values)$/.test(a) || TPL_ACTION.test(a); /* round B2 actions */ if (!ok) why.push('unknown action "' + a + '" (this page may be out of date: tap Reload, or refresh the browser)'); }
       if (!VIS_RULES[vis]) why.push('Visible when must be always, never, when-filled or reserved');   // round B2: when-filled, reserved (Blueprint P9)
@@ -9343,7 +9380,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (r._lines > 1) cell.proofLines = r._lines;   // C3c: a 2- or 3-row value box
       if (fd) { cell.proofField = fd; if (r._join) cell.proofJoin = r._join; if (r._label) cell.proofLabel = r._label; }
       if (slot === 'box') { cell.slot = 'box'; cell.proofKey = fd && draftScreen && screen === draftScreen ? DRAFT + fd.id : content; cell.label = ''; }   // C1a: a draft box
-      else if (slot === 'unit' || slot === 'report-value') { cell.slot = slot; cell.proofKey = content; cell.label = ''; }
+      else if (slot === 'unit' || slot === 'report-value' || FIELD_SLOTS[slot]) { cell.slot = slot; cell.proofKey = content; cell.label = ''; }   // C4b: f-plus, f-menu, f-equip
       else if (slot === 'results' || slot === 'call-types' || slot === 'report-body') { cell.slot = slot; cell.label = ''; }   // C2b: report-body   // C1b: call-types (a list, like results)
       else if (type === 'button') { cell.label = g('Label') || content;
         // round 9 migration: on older tabs New (Id hdr.newcall) only opened Find (set-view:find); it now clears the call first
@@ -9394,13 +9431,13 @@ body.light-theme .proof-box{color:#0f172a}
   }
   const STRUCTURE_COLS = ['Screen', 'Section', 'Column', 'Line name', 'Cells', 'Cell widths', 'Line height', 'Column width', 'Freeze', 'Fold'];   // Fold: C2a
   const ITEM_SKIP = { 'Id': 1, 'Line': 1, 'Cell': 1, 'Weight': 1, 'Field': 1, 'Recipe': 1, 'Join with': 1, 'Join sep': 1, 'Label size': 1 };   // placing / recipe columns (every other column is look); a cell's width lives on Structure 'Cell widths' (Danny, Q-015)
-  const FIELDS_COLS = ['Field Id', 'Name', 'Short label', 'Aliases', 'Kind', 'Unit', 'Hard min', 'Hard max', 'Report wording', 'Scope', 'Notes', 'Find fill', 'Calc'];   // Calc: C2a   // Find fill: 0.12.2 (R7)   // Blueprint P7
+  const FIELDS_COLS = ['Field Id', 'Name', 'Short label', 'Aliases', 'Kind', 'Unit', 'Hard min', 'Hard max', 'Report wording', 'Scope', 'Notes', 'Find fill', 'Calc', 'Equipment'];   // Equipment: C4b   // Calc: C2a   // Find fill: 0.12.2 (R7)   // Blueprint P7
   const SIZES_COLS = ['Profile', 'Target', 'Font size', 'Line height', 'Pad X', 'Pad Y', 'Min size', 'Max size', 'Notes'];   // Blueprint P12
   const ITEM_B1_COLS = ['Field', 'Recipe', 'Join with', 'Join sep', 'Label size', 'Box lines'];   // Box lines: C3c   // Blueprint P18 (B1) + BD-6
   const KINDS = { text: 1, number: 1, date: 1, choice: 1, yesno: 1, comment: 1, readonly: 1, calculated: 1 };
   const SCOPES = { visit: 1, system: 1, house: 1 };
-  const PIECES = { label: 1, value: 1, unit: 1, 'sub-unit': 1, spacer: 1, 'report-value': 1 };   // Blueprint P22 pieces built in B1
-  const LATER_PIECES = { plus: 1, menu: 1 };                                                        // listed in P22, built in a later stage
+  const PIECES = { label: 1, value: 1, unit: 1, 'sub-unit': 1, spacer: 1, 'report-value': 1, plus: 1, menu: 1, equip: 1 };   // Blueprint P22 pieces built in B1; plus, menu, equip: C4b
+  const LATER_PIECES = {};                                                                          // C4b: plus and menu are built
   const MAX_CELLS = 12;
   // ONE plain-text hint for every column Google may turn into a date, time, number or fraction (Blueprint PT1; round A.2 for Cell widths)
   const PT_HINT = col => 'Format the ' + col + ' column as Plain text, or Google turns such values into dates, times or fractions.';
@@ -9484,10 +9521,12 @@ body.light-theme .proof-box{color:#0f172a}
         if (hmin !== '' && hmax !== '' && isFinite(Number(hmin)) && isFinite(Number(hmax)) && Number(hmin) > Number(hmax)) why.push('Hard min ' + hmin + ' is above Hard max ' + hmax);
         const words = (wording.match(/\{[^}]*\}/g) || []).filter(w => !/^\{(label|value|unit)\}$/.test(w));
         if (words.length) why.push('Report wording may use only {label}, {value} and {unit} (not ' + words.join(' ') + ')');
+        if (g2(r, 'Equipment') && !EQUIP_OF[g2(r, 'Equipment').toLowerCase()]) why.push('Equipment "' + g2(r, 'Equipment') + '" must be Outdoor, Indoor 1 or Indoor 2 (or blank)');   // C4b
       }
       if (why.length) { msgs.push({ _refuse: where + ' refused: ' + why.join(', ') + '.' }); if (id && !map[id] && !bad[id]) bad[id] = where; return; }
       map[id] = { id, name, short: g2(r, 'Short label'), kind, unit: g2(r, 'Unit'), wording, hmin, hmax, scope, where, find: ff };
       if (calc) map[id].calc = calc;
+      if (g2(r, 'Equipment')) map[id].equip = EQUIP_OF[g2(r, 'Equipment').toLowerCase()];   // C4b
     });
     // C2a: a Calc input must be a Field on this tab (checked once every row is read); otherwise the calc Field's row is refused
     Object.keys(map).forEach(id => { const c = map[id].calc; if (!c) return; const miss = c.inputs.filter(x => !map[x] || map[x].calc);
@@ -9502,7 +9541,7 @@ body.light-theme .proof-box{color:#0f172a}
     const words = raw.toLowerCase().split(/[\s,]+/).filter(Boolean), why = [];
     const later = words.filter(w => LATER_PIECES[w]), unknown = words.filter(w => !PIECES[w] && !LATER_PIECES[w]);
     if (later.length) why.push('the recipe piece(s) ' + later.join(', ') + ' are built in a later stage');
-    if (unknown.length) why.push('unknown recipe piece(s) ' + unknown.join(', ') + ' (use label, value, unit, sub-unit, spacer, report-value)');
+    if (unknown.length) why.push('unknown recipe piece(s) ' + unknown.join(', ') + ' (use label, value, unit, sub-unit, spacer, report-value, plus, menu, equip)');
     const twice = words.filter((w, i) => words.indexOf(w) !== i); if (twice.length) why.push('the piece(s) ' + [...new Set(twice)].join(', ') + ' appear more than once');
     if (words.indexOf('value') >= 0 && words.indexOf('report-value') >= 0) why.push('value and report-value cannot be on one row');
     if (words.indexOf('sub-unit') >= 0 && words.indexOf('value') < 0) why.push('sub-unit needs value in the same Recipe');
@@ -9618,6 +9657,7 @@ body.light-theme .proof-box{color:#0f172a}
         if (w === 'label') o = Object.assign({}, text, { 'Type': 'text', 'Content': label, _labelOf: F.id });   // C3a: tap = include, hold = pin
         else if (w === 'spacer') o = Object.assign({}, look, { 'Type': 'text', 'Content': '' });
         else if (w === 'unit') o = Object.assign({}, text, { 'Type': 'text', 'Slot': 'unit', 'Content': F.id, 'Wrap': '', _fieldDef: F });
+        else if (w === 'plus' || w === 'menu' || w === 'equip') o = Object.assign({}, text, { 'Type': 'text', 'Slot': 'f-' + w, 'Content': F.id, 'Wrap': '', _fieldDef: F });   // C4b
         else {   // value or report-value
           o = Object.assign({}, look, { 'Type': 'text', 'Slot': w === 'value' ? 'box' : 'report-value', 'Content': F.id, 'Font size': g(r, 'Font size'), 'Min size': g(r, 'Min size'), 'Max size': g(r, 'Max size'),
             'Sub label': r['Sub label'], 'Sub label size': r['Sub label size'], 'Sub label place': r['Sub label place'], _fieldDef: F, _label: label });
