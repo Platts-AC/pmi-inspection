@@ -756,6 +756,18 @@ body:not(.proof-ready) #reopen-inspector-fab{display:none!important}
 #viewport-canvas-frame .proof-viewcell{display:flex;align-items:center;justify-content:center;text-align:center;height:100%;line-height:1.15;color:#7dd3fc;font-weight:600;overflow-wrap:anywhere;padding:0 2px}
 #viewport-canvas-frame .proof-box.proof-namebox{color:#9fb0c4;font-style:italic;background:transparent;border-color:transparent}
 #viewport-canvas-frame .proof-box.proof-namebox:focus{background:#0b1220;border-color:#334155;font-style:normal}
+#viewport-canvas-frame .grid-split-partition.proof-diffline{background:rgba(245,158,11,.16)!important;box-shadow:inset 0 -2px 0 #f59e0b}
+#viewport-canvas-frame .proof-checkcount{display:flex;align-items:center;justify-content:center;height:100%;color:#fbbf24;font-weight:700;cursor:pointer;text-align:center;line-height:1.1}
+#proof-diff{position:fixed;left:0;right:0;bottom:0;z-index:2147483000;background:#111827;border-top:2px solid #f59e0b;border-radius:14px 14px 0 0;padding:12px 14px 16px;color:#e5e7eb;font:15px system-ui,sans-serif;box-shadow:0 -8px 24px rgba(0,0,0,.5);max-height:70vh;overflow:auto}
+#proof-diff .pd-title{font-weight:700;color:#fbbf24;margin-bottom:8px}
+#proof-diff .pd-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#proof-diff .pd-h{font-size:11px;letter-spacing:.06em;color:#94a3b8}
+#proof-diff .pd-v{font-size:17px;font-weight:600;overflow-wrap:anywhere;padding:4px 0}
+#proof-diff .pd-hint{margin-top:6px;color:#fcd34d;font-size:13px}
+#proof-diff .pd-photo-view img{max-width:100%;max-height:30vh;margin-top:8px;border-radius:8px}
+#proof-diff .pd-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+#proof-diff .pd-btns button,#proof-diff .pd-photo{flex:1 1 40%;min-height:44px;border:1px solid #334155;border-radius:10px;background:#1f2937;color:#f8fafc;font:600 15px system-ui,sans-serif;display:flex;align-items:center;justify-content:center;cursor:pointer}
+#proof-diff .pd-btns .pd-back{background:transparent;color:#94a3b8}
 #viewport-canvas-frame .proof-savechip{display:flex;align-items:center;justify-content:center;text-align:center;height:100%;line-height:1.15;color:#86efac;font-weight:600;overflow-wrap:anywhere;padding:0 2px;cursor:pointer}
 #viewport-canvas-frame .proof-savechip[data-st=wait],#viewport-canvas-frame .proof-savechip[data-st=saving]{color:#fcd34d}
 #viewport-canvas-frame .proof-savechip[data-st=err]{color:#fca5a5}
@@ -3688,7 +3700,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.26.1", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.27.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3698,7 +3710,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.26.1', stamp: '2026-11-24 00:36:50', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.27.0', stamp: '2026-11-24 05:12:46', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8375,7 +8387,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.26.1';
+  const PROOF_VERSION = '0.27.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8677,7 +8689,8 @@ body.light-theme .proof-box{color:#0f172a}
   // ---------- the slots ----------
   window.EngineSlots = window.EngineSlots || {};
   // the keypad of a value box: tel by the old rule on the key (6c), decimal for a Fields 'number' (old tabs: the old suction rule)
-  function keypadOf(p) { const k = p.proofKey || '', F = p.proofField; return /phone/.test(k) ? 'tel' : (F ? (F.kind === 'number' || !!F.calc) : /suction/i.test(k)) ? 'decimal' : ''; }   // C3a: a calc box types numbers
+  // 0.27.0 (C7c-1, CARRY): a contact NAME box ('f:phone1Name') keeps the normal keyboard: tel only for Compare as / Find fill phone
+  function keypadOf(p) { const k = p.proofKey || '', F = p.proofField; return (F ? (F.compareAs === 'phone' || F.find === 'phone' || (!F.compareAs && /phone\d*$/i.test(k))) : /phone/.test(k)) ? 'tel' : (F ? (F.kind === 'number' || !!F.calc) : /suction/i.test(k)) ? 'decimal' : ''; }   // C3a: a calc box types numbers
   window.EngineSlots['box'] = { render(p) {
     // keypad: tel by the old rule on the key (6c, unchanged in B1); decimal for a Fields 'number' (old tabs: the old suction rule)
     const k = p.proofKey, F = p.proofField, km = keypadOf(p), tel = km === 'tel', num = km === 'decimal', nl = p.proofLines > 1 ? p.proofLines : 1;
@@ -9528,7 +9541,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (g('Align') && !/^(left|center|right)$/i.test(g('Align'))) why.push('Align "' + g('Align') + '" must be left, center or right');   // 0.12.1 (BT-48): no silent center
       if (!TYPES[type]) why.push('unknown Type "' + type + '"');
       const fd = r._fieldDef || null;   // round B1: the Field this piece belongs to (made by bundleRows from the Fields tab)
-      if (slot && slot !== 'box' && slot !== 'results' && slot !== 'call-types' && slot !== 'report-body' && slot !== 'view-line' && slot !== 'save-chip' && !((slot === 'unit' || slot === 'report-value' || FIELD_SLOTS[slot]) && fd)) why.push('unknown Slot "' + slot + '"');
+      if (slot && slot !== 'box' && slot !== 'results' && slot !== 'call-types' && slot !== 'report-body' && slot !== 'view-line' && slot !== 'save-chip' && slot !== 'check-count' && !((slot === 'unit' || slot === 'report-value' || FIELD_SLOTS[slot]) && fd)) why.push('unknown Slot "' + slot + '"');
       if (slot === 'box' && !fd && !FIELD_FALLBACK[content] && !FIND_KEYS[content]) why.push('unknown field "' + content + '"');
       if (type === 'button') { const a = content; const ok = ACTIONS[a] || (/^set-view:/.test(a) && screens[a.slice(9)]) || /^set-show:(all|template|values)$/.test(a) || TPL_ACTION.test(a); /* round B2 actions */ if (!ok) why.push('unknown action "' + a + '" (this page may be out of date: tap Reload, or refresh the browser)'); }
       if (!VIS_RULES[vis]) why.push('Visible when must be always, never, when-filled or reserved');   // round B2: when-filled, reserved (Blueprint P9)
@@ -9573,7 +9586,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (fd) { cell.proofField = fd; if (r._join) cell.proofJoin = r._join; if (r._label) cell.proofLabel = r._label; }
       if (slot === 'box') { cell.slot = 'box'; cell.proofKey = fd && draftScreen && screen === draftScreen ? DRAFT + fd.id : content; cell.label = ''; }   // C1a: a draft box
       else if (slot === 'unit' || slot === 'report-value' || FIELD_SLOTS[slot]) { cell.slot = slot; cell.proofKey = content; cell.label = ''; }   // C4b: f-plus, f-menu, f-equip
-      else if (slot === 'results' || slot === 'call-types' || slot === 'report-body' || slot === 'view-line' || slot === 'save-chip') { cell.slot = slot; cell.label = ''; }   // 0.22.3: view-line   // C2b: report-body   // C1b: call-types (a list, like results)
+      else if (slot === 'results' || slot === 'call-types' || slot === 'report-body' || slot === 'view-line' || slot === 'save-chip' || slot === 'check-count') { cell.slot = slot; cell.label = ''; }   // 0.22.3: view-line   // C2b: report-body   // C1b: call-types (a list, like results)
       else if (type === 'button') { cell.label = g('Label') || content;
         // round 9 migration: on older tabs New (Id hdr.newcall) only opened Find (set-view:find); it now clears the call first
         cell.clickAction = (id === 'hdr.newcall' && content === 'set-view:find') ? 'new-call' : content; }
@@ -9623,7 +9636,8 @@ body.light-theme .proof-box{color:#0f172a}
   }
   const STRUCTURE_COLS = ['Screen', 'Section', 'Column', 'Line name', 'Cells', 'Cell widths', 'Line height', 'Column width', 'Freeze', 'Fold'];   // Fold: C2a
   const ITEM_SKIP = { 'Id': 1, 'Line': 1, 'Cell': 1, 'Weight': 1, 'Field': 1, 'Recipe': 1, 'Join with': 1, 'Join sep': 1, 'Label size': 1 };   // placing / recipe columns (every other column is look); a cell's width lives on Structure 'Cell widths' (Danny, Q-015)
-  const FIELDS_COLS = ['Field Id', 'Name', 'Short label', 'Aliases', 'Kind', 'Unit', 'Hard min', 'Hard max', 'Report wording', 'Scope', 'Notes', 'Find fill', 'Calc', 'Equipment', 'Pre-fill', 'File check', 'Save to', 'Visits column', 'In report'];   // the last 5: C7a (0.24.0)   // Equipment: C4b   // Calc: C2a   // Find fill: 0.12.2 (R7)   // Blueprint P7
+  const FIELDS_COLS = ['Field Id', 'Name', 'Short label', 'Aliases', 'Kind', 'Unit', 'Hard min', 'Hard max', 'Report wording', 'Scope', 'Notes', 'Find fill', 'Calc', 'Equipment', 'Pre-fill', 'File check', 'Save to', 'Visits column', 'In report', 'Compare as'];   // Compare as: 0.27.0 (C7c-1)
+  const CMP_KINDS = ['phone', 'email', 'address', 'name', 'model', 'serial', 'mfg date', 'refrigerant', 'metering', 'rating', 'dual cap', 'filter size', 'tonnage', 'unit label', 'equipment type', 'text'];   // 0.27.0: the same-or-different rule kinds   // the last 5: C7a (0.24.0)   // Equipment: C4b   // Calc: C2a   // Find fill: 0.12.2 (R7)   // Blueprint P7
   const SIZES_COLS = ['Profile', 'Target', 'Font size', 'Line height', 'Pad X', 'Pad Y', 'Min size', 'Max size', 'Notes'];   // Blueprint P12
   const ITEM_B1_COLS = ['Field', 'Recipe', 'Join with', 'Join sep', 'Label size', 'Box lines'];   // Box lines: C3c   // Blueprint P18 (B1) + BD-6
   const KINDS = { text: 1, number: 1, date: 1, choice: 1, yesno: 1, comment: 1, readonly: 1, calculated: 1 };
@@ -9722,11 +9736,12 @@ body.light-theme .proof-box{color:#0f172a}
         const st = g2(r, 'Save to'); if (st) { const m = SAVE_TO_RE.exec(st); if (!m) why.push('Save to "' + st + '" must look like Places.<column> or Equipment.<column>');
           else { const known = m[1] === 'Places' ? PLACES_COLS : EQUIP_COLS, bad = m[2].split(',').map(x => x.trim()).filter(x => known.indexOf(x) < 0); if (bad.length) why.push('Save to: ' + bad.join(', ') + ' is not a column of the ' + m[1] + ' tab'); } }
         if (g2(r, 'Pre-fill').toLowerCase() && g2(r, 'Pre-fill').toLowerCase() !== 'no' && !st) why.push('Pre-fill ' + g2(r, 'Pre-fill') + ' needs Save to (where the value comes from)');
+        { const ca = g2(r, 'Compare as').toLowerCase(); if (ca && CMP_KINDS.indexOf(ca) < 0) why.push('Compare as "' + g2(r, 'Compare as') + '" must be one of ' + CMP_KINDS.join(', ') + ' (or blank)'); }   // 0.27.0 (C7c-1)
       }
       if (why.length) { msgs.push({ _refuse: where + ' refused: ' + why.join(', ') + '.' }); if (id && !map[id] && !bad[id]) bad[id] = where; return; }
       map[id] = { id, name, short: g2(r, 'Short label'), kind, unit: g2(r, 'Unit'), wording, hmin, hmax, scope, where, find: ff };
       { const st = g2(r, 'Save to'), m = st ? SAVE_TO_RE.exec(st) : null;   // C7a
-        Object.assign(map[id], { prefill: g2(r, 'Pre-fill').toLowerCase(), fileCheck: g2(r, 'File check').toLowerCase(), inReport: g2(r, 'In report').toLowerCase(), visitsCol: g2(r, 'Visits column'),
+        Object.assign(map[id], { compareAs: g2(r, 'Compare as').toLowerCase(), prefill: g2(r, 'Pre-fill').toLowerCase(), fileCheck: g2(r, 'File check').toLowerCase(), inReport: g2(r, 'In report').toLowerCase(), visitsCol: g2(r, 'Visits column'),
           saveTab: m ? m[1] : '', saveCols: m ? m[2].split(',').map(x => x.trim()).filter(Boolean) : [] }); }
       if (calc) map[id].calc = calc;
       if (g2(r, 'Equipment')) map[id].equip = EQUIP_OF[g2(r, 'Equipment').toLowerCase()];   // C4b
@@ -9797,7 +9812,7 @@ body.light-theme .proof-box{color:#0f172a}
     const FD = opt.fields ? readFields(opt.fields) : null;
     if (FD) FD.msgs.forEach(m => out.push(m));
     out._house = FD ? Object.keys(FD.map).map(k => FD.map[k]).filter(f => f.scope === 'house').map(f => ({ id: f.id, find: f.find || '' })) : null;   // 0.13.1 (R6)
-    out._fctl = FD ? Object.keys(FD.map).map(k => FD.map[k]).filter(f => f.saveTab || f.inReport || f.visitsCol).map(f => ({ id: f.id, name: f.name, unit: f.unit, equip: f.equip || '', prefill: f.prefill, saveTab: f.saveTab, saveCols: f.saveCols, inReport: f.inReport, kind: f.kind, visitsCol: f.visitsCol || '', fileCheck: f.fileCheck || '' })) : null;   // C7a; C7b: every Field with a Visits column
+    out._fctl = FD ? Object.keys(FD.map).map(k => FD.map[k]).filter(f => f.saveTab || f.inReport || f.visitsCol).map(f => ({ id: f.id, name: f.name, unit: f.unit, equip: f.equip || '', prefill: f.prefill, saveTab: f.saveTab, saveCols: f.saveCols, inReport: f.inReport, kind: f.kind, visitsCol: f.visitsCol || '', fileCheck: f.fileCheck || '', compareAs: f.compareAs || '' })) : null;   // C7a; C7b: every Field with a Visits column
     const ids = {};
     items.forEach((r, i) => {
       const where = 'Items row ' + (i + 2), why = formulaErrors(r);
@@ -10894,6 +10909,138 @@ body.light-theme .proof-box{color:#0f172a}
     document.querySelectorAll('#viewport-canvas-frame .proof-viewcell').forEach(c => { const t = viewText(); if (c.textContent !== t) c.textContent = t; }); }
   window.EngineSlots['view-line'] = { render(p) { return '<div class="proof-cell proof-viewcell" style="font-size:' + Math.min(11, p.fontSize || 10) + 'px">' + esc(viewText()) + '</div>'; } };
 
+  // ---------- Round C7c-1 (0.27.0, Prompts no. 164, stage 1): DIFFERENT FROM FILE. For every Field with File check = alert and a value in the
+  // call's file snapshot, the typed value is judged by the same-or-different rules ('Same or different Task' S-1 to S-30 + CT-26), one small
+  // named function per kind; the kind comes from the Fields column 'Compare as' (blank: rating when Kind is number, else text). DIFFERENT:
+  // the line turns amber while typing; on LEAVING the box a card slides up (On file | You entered, the rule's hint, Typo on file / New
+  // equipment or New customer / Later, Photo). The choice lives on the call (call.__diffs) and goes with every Visits save; the file itself
+  // changes in stage 2 (test-door-2). '1 to check' (Slot check-count); Copy report and New ask every open one again (Leave as is, Follow up;
+  // closing the card without a choice stops them). Follow up = the Visits 'Follow-up' column.
+  const cmpTrim = v => String(v == null ? '' : v).replace(/\s+/g, ' ').trim();
+  const SAME = rule => ({ v: 'same', rule }), ADD = rule => ({ v: 'add', rule }), DIFF = (rule, hint) => ({ v: 'diff', rule, hint: hint || '' });
+  function rulePhone(a, b) {   // S-1 formatting / +1, S-2 extension
+    const part = t => { const m = /(?:ext\.?|extension|x|#)\s*(\d+)\s*$/i.exec(t); const base = (m ? t.slice(0, m.index) : t).replace(/\D/g, ''); return { d: base.length === 11 && base[0] === '1' ? base.slice(1) : base, ext: m ? m[1] : '' }; };
+    const x = part(a), y = part(b); if (x.d.length === y.d.length + 1 && x.d[0] === '1') x.d = x.d.slice(1); if (y.d.length === x.d.length + 1 && y.d[0] === '1') y.d = y.d.slice(1);   // +1 in front
+    return x.d === y.d && x.ext === y.ext ? SAME('S-1') : x.d === y.d ? DIFF('S-2', 'Only the extension differs.') : DIFF('S-1'); }
+  function ruleEmail(a, b) { const n = t => cmpTrim(t).replace(/[.,;:]+$/, '').toLowerCase(); return n(a) === n(b) ? SAME('S-4') : DIFF('S-4'); }   // S-4
+  function ruleAddress(a, b) {   // S-5 to S-9 (S-8 and the unit token from 0.26.0)
+    const tidy = t => cmpTrim(t).replace(/,?\s*(united states( of america)?|usa|u\.s\.a\.?)\s*$/i, ''), A = tidy(a), B = tidy(b);
+    const x = addrParts(A), y = addrParts(B); if (!x || !y) return ruleText(A.split(',')[0], B.split(',')[0]).v === 'same' ? SAME('S-9') : DIFF('S-5');
+    if (x.num !== y.num || x.name !== y.name) return DIFF('S-5');
+    if ((x.dir && y.dir && x.dir !== y.dir) || (x.type && y.type && x.type !== y.type)) return DIFF('S-6', 'The direction or street type differs.');
+    if ((x.unit || '') !== (y.unit || '')) return DIFF('S-8', 'The unit differs.');
+    return A.split(',').length < B.split(',').length ? ADD('S-9') : SAME('S-5'); }
+  function ruleName(a, b) {   // S-10 case / spaces, S-11 'Last, First', S-12 spouse or middle initial added = quiet add (CT-26)
+    const toks = t => { let s = cmpTrim(t).toLowerCase().replace(/[.;:]+/g, ' '); const c = s.split(','); if (c.length === 2 && c[0].trim() && c[1].trim()) s = c[1] + ' ' + c[0]; return s.replace(/,/g, ' ').split(/\s+/).filter(w => w && w !== '&' && w !== 'and'); };
+    const f = toks(a), e = toks(b), has = (l, w) => l.indexOf(w) >= 0;
+    if (f.length === e.length && f.every(w => has(e, w))) return SAME('S-10');
+    if (f.every(w => has(e, w))) return ADD('S-12'); if (e.length && e.every(w => has(f, w))) return SAME('S-12');
+    return DIFF('S-11'); }
+  const keyAZ = t => String(t == null ? '' : t).toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const ocr = t => t.replace(/O/g, '0').replace(/[IL]/g, '1');
+  function ruleModel(a, b) {   // S-13 case / spaces / dashes, S-14 a longer form = the card with both (CT-26), S-15 O/0 I/1 = alert with a hint
+    const x = keyAZ(a), y = keyAZ(b); if (x === y) return SAME('S-13');
+    if (ocr(x) === ocr(y)) return DIFF('S-15', 'Only O / 0 or I / 1 differs: check the tag.');
+    const s = x.length < y.length ? x : y, l = x.length < y.length ? y : x; if (s.length >= 7 && l.indexOf(s) === 0) return DIFF('S-14', 'One is a longer form of the other: pick which to keep.');
+    return DIFF('S-13'); }
+  function ruleSerial(a, b) { const x = keyAZ(a), y = keyAZ(b); if (x === y) return SAME('S-16'); if (ocr(x) === ocr(y)) return DIFF('S-15', 'Only O / 0 or I / 1 differs: check the tag.'); return DIFF('S-16'); }   // S-15, S-16
+  const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+  function mfgOf(t) { const s = cmpTrim(t).toUpperCase(); let m;   // -> { y, m } (m 0 = year only)
+    if ((m = /^([A-Z]{3})[A-Z]*\.?\s*[-/ ]?\s*(\d{2}|\d{4})$/.exec(s)) && MONTHS.indexOf(m[1]) >= 0) return { y: yr(m[2]), m: MONTHS.indexOf(m[1]) + 1 };
+    if ((m = /^(\d{1,2})\s*[-/.]\s*(\d{2}|\d{4})$/.exec(s)) && +m[1] >= 1 && +m[1] <= 12) return { y: yr(m[2]), m: +m[1] };
+    if ((m = /^(\d{4})\s*[-/.]\s*(\d{1,2})$/.exec(s)) && +m[2] >= 1 && +m[2] <= 12) return { y: +m[1], m: +m[2] };
+    if ((m = /^(\d{4})$/.exec(s))) return { y: +m[1], m: 0 }; return null; }
+  const yr = t => t.length === 2 ? 2000 + Number(t) : Number(t);
+  function ruleMfg(a, b) {   // S-17 format variants, S-18 year on file + month read = quiet add
+    const x = mfgOf(a), y = mfgOf(b); if (!x || !y) return ruleText(a, b).v === 'same' ? SAME('S-17') : DIFF('S-17');
+    if (x.y !== y.y) return DIFF('S-18'); if (x.m === y.m) return SAME('S-17'); if (!x.m) return ADD('S-18'); if (!y.m) return SAME('S-18'); return DIFF('S-18'); }
+  const REFRIG = { 'PURON': 'R410A', 'PURONADVANCE': 'R454B', 'XL41': 'R454B', 'FREON': 'R22', 'HCFC22': 'R22', 'HFC32': 'R32' };
+  function ruleRefrigerant(a, b) { const n = t => { const k = keyAZ(t); if (REFRIG[k]) return REFRIG[k]; return 'R' + k.replace(/^R/, ''); }; return n(a) === n(b) ? SAME('S-19') : DIFF('S-19'); }   // S-19
+  const METER = { TXU: 'TXV', TXV: 'TXV', THERMALEXPANSIONVALVE: 'TXV', EXV: 'EXV', EEV: 'EXV', PISTON: 'PISTON', FIXEDORIFICE: 'PISTON', ORIFICE: 'PISTON' };
+  function ruleMetering(a, b) { const n = t => METER[keyAZ(t)] || keyAZ(t); return n(a) === n(b) ? SAME('S-20') : DIFF('S-20'); }   // S-20
+  const numOfRating = t => { const s = cmpTrim(t).replace(/^(rla|fla|lra|mca|mop|rated)\s*/i, '').replace(/\s*(a|amps?|v|volts?|µf|uf|mfd|°f|f|psig|in\.?\s*wc|tons?)\.?$/i, ''); return /^-?\d+(\.\d+)?$/.test(s) ? Number(s) : null; };
+  function ruleRating(a, b) { const x = numOfRating(a), y = numOfRating(b); if (x == null || y == null) return ruleText(a, b).v === 'same' ? SAME('S-21') : DIFF('S-21'); return Math.abs(x - y) < 1e-9 ? SAME('S-21') : DIFF('S-21'); }   // S-21
+  function ruleDualCap(a, b) { const n = t => (String(t || '').replace(/µf|uf|mfd/ig, '').match(/\d+(\.\d+)?/g) || []).map(Number); const x = n(a), y = n(b);   // S-22
+    return x.length === y.length && x.every((v, i) => Math.abs(v - y[i]) < 1e-9) ? SAME('S-22') : DIFF('S-22'); }
+  function filtersOf(t) { const out = []; String(t || '').toLowerCase().replace(/[×*]/g, 'x').replace(/["”']/g, '').split(/\s*(?:,|;|\/|&|\band\b)\s*/).forEach(p => {   // S-23 / S-24
+      const q = /^\(?(\d+)\)?\s*(?:x\s+|pcs?\s+|of\s+)?(?=\d+(?:\.\d+)?\s*x)/.exec(p.trim()), n = q && /^\(/.test(p.trim()) ? Number(q[1]) : 1, rest = q && /^\(/.test(p.trim()) ? p.trim().slice(q[0].length) : p.trim();
+      const m = /(\d+(?:\.\d+)?)\s*x\s*(\d+(?:\.\d+)?)\s*x\s*(\d+(?:\.\d+)?)/.exec(rest); if (!m) { if (p.trim()) out.push('?' + p.trim()); return; }
+      const l = Number(m[1]), w = Number(m[2]); for (let i = 0; i < n; i++) out.push(Math.min(l, w) + 'x' + Math.max(l, w) + 'x' + Number(m[3])); });
+    return out.sort(); }
+  function ruleFilter(a, b) { const x = filtersOf(a), y = filtersOf(b); return x.join('|') === y.join('|') ? SAME('S-23') : DIFF(x.length > 1 || y.length > 1 ? 'S-24' : 'S-23'); }
+  function ruleTons(a, b) { const n = t => { const s = cmpTrim(t).toLowerCase().replace(/,/g, ''); const m = /(\d+(\.\d+)?)/.exec(s); if (!m) return null; const v = Number(m[1]); return /btu/.test(s) || v >= 12000 ? v / 12000 : v; };   // S-25
+    const x = n(a), y = n(b); return x != null && y != null && Math.abs(x - y) <= 0.05 ? SAME('S-25') : DIFF('S-25'); }
+  function ruleUnitLabel(a, b) { const n = t => cmpTrim(t).toLowerCase().replace(/^(unit|apt|apartment|ste|suite|#)\s*/, '').replace(/^#/, '').replace(/^0+(?=\d)/, ''); return n(a) === n(b) ? SAME('S-26') : DIFF('S-26'); }   // S-26
+  const EQUIP_ALIAS = { CU: 'CONDENSER', COND: 'CONDENSER', CONDENSINGUNIT: 'CONDENSER', OUTDOORUNIT: 'CONDENSER', CONDENSER: 'CONDENSER', AH: 'AIRHANDLER', AHU: 'AIRHANDLER', AIRHANDLER: 'AIRHANDLER', INDOORUNIT: 'AIRHANDLER', HP: 'HEATPUMP', HEATPUMP: 'HEATPUMP', FURN: 'FURNACE', FURNACE: 'FURNACE' };
+  function ruleEquipType(a, b) { const n = t => EQUIP_ALIAS[keyAZ(t)] || keyAZ(t); return n(a) === n(b) ? SAME('S-29') : DIFF('S-29'); }   // S-29
+  function ruleText(a, b) { return cmpTrim(a).toLowerCase() === cmpTrim(b).toLowerCase() ? SAME('text') : DIFF('text'); }
+  const CMP_RULES = { 'phone': rulePhone, 'email': ruleEmail, 'address': ruleAddress, 'name': ruleName, 'model': ruleModel, 'serial': ruleSerial, 'mfg date': ruleMfg, 'refrigerant': ruleRefrigerant, 'metering': ruleMetering, 'rating': ruleRating, 'dual cap': ruleDualCap, 'filter size': ruleFilter, 'tonnage': ruleTons, 'unit label': ruleUnitLabel, 'equipment type': ruleEquipType, 'text': ruleText };
+  function judge(kind, onFile, entered) {   // -> { v: same / add / diff, rule, hint }
+    if (!cmpTrim(onFile)) return cmpTrim(entered) ? ADD('S-30') : SAME('S-30');   // S-30 blank on file: fills quietly
+    if (!cmpTrim(entered)) return SAME('empty');   // nothing typed (the file value stays)
+    return (CMP_RULES[kind] || ruleText)(onFile, entered);
+  }
+  const kindOf = F => F.compareAs || (F.kind === 'number' || F.kind === 'calculated' ? 'rating' : 'text');
+  const fileValOf = id => call.__file && call.__file.values ? call.__file.values[id] : undefined;
+  function refreshDiff(id) {   // the call's verdict for one Field; a decision stays while the typed value stays the same
+    const F = (FCTL || []).find(x => x.id === id); if (!F || !call.__file) return;
+    const fv = fileValOf(id), ev = call[id] == null ? '' : String(call[id]);
+    if (F.fileCheck === 'add') { if (cmpTrim(ev) && ruleText(fv || '', ev).v !== 'same') { call.__adds = call.__adds || {}; call.__adds[id] = { id, name: F.name, file: String(fv || ''), entered: ev, rule: 'add' }; } else if (call.__adds) delete call.__adds[id]; return; }
+    if (F.fileCheck !== 'alert') return;
+    const j = judge(kindOf(F), fv, ev); call.__diffs = call.__diffs || {}; call.__adds = call.__adds || {};
+    if (j.v === 'add') { call.__adds[id] = { id, name: F.name, file: String(fv || ''), entered: ev, rule: j.rule }; delete call.__diffs[id]; return; }
+    delete call.__adds[id];
+    if (j.v !== 'diff') { delete call.__diffs[id]; return; }
+    const d = call.__diffs[id]; if (d && d.entered === ev) return;
+    call.__diffs[id] = { id, name: F.name, file: String(fv), entered: ev, rule: j.rule, hint: j.hint, choice: 'open', at: Date.now(), tab: F.saveTab, cols: F.saveCols };
+  }
+  const openDiffs = () => Object.keys(call.__diffs || {}).map(k => call.__diffs[k]).filter(d => d.choice === 'open' || d.choice === 'later');
+  function paintDiffs() {   // amber on every cell of a line whose value is still open (open / later)
+    const open = {}; openDiffs().forEach(d => { open[d.id] = 1; });
+    const mark = {}; document.querySelectorAll('#viewport-canvas-frame .proof-box[data-key]').forEach(b => { if (open[b.dataset.key]) { const p = b.closest('.grid-split-partition'); if (p) mark[p.getAttribute('data-pid')] = 1; } });
+    document.querySelectorAll('#viewport-canvas-frame .grid-split-partition[data-pid]').forEach(p => { const id = p.getAttribute('data-pid'), on = Object.keys(mark).some(m => id === m || id.indexOf(m + '.') === 0); p.classList.toggle('proof-diffline', on); });
+    paintCount();
+  }
+  function paintCount() { const n = openDiffs().length, t = n ? n + ' to check' : ''; document.querySelectorAll('#viewport-canvas-frame .proof-checkcount').forEach(c => { if (c.textContent !== t) c.textContent = t; }); }
+  window.EngineSlots['check-count'] = { render(p) { const n = openDiffs().length; return '<div class="proof-cell proof-checkcount" role="button" tabindex="0" style="font-size:' + Math.min(12, p.fontSize || 11) + 'px">' + (n ? n + ' to check' : '') + '</div>'; } };
+  let cardFor = null;
+  function openCard(id, mode, next) {   // mode: leave (after leaving the box) / close (Copy report, New: adds Leave as is, Follow up, Back)
+    const d = (call.__diffs || {})[id]; if (!d) { if (next) next(); return; }
+    let el = document.getElementById('proof-diff'); if (!el) { el = document.createElement('div'); el.id = 'proof-diff'; document.body.appendChild(el); }
+    const house = d.tab === 'Places', btn = (c, t, cls) => '<button type="button" data-choice="' + c + '"' + (cls ? ' class="' + cls + '"' : '') + '>' + t + '</button>';
+    el.innerHTML = '<div class="pd-title">' + esc(d.name) + ': different from file</div><div class="pd-cols"><div><div class="pd-h">ON FILE</div><div class="pd-v pd-file">' + esc(d.file) + '</div></div><div><div class="pd-h">YOU ENTERED</div><div class="pd-v pd-entered">' + esc(d.entered) + '</div></div></div>' +
+      (d.hint ? '<div class="pd-hint">' + esc(d.hint) + '</div>' : '') + '<div class="pd-photo-view"></div>' +
+      '<div class="pd-btns">' + btn('typo', 'Typo on file') + btn(house ? 'newCust' : 'newEquip', house ? 'New customer' : 'New equipment') + (mode === 'close' ? btn('leave', 'Leave as is') + btn('follow', 'Follow up') : btn('later', 'Later')) +
+      '<label class="pd-photo">Photo<input type="file" accept="image/*" hidden></label>' + (mode === 'close' ? btn('back', 'Back', 'pd-back') : '') + '</div>';
+    el.dataset.id = id; el.dataset.mode = mode; el.style.display = ''; cardFor = { id, mode, next };
+    try { document.activeElement && document.activeElement.blur && document.activeElement.blur(); } catch (e) {}
+  }
+  function closeCard() { const el = document.getElementById('proof-diff'); if (el) el.style.display = 'none'; cardFor = null; }
+  document.addEventListener('click', e => {
+    const el = document.getElementById('proof-diff'); if (!el || !cardFor || !el.contains(e.target)) return;
+    const b = e.target.closest && e.target.closest('button[data-choice]'); if (!b) return; e.preventDefault(); e.stopPropagation();
+    const c = b.dataset.choice, f = cardFor; closeCard();
+    if (c === 'back') { say('Stopped: settle the line(s) to check first', 'warn'); return; }
+    const d = (call.__diffs || {})[f.id]; if (d) { d.choice = c; d.at = Date.now(); lsSet(K.call, call); }
+    try { paintDiffs(); saveCall('diff'); } catch (x) {}
+    if (f.next) f.next();
+  }, true);
+  document.addEventListener('change', e => { const i = e.target; if (!i || !i.closest || !i.closest('#proof-diff') || i.type !== 'file' || !i.files || !i.files[0]) return;   // view only (keeping photos is C9)
+    const v = document.querySelector('#proof-diff .pd-photo-view'); if (v) v.innerHTML = '<img alt="tag photo" src="' + URL.createObjectURL(i.files[0]) + '">'; });
+  document.addEventListener('click', e => { const c = e.target && e.target.closest && e.target.closest('.proof-checkcount'); if (!c || !isLiveInteraction) return;   // tap the count = the first open line
+    e.stopPropagation(); const d = openDiffs()[0]; if (!d) return; const b = document.querySelector('#viewport-canvas-frame .proof-box[data-key="' + d.id + '"]'); if (b) b.scrollIntoView({ block: 'center' }); openCard(d.id, 'leave'); }, true);
+  document.addEventListener('input', e => { const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b || !b.dataset.key || !call.__file) return; try { refreshDiff(b.dataset.key); paintDiffs(); } catch (x) {} });   // amber while typing, no pop-up
+  document.addEventListener('focusout', e => { const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b || !b.dataset.key) return; const k = b.dataset.key;   // leaving the box: the card
+    setTimeout(() => { const d = (call.__diffs || {})[k]; if (d && d.choice === 'open' && !cardFor) openCard(k, 'leave'); }, 0); }, true);
+  function askAtClose(done) {   // Copy report / New: every open line again; Back stops (nothing is lost)
+    const q = openDiffs().map(d => d.id), next = () => { const id = q.shift(); if (!id) { done(); return; } openCard(id, 'close', next); }; next(); }
+  { const copy0 = window.EngineActions['copy-report'], new0 = window.EngineActions['new-call'];
+    window.EngineActions['copy-report'] = () => { if (openDiffs().length) { askAtClose(() => copy0()); return; } copy0(); };
+    window.EngineActions['new-call'] = () => { if (openDiffs().length) { askAtClose(() => { newArmed = Date.now(); new0(); }); return; } new0(); }; }
+  const followText = () => Object.keys(call.__diffs || {}).map(k => call.__diffs[k]).filter(d => d.choice === 'follow').map(d => d.name + ': on file ' + d.file + ', entered ' + d.entered).join(' | ');
+  const fileChanges = () => Object.keys(call.__diffs || {}).map(k => call.__diffs[k]).filter(d => /^(typo|newEquip|newCust)$/.test(d.choice)).concat(Object.keys(call.__adds || {}).map(k => Object.assign({ choice: 'add' }, call.__adds[k])));
+  window.__proofCompare = { judge, kindOf: id => kindOf((FCTL || []).find(x => x.id === id) || {}), diffs: () => call.__diffs || {}, adds: () => call.__adds || {} };   // for the tests only
+
   // ---------- Round C7b (0.25.0, Prompts no. 159): the Visits saver. One Visits row per call + system + tech, through the test door
   // (test-script/Code.gs, op saveVisit). The phone makes the Visit Id (V-<date>-<6 letters>) and Call token; every save sends the whole row
   // (fixed columns, every Field with a Visits column, the ratings from the call's file snapshot) with a new client id, kept in an OUTBOX
@@ -10922,11 +11069,12 @@ body.light-theme .proof-box{color:#0f172a}
     fixed['Call token'] = V.token; fixed['Date'] = valText(call['f:date']).trim() || V.date; fixed['Time'] = V.time; fixed['Tech'] = String(SETTINGS['tech name'] || '').trim() || DEVICE;
     fixed['Call type'] = callView.callType || valText(call['f:callType']); fixed['Template'] = callView.tpl || ''; fixed['Place Id'] = file.place || call.__placeId || '';
     fixed['System Id'] = sys; fixed['System label'] = piece ? piece.label : ''; fixed['Status'] = V.done ? 'Done' : 'In progress'; fixed['Created'] = V.created;
+    fixed['Follow-up'] = followText();   // 0.27.0 (C7c-1): the open question(s), blank when none
     (FCTL || []).forEach(F => { if (!F.visitsCol || VISIT_FIXED.indexOf(F.visitsCol) >= 0) return; values.push({ id: F.id, col: F.visitsCol, v: valText(call[F.id]), num: F.kind === 'number' || F.kind === 'calculated' }); });
     const spec = file.spec || {}, seen = {};   // ratings: one column each, from the file snapshot (never typed)
     Object.keys(spec).forEach(fid => { const cols = (spec[fid] && spec[fid].cols) || {}; Object.keys(cols).forEach(c => { if (seen[c]) return; seen[c] = 1;
       values.push({ kind: 'rating', id: c, col: RATING_HEAD[c] || ('Rated ' + c), v: valText(cols[c]), num: c !== 'Filter size' }); }); });
-    return { op: 'saveVisit', visitId: V.id, fixed, values };
+    return { op: 'saveVisit', visitId: V.id, fixed, values, changes: fileChanges() };   // changes: applied to the file by test-door-2 (C7c-2); test-door-1 ignores them
   }
   function saveCall(why) {   // queue the call when it changed since its last queued copy; then send
     if (!savingOn() || TAB.passive) return;
@@ -10967,7 +11115,7 @@ body.light-theme .proof-box{color:#0f172a}
   }
   function paintChip() { const t = chipText(), k = !scriptUrl() ? 'off' : saveSt.st === 'error' ? 'err' : outbox().length && !sending ? 'wait' : saveSt.st;
     document.querySelectorAll('#viewport-canvas-frame .proof-savechip').forEach(c => { if (c.textContent !== t) c.textContent = t; c.setAttribute('data-st', k || ''); }); }
-  const visitNote = () => !savingOn() ? '' : !scriptUrl() ? 'Saving to the sheet is off (no script address)' : saveSt.missing && saveSt.missing.length ? 'The Visits tab has no column for: ' + saveSt.missing.join(', ') : '';
+  const visitNote = () => !savingOn() ? '' : fileChanges().filter(c => c.choice !== 'add').length ? 'File changes on this call (' + fileChanges().filter(c => c.choice !== 'add').length + ') are kept with the call; Places / Equipment change in stage 2 (C7c-2).' : !scriptUrl() ? 'Saving to the sheet is off (no script address)' : saveSt.missing && saveSt.missing.length ? 'The Visits tab has no column for: ' + saveSt.missing.join(', ') : '';
   window.EngineSlots['save-chip'] = { render(p) { return '<div class="proof-cell proof-savechip" role="button" tabindex="0" style="font-size:' + Math.min(11, p.fontSize || 10) + 'px">' + esc(chipText()) + '</div>'; } };
   document.addEventListener('click', e => { const c = e.target && e.target.closest && e.target.closest('.proof-savechip'); if (!c || !isLiveInteraction) return; e.stopPropagation(); saveCall('tap'); flushOutbox(); }, true);
   setInterval(() => { try { saveCall('timer'); flushOutbox(); } catch (e) {} }, 30000);
@@ -11101,7 +11249,7 @@ body.light-theme .proof-box{color:#0f172a}
   const partIdx = part => { const m = /handleSplitClick\((\d+), (\d+), (\d+), (\d+)/.exec(part.getAttribute('onclick') || ''); return m ? m.slice(1, 5).map(Number) : null; };
   let visBusy = false;
   function applyVis() {
-    try { paintViewLine(); paintChip(); } catch (e) {}   // 0.22.2 (F12); C7b: the save chip
+    try { paintViewLine(); paintChip(); paintDiffs(); } catch (e) {}   // 0.22.2 (F12); C7b: the save chip
     const frame = document.getElementById('viewport-canvas-frame'); if (!frame || visBusy) return;
     visBusy = true;
     try {
