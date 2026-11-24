@@ -1,11 +1,14 @@
 // =====================================================================================================
 // PMI container proof (TEST) - Apps Script web app for the TEST sheet 'PMI container proof (test)' ONLY.
-// test-door-1 (proof 0.25.0, Prompts no. 159, round C7b). Before: proof-test-2 (rounds 2 / 3, Tweaks only).
+// test-door-2 (proof 0.28.0, Prompts no. 164, round C7c-2: FILE CHANGES). test-door-1 = proof 0.25.0 (C7b, Visits). proof-test-2 = rounds 2 / 3 (Tweaks only).
 // NOT the live PMI script; never paste this into the Smart PMI sheet (it refuses any other spreadsheet).
 //
 // What it can do, and nothing else:
 //   - Tweaks saver: replace (or clear) the rows of ONE Device name + ONE Profile on the tab 'Tweaks'; read them back.
 //   - Visits saver (op saveVisit): write ONE row of the tab 'Visits' (one call + one system + one tech), found by Visit Id.
+//   - File changes (inside saveVisit, test-door-2): the choices made on the different-from-file card change Places / Equipment, only where
+//     the cell still holds the value the phone saw (else 'changed meanwhile'); a phone customer gets a real Places row; every change is
+//     written to the tab 'Changes'.
 //   - ping: the version.
 // It never writes any other tab. The sheet holds fake data only, so the web app is open ("Anyone"); the token below is in
 // the public proof page too, so it only keeps out random callers. Writes are capped (size and count).
@@ -24,12 +27,17 @@ var ACCENTS = { '': 1, cyan: 1, emerald: 1, amber: 1, purple: 1, rose: 1 };
 var MAX_BODY = 20000;          // characters in one save
 var MAX_ROWS_PER_SAVE = 100;   // tweak rows in one save
 var MAX_TOTAL_ROWS = 2000;     // tweak rows on the whole tab
-var SCRIPT_VERSION = 'test-door-1';
+var SCRIPT_VERSION = 'test-door-2';
 var VISITS_TAB = 'Visits';
 var VISITS_FIXED = ['Visit Id', 'Call token', 'Date', 'Time', 'Tech', 'Call type', 'Template', 'Place Id', 'System Id', 'System label', 'Status', 'Team tag', 'Merged into', 'Revision of', 'Follow-up', 'Area temp', 'Lat', 'Lng', 'Created', 'Last saved'];
 var MAX_VISIT_BODY = 80000;    // characters in one Visits save
 var MAX_VISIT_VALUES = 400;    // Field + rating values in one Visits save
 var CLIENT_ID_HOURS = 6;       // a repeated save (same client id) within this time = the same row, nothing new
+var CHANGE_TABS = { 'Places': 'Place Id', 'Equipment': 'Piece Id' };   // the tabs a file change may touch, and their id column
+var CHANGES_TAB = 'Changes';
+var MAX_CHANGES = 60;          // file changes in one save
+var PIECE_COPY = ['Place Id', 'System Id', 'System label', 'Service area', 'Slot', 'Type'];   // a new piece keeps these from the one it replaces; ratings start BLANK (CT-19)
+var FOLLOW_COLOR = '#fde68a';  // the Visits 'Follow-up' column's color when it holds a question
 
 // ===================================== SHARED HELPERS ===============================================
 
@@ -141,8 +149,8 @@ function visitsSave_(b, body) {
   try {
     lock.waitLock(15000);
     var cache = CacheService.getScriptCache(), seen = cache.get('cid:' + cid);
-    if (seen) return out_({ ok: true, version: SCRIPT_VERSION, row: Number(seen), repeat: true, at: now_() });
-    var sh = book_().getSheetByName(VISITS_TAB);
+    if (seen) { var o = /^\{/.test(seen) ? JSON.parse(seen) : { ok: true, row: Number(seen) }; o.repeat = true; o.version = SCRIPT_VERSION; return out_(o); }   // test-door-2: the whole first answer
+    var ss = book_(), sh = ss.getSheetByName(VISITS_TAB);
     if (!sh) return out_({ ok: false, error: 'the tab Visits is missing' });
     var lastCol = sh.getLastColumn(), head = sh.getRange(1, 1, 1, lastCol).getDisplayValues()[0], notes = sh.getRange(1, 1, 1, lastCol).getNotes()[0];
     var byHead = {}, byNote = {}; head.forEach(function (h, i) { h = String(h).trim(); if (h && byHead[h] == null) byHead[h] = i; var n = String(notes[i] || '').trim(); if (n) byNote[n] = i; });
@@ -154,6 +162,8 @@ function visitsSave_(b, body) {
     var fmt = isNew ? head.map(function () { return '@'; }) : sh.getRange(row, 1, 1, lastCol).getNumberFormats()[0];
     var put = function (i, v, num) { if (num && v !== '' && isFinite(Number(v))) { cur[i] = Number(v); fmt[i] = '0.####'; } else { cur[i] = noFormula_(v); fmt[i] = '@'; } };
     var at = now_(), missing = [], newNotes = [];
+    var fc = fileChanges_(ss, b, fixed, at);   // test-door-2: Places / Equipment / Changes first (a new Place Id goes on this row)
+    if (fc.placeId) fixed['Place Id'] = fc.placeId;
     VISITS_FIXED.forEach(function (c) { var i = byHead[c]; if (i == null) return;
       if (c === 'Visit Id') return put(i, vid);
       if (c === 'Last saved') return put(i, at);
@@ -168,13 +178,90 @@ function visitsSave_(b, body) {
     var rg = sh.getRange(row, 1, 1, lastCol); rg.setNumberFormats([fmt]); rg.setValues([cur]);
     newNotes.forEach(function (n) { sh.getRange(1, n[0] + 1).setNote(n[1]); });
     SpreadsheetApp.flush();
-    cache.put('cid:' + cid, String(row), CLIENT_ID_HOURS * 3600);
-    return out_({ ok: true, version: SCRIPT_VERSION, row: row, created: isNew, at: at, missing: missing });
+    if (String(fixed['Follow-up'] || '')) followColor_(sh, head);
+    var reply = { ok: true, version: SCRIPT_VERSION, row: row, created: isNew, at: at, missing: missing, changes: fc.results, placeId: fc.placeId || '' };
+    cache.put('cid:' + cid, JSON.stringify(reply), CLIENT_ID_HOURS * 3600);
+    return out_(reply);
   } catch (err) {
     return out_({ ok: false, error: String(err && err.message || err) });
   } finally {
     try { lock.releaseLock(); } catch (x) {}
   }
+}
+
+// ===================================== FILE CHANGES (test-door-2) ===================================
+// b.changes: [{ key, tab, record, col, old, new, reason, choice (typo / newCust / newEquip / add), replace, newId, piece }]
+// Rules: the record must exist; the cell must still hold 'old' (the value the phone saw) or already hold 'new' ('already'); else 'changed'
+// (the phone shows it on the card). typo / newCust = the cell gets the new value (a New customer keeps the SAME Places row: the old name goes
+// to Changes). newEquip = the old piece becomes Replaced (Until, Replaced by) and ONE new Active piece (same Place / System / Slot / Type,
+// BLANK ratings) gets the new values. add = a blank cell is filled; a Phone N that is taken goes to the next empty Phone column; Access codes /
+// Site notes / names get ' · ' + the new text; replace = the cell (still 'old') gets the longer value (S-9, S-12, S-18).
+// b.newPlace: a phone customer (PH-...) or a call with no place: one Places row 'P-<visit>' (Customer and Address needed, CT-3).
+function tabOf_(ss, name) {
+  var sh = ss.getSheetByName(name); if (!sh) return null;
+  var lc = sh.getLastColumn(), head = sh.getRange(1, 1, 1, lc).getDisplayValues()[0].map(function (h) { return String(h).trim(); });
+  var t = { sh: sh, head: head, col: function (n) { return head.indexOf(n); } };
+  t.rowOf = function (idCol, id) { var c = head.indexOf(idCol), lr = sh.getLastRow(); if (c < 0 || lr < 2) return 0; var v = sh.getRange(2, c + 1, lr - 1, 1).getDisplayValues();
+    for (var i = 0; i < v.length; i++) if (String(v[i][0]).trim() === String(id)) return i + 2; return 0; };
+  t.get = function (r, n) { var c = head.indexOf(n); return c < 0 ? '' : String(sh.getRange(r, c + 1).getDisplayValues()[0][0]); };
+  t.set = function (r, n, v) { var c = head.indexOf(n); if (c < 0) return false; var rg = sh.getRange(r, c + 1), was = rg.getValues()[0][0], t2 = String(v == null ? '' : v);
+    if (typeof was === 'number' && /^-?\d+(\.\d+)?$/.test(t2.trim())) { rg.setNumberFormat('0.####'); rg.setValues([[Number(t2)]]); } else { rg.setNumberFormat('@'); rg.setValues([[noFormula_(t2)]]); } return true; };
+  t.append = function (o) { var r = Math.max(sh.getLastRow(), 1) + 1, row = head.map(function (h) { return o[h] == null ? '' : noFormula_(o[h]); });
+    var rg = sh.getRange(r, 1, 1, head.length); rg.setNumberFormats([head.map(function () { return '@'; })]); rg.setValues([row]); return r; };
+  return t;
+}
+var normC_ = function (v) { return String(v == null ? '' : v).replace(/\s+/g, ' ').trim().toLowerCase(); };
+function fileChanges_(ss, b, fixed, at) {
+  var out = { results: [], placeId: '' }, tabs = {}, who = String(fixed['Tech'] || ''), vid = String(b.visitId || ''), done = {};
+  var T = function (n) { if (!(n in tabs)) tabs[n] = tabOf_(ss, n); return tabs[n]; };
+  var log = function (tab, rec, field, oldV, newV, reason) { var C = T(CHANGES_TAB); if (C) C.append({ 'When': at, 'Who': who, 'Visit Id': vid, 'Tab': tab, 'Record Id': rec, 'Field': field, 'Old': oldV, 'New': newV, 'Reason': reason }); };
+  var np = b.newPlace;
+  if (np && np.cols && String(np.cols['Customer'] || '').trim() && String(np.cols['Address'] || '').trim()) {
+    var P = T('Places'), pid = 'P-' + vid.replace(/^V-/, '');
+    if (P && !P.rowOf('Place Id', pid)) { var o = { 'Place Id': pid, 'Level': 'house', 'Active': 'yes', 'Created by': who, 'Created at': at };
+      Object.keys(np.cols).forEach(function (k) { if (P.col(k) >= 0 && k !== 'Place Id') o[k] = np.cols[k]; }); P.append(o); log('Places', pid, 'Place', String(np.from || ''), pid, 'New customer'); }
+    if (P) out.placeId = pid;
+  }
+  var list = Array.isArray(b.changes) ? b.changes.slice(0, MAX_CHANGES) : [];
+  list.forEach(function (c) {
+    var res = { key: String(c.key || ''), new: String(c['new'] == null ? '' : c['new']) }; out.results.push(res);
+    var idCol = CHANGE_TABS[c.tab], t = idCol ? T(c.tab) : null;
+    if (!t || t.col(String(c.col)) < 0) { res.status = 'missing'; return; }
+    var r = t.rowOf(idCol, c.record); if (!r) { res.status = 'missing'; return; }
+    var cur = t.get(r, c.col), oldV = String(c.old == null ? '' : c.old), newV = res['new'], reason = String(c.reason || 'Correction');
+    if (c.choice === 'newEquip' && c.tab === 'Equipment') {
+      var nid = String(c.newId || ''); if (!/^EQ-[A-Za-z0-9-]{4,80}$/.test(nid)) { res.status = 'missing'; return; }
+      if (done[c.record] === nid) { log('Equipment', nid, c.col, oldV, newV, 'New equipment'); res.status = 'applied'; res.newId = nid; return; }   // a 2nd field of the same new piece in this save
+      if (t.get(r, 'Replaced by') === nid) { res.status = 'already'; res.newId = nid; return; }
+      if (normC_(cur) !== normC_(oldV)) { res.status = 'changed'; res.now = cur; return; }
+      if (!done[c.record]) { var o2 = { 'Piece Id': nid, 'Status': 'Active', 'Since': String(fixed['Date'] || at.slice(0, 10)), 'Created at': at };
+        PIECE_COPY.forEach(function (k) { o2[k] = t.get(r, k); }); Object.keys(c.piece || {}).forEach(function (k) { if (t.col(k) >= 0 && PIECE_COPY.indexOf(k) < 0 && k !== 'Piece Id') o2[k] = c.piece[k]; });
+        t.set(r, 'Status', 'Replaced'); t.set(r, 'Until', String(fixed['Date'] || at.slice(0, 10))); t.set(r, 'Replaced by', nid); t.append(o2);
+        log('Equipment', c.record, 'Status', 'Active', 'Replaced by ' + nid, 'New equipment'); done[c.record] = nid; }
+      log('Equipment', nid, c.col, oldV, newV, 'New equipment'); res.status = 'applied'; res.newId = nid; return;
+    }
+    if (c.choice === 'add') {
+      if (!normC_(newV)) { res.status = 'already'; return; }
+      if (!normC_(cur)) { t.set(r, c.col, newV); log(c.tab, c.record, c.col, '', newV, 'Added'); res.status = 'applied'; return; }
+      if (normC_(cur) === normC_(newV) || normC_(cur).indexOf(normC_(newV)) >= 0) { res.status = 'already'; return; }
+      if (c.replace && normC_(cur) === normC_(oldV)) { t.set(r, c.col, newV); log(c.tab, c.record, c.col, cur, newV, 'Added'); res.status = 'applied'; return; }
+      if (/^Phone \d+$/.test(c.col)) { for (var k = 1; k <= 20; k++) { var pc = 'Phone ' + k; if (t.col(pc) < 0) break; var pv = t.get(r, pc);
+          if (normC_(pv) === normC_(newV)) { res.status = 'already'; return; } if (!normC_(pv)) { t.set(r, pc, newV); log(c.tab, c.record, pc, '', newV, 'Added'); res.status = 'applied'; res.col = pc; return; } }
+        res.status = 'missing'; return; }
+      t.set(r, c.col, cur + ' \u00b7 ' + newV); log(c.tab, c.record, c.col, cur, cur + ' \u00b7 ' + newV, 'Added'); res.status = 'applied'; return;
+    }
+    if (normC_(cur) === normC_(newV)) { res.status = 'already'; return; }
+    if (normC_(cur) !== normC_(oldV)) { res.status = 'changed'; res.now = cur; return; }
+    t.set(r, c.col, newV); log(c.tab, c.record, c.col, cur, newV, reason); res.status = 'applied';
+  });
+  return out;
+}
+function followColor_(sh, head) {   // the Follow-up column gets its color once (a rule, never a formula in a cell)
+  var c = head.indexOf('Follow-up'); if (c < 0) return;
+  var rules = sh.getConditionalFormatRules(), has = rules.some(function (r) { return r.getRanges().some(function (g) { return g.getColumn() === c + 1; }); });
+  if (has) return;
+  rules.push(SpreadsheetApp.newConditionalFormatRule().whenCellNotEmpty().setBackground(FOLLOW_COLOR).setRanges([sh.getRange(2, c + 1, Math.max(sh.getMaxRows() - 1, 1), 1)]).build());
+  sh.setConditionalFormatRules(rules);
 }
 
 // ===================================== DOORS (send each request to its block) =======================

@@ -3700,7 +3700,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.27.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.28.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3710,7 +3710,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.27.0', stamp: '2026-11-24 05:12:46', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.28.0', stamp: '2026-11-24 07:01:40', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8387,7 +8387,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.27.0';
+  const PROOF_VERSION = '0.28.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -10028,7 +10028,7 @@ body.light-theme .proof-box{color:#0f172a}
     'Email 1', 'Email 1 name', 'Email 2', 'Email 2 name', 'Email 3', 'Email 3 name', 'Access codes', 'Site notes', 'Lat', 'Lng', 'Active', 'Created by', 'Created at', 'Last changed by', 'Last changed at'];
   const RULES_COLS = ['Rule Id', 'Site Id', 'Building Id', 'Kind', 'Label', 'Floor from', 'Floor to', 'Units per floor', 'Unit numbers', 'Prefix', 'Access notes', 'Active'];
   const EQUIP_COLS = ['Piece Id', 'Place Id', 'System Id', 'System label', 'Service area', 'Slot', 'Type', 'Status', 'Since', 'Until', 'Replaced by', 'Brand', 'Model', 'Serial', 'Mfg date', 'Refrigerant', 'Tons',
-    'RLA', 'ODF FLA', 'IDF FLA', 'Herm cap', 'ODF cap', 'IDF cap', 'Target SC', 'Metering', 'Filter size', 'Rated static', 'Factory charge', 'MCA', 'Max breaker', 'Voltage', 'Phase', 'Notes', 'Created at', 'Last changed at'];
+    'RLA', 'ODF FLA', 'IDF FLA', 'Herm cap', 'ODF cap', 'IDF cap', 'Target SC', 'Metering', 'Filter size', 'Rated static', 'Factory charge', 'MCA', 'Max breaker', 'Voltage', 'Phase', 'Notes', 'Created at', 'Last changed at', 'LRA', 'ODF HP', 'Max fuse'];
   const LEVELS = { house: 1, site: 1, building: 1, unit: 1, special: 1 }, STATUSES = { active: 1, replaced: 1, removed: 1 };
   const CTL_PREFILL = { yes: 1, spec: 1, no: 1 }, CTL_CHECK = { alert: 1, add: 1, none: 1 }, CTL_REPORT = { yes: 1, no: 1, ask: 1 }, SAVE_TO_RE = /^(Places|Equipment)\.(.+)$/;
   const INHERIT = ['Address', 'Access codes', 'Site notes', 'Lat', 'Lng'];   // a unit / building takes these from above when its own cell is blank (KEPT, 0.26.0 R10: Places columns are not Fields; the C7 data model fixes this list)
@@ -10112,7 +10112,11 @@ body.light-theme .proof-box{color:#0f172a}
       const got = {}; F.saveCols.forEach(col => { const pc = pieceFor(F, col), v = pc ? pc.cols[col] : ''; if (v) got[col] = v; });   // spec: kept beside, never in the box
       if (Object.keys(got).length) { const col = F.saveCols.find(k => got[k]); spec[F.id] = { cols: got, v: got[col], word: /^target/i.test(col) ? 'target' : 'rated', unit: unitText(F.unit).trim() }; } });   // 0.26.0 (R10): the unit from the Fields Unit column only
     const pieces = {}; mine.forEach(pc => { if (pc.slot) pieces[pc.slot] = pc.id; });
-    call.__file = { place: P.id, placeLevel: P.level, system: s1, systems: sys.length, pieces, inherited, values: vals, spec, at: Date.now() };   // 0.26.0 (R5): Piece Ids per slot, the place level, where inherited values came from
+    const records = {};   // 0.28.0 (C7c-2): where each Field's file value lives (the record a card choice changes); an inherited value (from the building / site) gets none
+    FCTL.forEach(F => { if (!F.saveTab || !F.saveCols.length) return; const col = F.saveCols[0];
+      if (F.saveTab === 'Places') { const src = from[col]; if (!src || src === P.id || COMBINE[col]) records[F.id] = { tab: 'Places', id: P.id, col }; return; }
+      const pc = pieceFor(F, col); if (pc) records[F.id] = { tab: 'Equipment', id: pc.id, col, slot: pc.slot }; });
+    call.__file = { place: P.id, placeLevel: P.level, system: s1, systems: sys.length, pieces, inherited, records, values: vals, spec, at: Date.now() };   // 0.26.0 (R5): Piece Ids per slot, the place level, where inherited values came from
     if (sys.length > 1) setTimeout(() => say(sys.length + ' systems on file; System 1 loaded.', 'info', 4000), 50);
   }
   const specOf = id => ((call.__file || {}).spec || {})[id] || null;
@@ -10124,7 +10128,8 @@ body.light-theme .proof-box{color:#0f172a}
   }
   function specLine(x) {   // the report line from rating + measured (the main app's styled(): Rated first / Within range / Measured first / Slash)
     const sp = specOf(x.id); if (!sp || !x.v) return null;
-    if (Object.keys(sp.cols || {}).length > 1 || numOf(String(sp.v)) === null) return null;   // 0.26.0 (R1): an editor's ratings (caps, filter size) are not one plain number: its own line
+    { const F2 = (FCTL || []).find(f => f.id === x.id) || {}, ca = F2.compareAs || '';   // 0.28.0: by Compare as (a compressor may also carry LRA); without it, more than one rating = an editor
+      if (ca === 'dual cap' || ca === 'filter size' || (!ca && Object.keys(sp.cols || {}).length > 1) || numOf(String(sp.v)) === null) return null; }   // 0.26.0 (R1): an editor's ratings (caps, filter size) are not one plain number: its own line
     const u = sp.unit ? ' ' + sp.unit : '', sty = SETTINGS['report format'] || 'rated first', nv = numOf(String(x.v).replace(/[^\d.\-]/g, '')), nr = numOf(sp.v), mv = x.v + unitText(x.F.unit);
     const body = sty === 'measured first' ? mv + ' (' + sp.word + ' ' + sp.v + u + ')' : sty === 'slash' ? mv + ' / ' + sp.v + u
       : sty === 'within range' && nv !== null && nr !== null ? mv + (sp.word === 'target' ? ' (target ' + sp.v + u + ')' : nv <= nr ? ' within range' + ' (' + sp.v + u + ')' : ' above rating (' + sp.v + u + ')') : sp.word + ' ' + sp.v + u + ', measured ' + mv;
@@ -11009,7 +11014,7 @@ body.light-theme .proof-box{color:#0f172a}
     let el = document.getElementById('proof-diff'); if (!el) { el = document.createElement('div'); el.id = 'proof-diff'; document.body.appendChild(el); }
     const house = d.tab === 'Places', btn = (c, t, cls) => '<button type="button" data-choice="' + c + '"' + (cls ? ' class="' + cls + '"' : '') + '>' + t + '</button>';
     el.innerHTML = '<div class="pd-title">' + esc(d.name) + ': different from file</div><div class="pd-cols"><div><div class="pd-h">ON FILE</div><div class="pd-v pd-file">' + esc(d.file) + '</div></div><div><div class="pd-h">YOU ENTERED</div><div class="pd-v pd-entered">' + esc(d.entered) + '</div></div></div>' +
-      (d.hint ? '<div class="pd-hint">' + esc(d.hint) + '</div>' : '') + '<div class="pd-photo-view"></div>' +
+      (d.hint ? '<div class="pd-hint">' + esc(d.hint) + '</div>' : '') + (d.conflict ? '<div class="pd-hint pd-conflict">' + esc(d.conflict) + '</div>' : '') + '<div class="pd-photo-view"></div>' +
       '<div class="pd-btns">' + btn('typo', 'Typo on file') + btn(house ? 'newCust' : 'newEquip', house ? 'New customer' : 'New equipment') + (mode === 'close' ? btn('leave', 'Leave as is') + btn('follow', 'Follow up') : btn('later', 'Later')) +
       '<label class="pd-photo">Photo<input type="file" accept="image/*" hidden></label>' + (mode === 'close' ? btn('back', 'Back', 'pd-back') : '') + '</div>';
     el.dataset.id = id; el.dataset.mode = mode; el.style.display = ''; cardFor = { id, mode, next };
@@ -11038,7 +11043,46 @@ body.light-theme .proof-box{color:#0f172a}
     window.EngineActions['copy-report'] = () => { if (openDiffs().length) { askAtClose(() => copy0()); return; } copy0(); };
     window.EngineActions['new-call'] = () => { if (openDiffs().length) { askAtClose(() => { newArmed = Date.now(); new0(); }); return; } new0(); }; }
   const followText = () => Object.keys(call.__diffs || {}).map(k => call.__diffs[k]).filter(d => d.choice === 'follow').map(d => d.name + ': on file ' + d.file + ', entered ' + d.entered).join(' | ');
-  const fileChanges = () => Object.keys(call.__diffs || {}).map(k => call.__diffs[k]).filter(d => /^(typo|newEquip|newCust)$/.test(d.choice)).concat(Object.keys(call.__adds || {}).map(k => Object.assign({ choice: 'add' }, call.__adds[k])));
+  const REASON = { typo: 'Correction', newEquip: 'New equipment', newCust: 'New customer', add: 'Added' };
+  function ensureRecords() {   // 0.28.0: a call picked by 0.24.0 to 0.27.0 has no records yet: made from the place and the pieces it kept
+    const f = call.__file; if (!f || f.records || !ONFILE || !f.place) return; const P = placeById(f.place); if (!P) return; const recs = {}, by = {};
+    Object.keys(f.pieces || {}).forEach(sl => { const pc = ONFILE.pieces.find(x => x.id === f.pieces[sl]); if (pc) by[sl] = pc; });
+    FCTL.forEach(F => { if (!F.saveTab || !F.saveCols.length) return; const col = F.saveCols[0];
+      if (F.saveTab === 'Places') { if (!(f.inherited || {})[F.id]) recs[F.id] = { tab: 'Places', id: P.id, col }; return; }
+      const pc = F.equip ? by[F.equip] : Object.keys(by).map(k => by[k]).find(x => x.cols[col]); if (pc) recs[F.id] = { tab: 'Equipment', id: pc.id, col, slot: pc.slot }; });
+    f.records = recs;
+  }
+  function fileChanges() {   // 0.28.0 (C7c-2): the card choices (and quiet adds) as changes for the file, sent with every save until the door says applied
+    ensureRecords(); const f = call.__file || {}, recs = f.records || {}, V = call.__visit || {}, out = [], list = Object.keys(call.__diffs || {}).map(k => call.__diffs[k]).filter(d => /^(typo|newEquip|newCust)$/.test(d.choice))
+      .concat(Object.keys(call.__adds || {}).map(k => Object.assign({ choice: 'add' }, call.__adds[k])));
+    list.forEach(d => { if (d.applied) return; const r = recs[d.id]; if (!r) return;
+      let nv = String(d.entered == null ? '' : d.entered); const fv = String(d.file == null ? '' : d.file);
+      if (d.choice === 'add' && d.rule === 'add' && fv && !/^Phone \d+$/.test(r.col) && nv.indexOf(fv) >= 0) nv = nv.replace(fv, '').replace(/^[\s\u00b7,;]+|[\s\u00b7,;]+$/g, '');   // only the new part is added
+      const o = { key: d.id, tab: r.tab, record: r.id, col: r.col, old: fv, new: nv, reason: REASON[d.choice], choice: d.choice, replace: d.choice === 'add' && d.rule !== 'add' };
+      if (d.choice === 'newEquip') { o.newId = 'EQ-' + String(V.id || '').replace(/^V-/, '') + '-' + String(r.slot || 'piece').replace(/[^A-Za-z0-9]/g, ''); o.piece = {};
+        FCTL.forEach(F => { const r2 = recs[F.id]; if (r2 && r2.tab === 'Equipment' && r2.id === r.id && F.prefill === 'yes') o.piece[r2.col] = String(call[F.id] == null ? '' : call[F.id]); }); }
+      out.push(o); });
+    return out;
+  }
+  function newPlaceOf() {   // 0.28.0: a phone customer (PH-...) or a call with no place: the Places row the door makes (Customer + Address needed, CT-3)
+    const f = call.__file || {}; if (f.place || /^P-/.test(call.__placeId || '')) return null; const cols = {};
+    FCTL.forEach(F => { if (F.saveTab === 'Places' && F.saveCols[0] && String(call[F.id] == null ? '' : call[F.id]).trim()) cols[F.saveCols[0]] = String(call[F.id]); });
+    return cols['Customer'] && cols['Address'] ? { from: call.__placeId || '', cols } : null;
+  }
+  function settleReply(vid, r) {   // 0.28.0: what the door did with each change
+    if (!call.__visit || call.__visit.id !== vid || !r) return; let touched = false;
+    if (r.placeId && call.__placeId !== r.placeId) { call.__placeId = r.placeId; touched = true; }
+    const f = call.__file || {};
+    (r.changes || []).forEach(c => { const d = (call.__diffs || {})[c.key] || (call.__adds || {})[c.key]; if (!d) return; touched = true;
+      if (c.status === 'applied' || c.status === 'already') { d.applied = true; d.conflict = '';
+        if (f.values) f.values[c.key] = String(d.entered);
+        if (c.newId && f.records) { const r0 = f.records[c.key]; if (r0) { const oldId = r0.id; Object.keys(f.records).forEach(k => { const r2 = f.records[k]; if (r2.tab === 'Equipment' && r2.id === oldId) { r2.id = c.newId; if (f.values && call[k] != null) f.values[k] = String(call[k]); if (f.spec) delete f.spec[k]; } });
+          if (f.pieces && r0.slot) f.pieces[r0.slot] = c.newId; } }
+        if (call.__adds && call.__adds[c.key] === d) delete call.__adds[c.key]; else if (call.__diffs) delete call.__diffs[c.key]; }
+      else if (c.status === 'changed') { d.choice = 'open'; d.conflict = 'The sheet changed meanwhile: it now says "' + c.now + '"'; d.file = String(c.now); if (f.values) f.values[c.key] = String(c.now); }
+      else if (c.status === 'missing') { d.applied = true; d.missing = true; } });
+    if (touched) { lsSet(K.call, call); try { paintDiffs(); paintSpec(); } catch (e) {} }
+  }
   window.__proofCompare = { judge, kindOf: id => kindOf((FCTL || []).find(x => x.id === id) || {}), diffs: () => call.__diffs || {}, adds: () => call.__adds || {} };   // for the tests only
 
   // ---------- Round C7b (0.25.0, Prompts no. 159): the Visits saver. One Visits row per call + system + tech, through the test door
@@ -11047,7 +11091,7 @@ body.light-theme .proof-box{color:#0f172a}
   // (the saved store, so a closed page keeps it): the newest copy per Visit Id, sent in order, retried on signal / visible / every 30 s.
   // Saves: every 30 s when changed, Copy report (Status Done, kept Done), New (before clearing), page hidden / closed, a tap on the chip.
   // The chip (Slot save-chip): Saving… / Saved hh:mm:ss / Waiting for signal (N) / Not saved: why / Saving off. Never a pop-up.
-  const RATING_HEAD = { 'RLA': 'Rated RLA', 'ODF FLA': 'Rated ODF FLA', 'IDF FLA': 'Rated IDF FLA', 'Herm cap': 'Herm cap rated', 'ODF cap': 'ODF cap rated', 'IDF cap': 'IDF cap rated', 'Target SC': 'Target SC', 'Filter size': 'Rated filter size' };
+  const RATING_HEAD = { 'RLA': 'Rated RLA', 'ODF FLA': 'Rated ODF FLA', 'IDF FLA': 'Rated IDF FLA', 'Herm cap': 'Herm cap rated', 'ODF cap': 'ODF cap rated', 'IDF cap': 'IDF cap rated', 'Target SC': 'Target SC', 'Filter size': 'Rated filter size', 'LRA': 'Rated LRA', 'ODF HP': 'Rated ODF HP', 'Max fuse': 'Max fuse', 'Max breaker': 'Max breaker' };   // the last 4: 0.28.0 (CT-26 tag)
   const VISIT_FIXED = ['Visit Id', 'Call token', 'Date', 'Time', 'Tech', 'Call type', 'Template', 'Place Id', 'System Id', 'System label', 'Status', 'Team tag', 'Merged into', 'Revision of', 'Follow-up', 'Area temp', 'Lat', 'Lng', 'Created', 'Last saved'];
   const K_OUTBOX = 'proof-containers.outbox.v1', K_SAVED = 'proof-containers.visitSaved.v1';
   const rand = (n, abc) => { abc = abc || 'ABCDEFGHJKLMNPQRSTUVWXYZ'; let t = ''; const a = new Uint32Array(n); try { crypto.getRandomValues(a); } catch (e) { for (let i = 0; i < n; i++) a[i] = Math.floor(Math.random() * 1e9); } for (let i = 0; i < n; i++) t += abc[a[i] % abc.length]; return t; };
@@ -11074,7 +11118,8 @@ body.light-theme .proof-box{color:#0f172a}
     const spec = file.spec || {}, seen = {};   // ratings: one column each, from the file snapshot (never typed)
     Object.keys(spec).forEach(fid => { const cols = (spec[fid] && spec[fid].cols) || {}; Object.keys(cols).forEach(c => { if (seen[c]) return; seen[c] = 1;
       values.push({ kind: 'rating', id: c, col: RATING_HEAD[c] || ('Rated ' + c), v: valText(cols[c]), num: c !== 'Filter size' }); }); });
-    return { op: 'saveVisit', visitId: V.id, fixed, values, changes: fileChanges() };   // changes: applied to the file by test-door-2 (C7c-2); test-door-1 ignores them
+    const np = newPlaceOf(); const body = { op: 'saveVisit', visitId: V.id, fixed, values, changes: fileChanges() }; if (np) body.newPlace = np;   // changes + newPlace: test-door-2 (C7c-2)
+    return body;
   }
   function saveCall(why) {   // queue the call when it changed since its last queued copy; then send
     if (!savingOn() || TAB.passive) return;
@@ -11099,6 +11144,7 @@ body.light-theme .proof-box{color:#0f172a}
           r = await withTimeout(fetch(url, { method: 'POST', keepalive: !!keep, headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(b) }).then(a => a.json()), 20000);
         } catch (e) { const o2 = outbox(); if (o2[0]) delete o2[0].inFlight; lsSet(K_OUTBOX, o2); saveSt = { st: 'wait', why: '', at: saveSt.at, missing: saveSt.missing }; return; }
         const o3 = outbox().filter(y => y.cid !== x.cid); lsSet(K_OUTBOX, o3);
+        if (r && r.ok) try { settleReply(x.vid, r); } catch (e) {}
         if (r && r.ok) saveSt = { st: 'saved', why: '', at: String(r.at || '').slice(-8) || hms(new Date()), row: r.row, missing: r.missing || [] };
         else { saveSt = { st: 'error', why: String(r && r.error || 'no answer'), at: '', missing: [] }; const l = lsGet(K_SAVED, {}) || {}; delete l[x.vid]; lsSet(K_SAVED, l); }
       }
@@ -11115,7 +11161,7 @@ body.light-theme .proof-box{color:#0f172a}
   }
   function paintChip() { const t = chipText(), k = !scriptUrl() ? 'off' : saveSt.st === 'error' ? 'err' : outbox().length && !sending ? 'wait' : saveSt.st;
     document.querySelectorAll('#viewport-canvas-frame .proof-savechip').forEach(c => { if (c.textContent !== t) c.textContent = t; c.setAttribute('data-st', k || ''); }); }
-  const visitNote = () => !savingOn() ? '' : fileChanges().filter(c => c.choice !== 'add').length ? 'File changes on this call (' + fileChanges().filter(c => c.choice !== 'add').length + ') are kept with the call; Places / Equipment change in stage 2 (C7c-2).' : !scriptUrl() ? 'Saving to the sheet is off (no script address)' : saveSt.missing && saveSt.missing.length ? 'The Visits tab has no column for: ' + saveSt.missing.join(', ') : '';
+  const visitNote = () => !savingOn() ? '' : !scriptUrl() ? 'Saving to the sheet is off (no script address)' : saveSt.missing && saveSt.missing.length ? 'The Visits tab has no column for: ' + saveSt.missing.join(', ') : '';
   window.EngineSlots['save-chip'] = { render(p) { return '<div class="proof-cell proof-savechip" role="button" tabindex="0" style="font-size:' + Math.min(11, p.fontSize || 10) + 'px">' + esc(chipText()) + '</div>'; } };
   document.addEventListener('click', e => { const c = e.target && e.target.closest && e.target.closest('.proof-savechip'); if (!c || !isLiveInteraction) return; e.stopPropagation(); saveCall('tap'); flushOutbox(); }, true);
   setInterval(() => { try { saveCall('timer'); flushOutbox(); } catch (e) {} }, 30000);
