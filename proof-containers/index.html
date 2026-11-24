@@ -760,6 +760,7 @@ body:not(.proof-ready) #reopen-inspector-fab{display:none!important}
 #viewport-canvas-frame .proof-savechip[data-st=wait],#viewport-canvas-frame .proof-savechip[data-st=saving]{color:#fcd34d}
 #viewport-canvas-frame .proof-savechip[data-st=err]{color:#fca5a5}
 #viewport-canvas-frame .proof-savechip[data-st=off]{color:#94a3b8;font-weight:400}
+#proof-missing{display:block;width:100%;box-sizing:border-box;padding:6px 12px;margin:0;border:0;border-bottom:1px solid #f59e0b;border-radius:6px;background:#1f1406;color:#fbbf24;font:600 13px system-ui,sans-serif}
 #proof-nocust{position:sticky;z-index:30;display:block;width:100%;box-sizing:border-box;text-align:left;padding:6px 12px;margin:0;border:0;border-bottom:1px solid #f59e0b;border-radius:6px;background:#1f1406;color:#fbbf24;font:600 13px system-ui,sans-serif}
 #proof-nocust b{color:#22d3ee;text-decoration:underline}
 #proof-tabcover{position:fixed;inset:0;z-index:200;background:rgba(2,6,23,.92);display:flex;align-items:center;justify-content:center;font:16px system-ui,sans-serif;color:#e2e8f0}
@@ -3687,7 +3688,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.26.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.26.1", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3697,7 +3698,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.26.0', stamp: '2026-11-23 17:42:04', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.26.1', stamp: '2026-11-24 00:36:50', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8374,7 +8375,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.26.0';
+  const PROOF_VERSION = '0.26.1';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8492,6 +8493,18 @@ body.light-theme .proof-box{color:#0f172a}
     return hf.some(f => f.find === 'name' && String(call[f.id] == null ? '' : call[f.id]).trim()); }
   let prevCall = null;   // yes: the call New replaced, put back by Cancel on Find until a customer is picked
   // remind / yes: after New, Entry shows 'No customer yet · Find' pinned under the top rows until the call has a customer
+  let MISSING = [];   // 0.26.1 (no. 163): Lines refused while Items sat on them: real Entry lines are missing, said at the top of Entry
+  function paintMissing() {
+    let el = document.getElementById('proof-missing'); const show = MISSING.length && currentView === 'entry';
+    if (!show) { if (el) el.style.display = 'none'; return; }
+    if (!el) { el = document.createElement('div'); el.id = 'proof-missing'; }
+    const t = 'Some lines are missing: ' + MISSING.slice(0, 4).map(m => m.line + ' (' + m.why + ')').join('; ') + (MISSING.length > 4 ? '; and ' + (MISSING.length - 4) + ' more' : '') + '. See the notes at the bottom.';
+    if (el.textContent !== t) el.textContent = t;
+    const frame = document.getElementById('viewport-canvas-frame'); if (!frame) return; let after = null;
+    Array.from(frame.querySelectorAll('.grid-row-band.section-band-frame')).forEach(b => { if (b.classList.contains('row-sticky') && b.offsetParent) after = b; });
+    if (after && el.previousElementSibling !== after) after.insertAdjacentElement('afterend', el); else if (!after && el.parentElement !== frame) frame.prepend(el);
+    el.style.display = '';
+  }
   function paintNoCust() {
     let el = document.getElementById('proof-nocust');
     // 0.22.4 (no. 152, fix 2): typed text only hides the line (empty the box and it is back); only PICKING a customer (a Find result, or
@@ -9340,7 +9353,7 @@ body.light-theme .proof-box{color:#0f172a}
   let trayPinned = false;
   try { const tt = toggleTray; toggleTray = function () { const sc = document.getElementById('viewport-outer-scroller'); const wasPinned = trayPinned; trayPinned = !document.body.classList.contains('proof-tray-open') && !!(sc && sc.scrollTop > 4);
     if (trayPinned || wasPinned) keepPlace(() => tt.apply(this, arguments)); else tt.apply(this, arguments); }; } catch (e) {}
-  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; try { closeWheel(); closeAsk(); closePick(); } catch (e) {}   /* 0.12.2 (R6) */ try { applyEquip(); } catch (e) {} /* C4b */ const r = rc.apply(this, arguments); try { decorate(); } catch (e) {} try { paintFolds(); } catch (e) {} try { paintInc(); calcCells().forEach(paintCalcBox); paintCm(); } catch (e) {} try { paintClamp(); fitBoxLines(); syncMirrors(); pinTray(); } catch (e) {} /* 0.22.2 */ try { paintDebug(); } catch (e) {} /* 0.22.4 */ try { paintEmptyTa(); } catch (e) {} /* 0.23.0 */ try { paintSpec(); } catch (e) {} /* C7a */ try { paintNoCust(); } catch (e) {} /* 0.22.3 */ return r; }; }
+  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; try { closeWheel(); closeAsk(); closePick(); } catch (e) {}   /* 0.12.2 (R6) */ try { applyEquip(); } catch (e) {} /* C4b */ const r = rc.apply(this, arguments); try { decorate(); } catch (e) {} try { paintFolds(); } catch (e) {} try { paintInc(); calcCells().forEach(paintCalcBox); paintCm(); } catch (e) {} try { paintClamp(); fitBoxLines(); syncMirrors(); pinTray(); } catch (e) {} /* 0.22.2 */ try { paintDebug(); } catch (e) {} /* 0.22.4 */ try { paintEmptyTa(); } catch (e) {} /* 0.23.0 */ try { paintSpec(); } catch (e) {} /* C7a */ try { paintNoCust(); } catch (e) {} /* 0.22.3 */ try { paintMissing(); } catch (e) {} /* 0.26.1 */ return r; }; }
 
   document.addEventListener('input', e => {
     const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b) return;
@@ -9744,7 +9757,7 @@ body.light-theme .proof-box{color:#0f172a}
   function bundleRows(structure, items, opt) {
     opt = opt || {};
     const out = [], lines = {}, order = [], firstOfSection = {}, firstOfColumn = {}, colIndex = {}, lineCount = {};
-    const g = g2;
+    const g = g2, missing = {};   // 0.26.1: refused Lines that had Items on them (shown in amber at the top of Entry)
     const okNum = (v, lo, hi) => v === '' || (isFinite(Number(v)) && Number(v) >= lo && Number(v) <= hi);
     structure.forEach((r, i) => {
       const where = 'Structure row ' + (i + 2), why = formulaErrors(r);
@@ -9795,7 +9808,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (!why.length) {
         if (!id) why.push('no Id'); else if (ids[id]) why.push('the Id "' + id + '" is already used on ' + ids[id]);
         if (!L) why.push('unknown Line "' + ln + '" (no such Line name on Structure)');
-        else if (L.bad) why.push('its Line "' + ln + '" was refused (' + L.bad + ')');
+        else if (L.bad) { why.push('its Line "' + ln + '" was refused (' + L.bad + ')'); missing[ln] = L.bad; }
         else if (!(/^\d+$/.test(cell) && Number(cell) >= 1)) why.push('Cell "' + cell + '" must be a whole number from 1');
         else if (Number(cell) > L.cells) why.push('Cell ' + cell + ' is outside line "' + ln + '" (it has ' + L.cells + ' cells)');
         if (sizeBad(g(r, 'Label size'), SIZE_LO, SIZE_HI)) why.push('Label size "' + g(r, 'Label size') + '" must be a number from ' + SIZE_LO + ' to ' + SIZE_HI);
@@ -9909,6 +9922,7 @@ body.light-theme .proof-box{color:#0f172a}
         out.push(o);
       }
     });
+    out._missing = Object.keys(missing).map(k => ({ line: k, why: missing[k] }));   // 0.26.1
     return out;
   }
   // round B1: read the four tabs together (all or nothing; Profile sizes is optional). Fallbacks: Round A's two tabs, then the old
@@ -10215,18 +10229,25 @@ body.light-theme .proof-box{color:#0f172a}
       // cells, matched to the row Google did send (every sent cell equal). About log2(rows) small reads per hidden cell.
       const sameRow = (k, lab) => g.disp[k].every((v, i) => v == null || toks(lab[i]).join(' ') === toks(v).join(' '));
       const labs = async (a, z, n) => { const tb = await gvizCall(tab, 'headers=' + n + '&range=' + a + ':' + z, 5000); if (tb.rows && tb.rows.length) throw new Error('rows'); return tb.cols.map(c => String(c.label || '')); };
-      async function locate(f) {
-        let a = f.rows[0] + 2, z = f.rows[f.rows.length - 1] + 2 + blank;
-        while (z > a) { const m = Math.floor((a + z) / 2), L1 = await labs(a, m, m - a + 1); if (toks(L1[f.col]).join(' ').indexOf(f.text) >= 0) z = m; else a = m + 1; }
-        const L2 = (await labs(a, a, 1)).map(x => x.trim()); if (toks(L2[f.col]).join(' ') !== f.text) return null;
-        const k = f.rows.find(j => sameRow(j, L2)); return k == null ? null : { k, r: a, v: L2[f.col] };
+      // 0.26.1 (no. 163): a gap can hold SEVERAL hidden cells (Structure Cells '3' on rows 16 to 22): the gap's rows are halved until each
+      // part with text is one row; each such row is then matched to the row Google did send (every sent cell equal)
+      async function locateAll(f) {
+        const got = [];
+        async function walk(a, z) { const L1 = await labs(a, z, z - a + 1), t = toks(L1[f.col]).join(' '); if (!t) return;
+          if (a === z) { const L2 = L1.map(x => x.trim()), k = f.rows.find(j => sameRow(j, L2)); got.push(k == null ? { r: a, v: L2[f.col], lost: true } : { k, r: a, v: L2[f.col] }); return; }
+          const m = Math.floor((a + z) / 2); await walk(a, m); await walk(m + 1, z); }
+        await walk(f.rows[0] + 2, f.rows[f.rows.length - 1] + 2 + blank);
+        return got;
       }
       await Promise.all(h.found.map(async f => {
-        let got = null; try { got = await locate(f); } catch (e) { got = null; }
-        if (!got) { HIDDEN.lost++; const a = f.rows[0] + 2, z = f.rows[f.rows.length - 1] + 2 + blank;
+        let got = null; try { got = await locateAll(f); } catch (e) { got = null; }
+        const a = f.rows[0] + 2, z = f.rows[f.rows.length - 1] + 2 + blank;
+        if (got) got = got.filter(x => x.k != null);   // a row past the gap (the blank-row allowance) can hold a cell Google DID send: not ours
+        if (!got || !got.length || toks(got.map(x => x.v).join(' ')).join(' ') !== toks(f.text).join(' ')) { HIDDEN.lost++;
           notes.push(tab + ', ' + f.label + ', ' + (a === z ? 'row ' + a : 'rows ' + a + ' to ' + z) + ': Google hid text here ("' + f.text + '"); it is NOT used. Retype it as a plain number (or tap Reload).'); return; }
-        const r = g.rows[got.k]; if (!r) return; r[f.label] = got.v; if (r._t) delete r._t[f.label]; g.disp[got.k][f.col] = got.v; HIDDEN.fixed++;
-        notes.push(tab + ' row ' + got.r + ', ' + f.label + ': Google sends this cell empty (the text "' + got.v + '" in a column of numbers, or a number among words); read anyway. Tip: retype it so the column is one kind.');
+        got.forEach(x => { if (x.lost || x.k == null) { HIDDEN.lost++; notes.push(tab + ' row ' + x.r + ', ' + f.label + ': Google hid the text "' + x.v + '" here; it is NOT used. Retype it so the column is one kind.'); return; }
+          const r = g.rows[x.k]; if (!r) return; r[f.label] = x.v; if (r._t) delete r._t[f.label]; g.disp[x.k][f.col] = x.v; HIDDEN.fixed++;
+          notes.push(tab + ' row ' + x.r + ', ' + f.label + ': Google sends this cell empty (the text "' + x.v + '" in a column of numbers, or a number among words); read anyway. Tip: retype it so the column is one kind.'); });
       }));
     }));
     if (failed.length) notes.push('Not checked for text Google hides: ' + failed.join(', ') + '. A text cell in a column of numbers (or a number among words) there may be missing; tap Reload to try again.');
@@ -10262,6 +10283,7 @@ body.light-theme .proof-box{color:#0f172a}
     try {
       const g = await gviz(tab);
       if (!isRightTab(g.labels, tab)) throw Object.assign(new Error('missing'), { missing: true });
+      try { await hiddenCheck([[tab, g]], notes); } catch (e) {}   // 0.26.1 (no. 163): the old Layout tabs get the hidden-text check too (every tab the page reads)
       if (!build(g.rows).used) throw Object.assign(new Error('empty'), { missing: true });
       const known = COLS.concat(Object.keys(COLPROP), ['Icon', 'Press style', 'Min size', 'Max size', 'Column width', 'Freeze', 'Line height']);   // round 4: say so when the tab is newer than this page
       const unknown = g.labels.filter(l => l && known.indexOf(l) < 0 && !/^Layout /i.test(l));
@@ -10366,6 +10388,7 @@ body.light-theme .proof-box{color:#0f172a}
     COMMENTS = L.rows._comments || null; try { applyDefaults(); } catch (e) {}   // C3b
     SETTINGS = L.rows._settings || {};   // 0.22.3
     ONFILE = L.rows._places || null; FCTL = Array.isArray(L.rows._fctl) ? L.rows._fctl : [];   // C7a
+    MISSING = Array.isArray(L.rows._missing) ? L.rows._missing : [];   // 0.26.1
     try { stampDate(); } catch (e) {}   // 0.26.0 (C1)
     SITES = Array.isArray(L.rows._sites) ? L.rows._sites : null; houseFields = Array.isArray(L.rows._house) ? L.rows._house : null;   // 0.13.1 (R10, R6): from the copy that won
     try { undoStack.length = 0; redoStack.length = 0; recordHistorySnapshot(); } catch (e) {}
