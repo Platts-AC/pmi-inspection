@@ -758,6 +758,13 @@ body:not(.proof-ready) #reopen-inspector-fab{display:none!important}
 #viewport-canvas-frame .proof-box.proof-namebox:focus{background:#0b1220;border-color:#334155;font-style:normal}
 #viewport-canvas-frame .grid-split-partition.proof-diffline{background:rgba(245,158,11,.16)!important;box-shadow:inset 0 -2px 0 #f59e0b}
 #viewport-canvas-frame .proof-checkcount{display:flex;align-items:center;justify-content:center;height:100%;color:#fbbf24;font-weight:700;cursor:pointer;text-align:center;line-height:1.1}
+#viewport-canvas-frame .proof-followline{display:flex;align-items:center;height:100%;color:#fbbf24;font-weight:600;cursor:pointer;padding:0 10px}
+#proof-follownote{display:block;width:100%;box-sizing:border-box;padding:6px 12px;border-bottom:1px solid #f59e0b;border-radius:6px;background:#1f1406;color:#fbbf24;font:600 13px system-ui,sans-serif;cursor:pointer}
+#proof-follow{position:fixed;inset:0;z-index:2147483001;background:#0b1220;color:#e5e7eb;font:15px system-ui,sans-serif;overflow:auto;padding:14px}
+#proof-follow .pf-title{font-weight:700;color:#fbbf24;margin-bottom:10px;font-size:17px}
+#proof-follow .pf-item{display:block;width:100%;text-align:left;margin:0 0 8px;padding:10px 12px;border:1px solid #f59e0b;border-radius:10px;background:#1f2937;color:#f8fafc;font:14px system-ui,sans-serif;line-height:1.35}
+#proof-follow .pf-none{color:#94a3b8;margin:10px 0}
+#proof-follow .pf-close{width:100%;min-height:44px;border:1px solid #334155;border-radius:10px;background:transparent;color:#cbd5e1;font:600 15px system-ui,sans-serif}
 #proof-diff{position:fixed;left:0;right:0;bottom:0;z-index:2147483000;background:#111827;border-top:2px solid #f59e0b;border-radius:14px 14px 0 0;padding:12px 14px 16px;color:#e5e7eb;font:15px system-ui,sans-serif;box-shadow:0 -8px 24px rgba(0,0,0,.5);max-height:70vh;overflow:auto}
 #proof-diff .pd-title{font-weight:700;color:#fbbf24;margin-bottom:8px}
 #proof-diff .pd-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -3700,7 +3707,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.28.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.29.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3710,7 +3717,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.28.0', stamp: '2026-11-24 07:01:40', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.29.0', stamp: '2026-11-24 13:41:46', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8387,7 +8394,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.28.0';
+  const PROOF_VERSION = '0.29.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8406,7 +8413,7 @@ body.light-theme .proof-box{color:#0f172a}
   const findFillOf = p => p.proofField ? (p.proofField.find || '') : (FIND_BOX_FILL[p.proofKey] || FIND_FILL_FALLBACK[p.proofKey] || '');
   const TYPES = { button: 1, text: 1, logo: 1, badge: 1 };
   const TOOL_ACTIONS = { 'reload-layout': 1, 'proof-save-tweaks': 1, 'proof-clear-tweaks': 1, 'proof-profile': 1, 'toggle-tray': 1, 'proof-adjust': 1, 'refresh-page': 1 };
-  const ACTIONS = Object.assign({ 'proof-badge': 1, 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1, 'new-call': 1, 'reveal-hidden': 1, 'start-new-customer': 1, 'save-new-customer': 1, 'open-call-type': 1, 'call-type-back': 1, 'copy-report': 1 }, TOOL_ACTIONS);   // C2b: copy-report   // 0.14.1: call-type-back   // C1b: open-call-type   // C1a: Blueprint P8 (Stage C)
+  const ACTIONS = Object.assign({ 'proof-badge': 1, 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1, 'new-call': 1, 'reveal-hidden': 1, 'start-new-customer': 1, 'save-new-customer': 1, 'open-call-type': 1, 'call-type-back': 1, 'copy-report': 1, 'open-followups': 1 },   /* 0.29.0: open-followups */ TOOL_ACTIONS);   // C2b: copy-report   // 0.14.1: call-type-back   // C1b: open-call-type   // C1a: Blueprint P8 (Stage C)
   const TPL_NAME = /^[A-Za-z0-9][A-Za-z0-9 _.-]{0,29}$/, TPL_ACTION = /^set-template:([A-Za-z0-9][A-Za-z0-9 _.-]{0,29})?$/;   // round B2: set-template:<name> (set-template: alone = no template)
   // What a tweak can change (DESIGN.md). Each rule turns a value into its normal text form, or returns an error.
   const PLACES = { 'top-left': ['left', 'top'], 'top-center': ['center', 'top'], 'top-right': ['right', 'top'], 'middle-left': ['left', 'middle'], 'middle': ['center', 'middle'],
@@ -9541,7 +9548,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (g('Align') && !/^(left|center|right)$/i.test(g('Align'))) why.push('Align "' + g('Align') + '" must be left, center or right');   // 0.12.1 (BT-48): no silent center
       if (!TYPES[type]) why.push('unknown Type "' + type + '"');
       const fd = r._fieldDef || null;   // round B1: the Field this piece belongs to (made by bundleRows from the Fields tab)
-      if (slot && slot !== 'box' && slot !== 'results' && slot !== 'call-types' && slot !== 'report-body' && slot !== 'view-line' && slot !== 'save-chip' && slot !== 'check-count' && !((slot === 'unit' || slot === 'report-value' || FIELD_SLOTS[slot]) && fd)) why.push('unknown Slot "' + slot + '"');
+      if (slot && slot !== 'box' && slot !== 'results' && slot !== 'call-types' && slot !== 'report-body' && slot !== 'view-line' && slot !== 'save-chip' && slot !== 'check-count' && slot !== 'follow-line' && !((slot === 'unit' || slot === 'report-value' || FIELD_SLOTS[slot]) && fd)) why.push('unknown Slot "' + slot + '"');
       if (slot === 'box' && !fd && !FIELD_FALLBACK[content] && !FIND_KEYS[content]) why.push('unknown field "' + content + '"');
       if (type === 'button') { const a = content; const ok = ACTIONS[a] || (/^set-view:/.test(a) && screens[a.slice(9)]) || /^set-show:(all|template|values)$/.test(a) || TPL_ACTION.test(a); /* round B2 actions */ if (!ok) why.push('unknown action "' + a + '" (this page may be out of date: tap Reload, or refresh the browser)'); }
       if (!VIS_RULES[vis]) why.push('Visible when must be always, never, when-filled or reserved');   // round B2: when-filled, reserved (Blueprint P9)
@@ -9586,7 +9593,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (fd) { cell.proofField = fd; if (r._join) cell.proofJoin = r._join; if (r._label) cell.proofLabel = r._label; }
       if (slot === 'box') { cell.slot = 'box'; cell.proofKey = fd && draftScreen && screen === draftScreen ? DRAFT + fd.id : content; cell.label = ''; }   // C1a: a draft box
       else if (slot === 'unit' || slot === 'report-value' || FIELD_SLOTS[slot]) { cell.slot = slot; cell.proofKey = content; cell.label = ''; }   // C4b: f-plus, f-menu, f-equip
-      else if (slot === 'results' || slot === 'call-types' || slot === 'report-body' || slot === 'view-line' || slot === 'save-chip' || slot === 'check-count') { cell.slot = slot; cell.label = ''; }   // 0.22.3: view-line   // C2b: report-body   // C1b: call-types (a list, like results)
+      else if (slot === 'results' || slot === 'call-types' || slot === 'report-body' || slot === 'view-line' || slot === 'save-chip' || slot === 'check-count' || slot === 'follow-line') { cell.slot = slot; cell.label = ''; }   // 0.22.3: view-line   // C2b: report-body   // C1b: call-types (a list, like results)
       else if (type === 'button') { cell.label = g('Label') || content;
         // round 9 migration: on older tabs New (Id hdr.newcall) only opened Find (set-view:find); it now clears the call first
         cell.clickAction = (id === 'hdr.newcall' && content === 'set-view:find') ? 'new-call' : content; }
@@ -10998,6 +11005,7 @@ body.light-theme .proof-box{color:#0f172a}
     if (j.v !== 'diff') { delete call.__diffs[id]; return; }
     const d = call.__diffs[id]; if (d && d.entered === ev) return;
     call.__diffs[id] = { id, name: F.name, file: String(fv), entered: ev, rule: j.rule, hint: j.hint, choice: 'open', at: Date.now(), tab: F.saveTab, cols: F.saveCols };
+    if (call.__followIds && call.__followIds[id]) call.__diffs[id].followup = true;   // 0.29.0: retyped in a reopened follow-up = still that follow-up
   }
   const openDiffs = () => Object.keys(call.__diffs || {}).map(k => call.__diffs[k]).filter(d => d.choice === 'open' || d.choice === 'later');
   function paintDiffs() {   // amber on every cell of a line whose value is still open (open / later)
@@ -11015,7 +11023,7 @@ body.light-theme .proof-box{color:#0f172a}
     const house = d.tab === 'Places', btn = (c, t, cls) => '<button type="button" data-choice="' + c + '"' + (cls ? ' class="' + cls + '"' : '') + '>' + t + '</button>';
     el.innerHTML = '<div class="pd-title">' + esc(d.name) + ': different from file</div><div class="pd-cols"><div><div class="pd-h">ON FILE</div><div class="pd-v pd-file">' + esc(d.file) + '</div></div><div><div class="pd-h">YOU ENTERED</div><div class="pd-v pd-entered">' + esc(d.entered) + '</div></div></div>' +
       (d.hint ? '<div class="pd-hint">' + esc(d.hint) + '</div>' : '') + (d.conflict ? '<div class="pd-hint pd-conflict">' + esc(d.conflict) + '</div>' : '') + '<div class="pd-photo-view"></div>' +
-      '<div class="pd-btns">' + btn('typo', 'Typo on file') + btn(house ? 'newCust' : 'newEquip', house ? 'New customer' : 'New equipment') + (mode === 'close' ? btn('leave', 'Leave as is') + btn('follow', 'Follow up') : btn('later', 'Later')) +
+      '<div class="pd-btns">' + btn('typo', 'Typo on file') + btn(house ? 'newCust' : 'newEquip', house ? 'New customer' : 'New equipment') + (mode === 'close' ? btn('leave', 'Leave as is') + btn('follow', 'Follow up') : (d.followup ? btn('leave', 'Leave as is') : '') + btn('later', 'Later')) +   /* 0.29.0: a reopened follow-up can be settled with Leave as is */
       '<label class="pd-photo">Photo<input type="file" accept="image/*" hidden></label>' + (mode === 'close' ? btn('back', 'Back', 'pd-back') : '') + '</div>';
     el.dataset.id = id; el.dataset.mode = mode; el.style.display = ''; cardFor = { id, mode, next };
     try { document.activeElement && document.activeElement.blur && document.activeElement.blur(); } catch (e) {}
@@ -11042,7 +11050,7 @@ body.light-theme .proof-box{color:#0f172a}
   { const copy0 = window.EngineActions['copy-report'], new0 = window.EngineActions['new-call'];
     window.EngineActions['copy-report'] = () => { if (openDiffs().length) { askAtClose(() => copy0()); return; } copy0(); };
     window.EngineActions['new-call'] = () => { if (openDiffs().length) { askAtClose(() => { newArmed = Date.now(); new0(); }); return; } new0(); }; }
-  const followText = () => Object.keys(call.__diffs || {}).map(k => call.__diffs[k]).filter(d => d.choice === 'follow').map(d => d.name + ': on file ' + d.file + ', entered ' + d.entered).join(' | ');
+  const followText = () => Object.keys(call.__diffs || {}).map(k => call.__diffs[k]).filter(d => d.choice === 'follow' || (d.followup && (d.choice === 'later' || d.choice === 'open'))).map(d => d.name + ': on file ' + d.file + ', entered ' + d.entered).join(' | ');   // 0.29.0: a reopened follow-up stays until settled
   const REASON = { typo: 'Correction', newEquip: 'New equipment', newCust: 'New customer', add: 'Added' };
   function ensureRecords() {   // 0.28.0: a call picked by 0.24.0 to 0.27.0 has no records yet: made from the place and the pieces it kept
     const f = call.__file; if (!f || f.records || !ONFILE || !f.place) return; const P = placeById(f.place); if (!P) return; const recs = {}, by = {};
@@ -11058,7 +11066,7 @@ body.light-theme .proof-box{color:#0f172a}
     list.forEach(d => { if (d.applied) return; const r = recs[d.id]; if (!r) return;
       let nv = String(d.entered == null ? '' : d.entered); const fv = String(d.file == null ? '' : d.file);
       if (d.choice === 'add' && d.rule === 'add' && fv && !/^Phone \d+$/.test(r.col) && nv.indexOf(fv) >= 0) nv = nv.replace(fv, '').replace(/^[\s\u00b7,;]+|[\s\u00b7,;]+$/g, '');   // only the new part is added
-      const o = { key: d.id, tab: r.tab, record: r.id, col: r.col, old: fv, new: nv, reason: REASON[d.choice], choice: d.choice, replace: d.choice === 'add' && d.rule !== 'add' };
+      const o = { key: d.id, tab: r.tab, record: r.id, col: r.col, old: fv, new: nv, reason: d.followup && d.choice !== 'add' ? 'Follow-up settled' : REASON[d.choice], choice: d.choice, replace: d.choice === 'add' && d.rule !== 'add' };   // 0.29.0: a settled follow-up
       if (d.choice === 'newEquip') { o.newId = 'EQ-' + String(V.id || '').replace(/^V-/, '') + '-' + String(r.slot || 'piece').replace(/[^A-Za-z0-9]/g, ''); o.piece = {};
         FCTL.forEach(F => { const r2 = recs[F.id]; if (r2 && r2.tab === 'Equipment' && r2.id === r.id && F.prefill === 'yes') o.piece[r2.col] = String(call[F.id] == null ? '' : call[F.id]); }); }
       out.push(o); });
@@ -11081,9 +11089,66 @@ body.light-theme .proof-box{color:#0f172a}
         if (call.__adds && call.__adds[c.key] === d) delete call.__adds[c.key]; else if (call.__diffs) delete call.__diffs[c.key]; }
       else if (c.status === 'changed') { d.choice = 'open'; d.conflict = 'The sheet changed meanwhile: it now says "' + c.now + '"'; d.file = String(c.now); if (f.values) f.values[c.key] = String(c.now); }
       else if (c.status === 'missing') { d.applied = true; d.missing = true; } });
-    if (touched) { lsSet(K.call, call); try { paintDiffs(); paintSpec(); } catch (e) {} }
+    if (touched) { lsSet(K.call, call); try { paintDiffs(); paintSpec(); syncFollow(); } catch (e) {} }
   }
   window.__proofCompare = { judge, kindOf: id => kindOf((FCTL || []).find(x => x.id === id) || {}), diffs: () => call.__diffs || {}, adds: () => call.__adds || {} };   // for the tests only
+
+  // ---------- Round C7c-3 (0.29.0, Prompts no. 164, stage 3): FOLLOW-UPS. A call closed with 'Follow up' answers stays on THIS phone in a
+  // list (key followups.v1: Visit Id, place, the open questions, the whole call and its view). Tools > Follow-ups and a line on Find open the
+  // list; a tap saves the call on screen (as New does), then brings the old call back WITH its own Visit Id, so its saves update the SAME Visits
+  // row (Status stays Done). Its questions show amber + 'N to check'; the card offers Typo on file / New equipment or New customer / Leave as is
+  // / Later; a file change is logged with Reason 'Follow-up settled'; when none is left the Follow-up cell is cleared and the call leaves the
+  // list. Picking a place that has an open follow-up shows an amber note on Entry before the call starts (the sheet's history comes in C7f).
+  const K_FOLLOW = 'proof-containers.followups.v1';
+  const followList = () => { const l = lsGet(K_FOLLOW, []); return Array.isArray(l) ? l : []; };
+  const followOf = c => Object.keys(c.__diffs || {}).map(k => c.__diffs[k]).filter(d => d.choice === 'follow' || d.followup);
+  function syncFollow() {   // keep this call's entry in the list up to date (added on 'Follow up', removed when settled)
+    if (!call.__visit) return; const vid = call.__visit.id, open = followOf(call).filter(d => d.choice === 'follow' || d.choice === 'later' || d.choice === 'open');
+    let l = followList().filter(x => x.vid !== vid);
+    if (open.length) { const f = call.__file || {}; l.unshift({ vid, place: f.place || call.__placeId || '', name: String(call['f:customer'] || '').trim() || (f.place || 'Call'), date: call.__visit.date || '',
+      qs: open.map(d => ({ id: d.id, name: d.name, file: d.file, entered: d.entered })), call: JSON.parse(JSON.stringify(call)), view: JSON.parse(JSON.stringify(callView)), at: Date.now() }); }
+    lsSet(K_FOLLOW, l.slice(0, 50)); paintFollow();
+  }
+  function paintFollow() { const n = followList().length, t = n ? n + ' open follow-up' + (n > 1 ? 's' : '') + ' · tap to see' : '';
+    document.querySelectorAll('#viewport-canvas-frame .proof-followline').forEach(e => { if (e.textContent !== t) e.textContent = t; }); }
+  window.EngineSlots['follow-line'] = { render(p) { return '<div class="proof-cell proof-followline" role="button" tabindex="0" style="font-size:' + (p.fontSize || 12) + 'px"></div>'; } };
+  function openFollowList() {
+    let el = document.getElementById('proof-follow'); if (!el) { el = document.createElement('div'); el.id = 'proof-follow'; document.body.appendChild(el); }
+    const l = followList();
+    el.innerHTML = '<div class="pf-title">Follow-ups on this phone</div>' + (l.length ? l.map((x, i) => '<button type="button" class="pf-item" data-i="' + i + '"><b>' + esc(x.name) + '</b> · ' + esc(x.date) + '<br>' +
+      x.qs.map(q => esc(q.name + ': on file ' + q.file + ', entered ' + q.entered)).join('<br>') + '</button>').join('') : '<div class="pf-none">No open follow-ups.</div>') + '<button type="button" class="pf-close">Close</button>';
+    el.style.display = '';
+  }
+  function closeFollowList() { const el = document.getElementById('proof-follow'); if (el) el.style.display = 'none'; }
+  function reopenFollow(x) {   // the call on screen is saved first (as New); the old call comes back with its own Visit Id = the same Visits row
+    const go = () => { try { saveCall('switch'); } catch (e) {}
+      call = JSON.parse(JSON.stringify(x.call)); call.__followIds = {}; followOf(call).forEach(d => { d.followup = true; call.__followIds[d.id] = 1; if (d.choice === 'follow') d.choice = 'later'; });
+      callView = Object.assign(VIEW_DEFAULT(), x.view || {}, { needCust: false }); lsSet(K.call, call); saveView(); try { applyFolds(engineState); } catch (e) {}
+      goView('entry'); say('Follow-up opened: ' + x.name + ' (same Visits row)', 'done'); try { paintDiffs(); } catch (e) {} };
+    if (openDiffs().length) askAtClose(go); else go();
+  }
+  window.EngineActions['open-followups'] = () => openFollowList();
+  document.addEventListener('click', e => {
+    const t = e.target; if (!t || !t.closest) return;
+    if (t.closest('.proof-followline') && isLiveInteraction) { e.stopPropagation(); if (followList().length) openFollowList(); return; }
+    const box = t.closest('#proof-follow'); if (!box) return; e.preventDefault(); e.stopPropagation();
+    if (t.closest('.pf-close')) { closeFollowList(); return; }
+    const it = t.closest('.pf-item'); if (it) { const x = followList()[Number(it.dataset.i)]; closeFollowList(); if (x) reopenFollow(x); }
+  }, true);
+  function followNote() {   // picking a place with an open follow-up: an amber note on Entry before the call starts
+    const f = call.__file || {}, here = f.place || call.__placeId || '', mine = call.__visit ? call.__visit.id : '';
+    const x = here && followList().find(y => y.place === here && y.vid !== mine);
+    let el = document.getElementById('proof-follownote');
+    if (!x || currentView !== 'entry') { if (el) el.style.display = 'none'; return; }
+    if (!el) { el = document.createElement('div'); el.id = 'proof-follownote'; el.setAttribute('role', 'button'); el.addEventListener('click', () => openFollowList()); }
+    const t = 'Open follow-up here (' + x.date + '): ' + x.qs.map(q => q.name + ': on file ' + q.file + ', entered ' + q.entered).join('; ') + '. Tap to see.';
+    if (el.textContent !== t) el.textContent = t;
+    const frame = document.getElementById('viewport-canvas-frame'); if (!frame) return; let after = null;
+    Array.from(frame.querySelectorAll('.grid-row-band.section-band-frame')).forEach(b => { if (b.classList.contains('row-sticky') && b.offsetParent) after = b; });
+    if (after && el.previousElementSibling !== after) after.insertAdjacentElement('afterend', el); else if (!after && el.parentElement !== frame) frame.prepend(el);
+    el.style.display = '';
+  }
+  window.__proofFollow = { list: followList };   // for the tests only
 
   // ---------- Round C7b (0.25.0, Prompts no. 159): the Visits saver. One Visits row per call + system + tech, through the test door
   // (test-script/Code.gs, op saveVisit). The phone makes the Visit Id (V-<date>-<6 letters>) and Call token; every save sends the whole row
@@ -11124,6 +11189,7 @@ body.light-theme .proof-box{color:#0f172a}
   function saveCall(why) {   // queue the call when it changed since its last queued copy; then send
     if (!savingOn() || TAB.passive) return;
     if (!call.__visit && !callHasContent()) return;
+    try { if (call.__visit) syncFollow(); } catch (e) {}   // 0.29.0 (C7c-3)
     if (!scriptUrl()) { saveSt = { st: 'off', why: '', at: '', missing: [] }; paintChip(); return; }
     const body = visitBody(), sig = JSON.stringify(body), last = lsGet(K_SAVED, {}) || {};
     if (last[body.visitId] === sig && !/^tap/.test(why)) { flushOutbox(); return; }
@@ -11295,7 +11361,7 @@ body.light-theme .proof-box{color:#0f172a}
   const partIdx = part => { const m = /handleSplitClick\((\d+), (\d+), (\d+), (\d+)/.exec(part.getAttribute('onclick') || ''); return m ? m.slice(1, 5).map(Number) : null; };
   let visBusy = false;
   function applyVis() {
-    try { paintViewLine(); paintChip(); paintDiffs(); } catch (e) {}   // 0.22.2 (F12); C7b: the save chip
+    try { paintViewLine(); paintChip(); paintDiffs(); paintFollow(); followNote(); } catch (e) {}   // 0.22.2 (F12); C7b: the save chip
     const frame = document.getElementById('viewport-canvas-frame'); if (!frame || visBusy) return;
     visBusy = true;
     try {
