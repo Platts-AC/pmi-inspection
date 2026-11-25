@@ -758,6 +758,7 @@ body:not(.proof-ready) #reopen-inspector-fab{display:none!important}
 #viewport-canvas-frame .proof-box.proof-namebox:focus{background:#0b1220;border-color:#334155;font-style:normal}
 #viewport-canvas-frame .grid-split-partition.proof-diffline{background:rgba(245,158,11,.16)!important;box-shadow:inset 0 -2px 0 #f59e0b}
 #viewport-canvas-frame .proof-checkcount{display:flex;align-items:center;justify-content:center;height:100%;color:#fbbf24;font-weight:700;cursor:pointer;text-align:center;line-height:1.1}
+#proof-badge .proof-door{color:inherit;display:inline-block;white-space:nowrap;font-size:.85em}#proof-badge .proof-door.old{color:#f59e0b;font-weight:700}#proof-badge .proof-door.wait{color:#94a3b8}
 #viewport-canvas-frame .proof-followline{display:flex;align-items:center;height:100%;color:#fbbf24;font-weight:600;cursor:pointer;padding:0 10px}
 #proof-follownote{display:block;width:100%;box-sizing:border-box;padding:6px 12px;border-bottom:1px solid #f59e0b;border-radius:6px;background:#1f1406;color:#fbbf24;font:600 13px system-ui,sans-serif;cursor:pointer}
 #proof-follow{position:fixed;inset:0;z-index:2147483001;background:#0b1220;color:#e5e7eb;font:15px system-ui,sans-serif;overflow:auto;padding:14px}
@@ -3707,7 +3708,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.29.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.30.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3717,7 +3718,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.29.0', stamp: '2026-11-24 13:41:46', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.30.0', stamp: '2026-11-24 22:07:35', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8394,7 +8395,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.29.0';
+  const PROOF_VERSION = '0.30.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8758,7 +8759,7 @@ body.light-theme .proof-box{color:#0f172a}
   let SITES = null;   // round C1a: the Sites tab (null = no tab: the built-in HOUSES)
   let houseFields = null;   // 0.13.1 (R6): the house-Scope Fields [{ id, find }] of the layout that won (null = old tabs)
   const phoneSites = () => { const a = lsGet(K.sites, []); return Array.isArray(a) ? a.filter(x => x && (x.name || x.address)) : []; };
-  const allSites = () => (ONFILE ? placesForFind() : (SITES || HOUSES)).concat(phoneSites().map(x => Object.assign({ onPhone: true }, x)));   // C7a: Places first; Sites the fallback
+  const allSites = () => (ONFILE ? placesForFind() : (SITES || HOUSES)).concat(phoneSites().filter(x => !(ONFILE && x.placeId && placeById(x.placeId))).map(x => Object.assign({ onPhone: true }, x)));   // 0.30.0 (R4): once the sheet has it, listed once   // C7a: Places first; Sites the fallback
   const PART_W = { address: 3, phone: 2, name: 1 }, PART_WORD = { address: 'Address', phone: 'Phone', name: 'Name' };
   function hasAll(text, typedText) {
     const have = []; words(text).forEach(w => { have.push(w); if (ABBR[w]) have.push(ABBR[w]); if (LONG[w]) have.push(LONG[w]); if (/^0+\d/.test(w)) have.push(w.replace(/^0+/, '')); });   // 0.26.0 (R6): '405' finds unit 0405
@@ -9395,7 +9396,7 @@ body.light-theme .proof-box{color:#0f172a}
     hf.forEach(f => { delete call[f.id]; }); delete call.__file;
     FCTL.forEach(F => { if (F.saveTab || (F.prefill && F.prefill !== 'no')) delete call[F.id]; }); delete call.__cap; delete call.__equip;   // 0.26.0 (R2): every pick starts from no file facts
     if (x.place) prefillPlace(x.place); else hf.forEach(f => { if (f.find && x[f.find]) call[f.id] = x[f.find]; });   // C7a: a place = the Fields tab's Pre-fill
-    call.__placeId = x.place ? x.place.id : (x.onPhone ? 'PH-' + x.id : (x.id || ''));   // C7b: the Visits row's Place Id (a phone-made customer: PH-<id>, given a Places row in C7c / C7e)
+    call.__placeId = x.place ? x.place.id : (x.onPhone ? (/^P-/.test(x.placeId || '') ? x.placeId : 'PH-' + x.id) : (x.id || ''));   // 0.30.0 (R4): a phone customer the sheet already has keeps its Place Id   // C7b: the Visits row's Place Id (a phone-made customer: PH-<id>, given a Places row in C7c / C7e)
     if (!x.place) eachCell(engineState, p => { if (p.slot !== 'box' || FIND_KEYS[p.proofKey] || isDraft(p.proofKey)) return; const ff = findFillOf(p); if (ff && x[ff] != null) call[p.proofField ? p.proofField.id : p.proofKey] = x[ff]; });
     if (extra) Object.keys(extra).forEach(k => { call[k] = extra[k]; });
     if (callView.needCust) { callView.needCust = false; saveView(); } prevCall = null;   // 0.22.4: a customer was picked
@@ -10094,6 +10095,18 @@ body.light-theme .proof-box{color:#0f172a}
     Object.keys(COMBINE).forEach(k => { const all = chain.slice().reverse().concat([P]).filter(x => x.cols[k]), seen = {}; const parts = all.filter(x => { const t = x.cols[k].trim(); if (seen[t]) return false; seen[t] = 1; return true; });
       if (parts.length) { c[k] = parts.map(x => x.cols[k].trim()).join(' \u00b7 '); from[k] = parts.map(x => x.id).join(', '); } });
     c.__from = from; return c; }
+  function ownOf(P, col) {   // 0.30.0 (R3a): a combined Access codes / Site notes = the building / site parts (inh) + this place's OWN text (own)
+    const inh = []; let up = P.parent && placeById(P.parent), guard = 0; while (up && guard++ < 5) { const t = String(up.cols[col] || '').trim(); if (t) inh.push(t); up = up.parent && placeById(up.parent); }
+    return { own: String(P.cols[col] || '').trim(), inh };
+  }
+  const alnum = t => String(t || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  function editDist(a, b) { const m = a.length, n = b.length; let prev = Array.from({ length: n + 1 }, (_, j) => j); for (let i = 1; i <= m; i++) { const cur = [i]; for (let j = 1; j <= n; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); prev = cur; } return prev[n]; }
+  function ownPartOf(r, typed) {   // 0.30.0 (R3a): from what is in the box, only the unit's own new text (the building / site parts, even retyped with a slip, never go to the unit row)
+    const like = (a, b) => { const x = alnum(a), y = alnum(b); return x === y || (x && y && editDist(x, y) <= Math.max(2, Math.floor(Math.max(x.length, y.length) / 4))); };
+    const inhParts = []; (r.inh || []).forEach(t => t.split(/\s*\u00b7\s*/).forEach(x => { if (x.trim()) inhParts.push(x.trim()); }));
+    const ownParts = String(r.own || '').split(/\s*\u00b7\s*/).map(x => x.trim()).filter(Boolean);
+    return String(typed || '').split(/\s*\u00b7\s*/).map(x => x.trim()).filter(x => x && !inhParts.some(y => like(x, y)) && !ownParts.some(y => alnum(y) === alnum(x))).join(' \u00b7 ');
+  }
   const phoneCols = c => Object.keys(c).filter(k => /^Phone \d+$/.test(k)).sort((a, b) => Number(a.slice(6)) - Number(b.slice(6)));   // 0.26.0 (R10): every 'Phone N' column on Places
   function placesForFind() {   // what Find lists: houses, buildings, units and specials (a site leads to its buildings, which carry its name)
     return ONFILE.list.filter(P => P.active && P.level !== 'site').map(P => { const c = placeCols(P), site = P.level === 'building' && P.parent && placeById(P.parent);
@@ -10121,7 +10134,7 @@ body.light-theme .proof-box{color:#0f172a}
     const pieces = {}; mine.forEach(pc => { if (pc.slot) pieces[pc.slot] = pc.id; });
     const records = {};   // 0.28.0 (C7c-2): where each Field's file value lives (the record a card choice changes); an inherited value (from the building / site) gets none
     FCTL.forEach(F => { if (!F.saveTab || !F.saveCols.length) return; const col = F.saveCols[0];
-      if (F.saveTab === 'Places') { const src = from[col]; if (!src || src === P.id || COMBINE[col]) records[F.id] = { tab: 'Places', id: P.id, col }; return; }
+      if (F.saveTab === 'Places') { const src = from[col]; if (!src || src === P.id || COMBINE[col]) records[F.id] = Object.assign({ tab: 'Places', id: P.id, col }, COMBINE[col] ? ownOf(P, col) : {}); return; }
       const pc = pieceFor(F, col); if (pc) records[F.id] = { tab: 'Equipment', id: pc.id, col, slot: pc.slot }; });
     call.__file = { place: P.id, placeLevel: P.level, system: s1, systems: sys.length, pieces, inherited, records, values: vals, spec, at: Date.now() };   // 0.26.0 (R5): Piece Ids per slot, the place level, where inherited values came from
     if (sys.length > 1) setTimeout(() => say(sys.length + ' systems on file; System 1 loaded.', 'info', 4000), 50);
@@ -10459,7 +10472,7 @@ body.light-theme .proof-box{color:#0f172a}
     const r = await withTimeout(fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({ token: TOKEN, device: DEVICE, profile: info.profile }, body)) }), 15000);
     let d; try { d = JSON.parse(await r.text()); } catch (e) { throw new Error('the script gave no clear answer'); }
     if (!d || !d.ok) throw new Error((d && d.error) || 'refused');
-    return d;
+    try { noteDoor(d.version); } catch (e) {} return d;
   }
   function setLocal(profile, v) { const all = lsGet(K.tweaks, {}) || {}; if (v == null) delete all[profile]; else all[profile] = v; lsSet(K.tweaks, all); }
   // Round 6: what this device last stored per profile, so Save can say how many tweaks changed (added, changed or removed).
@@ -10514,7 +10527,7 @@ body.light-theme .proof-box{color:#0f172a}
   window.EngineActions['proof-save-tweaks'] = () => runBusy('proof-save-tweaks', 'Saving...', () => saveTweaks());
   window.EngineActions['proof-clear-tweaks'] = () => runBusy('proof-clear-tweaks', 'Clearing...', () => clearTweaks());
   window.EngineActions['proof-profile'] = () => { nextProfile(); };
-  window.EngineActions['proof-badge'] = () => { if (staleV) reloadTo(staleV); };   // no newer version: nothing happens
+  window.EngineActions['proof-badge'] = () => { if (staleV) reloadTo(staleV); else doorTap(); };   // no newer version: 0.30.0 says which test script answers
   window.EngineActions['proof-adjust'] = () => { if (barOpen) closeBar(); else openBar(); };
   // round 9: New starts an empty call: every Entry value box and the saved draft are cleared, then Find opens (as before).
   // When something is typed, the first tap only asks; a second tap within 5 s clears.
@@ -10828,12 +10841,30 @@ body.light-theme .proof-box{color:#0f172a}
   // Round 6: the badge is the layout cell Id 'badge' (a button cell drawn by the engine). This only marks its button (id, glow, title)
   // after each redraw. Live tap: reload only when a newer version exists. In Adjust / Edit a tap selects it like any cell.
   const badgeText = () => 'v' + PROOF_VERSION + (PRETEND ? ' (acting as ' + PRETEND + ')' : '');
+  // 0.30.0 (no. 168, CARRY C7 row 30): the badge also shows the TEST SCRIPT that answers: 'v0.30.0 · D03' (D + two digits = test-door-N, from
+  // its answer to the start ping and to every save); the D part is amber when this page needs a newer script; a tap says which and gives the link
+  const DOOR_NEED = 3, K_DOOR = 'proof-containers.door.v1', RAW_GS = 'https://raw.githubusercontent.com/Platts-AC/pmi-inspection/main/proof-containers/test-script/Code.gs';
+  let doorSeen = String(lsGet(K_DOOR, '') || '');
+  const doorNum = v => { const m = /^test-door-(\d+)$/.exec(String(v || '')); return m ? Number(m[1]) : 0; };
+  const dd = n => 'D' + String(n).padStart(2, '0');
+  function noteDoor(v) { v = String(v || ''); if (!doorNum(v) || v === doorSeen) return; doorSeen = v; lsSet(K_DOOR, v); badge(); }
+  async function pingDoor() { const u = scriptUrl(); if (!u) return;
+    try { const r = await withTimeout(fetch(u + (u.indexOf('?') >= 0 ? '&' : '?') + 'op=ping&token=' + TOKEN, { cache: 'no-store' }).then(a => a.json()), 10000); if (r && r.ok) noteDoor(r.version); } catch (e) {} }
+  function doorTap() { if (!scriptUrl()) return; const n = doorNum(doorSeen);
+    const t = !n ? 'The test script has not answered yet (this page needs test-door-' + DOOR_NEED + ', ' + dd(DOOR_NEED) + '). Copy it from ' + RAW_GS
+      : n < DOOR_NEED ? 'The test script answering is ' + doorSeen + ' (' + dd(n) + '); this page needs test-door-' + DOOR_NEED + ' (' + dd(DOOR_NEED) + '). Copy it from ' + RAW_GS + ' then Apps Script: paste, Save, Deploy > Manage deployments > Edit > New version.'
+      : 'The test script answering is ' + doorSeen + ' (' + dd(n) + '): up to date.';
+    say(t, n < DOOR_NEED ? 'warn' : 'done', 15000); lastAction = t; try { paintNotes(); } catch (e) {} }
   function badge() {
     const part = document.querySelector('#viewport-canvas-frame .grid-split-partition[data-pid="' + BADGE_ID + '"]');
     const e = part && part.querySelector('button.rounded-lg'); if (!e) return;
     if (e.id !== 'proof-badge') e.id = 'proof-badge';
     e.classList.toggle('stale', !!staleV);
     e.title = staleV ? 'A newer version (' + staleV + ') is available: tap to reload' : 'Version ' + PROOF_VERSION;
+    let d = e.querySelector('.proof-door'); const n = doorNum(doorSeen); let su = ''; try { su = scriptUrl(); } catch (x) {}
+    if (!su) { if (d) d.remove(); }
+    else { if (!d) { d = document.createElement('span'); d.className = 'proof-door'; const lab = Array.from(e.querySelectorAll('span,div')).filter(x => !x.children.length && x.textContent.trim()).pop(); (lab || e).appendChild(d); /* on the version's own line */ } const t = ' \u00b7 ' + (n ? dd(n) : 'D--'); if (d.textContent !== t) d.textContent = t;
+      d.classList.toggle('old', !!n && n < DOOR_NEED); d.classList.toggle('wait', !n); if (!staleV) e.title = 'Version ' + PROOF_VERSION + ' · script ' + (doorSeen || 'not answered yet'); }
     paintViewLine();
   }
   // 0.22.3 (no. 151, fix 1): the box of a read-only editor field with Box lines (capacitor, filter) shows its text in a plain wrapping
@@ -11017,13 +11048,14 @@ body.light-theme .proof-box{color:#0f172a}
   function paintCount() { const n = openDiffs().length, t = n ? n + ' to check' : ''; document.querySelectorAll('#viewport-canvas-frame .proof-checkcount').forEach(c => { if (c.textContent !== t) c.textContent = t; }); }
   window.EngineSlots['check-count'] = { render(p) { const n = openDiffs().length; return '<div class="proof-cell proof-checkcount" role="button" tabindex="0" style="font-size:' + Math.min(12, p.fontSize || 11) + 'px">' + (n ? n + ' to check' : '') + '</div>'; } };
   let cardFor = null;
+  // 0.30.0 (R3b): a contact name (Phone / Email N name) gets Typo on file / Later only (no New customer)
   function openCard(id, mode, next) {   // mode: leave (after leaving the box) / close (Copy report, New: adds Leave as is, Follow up, Back)
     const d = (call.__diffs || {})[id]; if (!d) { if (next) next(); return; }
     let el = document.getElementById('proof-diff'); if (!el) { el = document.createElement('div'); el.id = 'proof-diff'; document.body.appendChild(el); }
-    const house = d.tab === 'Places', btn = (c, t, cls) => '<button type="button" data-choice="' + c + '"' + (cls ? ' class="' + cls + '"' : '') + '>' + t + '</button>';
+    const contact = d.tab === 'Places' && /^(Phone|Email) \d+ name$/.test(String((d.cols || [])[0] || '')), house = d.tab === 'Places', btn = (c, t, cls) => '<button type="button" data-choice="' + c + '"' + (cls ? ' class="' + cls + '"' : '') + '>' + t + '</button>';
     el.innerHTML = '<div class="pd-title">' + esc(d.name) + ': different from file</div><div class="pd-cols"><div><div class="pd-h">ON FILE</div><div class="pd-v pd-file">' + esc(d.file) + '</div></div><div><div class="pd-h">YOU ENTERED</div><div class="pd-v pd-entered">' + esc(d.entered) + '</div></div></div>' +
       (d.hint ? '<div class="pd-hint">' + esc(d.hint) + '</div>' : '') + (d.conflict ? '<div class="pd-hint pd-conflict">' + esc(d.conflict) + '</div>' : '') + '<div class="pd-photo-view"></div>' +
-      '<div class="pd-btns">' + btn('typo', 'Typo on file') + btn(house ? 'newCust' : 'newEquip', house ? 'New customer' : 'New equipment') + (mode === 'close' ? btn('leave', 'Leave as is') + btn('follow', 'Follow up') : (d.followup ? btn('leave', 'Leave as is') : '') + btn('later', 'Later')) +   /* 0.29.0: a reopened follow-up can be settled with Leave as is */
+      '<div class="pd-btns">' + btn('typo', 'Typo on file') + (contact ? '' : btn(house ? 'newCust' : 'newEquip', house ? 'New customer' : 'New equipment')) + (mode === 'close' ? btn('leave', 'Leave as is') + btn('follow', 'Follow up') : (d.followup ? btn('leave', 'Leave as is') : '') + btn('later', 'Later')) +   /* 0.29.0: a reopened follow-up can be settled with Leave as is */
       '<label class="pd-photo">Photo<input type="file" accept="image/*" hidden></label>' + (mode === 'close' ? btn('back', 'Back', 'pd-back') : '') + '</div>';
     el.dataset.id = id; el.dataset.mode = mode; el.style.display = ''; cardFor = { id, mode, next };
     try { document.activeElement && document.activeElement.blur && document.activeElement.blur(); } catch (e) {}
@@ -11065,8 +11097,10 @@ body.light-theme .proof-box{color:#0f172a}
       .concat(Object.keys(call.__adds || {}).map(k => Object.assign({ choice: 'add' }, call.__adds[k])));
     list.forEach(d => { if (d.applied) return; const r = recs[d.id]; if (!r) return;
       let nv = String(d.entered == null ? '' : d.entered); const fv = String(d.file == null ? '' : d.file);
-      if (d.choice === 'add' && d.rule === 'add' && fv && !/^Phone \d+$/.test(r.col) && nv.indexOf(fv) >= 0) nv = nv.replace(fv, '').replace(/^[\s\u00b7,;]+|[\s\u00b7,;]+$/g, '');   // only the new part is added
-      const o = { key: d.id, tab: r.tab, record: r.id, col: r.col, old: fv, new: nv, reason: d.followup && d.choice !== 'add' ? 'Follow-up settled' : REASON[d.choice], choice: d.choice, replace: d.choice === 'add' && d.rule !== 'add' };   // 0.29.0: a settled follow-up
+      let ov = fv;
+      if (r.inh) { if (d.choice !== 'add') return; nv = ownPartOf(r, nv); ov = r.own || ''; if (!nv) return; }   // 0.30.0 (R3a): a combined field: only the place's own part, guarded by its own old text
+      else if (d.choice === 'add' && d.rule === 'add' && fv && !/^(Phone|Email) \d+$/.test(r.col) && nv.indexOf(fv) >= 0) nv = nv.replace(fv, '').replace(/^[\s\u00b7,;]+|[\s\u00b7,;]+$/g, '');   // only the new part is added
+      const o = { key: d.id, tab: r.tab, record: r.id, col: r.col, old: ov, new: nv, reason: d.followup && d.choice !== 'add' ? 'Follow-up settled' : REASON[d.choice], choice: d.choice, replace: d.choice === 'add' && d.rule !== 'add' };   // 0.29.0: a settled follow-up
       if (d.choice === 'newEquip') { o.newId = 'EQ-' + String(V.id || '').replace(/^V-/, '') + '-' + String(r.slot || 'piece').replace(/[^A-Za-z0-9]/g, ''); o.piece = {};
         FCTL.forEach(F => { const r2 = recs[F.id]; if (r2 && r2.tab === 'Equipment' && r2.id === r.id && F.prefill === 'yes') o.piece[r2.col] = String(call[F.id] == null ? '' : call[F.id]); }); }
       out.push(o); });
@@ -11079,7 +11113,8 @@ body.light-theme .proof-box{color:#0f172a}
   }
   function settleReply(vid, r) {   // 0.28.0: what the door did with each change
     if (!call.__visit || call.__visit.id !== vid || !r) return; let touched = false;
-    if (r.placeId && call.__placeId !== r.placeId) { call.__placeId = r.placeId; touched = true; }
+    if (r.placeId && call.__placeId !== r.placeId) { const ph = /^PH-(.+)$/.exec(call.__placeId || ''); call.__placeId = r.placeId; touched = true;
+      if (ph) { const l = lsGet(K.sites, []); if (Array.isArray(l)) { l.forEach(x => { if (x && x.id === ph[1]) x.placeId = r.placeId; }); lsSet(K.sites, l); } } }   // 0.30.0 (R4): the phone learns the Place Id
     const f = call.__file || {};
     (r.changes || []).forEach(c => { const d = (call.__diffs || {})[c.key] || (call.__adds || {})[c.key]; if (!d) return; touched = true;
       if (c.status === 'applied' || c.status === 'already') { d.applied = true; d.conflict = '';
@@ -11182,7 +11217,7 @@ body.light-theme .proof-box{color:#0f172a}
     (FCTL || []).forEach(F => { if (!F.visitsCol || VISIT_FIXED.indexOf(F.visitsCol) >= 0) return; values.push({ id: F.id, col: F.visitsCol, v: valText(call[F.id]), num: F.kind === 'number' || F.kind === 'calculated' }); });
     const spec = file.spec || {}, seen = {};   // ratings: one column each, from the file snapshot (never typed)
     Object.keys(spec).forEach(fid => { const cols = (spec[fid] && spec[fid].cols) || {}; Object.keys(cols).forEach(c => { if (seen[c]) return; seen[c] = 1;
-      values.push({ kind: 'rating', id: c, col: RATING_HEAD[c] || ('Rated ' + c), v: valText(cols[c]), num: c !== 'Filter size' }); }); });
+      values.push({ kind: 'rating', id: c, col: RATING_HEAD[c] || ('Rated ' + c), v: valText(cols[c]), num: c !== 'Filter size' && c !== 'ODF HP' }); }); });   // 0.30.0 (R11): ODF HP is always text ('1/12', '0.5')
     const np = newPlaceOf(); const body = { op: 'saveVisit', visitId: V.id, fixed, values, changes: fileChanges() }; if (np) body.newPlace = np;   // changes + newPlace: test-door-2 (C7c-2)
     return body;
   }
@@ -11210,7 +11245,7 @@ body.light-theme .proof-box{color:#0f172a}
           r = await withTimeout(fetch(url, { method: 'POST', keepalive: !!keep, headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(b) }).then(a => a.json()), 20000);
         } catch (e) { const o2 = outbox(); if (o2[0]) delete o2[0].inFlight; lsSet(K_OUTBOX, o2); saveSt = { st: 'wait', why: '', at: saveSt.at, missing: saveSt.missing }; return; }
         const o3 = outbox().filter(y => y.cid !== x.cid); lsSet(K_OUTBOX, o3);
-        if (r && r.ok) try { settleReply(x.vid, r); } catch (e) {}
+        if (r && r.ok) try { noteDoor(r.version); settleReply(x.vid, r); } catch (e) {}
         if (r && r.ok) saveSt = { st: 'saved', why: '', at: String(r.at || '').slice(-8) || hms(new Date()), row: r.row, missing: r.missing || [] };
         else { saveSt = { st: 'error', why: String(r && r.error || 'no answer'), at: '', missing: [] }; const l = lsGet(K_SAVED, {}) || {}; delete l[x.vid]; lsSet(K_SAVED, l); }
       }
@@ -11567,7 +11602,7 @@ body.light-theme .proof-box{color:#0f172a}
       try { if (!isLiveInteraction) toggleInteractionState(); } catch (e) {}
       badge(); paintLine(); watchPlain();
       checkVersion(false, true);   // round A.1 (Fix B): ask version.json at once, next to the first sheet read, so an old cached page moves on before it draws
-      load('start').then(() => { document.body.classList.add('proof-ready');   /* 0.22.2 (F20) */ try { applyInspectorWindowUI(); } catch (e) {} if (info.offline) say('Offline: showing the saved layout', 'warn', 8000); storeMsg(); checkVersion(); });   // 0.12.1 (BT-15): the same banner as Reload   // hides the engine's 'Open Inspector' button: the Tools row has one
+      load('start').then(() => { document.body.classList.add('proof-ready'); try { pingDoor(); } catch (e) {}   /* 0.30.0: which test script answers */   /* 0.22.2 (F20) */ try { applyInspectorWindowUI(); } catch (e) {} if (info.offline) say('Offline: showing the saved layout', 'warn', 8000); storeMsg(); checkVersion(); });   // 0.12.1 (BT-15): the same banner as Reload   // hides the engine's 'Open Inspector' button: the Tools row has one
     });
   });
 })();

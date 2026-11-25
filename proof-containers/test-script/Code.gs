@@ -1,6 +1,6 @@
 // =====================================================================================================
 // PMI container proof (TEST) - Apps Script web app for the TEST sheet 'PMI container proof (test)' ONLY.
-// test-door-2 (proof 0.28.0, Prompts no. 164, round C7c-2: FILE CHANGES). test-door-1 = proof 0.25.0 (C7b, Visits). proof-test-2 = rounds 2 / 3 (Tweaks only).
+// test-door-3 (proof 0.30.0, Prompts no. 168: fix round after C7c, Review 0.28.0 R1-R5 / R10). test-door-2 = proof 0.28.0 (C7c-2: FILE CHANGES). test-door-1 = proof 0.25.0 (C7b, Visits). proof-test-2 = rounds 2 / 3 (Tweaks only).
 // NOT the live PMI script; never paste this into the Smart PMI sheet (it refuses any other spreadsheet).
 //
 // What it can do, and nothing else:
@@ -27,7 +27,7 @@ var ACCENTS = { '': 1, cyan: 1, emerald: 1, amber: 1, purple: 1, rose: 1 };
 var MAX_BODY = 20000;          // characters in one save
 var MAX_ROWS_PER_SAVE = 100;   // tweak rows in one save
 var MAX_TOTAL_ROWS = 2000;     // tweak rows on the whole tab
-var SCRIPT_VERSION = 'test-door-2';
+var SCRIPT_VERSION = 'test-door-3';
 var VISITS_TAB = 'Visits';
 var VISITS_FIXED = ['Visit Id', 'Call token', 'Date', 'Time', 'Tech', 'Call type', 'Template', 'Place Id', 'System Id', 'System label', 'Status', 'Team tag', 'Merged into', 'Revision of', 'Follow-up', 'Area temp', 'Lat', 'Lng', 'Created', 'Last saved'];
 var MAX_VISIT_BODY = 80000;    // characters in one Visits save
@@ -38,6 +38,10 @@ var CHANGES_TAB = 'Changes';
 var MAX_CHANGES = 60;          // file changes in one save
 var PIECE_COPY = ['Place Id', 'System Id', 'System label', 'Service area', 'Slot', 'Type'];   // a new piece keeps these from the one it replaces; ratings start BLANK (CT-19)
 var FOLLOW_COLOR = '#fde68a';  // the Visits 'Follow-up' column's color when it holds a question
+// test-door-3 (R5): the ONLY columns of Places / Equipment that hold numbers; every other column is Plain text, whatever its old cell held
+// (so '0405', '0012345', '1/12' keep their form). A number column gets a number only when the value is a plain number.
+var NUM_COLS = { 'Places': ['Lat', 'Lng'], 'Equipment': ['Tons', 'RLA', 'LRA', 'ODF FLA', 'IDF FLA', 'Herm cap', 'ODF cap', 'IDF cap', 'Target SC', 'Rated static', 'Factory charge', 'MCA', 'Max breaker', 'Max fuse'] };
+var STREET_WORDS = { st: 1, street: 1, dr: 1, drive: 1, ave: 1, avenue: 1, rd: 1, road: 1, blvd: 1, ln: 1, lane: 1, ct: 1, court: 1, way: 1, pl: 1, place: 1, cir: 1, circle: 1, ter: 1, pkwy: 1, hwy: 1, trl: 1 };
 
 // ===================================== SHARED HELPERS ===============================================
 
@@ -49,7 +53,18 @@ function book_() {   // the TEST sheet, or an error (this door never works on an
   if (!ss || ss.getId() !== TEST_SHEET_ID) throw new Error('this door only works on the test sheet');
   return ss;
 }
-function noFormula_(v) { var t = String(v == null ? '' : v); return /^[=+@]/.test(t) ? "'" + t : t; }   // a typed '=' never becomes a formula
+function noFormula_(v, num) {   // a typed '=' never becomes a formula; test-door-3 (R5): nor a leading '-' unless it is a plain negative number in a number column
+  var t = String(v == null ? '' : v);
+  return /^[=+@]/.test(t) || (/^-/.test(t) && !(num && /^-\d+(\.\d+)?$/.test(t.trim()))) ? "'" + t : t;
+}
+function addrKey_(a) {   // test-door-3 (R4): '123 Test St' -> '123 test', '400 Sample Ave #12' -> '400 sample #12' (the sheet's Address key)
+  var s = String(a == null ? '' : a).toLowerCase().split(',')[0], unit = '';
+  var m = s.match(/(?:#|\b(?:apt|unit|ste|suite)\.?\s*#?)\s*([a-z0-9-]+)/); if (m) { unit = m[1]; s = s.slice(0, m.index); }
+  var w = s.replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(function (x) { return x; });
+  while (w.length > 2 && STREET_WORDS[w[w.length - 1]]) w.pop();
+  return (w.join(' ') + (unit ? ' #' + unit : '')).trim();
+}
+var digits_ = function (v) { var d = String(v == null ? '' : v).replace(/\D/g, ''); return d.length === 11 && d[0] === '1' ? d.slice(1) : d; };   // R10
 
 // ===================================== TWEAKS SAVER =================================================
 
@@ -189,13 +204,13 @@ function visitsSave_(b, body) {
   }
 }
 
-// ===================================== FILE CHANGES (test-door-2) ===================================
+// ===================================== FILE CHANGES (test-door-2; test-door-3 fixes R1-R5, R10) ======
 // b.changes: [{ key, tab, record, col, old, new, reason, choice (typo / newCust / newEquip / add), replace, newId, piece }]
 // Rules: the record must exist; the cell must still hold 'old' (the value the phone saw) or already hold 'new' ('already'); else 'changed'
 // (the phone shows it on the card). typo / newCust = the cell gets the new value (a New customer keeps the SAME Places row: the old name goes
 // to Changes). newEquip = the old piece becomes Replaced (Until, Replaced by) and ONE new Active piece (same Place / System / Slot / Type,
 // BLANK ratings) gets the new values. add = a blank cell is filled; a Phone N that is taken goes to the next empty Phone column; Access codes /
-// Site notes / names get ' · ' + the new text; replace = the cell (still 'old') gets the longer value (S-9, S-12, S-18).
+// Site notes get ' · ' + the new text (test-door-3: only while the cell still holds 'old'; phones / emails by digits / next empty slot); replace = the cell (still 'old') gets the longer value (S-9, S-12, S-18).
 // b.newPlace: a phone customer (PH-...) or a call with no place: one Places row 'P-<visit>' (Customer and Address needed, CT-3).
 function tabOf_(ss, name) {
   var sh = ss.getSheetByName(name); if (!sh) return null;
@@ -204,10 +219,12 @@ function tabOf_(ss, name) {
   t.rowOf = function (idCol, id) { var c = head.indexOf(idCol), lr = sh.getLastRow(); if (c < 0 || lr < 2) return 0; var v = sh.getRange(2, c + 1, lr - 1, 1).getDisplayValues();
     for (var i = 0; i < v.length; i++) if (String(v[i][0]).trim() === String(id)) return i + 2; return 0; };
   t.get = function (r, n) { var c = head.indexOf(n); return c < 0 ? '' : String(sh.getRange(r, c + 1).getDisplayValues()[0][0]); };
-  t.set = function (r, n, v) { var c = head.indexOf(n); if (c < 0) return false; var rg = sh.getRange(r, c + 1), was = rg.getValues()[0][0], t2 = String(v == null ? '' : v);
-    if (typeof was === 'number' && /^-?\d+(\.\d+)?$/.test(t2.trim())) { rg.setNumberFormat('0.####'); rg.setValues([[Number(t2)]]); } else { rg.setNumberFormat('@'); rg.setValues([[noFormula_(t2)]]); } return true; };
-  t.append = function (o) { var r = Math.max(sh.getLastRow(), 1) + 1, row = head.map(function (h) { return o[h] == null ? '' : noFormula_(o[h]); });
-    var rg = sh.getRange(r, 1, 1, head.length); rg.setNumberFormats([head.map(function () { return '@'; })]); rg.setValues([row]); return r; };
+  var nums = NUM_COLS[name] || [], isNum = function (h) { return nums.indexOf(h) >= 0; };   // test-door-3 (R5): by column, never by the old cell
+  var cellOf = function (h, v) { var t2 = String(v == null ? '' : v); return isNum(h) && /^-?\d+(\.\d+)?$/.test(t2.trim()) ? { v: Number(t2), f: '0.####' } : { v: noFormula_(t2, isNum(h)), f: isNum(h) && t2 === '' ? '0.####' : '@' }; };
+  t.set = function (r, n, v) { var c = head.indexOf(n); if (c < 0) return false; var rg = sh.getRange(r, c + 1), x = cellOf(n, v); rg.setNumberFormat(x.f); rg.setValues([[x.v]]); return true; };
+  t.append = function (o) { var r = Math.max(sh.getLastRow(), 1) + 1, xs = head.map(function (h) { return cellOf(h, o[h] == null ? '' : o[h]); });
+    var rg = sh.getRange(r, 1, 1, head.length); rg.setNumberFormats([xs.map(function (x) { return x.f; })]); rg.setValues([xs.map(function (x) { return x.v; })]); return r; };
+  t.all = function () { var lr = sh.getLastRow(); return lr < 2 ? [] : sh.getRange(2, 1, lr - 1, head.length).getDisplayValues(); };
   return t;
 }
 var normC_ = function (v) { return String(v == null ? '' : v).replace(/\s+/g, ' ').trim().toLowerCase(); };
@@ -217,9 +234,14 @@ function fileChanges_(ss, b, fixed, at) {
   var log = function (tab, rec, field, oldV, newV, reason) { var C = T(CHANGES_TAB); if (C) C.append({ 'When': at, 'Who': who, 'Visit Id': vid, 'Tab': tab, 'Record Id': rec, 'Field': field, 'Old': oldV, 'New': newV, 'Reason': reason }); };
   var np = b.newPlace;
   if (np && np.cols && String(np.cols['Customer'] || '').trim() && String(np.cols['Address'] || '').trim()) {
-    var P = T('Places'), pid = 'P-' + vid.replace(/^V-/, '');
-    if (P && !P.rowOf('Place Id', pid)) { var o = { 'Place Id': pid, 'Level': 'house', 'Active': 'yes', 'Created by': who, 'Created at': at };
-      Object.keys(np.cols).forEach(function (k) { if (P.col(k) >= 0 && k !== 'Place Id') o[k] = np.cols[k]; }); P.append(o); log('Places', pid, 'Place', String(np.from || ''), pid, 'New customer'); }
+    var P = T('Places'), pid = 'P-' + vid.replace(/^V-/, ''), key = addrKey_(np.cols['Address']);
+    if (P && !P.rowOf('Place Id', pid)) {   // test-door-3 (R4): ONE row per house: a Places row with the same Address key is that customer's row
+      var ic = P.col('Place Id'), kc = P.col('Address key'), ac = P.col('Address'), lc2 = P.col('Level'), hit = '';
+      P.all().forEach(function (x) { if (hit || !key) return; var lv = lc2 < 0 ? '' : String(x[lc2]).trim(); if (lv === 'site' || lv === 'building') return;
+        var k = kc >= 0 && String(x[kc]).trim() ? String(x[kc]).trim().toLowerCase() : addrKey_(ac >= 0 ? x[ac] : ''); if (k === key) hit = String(x[ic]).trim(); });
+      if (hit) pid = hit;
+      else { var o = { 'Place Id': pid, 'Level': 'house', 'Active': 'yes', 'Created by': who, 'Created at': at, 'Name': String(np.cols['Customer']), 'Address key': key };
+        Object.keys(np.cols).forEach(function (k) { if (P.col(k) >= 0 && k !== 'Place Id') o[k] = np.cols[k]; }); P.append(o); log('Places', pid, 'Place', String(np.from || ''), pid, 'New customer'); } }
     if (P) out.placeId = pid;
   }
   var list = Array.isArray(b.changes) ? b.changes.slice(0, MAX_CHANGES) : [];
@@ -231,8 +253,14 @@ function fileChanges_(ss, b, fixed, at) {
     var cur = t.get(r, c.col), oldV = String(c.old == null ? '' : c.old), newV = res['new'], reason = String(c.reason || 'Correction');
     if (c.choice === 'newEquip' && c.tab === 'Equipment') {
       var nid = String(c.newId || ''); if (!/^EQ-[A-Za-z0-9-]{4,80}$/.test(nid)) { res.status = 'missing'; return; }
+      if (String(c.record) === nid) {   // test-door-3 (R1): the piece THIS visit made: updated in place (never replaced by itself, never a 2nd row)
+        if (normC_(cur) === normC_(newV)) { res.status = 'already'; res.newId = nid; return; }
+        if (normC_(cur) !== normC_(oldV)) { res.status = 'changed'; res.now = cur; return; }
+        t.set(r, c.col, newV); log('Equipment', nid, c.col, cur, newV, 'New equipment'); res.status = 'applied'; res.newId = nid; return; }
       if (done[c.record] === nid) { log('Equipment', nid, c.col, oldV, newV, 'New equipment'); res.status = 'applied'; res.newId = nid; return; }   // a 2nd field of the same new piece in this save
       if (t.get(r, 'Replaced by') === nid) { res.status = 'already'; res.newId = nid; return; }
+      var st = t.get(r, 'Status');   // test-door-3 (R2): only an Active piece is replaced (never two Active pieces in one slot)
+      if (t.col('Status') >= 0 && normC_(st) !== 'active') { var rb = t.get(r, 'Replaced by'); res.status = 'changed'; res.now = cur; res.note = 'This piece is ' + st + (rb ? ' (replaced by ' + rb + ')' : ''); return; }
       if (normC_(cur) !== normC_(oldV)) { res.status = 'changed'; res.now = cur; return; }
       if (!done[c.record]) { var o2 = { 'Piece Id': nid, 'Status': 'Active', 'Since': String(fixed['Date'] || at.slice(0, 10)), 'Created at': at };
         PIECE_COPY.forEach(function (k) { o2[k] = t.get(r, k); }); Object.keys(c.piece || {}).forEach(function (k) { if (t.col(k) >= 0 && PIECE_COPY.indexOf(k) < 0 && k !== 'Piece Id') o2[k] = c.piece[k]; });
@@ -242,12 +270,16 @@ function fileChanges_(ss, b, fixed, at) {
     }
     if (c.choice === 'add') {
       if (!normC_(newV)) { res.status = 'already'; return; }
+      var slot = (String(c.col).match(/^(Phone|Email) \d+$/) || [])[1];
+      if (slot) {   // a new phone / email goes into the next empty Phone N / Email N (test-door-3, R10: phones by digits, emails too)
+        var same = slot === 'Phone' ? function (a) { return digits_(a) && digits_(a) === digits_(newV); } : function (a) { return normC_(a) === normC_(newV); }, free = '';
+        for (var k = 1; k <= 20; k++) { var pc = slot + ' ' + k; if (t.col(pc) < 0) break; var pv = t.get(r, pc); if (same(pv)) { res.status = 'already'; return; } if (!free && !normC_(pv)) free = pc; }
+        if (!free) { res.status = 'missing'; return; }
+        t.set(r, free, newV); log(c.tab, c.record, free, '', newV, 'Added'); res.status = 'applied'; res.col = free; return; }
+      if (normC_(cur) === normC_(newV) || (normC_(cur) && normC_(cur).indexOf(normC_(newV)) >= 0)) { res.status = 'already'; return; }
+      if (normC_(cur) !== normC_(oldV)) { res.status = 'changed'; res.now = cur; return; }   // test-door-3 (R3): the old-value guard on adds too
       if (!normC_(cur)) { t.set(r, c.col, newV); log(c.tab, c.record, c.col, '', newV, 'Added'); res.status = 'applied'; return; }
-      if (normC_(cur) === normC_(newV) || normC_(cur).indexOf(normC_(newV)) >= 0) { res.status = 'already'; return; }
-      if (c.replace && normC_(cur) === normC_(oldV)) { t.set(r, c.col, newV); log(c.tab, c.record, c.col, cur, newV, 'Added'); res.status = 'applied'; return; }
-      if (/^Phone \d+$/.test(c.col)) { for (var k = 1; k <= 20; k++) { var pc = 'Phone ' + k; if (t.col(pc) < 0) break; var pv = t.get(r, pc);
-          if (normC_(pv) === normC_(newV)) { res.status = 'already'; return; } if (!normC_(pv)) { t.set(r, pc, newV); log(c.tab, c.record, pc, '', newV, 'Added'); res.status = 'applied'; res.col = pc; return; } }
-        res.status = 'missing'; return; }
+      if (c.replace) { t.set(r, c.col, newV); log(c.tab, c.record, c.col, cur, newV, 'Added'); res.status = 'applied'; return; }
       t.set(r, c.col, cur + ' \u00b7 ' + newV); log(c.tab, c.record, c.col, cur, cur + ' \u00b7 ' + newV, 'Added'); res.status = 'applied'; return;
     }
     if (normC_(cur) === normC_(newV)) { res.status = 'already'; return; }
