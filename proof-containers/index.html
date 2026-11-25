@@ -758,6 +758,7 @@ body:not(.proof-ready) #reopen-inspector-fab{display:none!important}
 #viewport-canvas-frame .proof-box.proof-namebox:focus{background:#0b1220;border-color:#334155;font-style:normal}
 #viewport-canvas-frame .grid-split-partition.proof-diffline{background:rgba(245,158,11,.16)!important;box-shadow:inset 0 -2px 0 #f59e0b}
 #viewport-canvas-frame .proof-checkcount{display:flex;align-items:center;justify-content:center;height:100%;color:#fbbf24;font-weight:700;cursor:pointer;text-align:center;line-height:1.1}
+#viewport-canvas-frame .proof-systems button.add{border-style:dashed;color:#5eead4;background:transparent}#proof-addsys{position:fixed;left:0;right:0;bottom:0;z-index:2147483001;background:#0b1220;color:#e5e7eb;border-top:2px solid #5eead4;border-radius:14px 14px 0 0;padding:14px 14px calc(14px + env(safe-area-inset-bottom,0px));font:15px system-ui,sans-serif;box-shadow:0 -8px 24px rgba(0,0,0,.5)}#proof-addsys .pa-title{font-weight:700;margin-bottom:10px;color:#5eead4}#proof-addsys button{display:block;width:100%;text-align:left;margin:0 0 8px;padding:10px 12px;border:1px solid #334155;border-radius:10px;background:#1f2937;color:#f8fafc;font:600 15px system-ui,sans-serif}#proof-addsys button small{display:block;font:400 12px system-ui,sans-serif;color:#94a3b8;margin-top:2px}#proof-addsys button[data-a=cancel]{background:transparent;color:#cbd5e1}
 #viewport-canvas-frame .proof-systems{display:flex;gap:6px;align-items:center;height:100%;overflow-x:auto;padding:2px 6px;scrollbar-width:none}#viewport-canvas-frame .proof-systems button{flex:0 0 auto;min-height:32px;padding:2px 12px;border:1px solid #334155;border-radius:16px;background:#111827;color:#e5e7eb;font:600 13px system-ui,sans-serif;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}#viewport-canvas-frame .proof-systems button small{font:500 10px system-ui,sans-serif;color:#94a3b8}#viewport-canvas-frame .proof-systems button.on{background:#0f766e;border-color:#5eead4;color:#f0fdfa}#viewport-canvas-frame .proof-systems button.has::after{content:'';position:absolute;top:3px;right:5px;width:6px;height:6px;border-radius:50%;background:#fbbf24}.proof-rp-head{font-weight:700;color:#5eead4;margin:0 0 6px}
 #viewport-canvas-frame .proof-pretag{position:absolute;right:4px;top:1px;z-index:3;font:700 9px/12px system-ui,sans-serif;color:#0f172a;background:#5eead4;border-radius:4px;padding:0 4px;pointer-events:none;white-space:nowrap}#proof-fmenu button.on{border-color:#5eead4;color:#5eead4}
 #proof-storewarn{position:fixed;left:8px;right:8px;top:calc(env(safe-area-inset-top,0px) + 4px);z-index:2147483002;padding:6px 10px;border:1px solid #f59e0b;border-radius:8px;background:#1f1406;color:#fbbf24;font:600 12px/16px system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}#proof-storewarn.open{white-space:normal;overflow:visible;text-overflow:clip}
@@ -3711,7 +3712,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.32.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.33.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3721,7 +3722,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.32.0', stamp: '2026-11-25 09:57:58', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.33.0', stamp: '2026-11-25 10:16:22', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8398,7 +8399,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.32.0';
+  const PROOF_VERSION = '0.33.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -9188,6 +9189,7 @@ body.light-theme .proof-box{color:#0f172a}
   const nameOfLine = F => { const col = F && F.saveTab === 'Places' && String((F.saveCols || [])[0] || ''); if (!col || !/^(Phone|Email) \d+$/.test(col)) return null;   // the contact name on a phone / email line
     return (FCTL || []).find(x => x.saveTab === 'Places' && String((x.saveCols || [])[0] || '') === col + ' name') || null; };
   function setPre(id, c) {
+    if (c === 'newEquip') { const d0 = (call.__diffs || {})[id], F0 = (FCTL || []).find(x => x.id === id) || {}; addSystemFlow({ from: 'menu', fid: id, slot: F0.equip || '', value: d0 ? d0.entered : '' }); return; }   // 0.33.0 (C7d): the one flow
     call.__pre = call.__pre || {}; if (c === 'later') delete call.__pre[id]; else call.__pre[id] = c;
     const d = (call.__diffs || {})[id]; if (d) { d.choice = c; d.at = Date.now(); }
     lsSet(K.call, call); try { closeCard(); paintDiffs(); saveCall('menu'); } catch (x) {}
@@ -10904,7 +10906,7 @@ body.light-theme .proof-box{color:#0f172a}
   const badgeText = () => 'v' + PROOF_VERSION + (PRETEND ? ' (acting as ' + PRETEND + ')' : '');
   // 0.30.0 (no. 168, CARRY C7 row 30): the badge also shows the TEST SCRIPT that answers: 'v0.30.0 · D03' (D + two digits = test-door-N, from
   // its answer to the start ping and to every save); the D part is amber when this page needs a newer script; a tap says which and gives the link
-  const DOOR_NEED = 4, K_DOOR = 'proof-containers.door.v1', RAW_GS = 'https://raw.githubusercontent.com/Platts-AC/pmi-inspection/main/proof-containers/test-script/Code.gs';
+  const DOOR_NEED = 5, K_DOOR = 'proof-containers.door.v1', RAW_GS = 'https://raw.githubusercontent.com/Platts-AC/pmi-inspection/main/proof-containers/test-script/Code.gs';
   let doorSeen = String(lsGet(K_DOOR, '') || '');
   const doorNum = v => { const m = /^test-door-(\d+)$/.exec(String(v || '')); return m ? Number(m[1]) : 0; };
   const dd = n => 'D' + String(n).padStart(2, '0');
@@ -11144,6 +11146,7 @@ body.light-theme .proof-box{color:#0f172a}
     const b = e.target.closest && e.target.closest('button[data-choice]'); if (!b) return; e.preventDefault(); e.stopPropagation();
     const c = b.dataset.choice, f = cardFor; closeCard();
     if (c === 'back') { say('Stopped: settle the line(s) to check first', 'warn'); return; }
+    if (c === 'newEquip') { const d0 = (call.__diffs || {})[f.id], F0 = (FCTL || []).find(x => x.id === f.id) || {}; addSystemFlow({ from: 'card', fid: f.id, slot: F0.equip || '', value: d0 ? d0.entered : String(call[f.id] || ''), next: f.next }); return; }   // 0.33.0 (C7d): the one flow
     const d = (call.__diffs || {})[f.id]; if (d) { d.choice = c; d.at = Date.now(); lsSet(K.call, call); }
     try { paintDiffs(); saveCall('diff'); } catch (x) {}
     if (f.next) f.next();
@@ -11233,6 +11236,8 @@ body.light-theme .proof-box{color:#0f172a}
         if (call.__adds && call.__adds[c.key] === d) delete call.__adds[c.key]; else if (call.__diffs) delete call.__diffs[c.key]; }
       else if (c.status === 'changed') { d.choice = 'open'; d.conflict = 'The sheet changed meanwhile: it now says "' + c.now + '"' + (c.note ? ' (' + c.note + ')' : ''); d.file = String(c.now); if (f.values) f.values[c.key] = String(c.now); }
       else if (c.status === 'missing') { d.applied = true; d.missing = true; } });
+    { const s = call.__sys, pl = s && s.plan && s.plan[s.cur];   // 0.33.0 (C7d): a new piece of the plan is known by its Piece Id from now on
+      if (pl) (r.changes || []).forEach(c => { if (!c.newId || (c.status !== 'applied' && c.status !== 'already')) return; const F = (FCTL || []).find(x => x.id === c.key); if (F && F.equip && (!pl.done || pl.done[F.equip] !== c.newId)) { pl.done = pl.done || {}; pl.done[F.equip] = c.newId; touched = true; } }); }
     return touched;
   }
   window.__proofCompare = { judge, kindOf: id => kindOf((FCTL || []).find(x => x.id === id) || {}), diffs: () => call.__diffs || {}, adds: () => call.__adds || {} };   // for the tests only
@@ -11275,7 +11280,7 @@ body.light-theme .proof-box{color:#0f172a}
     return Object.keys(bag.vals || {}).some(k => { const v = String(bag.vals[k] == null ? '' : bag.vals[k]).trim(); if (!v || k === 'f:system') return false;
       if (fv[k] != null && String(fv[k]).trim() === v) return false; const def = ((bag.maps || {}).__def || {})[k]; if (def != null && bag.vals[k] === def && !(((bag.maps || {}).__ok || {})[k])) return false; return true; })
       || Object.keys(((bag.maps || {}).__diffs) || {}).some(k => bag.maps.__diffs[k].choice !== 'open') || Object.keys(((bag.maps || {}).__pre) || {}).length > 0; };
-  function sysHasEntries(id) { const s = call.__sys; if (!s) return callHasContent(); if (id === s.cur) { const b = sysBag(); const t = bagTouched(b); sysUnbag(b); return t; } return !!(s.store[id] && bagTouched(s.store[id])); }
+  function sysHasEntries(id) { const s = call.__sys; if (!s) return callHasContent(); if (s.plan && s.plan[id]) return true; /* 0.33.0: an added / replaced system */ if (id === s.cur) { const b = sysBag(); const t = bagTouched(b); sysUnbag(b); return t; } return !!(s.store[id] && bagTouched(s.store[id])); }
   const rowVid = id => { const V = visitOf(), s = call.__sys; return !s || id === s.first ? V.id : V.id + '-' + id; };
   const rowSysOf = vid => { if (!call.__visit) return null; const b = call.__visit.id, s = call.__sys; if (vid === b) return s ? s.first : '';
     return vid.indexOf(b + '-') === 0 && s && s.order.indexOf(vid.slice(b.length + 1)) >= 0 ? vid.slice(b.length + 1) : null; };
@@ -11294,7 +11299,7 @@ body.light-theme .proof-box{color:#0f172a}
     const els = document.querySelectorAll('#viewport-canvas-frame .proof-systems'); if (!els.length) return;
     const s = call.__file ? ensureSys() : null, ids = s ? s.order : ['A'], cur = s ? s.cur : 'A';
     const html = ids.map(id => '<button type="button" data-sys="' + esc(id) + '" class="' + (id === cur ? 'on' : '') + (id !== cur && sysHasEntries(id) || (id === cur && s && sysHasEntries(id)) ? ' has' : '') + '">' + esc(s ? s.labels[id] : 'System 1') +
-      (s && s.areas[id] ? '<small>' + esc(s.areas[id]) + '</small>' : '') + '</button>').join('');
+      (s && s.areas[id] ? '<small>' + esc(s.areas[id]) + '</small>' : '') + '</button>').join('') + (s && call.__file && call.__file.place ? '<button type="button" class="add">+ Add system</button>' : '');   // 0.33.0: the flow
     els.forEach(e => { if (e.dataset.h !== html) { e.innerHTML = html; e.dataset.h = html; } });
   }
   function switchSystem(id) {
@@ -11305,6 +11310,86 @@ body.light-theme .proof-box{color:#0f172a}
   }
   document.addEventListener('click', e => { const b = e.target && e.target.closest && e.target.closest('#viewport-canvas-frame .proof-systems button[data-sys]'); if (!b || !isLiveInteraction) return;
     e.preventDefault(); e.stopPropagation(); switchSystem(b.dataset.sys); }, true);
+
+  // ---------- Round C7d stage 2 (0.33.0 + test-door-5): '+ ADD SYSTEM' = ONE flow with three ways in (the strip, the card's / the ⋯ menu's
+  // 'New equipment', later a photo, C8): 'Additional system or Replacement?'; Replacement asks which system (the selected one first) and, from a
+  // line, only that piece or the whole system. call.__sys.plan[System Id] = {kind add | replace, slots 'all' | [slot], old {slot: {id, cols}}, done
+  // {slot: new Piece Id}}; sysChanges() turns it into file changes on each save of that system's row (test-door-5 'addPiece' for a new piece,
+  // 'newEquip' to replace one); new pieces start with BLANK ratings (CT-19) and the replaced lines start empty (no 'rated' hints).
+  const SLOT_SHEET = { outdoor: 'Outdoor', indoor1: 'Indoor 1', indoor2: 'Indoor 2' };   // the Equipment tab's Slot words
+  const slotFields = slot => (FCTL || []).filter(F => F.saveTab === 'Equipment' && F.equip === slot);
+  const allSlots = () => [...new Set((FCTL || []).filter(F => F.saveTab === 'Equipment' && F.equip).map(F => F.equip))];
+  const slotName = slot => { const F = slotFields(slot).find(x => /model/i.test(x.name)); return F ? F.name.replace(/\s*model\s*$/i, '') : slot; };
+  function nextSysId(s) { const f = call.__file || {}, used = new Set(s.order.concat(ONFILE ? ONFILE.pieces.filter(x => x.place === f.place).map(x => x.system) : []));
+    for (let i = 0; i < 26; i++) { const c = String.fromCharCode(65 + i); if (!used.has(c)) return c; } return 'S' + Date.now().toString(36).toUpperCase(); }
+  let addsysFor = null;
+  function addSystemFlow(o) {   // the ONE flow: o = {from: strip | card | menu | photo, fid, slot, value, next}
+    try { blurNow(); closeCard(); closeFMenu(); } catch (e) {} ensureSys(); addsysFor = o || {}; flowStep(1);
+  }
+  function flowStep(n, sid) {
+    const o = addsysFor, s = call.__sys; let el = document.getElementById('proof-addsys'); if (!el) { el = document.createElement('div'); el.id = 'proof-addsys'; el.setAttribute('role', 'dialog'); document.body.appendChild(el); }
+    const B = (a, t, sub) => '<button type="button" data-a="' + esc(a) + '">' + esc(t) + (sub ? '<small>' + esc(sub) + '</small>' : '') + '</button>';
+    let h = '';
+    if (n === 1) h = '<div class="pa-title">New equipment' + (o.slot ? ': ' + esc(slotName(o.slot)) : '') + (o.value ? ' (' + esc(o.value) + ')' : '') + '</div>' + B('add', 'Additional system', 'Another system at this place: its own button on the strip') + B('rep', 'Replacement', 'It replaces equipment of a system on file (that one becomes history)');
+    if (n === 2) h = '<div class="pa-title">Which system does it replace?</div>' + [s.cur].concat(s.order.filter(x => x !== s.cur)).map(id => B('sys:' + id, s.labels[id] || id, id === s.cur ? 'the one selected now' : (s.areas[id] || ''))).join('');
+    if (n === 3) h = '<div class="pa-title">Replace only the ' + esc(slotName(o.slot)) + ', or the whole system?</div>' + B('one:' + sid, 'Only the ' + slotName(o.slot), (s.labels[sid] || sid) + ': its other equipment stays') + B('all:' + sid, 'Whole system', (s.labels[sid] || sid) + ': all its equipment is replaced');
+    el.innerHTML = h + B('cancel', 'Cancel', o.from === 'card' || o.from === 'menu' ? 'nothing changes; the line stays as it is' : ''); el.style.display = '';
+  }
+  function flowClose() { const el = document.getElementById('proof-addsys'); if (el) el.style.display = 'none'; }
+  document.addEventListener('click', e => { const el = document.getElementById('proof-addsys'); if (!el || !el.contains(e.target)) return; const b = e.target.closest('button[data-a]'); if (!b) return;
+    e.preventDefault(); e.stopPropagation(); const a = b.dataset.a, o = addsysFor || {};
+    if (a === 'cancel') { flowClose(); addsysFor = null; return; }
+    if (a === 'add') { flowClose(); doAdditional(o); return; }
+    if (a === 'rep') { const s = call.__sys; if (s.order.length === 1 && !o.slot) { flowClose(); doReplace(o, s.cur, true); return; } flowStep(2); return; }
+    const m = /^(sys|one|all):(.+)$/.exec(a); if (!m) return;
+    if (m[1] === 'sys') { if (o.slot) flowStep(3, m[2]); else { flowClose(); doReplace(o, m[2], true); } return; }
+    flowClose(); doReplace(o, m[2], m[1] === 'all'); }, true);
+  function dropLine(id) { const f = call.__file || {}; ['__diffs', '__pre', '__adds', '__followIds'].forEach(k => { if (call[k]) delete call[k][id]; }); if (f.records) delete f.records[id]; if (f.values) delete f.values[id]; if (f.spec) delete f.spec[id]; }
+  function backToFile(id) { const fv = ((call.__file || {}).values || {})[id]; if (fv != null) call[id] = fv; else delete call[id]; ['__diffs', '__pre'].forEach(k => { if (call[k]) delete call[k][id]; }); }
+  function flowDone(o, msg) {
+    runCalcs(); lsSet(K.call, call); addsysFor = null; goView('entry'); try { paintStrip(); paintDiffs(); paintPreTags(); } catch (e) {}
+    say(msg, 'done', 3500); try { saveCall('add system'); } catch (e) {} if (o.next) o.next();
+  }
+  function doAdditional(o) {
+    const s = ensureSys(), id = nextSysId(s); if (o.fid) backToFile(o.fid);
+    try { saveCall('switch'); } catch (e) {}
+    s.order.push(id); s.labels[id] = 'System ' + s.order.length; s.areas[id] = ''; s.plan = s.plan || {}; s.plan[id] = { kind: 'add' };
+    swapTo(id); if (o.fid && o.value) call[o.fid] = o.value;
+    flowDone(o, s.labels[id] + ' added' + (o.value ? ' with ' + o.value : '') + ': type its equipment');
+  }
+  function doReplace(o, sid, whole) {
+    const s = ensureSys(), f = call.__file || {}, slots = whole ? 'all' : [o.slot];
+    if (o.fid && sid !== s.cur) backToFile(o.fid);
+    if (sid !== s.cur) { try { saveCall('switch'); } catch (e) {} swapTo(sid); }
+    const act = ONFILE ? ONFILE.pieces.filter(x => x.place === f.place && x.system === sid && x.status === 'active') : [], old = {};
+    act.forEach(pc => { if (pc.slot && (slots === 'all' || slots.indexOf(pc.slot) >= 0)) old[pc.slot] = { id: pc.id, cols: Object.assign({}, pc.cols) }; });
+    s.plan = s.plan || {}; const pl = s.plan[sid] && s.plan[sid].kind === 'replace' ? s.plan[sid] : { kind: 'replace', slots: [], old: {} };
+    pl.slots = slots === 'all' || pl.slots === 'all' ? 'all' : [...new Set(pl.slots.concat(slots))]; Object.assign(pl.old, old); s.plan[sid] = pl;
+    (FCTL || []).forEach(F => { if (F.saveTab !== 'Equipment' || !F.equip || !(slots === 'all' || slots.indexOf(F.equip) >= 0)) return; if (F.id !== o.fid) delete call[F.id]; dropLine(F.id); });
+    if (o.fid) call[o.fid] = o.value || '';
+    flowDone(o, (slots === 'all' ? (s.labels[sid] || sid) + ': new equipment' : slotName(o.slot) + ' replaced') + ' (old equipment kept as history; ratings start blank)');
+  }
+  function sysChanges() {   // the plan of the system on screen as file changes (test-door-5); one per typed line
+    const s = call.__sys, pl = s && s.plan && s.plan[s.cur], f = call.__file || {}; if (!pl) return [];
+    const place = f.place || (/^P-/.test(call.__placeId || '') ? call.__placeId : ''); if (!place) return [];
+    const V = visitOf(), out = [];
+    allSlots().forEach(slot => {
+      if (pl.kind === 'replace' && !(pl.slots === 'all' || pl.slots.indexOf(slot) >= 0)) return;
+      const fs = slotFields(slot).filter(F => F.prefill === 'yes' && F.saveCols.length), typed = fs.filter(F => String(call[F.id] == null ? '' : call[F.id]).trim());
+      const nid = (pl.done || {})[slot] || ('EQ-' + V.id.replace(/^V-/, '') + '-' + s.cur + '-' + slot.replace(/[^A-Za-z0-9]/g, ''));
+      const meta = { 'Place Id': place, 'System Id': s.cur, 'System label': s.labels[s.cur] || '', 'Service area': s.areas[s.cur] || '', 'Slot': SLOT_SHEET[slot] || slot, 'Type': (call.__equip || {})[slot] || (EQUIP_TYPES[slot] || [''])[0] };
+      const piece = Object.assign({}, meta); typed.forEach(F => { piece[F.saveCols[0]] = String(call[F.id]).trim(); });
+      const old = (pl.old || {})[slot], add = F => out.push({ key: F.id, tab: 'Equipment', record: nid, col: F.saveCols[0], old: '', new: String(call[F.id] == null ? '' : call[F.id]).trim(), reason: 'New equipment', choice: 'addPiece', newId: nid, piece });
+      if (pl.kind === 'add' || (pl.done || {})[slot] || !old) { typed.forEach(add); return; }
+      if (pl.slots !== 'all' && !typed.length) return;
+      const F0 = typed[0] || fs[0]; if (!F0) return;
+      out.push({ key: F0.id, tab: 'Equipment', record: old.id, col: F0.saveCols[0], old: String(old.cols[F0.saveCols[0]] == null ? '' : old.cols[F0.saveCols[0]]), new: String(call[F0.id] == null ? '' : call[F0.id]).trim(), reason: 'New equipment', choice: 'newEquip', newId: nid, piece });
+      typed.filter(F => F !== F0).forEach(add); });
+    return out;
+  }
+  document.addEventListener('click', e => { const b = e.target && e.target.closest && e.target.closest('#viewport-canvas-frame .proof-systems button.add'); if (!b || !isLiveInteraction) return;
+    e.preventDefault(); e.stopPropagation(); addSystemFlow({ from: 'strip' }); }, true);
+  window.__proofSystems = { flow: addSystemFlow, plan: () => (call.__sys || {}).plan || null };   // for the tests only
 
   // ---------- Round C7c-3 (0.29.0, Prompts no. 164, stage 3): FOLLOW-UPS. A call closed with 'Follow up' answers stays on THIS phone in a
   // list (key followups.v1: Visit Id, place, the open questions, the whole call and its view). Tools > Follow-ups and a line on Find open the
@@ -11401,7 +11486,7 @@ body.light-theme .proof-box{color:#0f172a}
     const spec = file.spec || {}, seen = {};   // ratings: one column each, from the file snapshot (never typed)
     Object.keys(spec).forEach(fid => { const cols = (spec[fid] && spec[fid].cols) || {}; Object.keys(cols).forEach(c => { if (seen[c]) return; seen[c] = 1;
       values.push({ kind: 'rating', id: c, col: RATING_HEAD[c] || ('Rated ' + c), v: valText(cols[c]), num: c !== 'Filter size' && c !== 'ODF HP' }); }); });   // 0.30.0 (R11): ODF HP is always text ('1/12', '0.5')
-    const np = newPlaceOf(); const body = { op: 'saveVisit', visitId: V.id, fixed, values, changes: fileChanges() }; if (np) body.newPlace = np;   // changes + newPlace: test-door-2 (C7c-2)
+    const np = newPlaceOf(); const body = { op: 'saveVisit', visitId: V.id, fixed, values, changes: fileChanges().concat(sysChanges()) };   /* 0.33.0: + the system plan */ if (np) body.newPlace = np;   // changes + newPlace: test-door-2 (C7c-2)
     return body;
   }
   function saveCall(why) {   // queue the call when it changed since its last queued copy; then send

@@ -1,6 +1,7 @@
 // =====================================================================================================
 // PMI container proof (TEST) - Apps Script web app for the TEST sheet 'PMI container proof (test)' ONLY.
-// test-door-4 (proof 0.30.2, Prompts no. 169: phone-test fixes: number cells in the Automatic format 'General' (0.#### showed '35.'), every written
+// test-door-5 (proof 0.33.0, Prompts no. 172, round C7d: the change 'addPiece' = a NEW piece for a system (an Additional system, or a slot
+// that had none); never a 2nd Active piece in one slot). test-door-4 (proof 0.30.2, Prompts no. 169: phone-test fixes: number cells in the Automatic format 'General' (0.#### showed '35.'), every written
 // value trimmed). test-door-3 = proof 0.30.0 (fix round after C7c, Review 0.28.0 R1-R5 / R10). test-door-2 = proof 0.28.0 (C7c-2: FILE CHANGES). test-door-1 = proof 0.25.0 (C7b, Visits). proof-test-2 = rounds 2 / 3 (Tweaks only).
 // NOT the live PMI script; never paste this into the Smart PMI sheet (it refuses any other spreadsheet).
 //
@@ -28,7 +29,7 @@ var ACCENTS = { '': 1, cyan: 1, emerald: 1, amber: 1, purple: 1, rose: 1 };
 var MAX_BODY = 20000;          // characters in one save
 var MAX_ROWS_PER_SAVE = 100;   // tweak rows in one save
 var MAX_TOTAL_ROWS = 2000;     // tweak rows on the whole tab
-var SCRIPT_VERSION = 'test-door-4';
+var SCRIPT_VERSION = 'test-door-5';
 var NUM_FMT = 'General';   // test-door-4: the Automatic number format ('35', '2.5'); 0.#### shows a bare dot ('35.')
 var VISITS_TAB = 'Visits';
 var VISITS_FIXED = ['Visit Id', 'Call token', 'Date', 'Time', 'Tech', 'Call type', 'Template', 'Place Id', 'System Id', 'System label', 'Status', 'Team tag', 'Merged into', 'Revision of', 'Follow-up', 'Area temp', 'Lat', 'Lng', 'Created', 'Last saved'];
@@ -252,6 +253,21 @@ function fileChanges_(ss, b, fixed, at) {
     var res = { key: String(c.key || ''), new: String(c['new'] == null ? '' : c['new']).trim() }; out.results.push(res);   // test-door-4: trimmed
     var idCol = CHANGE_TABS[c.tab], t = idCol ? T(c.tab) : null;
     if (!t || t.col(String(c.col)) < 0) { res.status = 'missing'; return; }
+    if (c.choice === 'addPiece' && c.tab === 'Equipment') {   // test-door-5 (C7d): a new piece; sent again = the same row, its cell set in place
+      var aid = String(c.newId || c.record || ''); if (!/^EQ-[A-Za-z0-9-]{4,80}$/.test(aid)) { res.status = 'missing'; return; }
+      var ar = t.rowOf('Piece Id', aid), nv5 = res['new'];
+      if (ar) { var av = t.get(ar, c.col); if (normC_(av) === normC_(nv5)) { res.status = 'already'; res.newId = aid; return; }
+        t.set(ar, c.col, nv5); log('Equipment', aid, c.col, av, nv5, 'New equipment'); res.status = 'applied'; res.newId = aid; return; }
+      var pc5 = c.piece || {}, pl5 = String(pc5['Place Id'] || fixed['Place Id'] || '').trim(), sy5 = String(pc5['System Id'] || '').trim(), sl5 = String(pc5['Slot'] || '').trim();
+      if (!pl5 || !sy5 || !sl5) { res.status = 'missing'; return; }
+      var ic5 = t.col('Piece Id'), pc_ = t.col('Place Id'), sc5 = t.col('System Id'), lc5 = t.col('Slot'), stc5 = t.col('Status'), clash = '';
+      t.all().forEach(function (x) { if (!clash && String(x[pc_]).trim() === pl5 && String(x[sc5]).trim() === sy5 && String(x[lc5]).trim() === sl5 && normC_(x[stc5]) === 'active') clash = String(x[ic5]).trim(); });
+      if (clash) { res.status = 'changed'; res.now = ''; res.note = sy5 + ' already has an Active ' + sl5 + ' (' + clash + ')'; return; }
+      var o5 = { 'Piece Id': aid, 'Status': 'Active', 'Since': String(fixed['Date'] || at.slice(0, 10)), 'Created at': at, 'Place Id': pl5, 'System Id': sy5, 'Slot': sl5 };
+      Object.keys(pc5).forEach(function (k) { if (t.col(k) >= 0 && !(k in o5)) o5[k] = String(pc5[k] == null ? '' : pc5[k]).trim(); }); o5[String(c.col)] = nv5;
+      t.append(o5); log('Equipment', aid, 'Piece', '', aid + ' (' + sy5 + ' ' + sl5 + ')', 'New equipment'); if (nv5) log('Equipment', aid, c.col, '', nv5, 'New equipment');
+      res.status = 'applied'; res.newId = aid; return;
+    }
     var r = t.rowOf(idCol, c.record); if (!r) { res.status = 'missing'; return; }
     var cur = t.get(r, c.col), oldV = String(c.old == null ? '' : c.old).trim(), newV = res['new'], reason = String(c.reason || 'Correction');
     if (c.choice === 'newEquip' && c.tab === 'Equipment') {
