@@ -758,6 +758,7 @@ body:not(.proof-ready) #reopen-inspector-fab{display:none!important}
 #viewport-canvas-frame .proof-box.proof-namebox:focus{background:#0b1220;border-color:#334155;font-style:normal}
 #viewport-canvas-frame .grid-split-partition.proof-diffline{background:rgba(245,158,11,.16)!important;box-shadow:inset 0 -2px 0 #f59e0b}
 #viewport-canvas-frame .proof-checkcount{display:flex;align-items:center;justify-content:center;height:100%;color:#fbbf24;font-weight:700;cursor:pointer;text-align:center;line-height:1.1}
+#viewport-canvas-frame .proof-systems{display:flex;gap:6px;align-items:center;height:100%;overflow-x:auto;padding:2px 6px;scrollbar-width:none}#viewport-canvas-frame .proof-systems button{flex:0 0 auto;min-height:32px;padding:2px 12px;border:1px solid #334155;border-radius:16px;background:#111827;color:#e5e7eb;font:600 13px system-ui,sans-serif;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}#viewport-canvas-frame .proof-systems button small{font:500 10px system-ui,sans-serif;color:#94a3b8}#viewport-canvas-frame .proof-systems button.on{background:#0f766e;border-color:#5eead4;color:#f0fdfa}#viewport-canvas-frame .proof-systems button.has::after{content:'';position:absolute;top:3px;right:5px;width:6px;height:6px;border-radius:50%;background:#fbbf24}.proof-rp-head{font-weight:700;color:#5eead4;margin:0 0 6px}
 #viewport-canvas-frame .proof-pretag{position:absolute;right:4px;top:1px;z-index:3;font:700 9px/12px system-ui,sans-serif;color:#0f172a;background:#5eead4;border-radius:4px;padding:0 4px;pointer-events:none;white-space:nowrap}#proof-fmenu button.on{border-color:#5eead4;color:#5eead4}
 #proof-storewarn{position:fixed;left:8px;right:8px;top:calc(env(safe-area-inset-top,0px) + 4px);z-index:2147483002;padding:6px 10px;border:1px solid #f59e0b;border-radius:8px;background:#1f1406;color:#fbbf24;font:600 12px/16px system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}#proof-storewarn.open{white-space:normal;overflow:visible;text-overflow:clip}
 #proof-badge .proof-door{color:inherit;display:inline-block;white-space:nowrap;font-size:.85em}#proof-badge .proof-door.old{color:#f59e0b;font-weight:700}#proof-badge .proof-door.wait{color:#94a3b8}
@@ -3710,7 +3711,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.31.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.32.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3720,7 +3721,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.31.0', stamp: '2026-11-25 07:19:30', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.32.0', stamp: '2026-11-25 09:57:58', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8397,7 +8398,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.31.0';
+  const PROOF_VERSION = '0.32.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -9248,7 +9249,7 @@ body.light-theme .proof-box{color:#0f172a}
     const items = reportItems();
     if (!items.length) return '<div class="proof-report-body"><span class="proof-report-empty">Nothing in the report yet.</span></div>';
     const all = items.some(x => x.pending && x.v) ? '<button type="button" class="proof-rp-all" data-act="all">Approve all</button>' : '';
-    return '<div class="proof-report-body">' + all + items.map(x => '<div class="proof-rp-row' + (x.pending ? ' pending' : '') + '" data-id="' + esc(x.id) + '"><span class="proof-rp-text" data-act="open">' + esc(x.pending ? '►' + x.label + ': Pending' : lineOf(x)) + '</span>' +
+    return '<div class="proof-report-body">' + (sysHeading() ? '<div class="proof-rp-head">' + esc(sysHeading()) + '</div>' : '') + all + items.map(x => '<div class="proof-rp-row' + (x.pending ? ' pending' : '') + '" data-id="' + esc(x.id) + '"><span class="proof-rp-text" data-act="open">' + esc(x.pending ? '►' + x.label + ': Pending' : lineOf(x)) + '</span>' +
       '<span class="proof-rp-btns"><button type="button" data-act="up" aria-label="Up">' + ICON.up + '</button><button type="button" data-act="down" aria-label="Down">' + ICON.down + '</button><button type="button" data-act="x" aria-label="Drop from the report">' + ICON.cross + '</button></span></div>' +
       (rpOpen === x.id && x.pending ? '<div class="proof-rp-open" data-id="' + esc(x.id) + '"><div class="rp-val">' + esc(x.v || 'No value yet') + '</div>' + (x.v ? '<button type="button" data-act="approve">Approve</button>' : '') + '<button type="button" data-act="edit">Edit</button></div>' : '')).join('') + '</div>';
   }
@@ -9306,7 +9307,7 @@ body.light-theme .proof-box{color:#0f172a}
   // above its lines, a blank line between Sections; only Fields that have a value (calc values included); New customer drafts never.
   const unitText = u => (u ? (u === ':1' ? ':1' : ' ' + u) : '');
   // C3a (I-199 d, e): no Section titles; only the INCLUDED lines that have a value; C3b: in the Report page order, Pending lines left out
-  function reportBody() { return reportItems().filter(x => !x.pending).map(lineOf).join('\n'); }
+  function reportBody() { const t = reportItems().filter(x => !x.pending).map(lineOf).join('\n'), h = sysHeading(); return h && t ? h + '\n' + t : t; }   // 0.32.0 (C7d): the selected system's heading
   window.EngineSlots['report-body'] = { render() { return reportHtml(); } };   // C3b: lines with Pending, X, arrows, Approve / Edit
   // copy-report: the main app's copy (clipboard, then the old select-and-copy way) and its messages
   function copyText(text) {
@@ -9444,7 +9445,7 @@ body.light-theme .proof-box{color:#0f172a}
     try { closeCard(); } catch (e) {}   // 0.30.1 (R7): a new pick closes an open card
     // 0.13.1 (R6): every house-Scope Field is cleared first (old tabs: the Find fill Fields), then filled from the site
     const hf = houseFields || Object.keys(FIND_FILL_FALLBACK).map(id => ({ id, find: FIND_FILL_FALLBACK[id] }));
-    hf.forEach(f => { delete call[f.id]; }); delete call.__file;
+    hf.forEach(f => { delete call[f.id]; }); delete call.__file; delete call.__sys;   // 0.32.0 (C7d): a new pick = a new systems list
     FCTL.forEach(F => { if (F.saveTab || (F.prefill && F.prefill !== 'no')) delete call[F.id]; }); delete call.__cap; delete call.__equip;   // 0.26.0 (R2): every pick starts from no file facts
     if (x.place) prefillPlace(x.place); else hf.forEach(f => { if (f.find && x[f.find]) call[f.id] = x[f.find]; });   // C7a: a place = the Fields tab's Pre-fill
     call.__placeId = x.place ? x.place.id : (x.onPhone ? (/^P-/.test(x.placeId || '') ? x.placeId : 'PH-' + x.id) : (x.id || ''));   // 0.30.0 (R4): a phone customer the sheet already has keeps its Place Id   // C7b: the Visits row's Place Id (a phone-made customer: PH-<id>, given a Places row in C7c / C7e)
@@ -9600,7 +9601,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (g('Align') && !/^(left|center|right)$/i.test(g('Align'))) why.push('Align "' + g('Align') + '" must be left, center or right');   // 0.12.1 (BT-48): no silent center
       if (!TYPES[type]) why.push('unknown Type "' + type + '"');
       const fd = r._fieldDef || null;   // round B1: the Field this piece belongs to (made by bundleRows from the Fields tab)
-      if (slot && slot !== 'box' && slot !== 'results' && slot !== 'call-types' && slot !== 'report-body' && slot !== 'view-line' && slot !== 'save-chip' && slot !== 'check-count' && slot !== 'follow-line' && !((slot === 'unit' || slot === 'report-value' || FIELD_SLOTS[slot]) && fd)) why.push('unknown Slot "' + slot + '"');
+      if (slot && slot !== 'box' && slot !== 'results' && slot !== 'call-types' && slot !== 'report-body' && slot !== 'view-line' && slot !== 'save-chip' && slot !== 'check-count' && slot !== 'follow-line' && slot !== 'systems' && !((slot === 'unit' || slot === 'report-value' || FIELD_SLOTS[slot]) && fd)) why.push('unknown Slot "' + slot + '"');
       if (slot === 'box' && !fd && !FIELD_FALLBACK[content] && !FIND_KEYS[content]) why.push('unknown field "' + content + '"');
       if (type === 'button') { const a = content; const ok = ACTIONS[a] || (/^set-view:/.test(a) && screens[a.slice(9)]) || /^set-show:(all|template|values)$/.test(a) || TPL_ACTION.test(a); /* round B2 actions */ if (!ok) why.push('unknown action "' + a + '" (this page may be out of date: tap Reload, or refresh the browser)'); }
       if (!VIS_RULES[vis]) why.push('Visible when must be always, never, when-filled or reserved');   // round B2: when-filled, reserved (Blueprint P9)
@@ -9645,7 +9646,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (fd) { cell.proofField = fd; if (r._join) cell.proofJoin = r._join; if (r._label) cell.proofLabel = r._label; }
       if (slot === 'box') { cell.slot = 'box'; cell.proofKey = fd && draftScreen && screen === draftScreen ? DRAFT + fd.id : content; cell.label = ''; }   // C1a: a draft box
       else if (slot === 'unit' || slot === 'report-value' || FIELD_SLOTS[slot]) { cell.slot = slot; cell.proofKey = content; cell.label = ''; }   // C4b: f-plus, f-menu, f-equip
-      else if (slot === 'results' || slot === 'call-types' || slot === 'report-body' || slot === 'view-line' || slot === 'save-chip' || slot === 'check-count' || slot === 'follow-line') { cell.slot = slot; cell.label = ''; }   // 0.22.3: view-line   // C2b: report-body   // C1b: call-types (a list, like results)
+      else if (slot === 'results' || slot === 'call-types' || slot === 'report-body' || slot === 'view-line' || slot === 'save-chip' || slot === 'check-count' || slot === 'follow-line' || slot === 'systems') { cell.slot = slot; cell.label = ''; }   // 0.22.3: view-line   // C2b: report-body   // C1b: call-types (a list, like results)
       else if (type === 'button') { cell.label = g('Label') || content;
         // round 9 migration: on older tabs New (Id hdr.newcall) only opened Find (set-view:find); it now clears the call first
         cell.clickAction = (id === 'hdr.newcall' && content === 'set-view:find') ? 'new-call' : content; }
@@ -9700,7 +9701,7 @@ body.light-theme .proof-box{color:#0f172a}
   const SIZES_COLS = ['Profile', 'Target', 'Font size', 'Line height', 'Pad X', 'Pad Y', 'Min size', 'Max size', 'Notes'];   // Blueprint P12
   const ITEM_B1_COLS = ['Field', 'Recipe', 'Join with', 'Join sep', 'Label size', 'Box lines'];   // Box lines: C3c   // Blueprint P18 (B1) + BD-6
   const KINDS = { text: 1, number: 1, date: 1, choice: 1, yesno: 1, comment: 1, readonly: 1, calculated: 1 };
-  const SCOPES = { visit: 1, system: 1, house: 1 };
+  const SCOPES = { visit: 1, system: 1, house: 1, call: 1 };   // 0.32.0 (C7d): 'call' = shared by every system of the call
   const PIECES = { label: 1, value: 1, unit: 1, 'sub-unit': 1, spacer: 1, 'report-value': 1, plus: 1, menu: 1, equip: 1, name: 1 };   // name: 0.26.0 (C4, CT-27)
   // 0.26.0 (C4): the 'name' piece = the contact name box on the number's own line. Which Field holds the name comes from the Fields tab:
   // the Field whose Save to is the same tab and '<column> name' (Places.Phone 2 -> Places.Phone 2 name). No list in the code.
@@ -9782,7 +9783,7 @@ body.light-theme .proof-box{color:#0f172a}
         else if (map[id] || bad[id]) why.push('the Field Id "' + id + '" is already used on ' + (map[id] ? map[id].where : bad[id]));
         if (!name) why.push('no Name');
         if (!KINDS[kind]) why.push('Kind "' + g2(r, 'Kind') + '" must be one of: ' + Object.keys(KINDS).join(', '));
-        if (scope && !SCOPES[scope]) why.push('Scope "' + g2(r, 'Scope') + '" must be visit, system or house');
+        if (scope && !SCOPES[scope]) why.push('Scope "' + g2(r, 'Scope') + '" must be visit, system, house or call');
         ['Unit', 'Aliases', 'Report wording'].forEach(c => { if (converted(r, c)) why.push(c + ' "' + g2(r, c) + '" looks like a date, time or number. ' + PT_HINT(c)); });
         if (hmin !== '' && !isFinite(Number(hmin))) why.push('Hard min "' + hmin + '" must be a number');
         if (hmax !== '' && !isFinite(Number(hmax))) why.push('Hard max "' + hmax + '" must be a number');
@@ -9871,6 +9872,7 @@ body.light-theme .proof-box{color:#0f172a}
     const FD = opt.fields ? readFields(opt.fields) : null;
     if (FD) FD.msgs.forEach(m => out.push(m));
     out._house = FD ? Object.keys(FD.map).map(k => FD.map[k]).filter(f => f.scope === 'house').map(f => ({ id: f.id, find: f.find || '' })) : null;   // 0.13.1 (R6)
+    out._scope = FD ? Object.fromEntries(Object.keys(FD.map).map(k => [k, FD.map[k].scope || ''])) : null;   // 0.32.0 (C7d)
     out._fctl = FD ? Object.keys(FD.map).map(k => FD.map[k]).filter(f => f.saveTab || f.inReport || f.visitsCol).map(f => ({ id: f.id, name: f.name, unit: f.unit, equip: f.equip || '', prefill: f.prefill, saveTab: f.saveTab, saveCols: f.saveCols, inReport: f.inReport, kind: f.kind, visitsCol: f.visitsCol || '', fileCheck: f.fileCheck || '', compareAs: f.compareAs || '' })) : null;   // C7a; C7b: every Field with a Visits column
     const ids = {};
     items.forEach((r, i) => {
@@ -10094,7 +10096,7 @@ body.light-theme .proof-box{color:#0f172a}
   const COMBINE = { 'Access codes': 1, 'Site notes': 1 };   // 0.26.0 (R7): these add up along site > building > unit instead of stopping at the first one
   const TEXT_WARN = { places: ['Address', 'Address key', 'Floor', 'Access codes'], equip: ['Filter size', 'Voltage', 'Since', 'Until'] };   // 0.26.0 (R8): text a number column would change
   const RULE_KINDS = ['floors', 'special'];   // 0.26.0 (R8): the Place rules Kinds the C7 data model defines
-  let ONFILE = null, FCTL = [];
+  let ONFILE = null, FCTL = [], SCOPE = {};   // 0.32.0 (C7d): SCOPE = each Field's Scope (house / call shared; the rest per system)
   function parsePlaces(rows, rules, equip, notes) {
     const byId = {}, list = [], ids = {};
     (rows || []).forEach((r, i) => { const n = i + 2, g = c => g2(r, c);
@@ -10168,27 +10170,35 @@ body.light-theme .proof-box{color:#0f172a}
       return { id: P.id, place: P, name: shown, alsoNames: [bld && bld.cols['Name'], usite && usite.cols['Name'], site && site.cols['Name']].filter(Boolean).join(' '), address: c['Address'], phone: c['Phone 1'], phonesAll: phoneCols(c).map(k => c[k]).filter(Boolean), email: c['Email 1'], notes: c['Site notes'] }; });
   }
   // pre-fill on pick (C7a): every Field whose Pre-fill is yes / spec gets its value from its Save to; snapshot kept as call.__file
-  function prefillPlace(P) {
-    const c = placeCols(P), vals = {}, spec = {};
+  function prefillPlace(P) {   // 0.32.0 (C7d): the house part here; each system's part in prefillSystem() (System 1 now, the others on a tap)
+    const c = placeCols(P), vals = {};
     const act = ONFILE.pieces.filter(x => x.place === P.id && x.status === 'active');
     const sys = [...new Set(act.map(x => x.system))].sort((a, b) => { const la = (act.find(x => x.system === a) || {}).label || a, lb = (act.find(x => x.system === b) || {}).label || b; return String(la).localeCompare(String(lb), undefined, { numeric: true }); });
-    const s1 = sys[0] || '', mine = act.filter(x => x.system === s1);
-    const pieceFor = (F, col) => (F.equip ? mine.find(x => x.slot === F.equip) : null) || (F.equip ? null : mine.find(x => x.cols[col]));
+    const s1 = sys[0] || '';
     FCTL.forEach(F => { if (F.saveTab) delete call[F.id]; });
     const inherited = {}, from = c.__from || {};
-    call.__equip = {}; mine.forEach(pc => { const t = String(pc.cols['Type'] || '').trim().toLowerCase(), l = EQUIP_TYPES[pc.slot] || [], hit = l.find(x => x.toLowerCase() === t); if (hit) call.__equip[pc.slot] = hit; });   // 0.26.0 (R4): the piece's Type
-    FCTL.forEach(F => { if (!F.prefill || F.prefill === 'no' || !F.saveTab) return;
-      if (F.saveTab === 'Places') { const v = c[F.saveCols[0]]; if (v && F.prefill === 'yes') { call[F.id] = v; vals[F.id] = v; if (from[F.saveCols[0]] && from[F.saveCols[0]] !== P.id) inherited[F.id] = from[F.saveCols[0]]; } return; }
-      if (F.prefill === 'yes') { const pc = pieceFor(F, F.saveCols[0]), v = pc ? pc.cols[F.saveCols[0]] : ''; if (v) { call[F.id] = v; vals[F.id] = v; } return; }
-      const got = {}; F.saveCols.forEach(col => { const pc = pieceFor(F, col), v = pc ? pc.cols[col] : ''; if (v) got[col] = v; });   // spec: kept beside, never in the box
-      if (Object.keys(got).length) { const col = F.saveCols.find(k => got[k]); spec[F.id] = { cols: got, v: got[col], word: /^target/i.test(col) ? 'target' : 'rated', unit: unitText(F.unit).trim() }; } });   // 0.26.0 (R10): the unit from the Fields Unit column only
-    const pieces = {}; mine.forEach(pc => { if (pc.slot) pieces[pc.slot] = pc.id; });
+    FCTL.forEach(F => { if (!F.prefill || F.prefill === 'no' || F.saveTab !== 'Places') return;
+      const v = c[F.saveCols[0]]; if (v && F.prefill === 'yes') { call[F.id] = v; vals[F.id] = v; if (from[F.saveCols[0]] && from[F.saveCols[0]] !== P.id) inherited[F.id] = from[F.saveCols[0]]; } });
     const records = {};   // 0.28.0 (C7c-2): where each Field's file value lives (the record a card choice changes); an inherited value (from the building / site) gets none
-    FCTL.forEach(F => { if (!F.saveTab || !F.saveCols.length) return; const col = F.saveCols[0];
-      if (F.saveTab === 'Places') { const src = from[col]; if (!src || src === P.id || COMBINE[col]) records[F.id] = Object.assign({ tab: 'Places', id: P.id, col }, COMBINE[col] ? ownOf(P, col) : {}); return; }
-      const pc = pieceFor(F, col); if (pc) records[F.id] = { tab: 'Equipment', id: pc.id, col, slot: pc.slot }; });
-    call.__file = { place: P.id, placeLevel: P.level, system: s1, systems: sys.length, pieces, inherited, records, values: vals, spec, at: Date.now() };   // 0.26.0 (R5): Piece Ids per slot, the place level, where inherited values came from
-    if (sys.length > 1) setTimeout(() => say(sys.length + ' systems on file; System 1 loaded.', 'info', 4000), 50);
+    FCTL.forEach(F => { if (F.saveTab !== 'Places' || !F.saveCols.length) return; const col = F.saveCols[0];
+      const src = from[col]; if (!src || src === P.id || COMBINE[col]) records[F.id] = Object.assign({ tab: 'Places', id: P.id, col }, COMBINE[col] ? ownOf(P, col) : {}); });
+    call.__file = { place: P.id, placeLevel: P.level, system: s1, systems: sys.length, pieces: {}, inherited, records, values: vals, spec: {}, at: Date.now() };   // 0.26.0 (R5): Piece Ids per slot, the place level, where inherited values came from
+    delete call.__sys; ensureSys(); prefillSystem(P, s1);
+    if (sys.length > 1) setTimeout(() => say(sys.length + ' systems on file; System 1 loaded. Tap a system on the strip to switch.', 'info', 4000), 50);
+  }
+  function prefillSystem(P, sid) {   // 0.32.0 (C7d): one system's equipment lines, ratings (spec) and records from the Equipment copy
+    const act = ONFILE.pieces.filter(x => x.place === P.id && x.status === 'active'), mine = act.filter(x => x.system === sid), f = call.__file;
+    const pieceFor = (F, col) => (F.equip ? mine.find(x => x.slot === F.equip) : null) || (F.equip ? null : mine.find(x => x.cols[col]));
+    FCTL.forEach(F => { if (F.saveTab && F.saveTab !== 'Places') { delete call[F.id]; delete f.values[F.id]; delete f.records[F.id]; } });
+    call.__equip = {}; mine.forEach(pc => { const t = String(pc.cols['Type'] || '').trim().toLowerCase(), l = EQUIP_TYPES[pc.slot] || [], hit = l.find(x => x.toLowerCase() === t); if (hit) call.__equip[pc.slot] = hit; });   // 0.26.0 (R4): the piece's Type
+    const spec = {};
+    FCTL.forEach(F => { if (!F.prefill || F.prefill === 'no' || !F.saveTab || F.saveTab === 'Places') return;
+      if (F.prefill === 'yes') { const pc = pieceFor(F, F.saveCols[0]), v = pc ? pc.cols[F.saveCols[0]] : ''; if (v) { call[F.id] = v; f.values[F.id] = v; } return; }
+      const got = {}; F.saveCols.forEach(col => { const pc = pieceFor(F, col), v = pc ? pc.cols[col] : ''; if (v) got[col] = v; });   // spec: kept beside, never in the box
+      if (Object.keys(got).length) { const col = F.saveCols.find(k => got[k]); spec[F.id] = { cols: got, v: got[col], word: /^target/i.test(col) ? 'target' : 'rated', unit: unitText(F.unit).trim() }; } });   // 0.26.0 (R10): the unit from the Fields Unit column
+    const pieces = {}; mine.forEach(pc => { if (pc.slot) pieces[pc.slot] = pc.id; });
+    FCTL.forEach(F => { if (!F.saveTab || F.saveTab === 'Places' || !F.saveCols.length) return; const col = F.saveCols[0]; const pc = pieceFor(F, col); if (pc) f.records[F.id] = { tab: 'Equipment', id: pc.id, col, slot: pc.slot }; });
+    f.system = sid; f.pieces = pieces; f.spec = spec;
   }
   const specOf = id => ((call.__file || {}).spec || {})[id] || null;
   function paintSpec() {   // small grey 'rated 14.1 A' beside the measured box (the main app's pmi-spec); editors take their ratings inside
@@ -10478,7 +10488,7 @@ body.light-theme .proof-box{color:#0f172a}
     CALL_TYPES = Array.isArray(L.rows._ctypes) ? L.rows._ctypes : null;   // C1b: from the copy that won
     COMMENTS = L.rows._comments || null; try { applyDefaults(); } catch (e) {}   // C3b
     SETTINGS = L.rows._settings || {};   // 0.22.3
-    ONFILE = L.rows._places || null; FCTL = Array.isArray(L.rows._fctl) ? L.rows._fctl : [];   // C7a
+    ONFILE = L.rows._places || null; FCTL = Array.isArray(L.rows._fctl) ? L.rows._fctl : []; SCOPE = L.rows._scope && typeof L.rows._scope === 'object' ? L.rows._scope : {};   // C7a; 0.32.0 SCOPE
     MISSING = Array.isArray(L.rows._missing) ? L.rows._missing : [];   // 0.26.1
     try { stampDate(); } catch (e) {}   // 0.26.0 (C1)
     SITES = Array.isArray(L.rows._sites) ? L.rows._sites : null; houseFields = Array.isArray(L.rows._house) ? L.rows._house : null;   // 0.13.1 (R10, R6): from the copy that won
@@ -11196,10 +11206,12 @@ body.light-theme .proof-box{color:#0f172a}
     Object.keys(o).sort((a, b) => o[b].at - o[a].at).slice(20).forEach(k => { delete o[k]; }); lsSet(K_PENDING, o); }
   function settleReply(vid, r) {   // 0.28.0: what the door did with each change
     if (!r) return;
-    if (!call.__visit || call.__visit.id !== vid) { settleAway(vid, r); return; }
-    const t = settleOn(call, r);
+    const sid = rowSysOf(vid); if (sid === null) { settleAway(vid, r); return; }   // 0.32.0 (C7d): a row of this call = its system's entries
+    const s = call.__sys, orig = s && s.cur; if (s && sid && sid !== s.cur) swapTo(sid);
+    const t = settleOn(call, r); let left = 0; try { left = fileChanges().length; } catch (e) {}
+    if (s && orig !== s.cur) swapTo(orig);
     if (t) { lsSet(K.call, call); try { paintDiffs(); paintSpec(); syncFollow(); } catch (e) {} }
-    try { if (!fileChanges().length) keepPending(vid, null); else keepPending(vid, call, callView); } catch (e) {}
+    try { keepPending(vid, left ? call : null, callView); } catch (e) {}
   }
   function settleAway(vid, r) {   // 0.30.1 (R9): the answer for a call that left the screen
     const pd = pendingAll()[vid]; if (!pd || !pd.call) return; const c = pd.call; settleOn(c, r);
@@ -11224,6 +11236,75 @@ body.light-theme .proof-box{color:#0f172a}
     return touched;
   }
   window.__proofCompare = { judge, kindOf: id => kindOf((FCTL || []).find(x => x.id === id) || {}), diffs: () => call.__diffs || {}, adds: () => call.__adds || {} };   // for the tests only
+
+  // ---------- Round C7d (0.32.0, Prompts no. 172, stage 1): THE SYSTEMS STRIP. A place with 2+ Active systems: a strip of buttons on Entry
+  // and Report chooses the system being worked on. The call keeps each system's OWN entries: every Field whose Scope is not 'house' or 'call'
+  // (equipment lines, ratings, readings, comments) and their file snapshot, card choices, ⋯ tags, comment states. The system on screen lives
+  // in the flat call (as before C7d); the others wait in call.__sys.store and are swapped in on a tap. One Visits row per system with entries
+  // (the first system always): the call's Visit Id for the system the call started on, '<id>-<System Id>' for the others; the same Call token.
+  const SYS_MAPS = ['__diffs', '__adds', '__ok', '__def', '__pre', '__cm', '__cap', '__followIds', '__src'];
+  const sysShared = id => { const s = (SCOPE || {})[id]; return !s || s === 'house' || s === 'call'; };
+  function ensureSys() {   // a call picked before 0.32.0 (or a phone customer) gets its system list here
+    if (call.__sys) return call.__sys; const f = call.__file; let order = [], labels = {}, areas = {};
+    if (f && f.place && ONFILE) { const act = ONFILE.pieces.filter(x => x.place === f.place && x.status === 'active'); order = [...new Set(act.map(x => x.system))];
+      order.forEach(s => { const p = act.find(x => x.system === s && x.label) || act.find(x => x.system === s); labels[s] = (p && p.label) || ''; areas[s] = (p && p.cols && p.cols['Service area']) || ''; });
+      order.sort((a, b) => String(labels[a] || a).localeCompare(String(labels[b] || b), undefined, { numeric: true })); }
+    const cur = (f && f.system) || order[0] || 'A'; if (order.indexOf(cur) < 0) order.unshift(cur);
+    order.forEach((s, i) => { if (!labels[s]) labels[s] = 'System ' + (i + 1); });
+    call.__sys = { cur, first: cur, order, labels, areas, store: {} }; return call.__sys;
+  }
+  function sysBag() {   // the system on screen, taken out of the flat call
+    const bag = { vals: {}, maps: {}, file: null, equip: call.__equip || null }; Object.keys(call).forEach(k => { if (k.indexOf('__') === 0 || sysShared(k)) return; bag.vals[k] = call[k]; delete call[k]; });
+    SYS_MAPS.forEach(m => { const o = call[m]; if (!o || typeof o !== 'object') return; bag.maps[m] = {}; Object.keys(o).forEach(id => { if (!sysShared(id)) { bag.maps[m][id] = o[id]; delete o[id]; } }); });
+    const f = call.__file; if (f) { bag.file = { system: f.system, pieces: f.pieces || {}, spec: f.spec || {}, records: {}, values: {} };
+      ['records', 'values'].forEach(k => { const o = f[k] || {}; Object.keys(o).forEach(id => { if (!sysShared(id)) { bag.file[k][id] = o[id]; delete o[id]; } }); }); f.pieces = {}; f.spec = {}; }
+    delete call.__equip; return bag;
+  }
+  function sysUnbag(bag) {
+    Object.keys(bag.vals || {}).forEach(k => { call[k] = bag.vals[k]; });
+    Object.keys(bag.maps || {}).forEach(m => { call[m] = call[m] || {}; Object.assign(call[m], bag.maps[m]); });
+    const f = call.__file; if (f && bag.file) { f.system = bag.file.system; f.pieces = bag.file.pieces || {}; f.spec = bag.file.spec || {}; f.records = Object.assign(f.records || {}, bag.file.records); f.values = Object.assign(f.values || {}, bag.file.values); }
+    if (bag.equip) call.__equip = bag.equip;
+  }
+  function swapTo(to) {   // pure: no saving, no painting (the save builds every row through it)
+    const s = ensureSys(); if (s.cur === to) return; s.store[s.cur] = sysBag(); const bag = s.store[to]; delete s.store[to];
+    if (bag) sysUnbag(bag); else { const P = call.__file && placeById(call.__file.place); if (P) prefillSystem(P, to); else if (call.__file) call.__file.system = to; }
+    s.cur = to;
+  }
+  const bagTouched = bag => { const fv = (bag.file && bag.file.values) || {};
+    return Object.keys(bag.vals || {}).some(k => { const v = String(bag.vals[k] == null ? '' : bag.vals[k]).trim(); if (!v || k === 'f:system') return false;
+      if (fv[k] != null && String(fv[k]).trim() === v) return false; const def = ((bag.maps || {}).__def || {})[k]; if (def != null && bag.vals[k] === def && !(((bag.maps || {}).__ok || {})[k])) return false; return true; })
+      || Object.keys(((bag.maps || {}).__diffs) || {}).some(k => bag.maps.__diffs[k].choice !== 'open') || Object.keys(((bag.maps || {}).__pre) || {}).length > 0; };
+  function sysHasEntries(id) { const s = call.__sys; if (!s) return callHasContent(); if (id === s.cur) { const b = sysBag(); const t = bagTouched(b); sysUnbag(b); return t; } return !!(s.store[id] && bagTouched(s.store[id])); }
+  const rowVid = id => { const V = visitOf(), s = call.__sys; return !s || id === s.first ? V.id : V.id + '-' + id; };
+  const rowSysOf = vid => { if (!call.__visit) return null; const b = call.__visit.id, s = call.__sys; if (vid === b) return s ? s.first : '';
+    return vid.indexOf(b + '-') === 0 && s && s.order.indexOf(vid.slice(b.length + 1)) >= 0 ? vid.slice(b.length + 1) : null; };
+  function rowBodies() {   // one Visits row per system with entries (the first system always)
+    const s = call.__sys; if (!s || (s.order.length < 2 && !Object.keys(s.store).length)) { const b = visitBody(); if (s) b.visitId = rowVid(s.cur); return [b]; }
+    const orig = s.cur, out = [], ids = s.order.filter(id => id === s.first || id === orig ? true : !!s.store[id]);
+    ids.forEach(id => { if (id !== s.first && !sysHasEntries(id)) return; swapTo(id); const b = visitBody(); b.visitId = rowVid(id);
+      if (id !== s.first) { b.changes = (b.changes || []).filter(c => c.tab !== 'Places'); delete b.newPlace;
+        b.fixed['Follow-up'] = Object.keys(call.__diffs || {}).map(k => call.__diffs[k]).filter(d => !sysShared(d.id) && (d.choice === 'follow' || (d.followup && (d.choice === 'later' || d.choice === 'open')))).map(d => d.name + ': on file ' + d.file + ', entered ' + d.entered).join(' | '); }
+      out.push(b); });
+    swapTo(orig); return out;
+  }
+  const sysHeading = () => { const s = call.__sys; if (!s || s.order.length < 2) return ''; return (s.labels[s.cur] || 'System') + (s.areas[s.cur] ? ' · ' + s.areas[s.cur] : ''); };
+  window.EngineSlots['systems'] = { render(p) { return '<div class="proof-cell proof-systems" style="font-size:' + (p.fontSize || 13) + 'px"></div>'; } };
+  function paintStrip() {
+    const els = document.querySelectorAll('#viewport-canvas-frame .proof-systems'); if (!els.length) return;
+    const s = call.__file ? ensureSys() : null, ids = s ? s.order : ['A'], cur = s ? s.cur : 'A';
+    const html = ids.map(id => '<button type="button" data-sys="' + esc(id) + '" class="' + (id === cur ? 'on' : '') + (id !== cur && sysHasEntries(id) || (id === cur && s && sysHasEntries(id)) ? ' has' : '') + '">' + esc(s ? s.labels[id] : 'System 1') +
+      (s && s.areas[id] ? '<small>' + esc(s.areas[id]) + '</small>' : '') + '</button>').join('');
+    els.forEach(e => { if (e.dataset.h !== html) { e.innerHTML = html; e.dataset.h = html; } });
+  }
+  function switchSystem(id) {
+    const s = ensureSys(); if (!s || id === s.cur || s.order.indexOf(id) < 0) return;
+    try { blurNow(); closeCard(); closeFMenu(); } catch (e) {} try { saveCall('switch'); } catch (e) {}
+    swapTo(id); if (!s.store[id]) { try { applyDefaults(); } catch (e) {} } runCalcs(); lsSet(K.call, call);
+    goView(currentView === 'report' ? 'report' : 'entry'); say(s.labels[id] + (s.areas[id] ? ' · ' + s.areas[id] : ''), 'done', 1500);
+  }
+  document.addEventListener('click', e => { const b = e.target && e.target.closest && e.target.closest('#viewport-canvas-frame .proof-systems button[data-sys]'); if (!b || !isLiveInteraction) return;
+    e.preventDefault(); e.stopPropagation(); switchSystem(b.dataset.sys); }, true);
 
   // ---------- Round C7c-3 (0.29.0, Prompts no. 164, stage 3): FOLLOW-UPS. A call closed with 'Follow up' answers stays on THIS phone in a
   // list (key followups.v1: Visit Id, place, the open questions, the whole call and its view). Tools > Follow-ups and a line on Find open the
@@ -11314,7 +11395,7 @@ body.light-theme .proof-box{color:#0f172a}
     const sys = file.system || 'A', piece = (ONFILE && ONFILE.pieces || []).find(x => x.place === file.place && x.system === sys && x.label);
     fixed['Call token'] = V.token; fixed['Date'] = valText(call['f:date']).trim() || V.date; fixed['Time'] = V.time; fixed['Tech'] = String(SETTINGS['tech name'] || '').trim() || DEVICE;
     fixed['Call type'] = callView.callType || valText(call['f:callType']); fixed['Template'] = callView.tpl || ''; fixed['Place Id'] = file.place || call.__placeId || '';
-    fixed['System Id'] = sys; fixed['System label'] = piece ? piece.label : ''; fixed['Status'] = V.done ? 'Done' : 'In progress'; fixed['Created'] = V.created;
+    fixed['System Id'] = sys; fixed['System label'] = (call.__sys && call.__sys.labels[sys]) || (piece ? piece.label : ''); /* 0.32.0 (C7d) */ fixed['Status'] = V.done ? 'Done' : 'In progress'; fixed['Created'] = V.created;
     fixed['Follow-up'] = followText();   // 0.27.0 (C7c-1): the open question(s), blank when none
     (FCTL || []).forEach(F => { if (!F.visitsCol || VISIT_FIXED.indexOf(F.visitsCol) >= 0) return; values.push({ id: F.id, col: F.visitsCol, v: valText(call[F.id]).trim(), num: F.kind === 'number' || F.kind === 'calculated' }); });   // 0.30.2: trimmed
     const spec = file.spec || {}, seen = {};   // ratings: one column each, from the file snapshot (never typed)
@@ -11328,12 +11409,13 @@ body.light-theme .proof-box{color:#0f172a}
     if (!call.__visit && !callHasContent()) return;
     try { if (call.__visit) syncFollow(); } catch (e) {}   // 0.29.0 (C7c-3)
     if (!scriptUrl()) { saveSt = { st: 'off', why: '', at: '', missing: [] }; paintChip(); return; }
-    const body = visitBody(), sig = JSON.stringify(body), last = lsGet(K_SAVED, {}) || {};
-    if (last[body.visitId] === sig && !/^tap/.test(why)) { flushOutbox(); return; }
-    try { keepPending(body.visitId, body.changes && body.changes.length ? call : null, callView); } catch (e) {}   // 0.30.1 (R9): kept until the door answers
-    const ob = outbox().filter(x => x.vid !== body.visitId || x.inFlight);   // the newest copy per Visit Id
-    ob.push({ vid: body.visitId, cid: body.visitId.slice(2) + '-' + Date.now().toString(36) + '-' + rand(4), body: sig, why, at: Date.now() });
-    lsSet(K_OUTBOX, ob); last[body.visitId] = sig; Object.keys(last).slice(0, -20).forEach(k => { delete last[k]; }); lsSet(K_SAVED, last);
+    const last = lsGet(K_SAVED, {}) || {}; let ob = null;
+    rowBodies().forEach(body => {   // 0.32.0 (C7d): one row per system with entries
+      const sig = JSON.stringify(body); if (last[body.visitId] === sig && !/^tap/.test(why)) return;
+      try { keepPending(body.visitId, body.changes && body.changes.length ? call : null, callView); } catch (e) {}   // 0.30.1 (R9): kept until the door answers
+      ob = (ob || outbox()).filter(x => x.vid !== body.visitId || x.inFlight);   // the newest copy per Visit Id
+      ob.push({ vid: body.visitId, cid: body.visitId.slice(2) + '-' + Date.now().toString(36) + '-' + rand(4), body: sig, why, at: Date.now() }); last[body.visitId] = sig; });
+    if (ob) { lsSet(K_OUTBOX, ob); Object.keys(last).slice(0, -20).forEach(k => { delete last[k]; }); lsSet(K_SAVED, last); }
     flushOutbox(why === 'hidden');
   }
   async function flushOutbox(keep) {
@@ -11374,7 +11456,7 @@ body.light-theme .proof-box{color:#0f172a}
   window.addEventListener('online', () => flushOutbox());
   document.addEventListener('visibilitychange', () => { try { if (document.hidden) saveCall('hidden'); else flushOutbox(); } catch (e) {} });
   window.addEventListener('pagehide', () => { try { saveCall('hidden'); } catch (e) {} });
-  window.__proofSave = { now: why => saveCall(why || 'test'), flush: () => flushOutbox(), outbox, state: () => saveSt, fctl: () => FCTL };   // for the tests only
+  window.__proofSave = { now: why => saveCall(why || 'test'), flush: () => flushOutbox(), outbox, state: () => saveSt, fctl: () => FCTL, rows: () => rowBodies() };   // for the tests only
 
   function reloadTo(v) { say('Reloading the newer version (' + v + ')...', 'warn'); location.replace(location.pathname + '?v=' + encodeURIComponent(v) + '&t=' + Date.now()); }
   function pendingOnPhone() { const t = lsGet(K.tweaks, {}) || {}; return Object.keys(t).some(k => t[k] && t[k].state === 'pending'); }
@@ -11501,7 +11583,7 @@ body.light-theme .proof-box{color:#0f172a}
   const partIdx = part => { const m = /handleSplitClick\((\d+), (\d+), (\d+), (\d+)/.exec(part.getAttribute('onclick') || ''); return m ? m.slice(1, 5).map(Number) : null; };
   let visBusy = false;
   function applyVis() {
-    try { paintViewLine(); paintChip(); paintDiffs(); paintFollow(); followNote(); paintPreTags(); if (cardFor && cardFor.view !== currentView) closeCard(); } catch (e) {}   // 0.30.1 (R7): another screen closes the card   // 0.22.2 (F12); C7b: the save chip
+    try { paintViewLine(); paintChip(); paintDiffs(); paintFollow(); followNote(); paintPreTags(); paintStrip(); if (cardFor && cardFor.view !== currentView) closeCard(); } catch (e) {}   // 0.30.1 (R7): another screen closes the card   // 0.22.2 (F12); C7b: the save chip
     const frame = document.getElementById('viewport-canvas-frame'); if (!frame || visBusy) return;
     visBusy = true;
     try {
