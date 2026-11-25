@@ -758,6 +758,7 @@ body:not(.proof-ready) #reopen-inspector-fab{display:none!important}
 #viewport-canvas-frame .proof-box.proof-namebox:focus{background:#0b1220;border-color:#334155;font-style:normal}
 #viewport-canvas-frame .grid-split-partition.proof-diffline{background:rgba(245,158,11,.16)!important;box-shadow:inset 0 -2px 0 #f59e0b}
 #viewport-canvas-frame .proof-checkcount{display:flex;align-items:center;justify-content:center;height:100%;color:#fbbf24;font-weight:700;cursor:pointer;text-align:center;line-height:1.1}
+#viewport-canvas-frame .proof-pretag{position:absolute;right:4px;top:1px;z-index:3;font:700 9px/12px system-ui,sans-serif;color:#0f172a;background:#5eead4;border-radius:4px;padding:0 4px;pointer-events:none;white-space:nowrap}#proof-fmenu button.on{border-color:#5eead4;color:#5eead4}
 #proof-storewarn{position:fixed;left:8px;right:8px;top:calc(env(safe-area-inset-top,0px) + 4px);z-index:2147483002;padding:6px 10px;border:1px solid #f59e0b;border-radius:8px;background:#1f1406;color:#fbbf24;font:600 12px/16px system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}#proof-storewarn.open{white-space:normal;overflow:visible;text-overflow:clip}
 #proof-badge .proof-door{color:inherit;display:inline-block;white-space:nowrap;font-size:.85em}#proof-badge .proof-door.old{color:#f59e0b;font-weight:700}#proof-badge .proof-door.wait{color:#94a3b8}
 #viewport-canvas-frame .proof-followline{display:flex;align-items:center;height:100%;color:#fbbf24;font-weight:600;cursor:pointer;padding:0 10px}
@@ -3709,7 +3710,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.30.2", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.31.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3719,7 +3720,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.30.2', stamp: '2026-11-25 06:45:47', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.31.0', stamp: '2026-11-25 07:19:30', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8396,7 +8397,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.30.2';
+  const PROOF_VERSION = '0.31.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -9173,12 +9174,37 @@ body.light-theme .proof-box{color:#0f172a}
     return '<div class="proof-cell proof-piece" style="' + btnStyle(p) + '"><button type="button" class="proof-fbtn" data-fact="menu" data-fid="' + esc(F.id) + '" aria-label="Options for ' + esc(F.name) + '">' + ICON.more + '</button></div>'; } };
   window.EngineSlots['f-equip'] = { render(p) { const F = p.proofField; if (!F || !F.equip) return '<div class="proof-cell proof-piece"></div>'; const cur = equipNow(F.equip);
     return '<div class="proof-cell proof-piece" style="' + btnStyle(p) + '"><button type="button" class="proof-fbtn" data-fact="equip" data-fid="' + esc(F.id) + '" data-slot2="' + F.equip + '" aria-label="Equipment type: ' + esc(cur) + '. Tap to change" title="' + esc(cur) + ': tap to change">' + ICON.cycle + '</button></div>'; } };
+  // 0.31.0 (no. 169, CT-28): the line's \u22ef menu = the universal place for its file choices. Chosen before or while typing, the choice is
+  // kept for that line in this call (call.__pre, a small tag on the line) and no card opens on leaving; Later = no decision (clears the tag).
+  const PRE_LABEL = { typo: 'Typo on file', newCust: 'New customer', newEquip: 'New equipment' };
+  function preOptions(F) {
+    if (!F || F.fileCheck !== 'alert' || !call.__file || !F.saveTab) return []; const fv = fileValOf(F.id); if (fv == null || !String(fv).trim()) return [];
+    const contact = F.saveTab === 'Places' && /^(Phone|Email) \d+ name$/.test(String((F.saveCols || [])[0] || '')), house = F.saveTab === 'Places';
+    const o = [['typo', 'Typo on file', 'On file: ' + fv + '. The file gets what you type.']];
+    if (!contact) o.push(house ? ['newCust', 'New customer', 'Same house, the customer changed.'] : ['newEquip', 'New equipment', 'The old piece is replaced by a new one.']);
+    o.push(['later', 'Later', 'No decision now (the line stays amber).']); return o;
+  }
+  const nameOfLine = F => { const col = F && F.saveTab === 'Places' && String((F.saveCols || [])[0] || ''); if (!col || !/^(Phone|Email) \d+$/.test(col)) return null;   // the contact name on a phone / email line
+    return (FCTL || []).find(x => x.saveTab === 'Places' && String((x.saveCols || [])[0] || '') === col + ' name') || null; };
+  function setPre(id, c) {
+    call.__pre = call.__pre || {}; if (c === 'later') delete call.__pre[id]; else call.__pre[id] = c;
+    const d = (call.__diffs || {})[id]; if (d) { d.choice = c; d.at = Date.now(); }
+    lsSet(K.call, call); try { closeCard(); paintDiffs(); saveCall('menu'); } catch (x) {}
+    say(c === 'later' ? 'No choice for this line' : PRE_LABEL[c] + ': kept for this line', 'done');
+  }
+  function paintPreTags() { const pre = call.__pre || {};
+    document.querySelectorAll('#viewport-canvas-frame .proof-pretag').forEach(t => { const k = t.dataset.key; if (!pre[k]) t.remove(); });
+    Object.keys(pre).forEach(k => { const b = document.querySelector('#viewport-canvas-frame .proof-box[data-key="' + k + '"]'); if (!b) return; const host = b.parentElement; if (!host) return;
+      let t = host.querySelector('.proof-pretag'); if (!t) { t = document.createElement('span'); t.className = 'proof-pretag'; t.dataset.key = k; host.appendChild(t); if (getComputedStyle(host).position === 'static') host.style.position = 'relative'; }
+      if (t.textContent !== PRE_LABEL[pre[k]]) t.textContent = PRE_LABEL[pre[k]] || ''; }); }
   function closeFMenu() { const o = document.getElementById('proof-fmenu'); if (o) o.remove(); }
   function openFMenu(F) {   // the main app's field menu: Pin / Unpin for future reports (here: for this template), Close
     closeFMenu(); closePick(); closeAsk(); closeCap(); closeFilter();
     const pinned = isPinned(F.id), el = document.createElement('div'); el.id = 'proof-fmenu'; el.setAttribute('role', 'dialog');
-    el.innerHTML = '<div class="pp-title">' + esc(fieldName(F.id)) + '</div><button type="button" data-m="pin">' + (pinned ? 'Unpin from future reports' : 'Pin for future reports') + '<small>Template: ' + esc(tplKey() || 'none') + '</small></button><button type="button" data-m="close">Close</button>';
-    el.addEventListener('click', e => { const b = e.target.closest('[data-m]'); if (!b) return; e.stopPropagation(); if (b.dataset.m === 'pin') { togglePin(F.id); try { paintInc(); paintReport(); } catch (x) {} } closeFMenu(); });
+    const groups = [F, nameOfLine(F)].filter(Boolean).map(G => ({ G, o: preOptions(G), cur: (call.__pre || {})[G.id] })).filter(g => g.o.length);   // 0.31.0 (CT-28): the line's choices, before or while typing
+    el.innerHTML = '<div class="pp-title">' + esc(fieldName(F.id)) + '</div>' + groups.map(g => (groups.length > 1 || g.G !== F ? '<div class="pp-sub">' + esc(g.G.name) + '</div>' : '') + g.o.map(o => '<button type="button" data-m="pc:' + esc(g.G.id) + ':' + o[0] + '"' + (g.cur === o[0] ? ' class="on"' : '') + '>' + (g.cur === o[0] ? '\u2713 ' : '') + esc(o[1]) + '<small>' + esc(o[2]) + '</small></button>').join('')).join('') + '<button type="button" data-m="pin">' + (pinned ? 'Unpin from future reports' : 'Pin for future reports') + '<small>Template: ' + esc(tplKey() || 'none') + '</small></button><button type="button" data-m="close">Close</button>';
+    el.addEventListener('click', e => { const b = e.target.closest('[data-m]'); if (!b) return; e.stopPropagation(); if (b.dataset.m === 'pin') { togglePin(F.id); try { paintInc(); paintReport(); } catch (x) {} }
+      else if (/^pc:/.test(b.dataset.m)) { const m = /^pc:(.+):([A-Za-z]+)$/.exec(b.dataset.m); if (m) setPre(m[1], m[2]); } closeFMenu(); });
     document.body.appendChild(el);
   }
   document.addEventListener('click', e => { if (!isLiveInteraction) return; const b = e.target && e.target.closest && e.target.closest('.proof-fbtn'); if (!b) return;
@@ -9260,13 +9286,18 @@ body.light-theme .proof-box{color:#0f172a}
   const labelOf = e => { const el = e.target && e.target.closest && e.target.closest('#viewport-canvas-frame .grid-split-partition'); const p = el && cellOfPart(el); return p && p.proofLabelOf ? p.proofLabelOf : ''; };
   let pressT = null, pressAt = null, holdSuppress = 0;
   const clearPress = () => { clearTimeout(pressT); pressT = null; };
+  let leaveTapUntil = 0;   // 0.31.0 (CT-28 d): a tap that only takes the focus out of a box never selects (or pins) a line
   document.addEventListener('pointerdown', e => { if (!isLiveInteraction) return; const id = labelOf(e); if (!id) return;
+    const a = document.activeElement, ab = a && a.closest && a.closest('.proof-box');
+    const sameLine = ab && (() => { const r1 = ab.getBoundingClientRect(), r2 = e.target.getBoundingClientRect(); return r1.top < r2.bottom - 1 && r2.top < r1.bottom - 1; })();
+    if (ab && !(e.target.closest && e.target.closest('.proof-box')) && ab.dataset.key !== id && !sameLine) { leaveTapUntil = Date.now() + 800; clearPress(); return; }   // another line's label: only 'leave'
     clearPress(); pressAt = [e.clientX, e.clientY];
     pressT = setTimeout(() => { pressT = null; holdSuppress = Date.now() + 500; togglePin(id); paintInc(); paintNotes(); }, 550); }, true);   // the main app's 550 ms
   document.addEventListener('pointermove', e => { if (pressT && pressAt && Math.hypot(e.clientX - pressAt[0], e.clientY - pressAt[1]) > 10) clearPress(); }, true);
   ['pointerup', 'pointercancel'].forEach(t => document.addEventListener(t, clearPress, true));
   document.addEventListener('click', e => { if (!isLiveInteraction) return; const id = labelOf(e); if (!id) return; e.preventDefault(); e.stopPropagation();
     if (Date.now() < holdSuppress) return;   // that press was a hold (pin)
+    if (Date.now() < leaveTapUntil) { leaveTapUntil = 0; return; }   // 0.31.0: that tap only left a box
     setIncluded(id, !isIncluded(id)); paintInc(); }, true);
 
   // ---------- Round C2b: report-body (Slot) and copy-report (Action) ----------
@@ -11073,6 +11104,7 @@ body.light-theme .proof-box{color:#0f172a}
     const d = call.__diffs[id]; if (d && d.entered === String(ev).trim()) return;   // 0.30.2: entered is kept trimmed
     call.__diffs[id] = { id, name: F.name, file: String(fv).trim(), entered: String(ev).trim(), rule: j.rule, hint: j.hint, choice: 'open', at: Date.now(), tab: F.saveTab, cols: F.saveCols };
     if (call.__followIds && call.__followIds[id]) call.__diffs[id].followup = true;   // 0.29.0: retyped in a reopened follow-up = still that follow-up
+    if (call.__pre && call.__pre[id]) call.__diffs[id].choice = call.__pre[id];   // 0.31.0 (CT-28): chosen in the \u22ef menu = no card
   }
   const openDiffs = () => Object.keys(call.__diffs || {}).map(k => call.__diffs[k]).filter(d => d.choice === 'open' || d.choice === 'later');
   function paintDiffs() {   // amber on every cell of a line whose value is still open (open / later)
@@ -11113,7 +11145,11 @@ body.light-theme .proof-box{color:#0f172a}
   document.addEventListener('input', e => { const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b || !b.dataset.key || !call.__file) return; try { refreshDiff(b.dataset.key); paintDiffs(); } catch (x) {} });   // amber while typing, no pop-up
   document.addEventListener('focusout', e => { const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b || !b.dataset.key) return; const k = b.dataset.key;   // leaving the box: the card
     const v0 = currentView, c0 = call;   // 0.30.1 (R7): not after the screen or the call changed
-    setTimeout(() => { const d = (call.__diffs || {})[k]; if (d && d.choice === 'open' && !cardFor && currentView === v0 && call === c0) openCard(k, 'leave'); }, 0); }, true);
+    setTimeout(() => { const d = (call.__diffs || {})[k]; if (Date.now() - menuDownAt < 1000 || document.getElementById('proof-fmenu')) return;   // 0.31.0: the \u22ef menu was tapped: its choices instead of the card
+      if (d && d.choice === 'open' && !cardFor && currentView === v0 && call === c0) openCard(k, 'leave'); }, 0); }, true);
+  let menuDownAt = 0; document.addEventListener('pointerdown', e => { if (e.target && e.target.closest && e.target.closest('.proof-fbtn[data-fact="menu"]')) menuDownAt = Date.now(); }, true);
+  document.addEventListener('keydown', e => { if (e.key !== 'Enter' || e.isComposing) return; const b = e.target && e.target.closest && e.target.closest('.proof-box');   // 0.31.0 (CT-28 c): Return leaves the box (the card opens)
+    if (!b || !b.dataset.key || b.tagName === 'TEXTAREA' || currentView !== 'entry') return; e.preventDefault(); try { b.blur(); } catch (x) {} }, true);
   function askAtClose(done) {   // Copy report / New: every open line again; Back stops (nothing is lost)
     const q = openDiffs().map(d => d.id), next = () => { const id = q.shift(); if (!id) { done(); return; } openCard(id, 'close', next); }; next(); }
   { const copy0 = window.EngineActions['copy-report'], new0 = window.EngineActions['new-call'];
@@ -11223,7 +11259,9 @@ body.light-theme .proof-box{color:#0f172a}
     const go = () => { try { saveCall('switch'); } catch (e) {}
       call = JSON.parse(JSON.stringify(x.call)); call.__followIds = {}; followOf(call).forEach(d => { d.followup = true; call.__followIds[d.id] = 1; if (d.choice === 'follow') d.choice = 'later'; });
       callView = Object.assign(VIEW_DEFAULT(), x.view || {}, { needCust: false }); lsSet(K.call, call); saveView(); try { applyFolds(engineState); } catch (e) {}
-      goView('entry'); say('Follow-up opened: ' + x.name + ' (same Visits row)', 'done'); try { paintDiffs(); } catch (e) {} };
+      goView('entry'); say('Follow-up opened: ' + x.name + ' (same Visits row)', 'done'); try { paintDiffs(); } catch (e) {}
+      setTimeout(() => { try { const d = followOf(call).find(y => y.choice === 'later' || y.choice === 'open'); if (!d) return;   // 0.31.0 (no. 169): straight to its field and its card
+        const b = document.querySelector('#viewport-canvas-frame .proof-box[data-key="' + d.id + '"]'); if (b) b.scrollIntoView({ block: 'center' }); openCard(d.id, 'leave'); } catch (e) {} }, 350); };
     if (openDiffs().length) askAtClose(go); else go();
   }
   window.EngineActions['open-followups'] = () => openFollowList();
@@ -11463,7 +11501,7 @@ body.light-theme .proof-box{color:#0f172a}
   const partIdx = part => { const m = /handleSplitClick\((\d+), (\d+), (\d+), (\d+)/.exec(part.getAttribute('onclick') || ''); return m ? m.slice(1, 5).map(Number) : null; };
   let visBusy = false;
   function applyVis() {
-    try { paintViewLine(); paintChip(); paintDiffs(); paintFollow(); followNote(); if (cardFor && cardFor.view !== currentView) closeCard(); } catch (e) {}   // 0.30.1 (R7): another screen closes the card   // 0.22.2 (F12); C7b: the save chip
+    try { paintViewLine(); paintChip(); paintDiffs(); paintFollow(); followNote(); paintPreTags(); if (cardFor && cardFor.view !== currentView) closeCard(); } catch (e) {}   // 0.30.1 (R7): another screen closes the card   // 0.22.2 (F12); C7b: the save chip
     const frame = document.getElementById('viewport-canvas-frame'); if (!frame || visBusy) return;
     visBusy = true;
     try {
