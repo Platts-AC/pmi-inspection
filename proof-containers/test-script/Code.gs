@@ -1,6 +1,7 @@
 // =====================================================================================================
 // PMI container proof (TEST) - Apps Script web app for the TEST sheet 'PMI container proof (test)' ONLY.
-// test-door-3 (proof 0.30.0, Prompts no. 168: fix round after C7c, Review 0.28.0 R1-R5 / R10). test-door-2 = proof 0.28.0 (C7c-2: FILE CHANGES). test-door-1 = proof 0.25.0 (C7b, Visits). proof-test-2 = rounds 2 / 3 (Tweaks only).
+// test-door-4 (proof 0.30.2, Prompts no. 169: phone-test fixes: number cells in the Automatic format 'General' (0.#### showed '35.'), every written
+// value trimmed). test-door-3 = proof 0.30.0 (fix round after C7c, Review 0.28.0 R1-R5 / R10). test-door-2 = proof 0.28.0 (C7c-2: FILE CHANGES). test-door-1 = proof 0.25.0 (C7b, Visits). proof-test-2 = rounds 2 / 3 (Tweaks only).
 // NOT the live PMI script; never paste this into the Smart PMI sheet (it refuses any other spreadsheet).
 //
 // What it can do, and nothing else:
@@ -27,7 +28,8 @@ var ACCENTS = { '': 1, cyan: 1, emerald: 1, amber: 1, purple: 1, rose: 1 };
 var MAX_BODY = 20000;          // characters in one save
 var MAX_ROWS_PER_SAVE = 100;   // tweak rows in one save
 var MAX_TOTAL_ROWS = 2000;     // tweak rows on the whole tab
-var SCRIPT_VERSION = 'test-door-3';
+var SCRIPT_VERSION = 'test-door-4';
+var NUM_FMT = 'General';   // test-door-4: the Automatic number format ('35', '2.5'); 0.#### shows a bare dot ('35.')
 var VISITS_TAB = 'Visits';
 var VISITS_FIXED = ['Visit Id', 'Call token', 'Date', 'Time', 'Tech', 'Call type', 'Template', 'Place Id', 'System Id', 'System label', 'Status', 'Team tag', 'Merged into', 'Revision of', 'Follow-up', 'Area temp', 'Lat', 'Lng', 'Created', 'Last saved'];
 var MAX_VISIT_BODY = 80000;    // characters in one Visits save
@@ -175,7 +177,8 @@ function visitsSave_(b, body) {
     var isNew = !row; if (isNew) row = Math.max(lastRow, 1) + 1;
     var cur = isNew ? head.map(function () { return ''; }) : sh.getRange(row, 1, 1, lastCol).getValues()[0];
     var fmt = isNew ? head.map(function () { return '@'; }) : sh.getRange(row, 1, 1, lastCol).getNumberFormats()[0];
-    var put = function (i, v, num) { if (num && v !== '' && isFinite(Number(v))) { cur[i] = Number(v); fmt[i] = '0.####'; } else { cur[i] = noFormula_(v); fmt[i] = '@'; } };
+    var put = function (i, v, num) { var t = String(v == null ? '' : v).trim();   // test-door-4: trimmed; numbers in the Automatic format
+      if (num && t !== '' && isFinite(Number(t))) { cur[i] = Number(t); fmt[i] = NUM_FMT; } else { cur[i] = noFormula_(t, num); fmt[i] = '@'; } };
     var at = now_(), missing = [], newNotes = [];
     var fc = fileChanges_(ss, b, fixed, at);   // test-door-2: Places / Equipment / Changes first (a new Place Id goes on this row)
     if (fc.placeId) fixed['Place Id'] = fc.placeId;
@@ -220,7 +223,7 @@ function tabOf_(ss, name) {
     for (var i = 0; i < v.length; i++) if (String(v[i][0]).trim() === String(id)) return i + 2; return 0; };
   t.get = function (r, n) { var c = head.indexOf(n); return c < 0 ? '' : String(sh.getRange(r, c + 1).getDisplayValues()[0][0]); };
   var nums = NUM_COLS[name] || [], isNum = function (h) { return nums.indexOf(h) >= 0; };   // test-door-3 (R5): by column, never by the old cell
-  var cellOf = function (h, v) { var t2 = String(v == null ? '' : v); return isNum(h) && /^-?\d+(\.\d+)?$/.test(t2.trim()) ? { v: Number(t2), f: '0.####' } : { v: noFormula_(t2, isNum(h)), f: isNum(h) && t2 === '' ? '0.####' : '@' }; };
+  var cellOf = function (h, v) { var t2 = String(v == null ? '' : v).trim(); return isNum(h) && /^-?\d+(\.\d+)?$/.test(t2) ? { v: Number(t2), f: NUM_FMT } : { v: noFormula_(t2, isNum(h)), f: isNum(h) && t2 === '' ? NUM_FMT : '@' }; };   // test-door-4: trimmed, General
   t.set = function (r, n, v) { var c = head.indexOf(n); if (c < 0) return false; var rg = sh.getRange(r, c + 1), x = cellOf(n, v); rg.setNumberFormat(x.f); rg.setValues([[x.v]]); return true; };
   t.append = function (o) { var r = Math.max(sh.getLastRow(), 1) + 1, xs = head.map(function (h) { return cellOf(h, o[h] == null ? '' : o[h]); });
     var rg = sh.getRange(r, 1, 1, head.length); rg.setNumberFormats([xs.map(function (x) { return x.f; })]); rg.setValues([xs.map(function (x) { return x.v; })]); return r; };
@@ -246,11 +249,11 @@ function fileChanges_(ss, b, fixed, at) {
   }
   var list = Array.isArray(b.changes) ? b.changes.slice(0, MAX_CHANGES) : [];
   list.forEach(function (c) {
-    var res = { key: String(c.key || ''), new: String(c['new'] == null ? '' : c['new']) }; out.results.push(res);
+    var res = { key: String(c.key || ''), new: String(c['new'] == null ? '' : c['new']).trim() }; out.results.push(res);   // test-door-4: trimmed
     var idCol = CHANGE_TABS[c.tab], t = idCol ? T(c.tab) : null;
     if (!t || t.col(String(c.col)) < 0) { res.status = 'missing'; return; }
     var r = t.rowOf(idCol, c.record); if (!r) { res.status = 'missing'; return; }
-    var cur = t.get(r, c.col), oldV = String(c.old == null ? '' : c.old), newV = res['new'], reason = String(c.reason || 'Correction');
+    var cur = t.get(r, c.col), oldV = String(c.old == null ? '' : c.old).trim(), newV = res['new'], reason = String(c.reason || 'Correction');
     if (c.choice === 'newEquip' && c.tab === 'Equipment') {
       var nid = String(c.newId || ''); if (!/^EQ-[A-Za-z0-9-]{4,80}$/.test(nid)) { res.status = 'missing'; return; }
       if (String(c.record) === nid) {   // test-door-3 (R1): the piece THIS visit made: updated in place (never replaced by itself, never a 2nd row)

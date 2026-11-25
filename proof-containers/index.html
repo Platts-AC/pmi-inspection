@@ -758,6 +758,7 @@ body:not(.proof-ready) #reopen-inspector-fab{display:none!important}
 #viewport-canvas-frame .proof-box.proof-namebox:focus{background:#0b1220;border-color:#334155;font-style:normal}
 #viewport-canvas-frame .grid-split-partition.proof-diffline{background:rgba(245,158,11,.16)!important;box-shadow:inset 0 -2px 0 #f59e0b}
 #viewport-canvas-frame .proof-checkcount{display:flex;align-items:center;justify-content:center;height:100%;color:#fbbf24;font-weight:700;cursor:pointer;text-align:center;line-height:1.1}
+#proof-storewarn{position:fixed;left:8px;right:8px;top:calc(env(safe-area-inset-top,0px) + 4px);z-index:2147483002;padding:6px 10px;border:1px solid #f59e0b;border-radius:8px;background:#1f1406;color:#fbbf24;font:600 12px/16px system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}#proof-storewarn.open{white-space:normal;overflow:visible;text-overflow:clip}
 #proof-badge .proof-door{color:inherit;display:inline-block;white-space:nowrap;font-size:.85em}#proof-badge .proof-door.old{color:#f59e0b;font-weight:700}#proof-badge .proof-door.wait{color:#94a3b8}
 #viewport-canvas-frame .proof-followline{display:flex;align-items:center;height:100%;color:#fbbf24;font-weight:600;cursor:pointer;padding:0 10px}
 #proof-follownote{display:block;width:100%;box-sizing:border-box;padding:6px 12px;border-bottom:1px solid #f59e0b;border-radius:6px;background:#1f1406;color:#fbbf24;font:600 13px system-ui,sans-serif;cursor:pointer}
@@ -3708,7 +3709,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.30.1", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.30.2", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3718,7 +3719,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.30.1', stamp: '2026-11-24 22:52:27', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.30.2', stamp: '2026-11-25 06:45:47', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8395,7 +8396,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.30.1';
+  const PROOF_VERSION = '0.30.2';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8560,11 +8561,18 @@ body.light-theme .proof-box{color:#0f172a}
   // IndexedDB record (lsH = its fingerprint), so a failed note write can never make an older copy look newer.
   function storeLsWrite(k, json) { if (json.length >= STORE_LS_MAX) return false; try { localStorage.setItem(k, json); return true; } catch (e) { return false; } }
   const lsNowH = k => { try { return storeHash(localStorage.getItem(k)); } catch (e) { return 'none'; } };
+  // 0.30.2 (no. 169, Danny's iPhone): the WHOLE reason. The banner (#proof-storewarn) stays until tapped; a tap shows all of it (wrapped);
+  // a second tap closes it. The last 5 store errors are kept (localStorage 'proofc-store-log', outside the saved data).
+  const errText = e => e ? String((e.name && e.name !== 'Error' ? e.name + ': ' : '') + (e.message || e)) : 'no answer';
+  function storeLog(why) { try { const l = JSON.parse(localStorage.getItem('proofc-store-log') || '[]'); l.push({ at: new Date().toISOString(), why: String(why || '') }); localStorage.setItem('proofc-store-log', JSON.stringify(l.slice(-5))); } catch (e) {} }
   function storeMsg() {
     if (STORE.msgShown || !STORE.failed) return; STORE.msgShown = true;
-    try { say("This phone's database (IndexedDB) is not working (" + STORE.failed + '): saving in the browser storage only, as before.', 'warn', 10000); } catch (e) {}
+    try { let el = document.getElementById('proof-storewarn'); if (!el) { el = document.createElement('div'); el.id = 'proof-storewarn'; el.setAttribute('role', 'alert'); document.body.appendChild(el);
+        el.addEventListener('click', () => { if (el.classList.contains('open')) { el.style.display = 'none'; el.classList.remove('open'); } else el.classList.add('open'); }); }
+      el.textContent = "This phone's database (IndexedDB) is not working (" + STORE.failed + '): saving in the browser storage only, as before. Tap to read all; tap again to close.'; el.style.display = ''; } catch (e) {}
+    try { say("This phone's database (IndexedDB) is not working (" + STORE.failed + '): saving in the browser storage only, as before.', 'warn', 10000); } catch (e) {}   // the status line too (as before 0.30.2)
   }
-  function storeFail(why) { STORE.on = false; if (!STORE.failed) STORE.failed = why || 'error'; if (STORE.booted) storeMsg(); }
+  function storeFail(why) { STORE.on = false; if (!STORE.failed) STORE.failed = why || 'error'; storeLog(STORE.failed); if (STORE.booted) storeMsg(); }
   // 0.22.1 (fix 1): every IndexedDB step has a time limit
   const tl = (p, ms, why) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error(why || 'no answer')), ms))]);
   const idbOpen = ms => new Promise((res, rej) => {
@@ -8580,8 +8588,19 @@ body.light-theme .proof-box{color:#0f172a}
   let storeDb = null;
   const idbAll = db => new Promise((res, rej) => { try { const out = {}, tx = db.transaction(STORE_OS), c = tx.objectStore(STORE_OS).openCursor();
     c.onsuccess = () => { const x = c.result; if (x) { out[x.key] = x.value; x.continue(); } }; tx.oncomplete = () => res(out); tx.onerror = tx.onabort = () => rej(new Error('read failed')); } catch (e) { rej(new Error('read failed')); } });
-  const idbWrite = (puts, dels) => tl(new Promise(res => { try { const tx = storeDb.transaction(STORE_OS, 'readwrite'), os = tx.objectStore(STORE_OS);
-    Object.keys(puts || {}).forEach(k => os.put(puts[k], k)); (dels || []).forEach(k => os.delete(k)); tx.oncomplete = () => res(true); tx.onerror = tx.onabort = () => res(false); } catch (e) { res(false); } }), 2500).catch(() => false);
+  const idbWrite = (puts, dels) => tl(new Promise(res => { try { const tx = storeDb.transaction(STORE_OS, 'readwrite'), os = tx.objectStore(STORE_OS);   // 0.30.2: the reason is kept
+    Object.keys(puts || {}).forEach(k => os.put(puts[k], k)); (dels || []).forEach(k => os.delete(k)); tx.oncomplete = () => res(true); tx.onerror = tx.onabort = () => { STORE.lastErr = errText(tx.error) || 'write aborted'; res(false); }; } catch (e) { STORE.lastErr = errText(e); res(false); } }), 6000, 'no answer in 6 s').catch(e => { STORE.lastErr = errText(e); return false; });
+  // 0.30.2 (no. 169): iOS closes the database while the page is in the background ('The database connection is closing'). A failed write
+  // reopens it and tries once more; IndexedDB is turned off only after 3 failed writes in a row (each one already kept in the browser storage).
+  let storeReopening = null;
+  function storeReopen() { if (!storeReopening) storeReopening = (async () => { try { try { storeDb && storeDb.close(); } catch (e) {} storeDb = await idbOpen(4000); return true; } catch (e) { STORE.lastErr = errText(e); return false; } finally { setTimeout(() => { storeReopening = null; }, 0); } })(); return storeReopening; }
+  async function storeRetry(puts) {
+    storeLog('write failed: ' + (STORE.lastErr || '?'));
+    if (await storeReopen() && await idbWrite(puts)) { STORE.fails = 0; return; }
+    STORE.fails = (STORE.fails || 0) + 1; if (STORE.fails >= 3) storeFail('write failed: ' + (STORE.lastErr || 'no reason given'));
+  }
+  const storeWake = () => { if (STORE.on && STORE.booted && document.visibilityState !== 'hidden') storeReopen(); };
+  document.addEventListener('visibilitychange', storeWake); window.addEventListener('pageshow', e => { if (e.persisted) storeWake(); });
   const recOk = r => !!(r && r.v === 1 && typeof r.json === 'string' && (() => { try { JSON.parse(r.json); return true; } catch (e) { return false; } })());
   let bootMem = {};   // what the start has decided so far: kept in memory whatever happens next (fix 1)
   async function storeBootInner() {
@@ -8635,7 +8654,7 @@ body.light-theme .proof-box{color:#0f172a}
     STORE.mem[k] = json; const ls = storeLsWrite(k, json), lsH = ls ? storeHash(json) : lsNowH(k);
     if (!STORE.booted) { STORE.pending[k] = { json, lsH }; return ls; }
     if (!STORE.on) return ls;
-    idbWrite({ [k]: { v: 1, at: Date.now(), json, lsH } }).then(okW => { if (!okW) storeFail('write failed'); });
+    const rec = { [k]: { v: 1, at: Date.now(), json, lsH } }; idbWrite(rec).then(okW => { if (okW) STORE.fails = 0; else storeRetry(rec); });   // 0.30.2: reopen + retry
     return true;
   };
   // ---------- 0.22.1 (no. 149, fix 3; Danny's rule): two tabs. The NEWEST tab wins: it first shows 'This page is also open in another tab'
@@ -10844,7 +10863,7 @@ body.light-theme .proof-box{color:#0f172a}
   const badgeText = () => 'v' + PROOF_VERSION + (PRETEND ? ' (acting as ' + PRETEND + ')' : '');
   // 0.30.0 (no. 168, CARRY C7 row 30): the badge also shows the TEST SCRIPT that answers: 'v0.30.0 · D03' (D + two digits = test-door-N, from
   // its answer to the start ping and to every save); the D part is amber when this page needs a newer script; a tap says which and gives the link
-  const DOOR_NEED = 3, K_DOOR = 'proof-containers.door.v1', RAW_GS = 'https://raw.githubusercontent.com/Platts-AC/pmi-inspection/main/proof-containers/test-script/Code.gs';
+  const DOOR_NEED = 4, K_DOOR = 'proof-containers.door.v1', RAW_GS = 'https://raw.githubusercontent.com/Platts-AC/pmi-inspection/main/proof-containers/test-script/Code.gs';
   let doorSeen = String(lsGet(K_DOOR, '') || '');
   const doorNum = v => { const m = /^test-door-(\d+)$/.exec(String(v || '')); return m ? Number(m[1]) : 0; };
   const dd = n => 'D' + String(n).padStart(2, '0');
@@ -10856,6 +10875,15 @@ body.light-theme .proof-box{color:#0f172a}
       : n < DOOR_NEED ? 'The test script answering is ' + doorSeen + ' (' + dd(n) + '); this page needs test-door-' + DOOR_NEED + ' (' + dd(DOOR_NEED) + '). Copy it from ' + RAW_GS + ' then Apps Script: paste, Save, Deploy > Manage deployments > Edit > New version.'
       : 'The test script answering is ' + doorSeen + ' (' + dd(n) + '): up to date.';
     say(t, n < DOOR_NEED ? 'warn' : 'done', 15000); lastAction = t; try { paintNotes(); } catch (e) {} }
+  function badgeFit(e) {   // 0.30.2 (no. 169): the whole badge always shows in portrait: the text shrinks to fit (down to 8 px), never '…'
+    const d = e.querySelector('.proof-door'), lab = (d && d.parentElement !== e ? d.parentElement : null) || Array.from(e.querySelectorAll('span,div')).filter(x => !x.children.length && x.textContent.trim()).pop(); if (!lab) return;
+    lab.style.fontSize = ''; lab.style.textOverflow = 'clip'; e.style.paddingLeft = e.style.paddingRight = ''; let fs = parseFloat(getComputedStyle(lab).fontSize) || 12, padded = false;
+    const over = () => lab.scrollWidth > Math.min(lab.clientWidth, e.clientWidth - 2) + 0.5 || (d && d.getBoundingClientRect().right > e.getBoundingClientRect().right + 0.5);
+    let guard = 0; while (over() && guard++ < 16) { if (!padded) { padded = true; e.style.paddingLeft = e.style.paddingRight = '3px'; continue; } if (fs <= 8) break; fs -= 0.5; lab.style.fontSize = fs + 'px'; }   // first the side padding, then the font
+  }
+  const badgeRefit = () => { try { const e = document.getElementById('proof-badge'); if (e) badgeFit(e); } catch (x) {} };
+  window.addEventListener('resize', badgeRefit); try { document.fonts && document.fonts.ready.then(badgeRefit); } catch (x) {}
+  let badgeTick = 0; setInterval(() => { if (++badgeTick > 20) return; badgeRefit(); }, 500);   // 0.30.2: late fonts / layout in the first 10 s
   function badge() {
     const part = document.querySelector('#viewport-canvas-frame .grid-split-partition[data-pid="' + BADGE_ID + '"]');
     const e = part && part.querySelector('button.rounded-lg'); if (!e) return;
@@ -10866,6 +10894,7 @@ body.light-theme .proof-box{color:#0f172a}
     if (!su) { if (d) d.remove(); }
     else { if (!d) { d = document.createElement('span'); d.className = 'proof-door'; const lab = Array.from(e.querySelectorAll('span,div')).filter(x => !x.children.length && x.textContent.trim()).pop(); (lab || e).appendChild(d); /* on the version's own line */ } const t = ' \u00b7 ' + (n ? dd(n) : 'D--'); if (d.textContent !== t) d.textContent = t;
       d.classList.toggle('old', !!n && n < DOOR_NEED); d.classList.toggle('wait', !n); if (!staleV) e.title = 'Version ' + PROOF_VERSION + ' · script ' + (doorSeen || 'not answered yet'); }
+    badgeFit(e);
     paintViewLine();
   }
   // 0.22.3 (no. 151, fix 1): the box of a read-only editor field with Box lines (capacitor, filter) shows its text in a plain wrapping
@@ -11041,8 +11070,8 @@ body.light-theme .proof-box{color:#0f172a}
     if (j.v === 'add') { call.__adds[id] = { id, name: F.name, file: String(fv || ''), entered: ev, rule: j.rule }; delete call.__diffs[id]; return; }
     delete call.__adds[id];
     if (j.v !== 'diff') { delete call.__diffs[id]; return; }
-    const d = call.__diffs[id]; if (d && d.entered === ev) return;
-    call.__diffs[id] = { id, name: F.name, file: String(fv), entered: ev, rule: j.rule, hint: j.hint, choice: 'open', at: Date.now(), tab: F.saveTab, cols: F.saveCols };
+    const d = call.__diffs[id]; if (d && d.entered === String(ev).trim()) return;   // 0.30.2: entered is kept trimmed
+    call.__diffs[id] = { id, name: F.name, file: String(fv).trim(), entered: String(ev).trim(), rule: j.rule, hint: j.hint, choice: 'open', at: Date.now(), tab: F.saveTab, cols: F.saveCols };
     if (call.__followIds && call.__followIds[id]) call.__diffs[id].followup = true;   // 0.29.0: retyped in a reopened follow-up = still that follow-up
   }
   const openDiffs = () => Object.keys(call.__diffs || {}).map(k => call.__diffs[k]).filter(d => d.choice === 'open' || d.choice === 'later');
@@ -11108,7 +11137,7 @@ body.light-theme .proof-box{color:#0f172a}
     ensureRecords(); const f = call.__file || {}, recs = f.records || {}, V = call.__visit || {}, out = [], list = Object.keys(call.__diffs || {}).map(k => call.__diffs[k]).filter(d => /^(typo|newEquip|newCust)$/.test(d.choice))
       .concat(Object.keys(call.__adds || {}).map(k => Object.assign({ choice: 'add' }, call.__adds[k])));
     list.forEach(d => { if (d.applied) return; const r = recs[d.id]; if (!r) return;
-      let nv = String(d.entered == null ? '' : d.entered); const fv = String(d.file == null ? '' : d.file);
+      let nv = String(d.entered == null ? '' : d.entered).trim(); const fv = String(d.file == null ? '' : d.file).trim();   // 0.30.2: trimmed
       let ov = fv;
       if (r.inh) { if (d.choice !== 'add') return; nv = ownPartOf(r, nv); ov = r.own || ''; if (!nv) return; }   // 0.30.0 (R3a): a combined field: only the place's own part, guarded by its own old text
       else if (d.choice === 'add' && d.rule === 'add' && fv && !/^(Phone|Email) \d+$/.test(r.col) && nv.indexOf(fv) >= 0) nv = nv.replace(fv, '').replace(/^[\s\u00b7,;]+|[\s\u00b7,;]+$/g, '');   // only the new part is added
@@ -11249,7 +11278,7 @@ body.light-theme .proof-box{color:#0f172a}
     fixed['Call type'] = callView.callType || valText(call['f:callType']); fixed['Template'] = callView.tpl || ''; fixed['Place Id'] = file.place || call.__placeId || '';
     fixed['System Id'] = sys; fixed['System label'] = piece ? piece.label : ''; fixed['Status'] = V.done ? 'Done' : 'In progress'; fixed['Created'] = V.created;
     fixed['Follow-up'] = followText();   // 0.27.0 (C7c-1): the open question(s), blank when none
-    (FCTL || []).forEach(F => { if (!F.visitsCol || VISIT_FIXED.indexOf(F.visitsCol) >= 0) return; values.push({ id: F.id, col: F.visitsCol, v: valText(call[F.id]), num: F.kind === 'number' || F.kind === 'calculated' }); });
+    (FCTL || []).forEach(F => { if (!F.visitsCol || VISIT_FIXED.indexOf(F.visitsCol) >= 0) return; values.push({ id: F.id, col: F.visitsCol, v: valText(call[F.id]).trim(), num: F.kind === 'number' || F.kind === 'calculated' }); });   // 0.30.2: trimmed
     const spec = file.spec || {}, seen = {};   // ratings: one column each, from the file snapshot (never typed)
     Object.keys(spec).forEach(fid => { const cols = (spec[fid] && spec[fid].cols) || {}; Object.keys(cols).forEach(c => { if (seen[c]) return; seen[c] = 1;
       values.push({ kind: 'rating', id: c, col: RATING_HEAD[c] || ('Rated ' + c), v: valText(cols[c]), num: c !== 'Filter size' && c !== 'ODF HP' }); }); });   // 0.30.0 (R11): ODF HP is always text ('1/12', '0.5')
@@ -11278,8 +11307,10 @@ body.light-theme .proof-box{color:#0f172a}
         const x = ob[0]; x.inFlight = true; lsSet(K_OUTBOX, ob);
         let r = null;
         try { const b = Object.assign(JSON.parse(x.body), { token: TOKEN, clientId: x.cid });
-          r = await withTimeout(fetch(url, { method: 'POST', keepalive: !!keep, headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(b) }).then(a => a.json()), 20000);
-        } catch (e) { const o2 = outbox(); if (o2[0]) delete o2[0].inFlight; lsSet(K_OUTBOX, o2); saveSt = { st: 'wait', why: '', at: saveSt.at, missing: saveSt.missing }; return; }
+          r = await withTimeout(fetch(url, { method: 'POST', keepalive: !!keep, headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(b) }).then(a => a.json()), 60000);   // 0.30.2: a big save can take the script over 20 s
+        } catch (e) { const o2 = outbox(); if (o2[0]) delete o2[0].inFlight; lsSet(K_OUTBOX, o2);
+          const slow = navigator.onLine !== false && /no answer/.test(String(e && e.message));   // 0.30.2: online but the sheet is slow = not 'no signal'; try again in 5 s
+          saveSt = { st: slow ? 'slow' : 'wait', why: '', at: saveSt.at, missing: saveSt.missing }; if (slow) setTimeout(() => { try { flushOutbox(); } catch (x) {} }, 5000); return; }
         const o3 = outbox().filter(y => y.cid !== x.cid); lsSet(K_OUTBOX, o3);
         if (r && r.ok) try { noteDoor(r.version); settleReply(x.vid, r); } catch (e) {}
         if (r && r.ok) saveSt = { st: 'saved', why: '', at: String(r.at || '').slice(-8) || hms(new Date()), row: r.row, missing: r.missing || [] };
@@ -11291,7 +11322,7 @@ body.light-theme .proof-box{color:#0f172a}
     if (!scriptUrl()) return 'Saving off';
     const n = outbox().length;
     if (saveSt.st === 'saving') return 'Saving…';
-    if (n && !sending) return 'Waiting for signal (' + n + ')';
+    if (n && !sending) return saveSt.st === 'slow' && navigator.onLine !== false ? 'Sheet is slow, trying again (' + n + ')' : 'Waiting for signal (' + n + ')';
     if (saveSt.st === 'error') return 'Not saved: ' + saveSt.why;
     if (saveSt.st === 'saved') return String(SETTINGS['save chip'] || 'Saved {time}').replace('{time}', saveSt.at);
     return call.__visit ? 'Not saved yet' : '';
