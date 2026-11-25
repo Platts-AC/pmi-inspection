@@ -3708,7 +3708,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.30.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.30.1", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3718,7 +3718,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.30.0', stamp: '2026-11-24 22:07:35', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.30.1', stamp: '2026-11-24 22:52:27', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8395,7 +8395,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.30.0';
+  const PROOF_VERSION = '0.30.1';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -9391,6 +9391,7 @@ body.light-theme .proof-box{color:#0f172a}
   // a found or new customer goes into the call: every value box whose Field has a Find fill gets that part of the site (0.12.2, R7:
   // no Field Id named here); then Find (and any New customer draft) is cleared and Entry opens
   function loadSite(x, extra) {
+    try { closeCard(); } catch (e) {}   // 0.30.1 (R7): a new pick closes an open card
     // 0.13.1 (R6): every house-Scope Field is cleared first (old tabs: the Find fill Fields), then filled from the site
     const hf = houseFields || Object.keys(FIND_FILL_FALLBACK).map(id => ({ id, find: FIND_FILL_FALLBACK[id] }));
     hf.forEach(f => { delete call[f.id]; }); delete call.__file;
@@ -9450,7 +9451,7 @@ body.light-theme .proof-box{color:#0f172a}
     if (t && !(document.getElementById('proof-ask') || { contains: () => false }).contains(t)) { e.preventDefault(); e.stopPropagation(); } }, true);
   function clearFind() { Object.keys(find).forEach(k => { find[k] = ''; }); }
   function blurNow() { try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (e) {} }
-  function goView(v) { blurNow(); resetTypingOrder(); setView(v); }
+  function goView(v) { blurNow(); resetTypingOrder(); setView(v); try { closeCard(); } catch (e) {} }   // 0.30.1 (R7): an open card never floats over another screen
 
   // ---------- round 8: the tapped value box stays in view (replaces round 2's 'results under the box', which moved the list
   // between the boxes with CSS order and left it there while the box kept focus after the keyboard closed: Danny's 13:00 screenshot).
@@ -10536,7 +10537,7 @@ body.light-theme .proof-box{color:#0f172a}
     const typedSomething = Object.keys(call).some(k => k.indexOf('__') !== 0 && String(call[k] == null ? '' : call[k]).trim() && !untouchedDefault(k));   // C3b: untouched default comments are not 'typed'
     try { saveCall('new call'); } catch (e) {}   // C7b: the old call is saved (queued) before it is cleared (already on the first tap)
     if (typedSomething && Date.now() - newArmed > 5000) { newArmed = Date.now(); say('Tap New again to clear this call', 'warn', 5000); return; }
-    newArmed = 0; prevCall = custMode() === 'yes' ? { call: JSON.parse(JSON.stringify(call)), view: JSON.parse(JSON.stringify(callView)) } : null;   /* 0.22.3: yes = Cancel on Find puts this call back */
+    try { closeCard(); } catch (e) {} newArmed = 0; prevCall = custMode() === 'yes' ? { call: JSON.parse(JSON.stringify(call)), view: JSON.parse(JSON.stringify(callView)) } : null;   /* 0.22.3: yes = Cancel on Find puts this call back */
     call = {}; callView = Object.assign(VIEW_DEFAULT(), { view: 'all', needCust: custMode() !== 'no' });   /* 0.22.2 (F12): a new call starts in All */ try { applyDefaults(); stampDate(); } catch (e) {} lsSet(K.call, call); try { applyFolds(engineState); } catch (e) {}; saveView(); clearFind(); goView('find'); paintNotes();   // round B2: reveals and template belong to the call
   };
   // round 7 (3): Refresh page = reload the whole page past the browser's copy (new ?v=, other switches dropped). With unsaved
@@ -10972,32 +10973,36 @@ body.light-theme .proof-box{color:#0f172a}
     if (x.num !== y.num || x.name !== y.name) return DIFF('S-5');
     if ((x.dir && y.dir && x.dir !== y.dir) || (x.type && y.type && x.type !== y.type)) return DIFF('S-6', 'The direction or street type differs.');
     if ((x.unit || '') !== (y.unit || '')) return DIFF('S-8', 'The unit differs.');
+    { const tl = t => { const p = t.split(','); if (p.length < 2) return null; const rest = p.slice(1).join(' ').toLowerCase(), z = /\b(\d{5})(?:-\d{4})?\b/.exec(rest);   // 0.30.1 (R6-1): city / ZIP when BOTH sides have them
+        const city = cmpTrim(p[1].toLowerCase().replace(/\b\d{5}(-\d{4})?\b/g, '').replace(/\b(fl|florida|[a-z]{2})\s*$/, '')); return { zip: z ? z[1] : '', city }; };
+      const ta = tl(A), tb = tl(B); if (ta && tb && ((ta.zip && tb.zip && ta.zip !== tb.zip) || (ta.city && tb.city && ta.city !== tb.city))) return DIFF('S-7', 'The city or ZIP differs.'); }
     return A.split(',').length < B.split(',').length ? ADD('S-9') : SAME('S-5'); }
   function ruleName(a, b) {   // S-10 case / spaces, S-11 'Last, First', S-12 spouse or middle initial added = quiet add (CT-26)
     const toks = t => { let s = cmpTrim(t).toLowerCase().replace(/[.;:]+/g, ' '); const c = s.split(','); if (c.length === 2 && c[0].trim() && c[1].trim()) s = c[1] + ' ' + c[0]; return s.replace(/,/g, ' ').split(/\s+/).filter(w => w && w !== '&' && w !== 'and'); };
     const f = toks(a), e = toks(b), has = (l, w) => l.indexOf(w) >= 0;
     if (f.length === e.length && f.every(w => has(e, w))) return SAME('S-10');
-    if (f.every(w => has(e, w))) return ADD('S-12'); if (e.length && e.every(w => has(f, w))) return SAME('S-12');
-    return DIFF('S-11'); }
+    const shared = f.filter(w => has(e, w)).length;   // 0.30.1 (R6-2): a subset counts only with more than one shared word ('John' for 'John Smith' = DIFFERENT)
+    if (shared >= 2 && f.every(w => has(e, w))) return ADD('S-12'); if (shared >= 2 && e.length && e.every(w => has(f, w))) return SAME('S-12');
+    return DIFF('S-11', shared ? 'A part of the name is missing or added.' : ''); }
   const keyAZ = t => String(t == null ? '' : t).toUpperCase().replace(/[^A-Z0-9]/g, '');
-  const ocr = t => t.replace(/O/g, '0').replace(/[IL]/g, '1');
+  const ocrKey = t => keyAZ(String(t == null ? '' : t).replace(/l/g, '1')).replace(/O/g, '0').replace(/I/g, '1');   // 0.30.1 (R6-7): only real look-alikes (O/0, I/1, a lowercase l); an uppercase L is not a 1
   function ruleModel(a, b) {   // S-13 case / spaces / dashes, S-14 a longer form = the card with both (CT-26), S-15 O/0 I/1 = alert with a hint
     const x = keyAZ(a), y = keyAZ(b); if (x === y) return SAME('S-13');
-    if (ocr(x) === ocr(y)) return DIFF('S-15', 'Only O / 0 or I / 1 differs: check the tag.');
+    if (ocrKey(a) === ocrKey(b)) return DIFF('S-15', 'Only O / 0 or I / 1 differs: check the tag.');
     const s = x.length < y.length ? x : y, l = x.length < y.length ? y : x; if (s.length >= 7 && l.indexOf(s) === 0) return DIFF('S-14', 'One is a longer form of the other: pick which to keep.');
     return DIFF('S-13'); }
-  function ruleSerial(a, b) { const x = keyAZ(a), y = keyAZ(b); if (x === y) return SAME('S-16'); if (ocr(x) === ocr(y)) return DIFF('S-15', 'Only O / 0 or I / 1 differs: check the tag.'); return DIFF('S-16'); }   // S-15, S-16
+  function ruleSerial(a, b) { const x = keyAZ(a), y = keyAZ(b); if (x === y) return SAME('S-16'); if (ocrKey(a) === ocrKey(b)) return DIFF('S-15', 'Only O / 0 or I / 1 differs: check the tag.'); return DIFF('S-16'); }   // S-15, S-16
   const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
   function mfgOf(t) { const s = cmpTrim(t).toUpperCase(); let m;   // -> { y, m } (m 0 = year only)
     if ((m = /^([A-Z]{3})[A-Z]*\.?\s*[-/ ]?\s*(\d{2}|\d{4})$/.exec(s)) && MONTHS.indexOf(m[1]) >= 0) return { y: yr(m[2]), m: MONTHS.indexOf(m[1]) + 1 };
     if ((m = /^(\d{1,2})\s*[-/.]\s*(\d{2}|\d{4})$/.exec(s)) && +m[1] >= 1 && +m[1] <= 12) return { y: yr(m[2]), m: +m[1] };
     if ((m = /^(\d{4})\s*[-/.]\s*(\d{1,2})$/.exec(s)) && +m[2] >= 1 && +m[2] <= 12) return { y: +m[1], m: +m[2] };
     if ((m = /^(\d{4})$/.exec(s))) return { y: +m[1], m: 0 }; return null; }
-  const yr = t => t.length === 2 ? 2000 + Number(t) : Number(t);
+  const yr = t => t.length === 2 ? (Number(t) > new Date().getFullYear() % 100 ? 1900 : 2000) + Number(t) : Number(t);   // 0.30.1 (R6-4): '06/98' = 1998
   function ruleMfg(a, b) {   // S-17 format variants, S-18 year on file + month read = quiet add
     const x = mfgOf(a), y = mfgOf(b); if (!x || !y) return ruleText(a, b).v === 'same' ? SAME('S-17') : DIFF('S-17');
     if (x.y !== y.y) return DIFF('S-18'); if (x.m === y.m) return SAME('S-17'); if (!x.m) return ADD('S-18'); if (!y.m) return SAME('S-18'); return DIFF('S-18'); }
-  const REFRIG = { 'PURON': 'R410A', 'PURONADVANCE': 'R454B', 'XL41': 'R454B', 'FREON': 'R22', 'HCFC22': 'R22', 'HFC32': 'R32' };
+  const REFRIG = { 'PURON': 'R410A', 'PURONADVANCE': 'R454B', 'XL41': 'R454B', 'OPTEONXL41': 'R454B', 'OPTEONXL41R454B': 'R454B', 'R454BOPTEONXL41': 'R454B',   /* 0.30.1 (R6-6) */ 'FREON': 'R22', 'HCFC22': 'R22', 'HFC32': 'R32' };
   function ruleRefrigerant(a, b) { const n = t => { const k = keyAZ(t); if (REFRIG[k]) return REFRIG[k]; return 'R' + k.replace(/^R/, ''); }; return n(a) === n(b) ? SAME('S-19') : DIFF('S-19'); }   // S-19
   const METER = { TXU: 'TXV', TXV: 'TXV', THERMALEXPANSIONVALVE: 'TXV', EXV: 'EXV', EEV: 'EXV', PISTON: 'PISTON', FIXEDORIFICE: 'PISTON', ORIFICE: 'PISTON' };
   function ruleMetering(a, b) { const n = t => METER[keyAZ(t)] || keyAZ(t); return n(a) === n(b) ? SAME('S-20') : DIFF('S-20'); }   // S-20
@@ -11006,12 +11011,14 @@ body.light-theme .proof-box{color:#0f172a}
   function ruleDualCap(a, b) { const n = t => (String(t || '').replace(/µf|uf|mfd/ig, '').match(/\d+(\.\d+)?/g) || []).map(Number); const x = n(a), y = n(b);   // S-22
     return x.length === y.length && x.every((v, i) => Math.abs(v - y[i]) < 1e-9) ? SAME('S-22') : DIFF('S-22'); }
   function filtersOf(t) { const out = []; String(t || '').toLowerCase().replace(/[×*]/g, 'x').replace(/["”']/g, '').split(/\s*(?:,|;|\/|&|\band\b)\s*/).forEach(p => {   // S-23 / S-24
-      const q = /^\(?(\d+)\)?\s*(?:x\s+|pcs?\s+|of\s+)?(?=\d+(?:\.\d+)?\s*x)/.exec(p.trim()), n = q && /^\(/.test(p.trim()) ? Number(q[1]) : 1, rest = q && /^\(/.test(p.trim()) ? p.trim().slice(q[0].length) : p.trim();
+      const q = /^(?:\((\d+)\)\s*|(\d+)\s*(?:x|pcs?|of)\s+)(?=\d+(?:\.\d+)?\s*x\s*\d+(?:\.\d+)?\s*x\s*\d)/.exec(p.trim()), n = q ? Number(q[1] || q[2]) : 1, rest = q ? p.trim().slice(q[0].length) : p.trim();   // 0.30.1 (R6-3): '(2) 20x25x1' and '2x 20x25x1'
       const m = /(\d+(?:\.\d+)?)\s*x\s*(\d+(?:\.\d+)?)\s*x\s*(\d+(?:\.\d+)?)/.exec(rest); if (!m) { if (p.trim()) out.push('?' + p.trim()); return; }
       const l = Number(m[1]), w = Number(m[2]); for (let i = 0; i < n; i++) out.push(Math.min(l, w) + 'x' + Math.max(l, w) + 'x' + Number(m[3])); });
     return out.sort(); }
   function ruleFilter(a, b) { const x = filtersOf(a), y = filtersOf(b); return x.join('|') === y.join('|') ? SAME('S-23') : DIFF(x.length > 1 || y.length > 1 ? 'S-24' : 'S-23'); }
-  function ruleTons(a, b) { const n = t => { const s = cmpTrim(t).toLowerCase().replace(/,/g, ''); const m = /(\d+(\.\d+)?)/.exec(s); if (!m) return null; const v = Number(m[1]); return /btu/.test(s) || v >= 12000 ? v / 12000 : v; };   // S-25
+  function ruleTons(a, b) { const n = t => { const s = cmpTrim(t).toLowerCase().replace(/,/g, '');   // S-25; 0.30.1 (R6-5): '036' (alone or inside a model) = 36,000 BTU = 3 ton
+      if (/^0\d\d$/.test(s)) return Number(s) / 12; if (/[a-z]\d*0(18|24|30|36|42|48|60)/.test(s) && !/^\d+(\.\d+)?\s*(tons?|t)?$/.test(s) && !/btu/.test(s)) return Number(/[a-z]\d*?0(18|24|30|36|42|48|60)/.exec(s)[1]) / 12;
+      const m = /(\d+(\.\d+)?)/.exec(s); if (!m) return null; const v = Number(m[1]); return /btu/.test(s) || v >= 12000 ? v / 12000 : v; };
     const x = n(a), y = n(b); return x != null && y != null && Math.abs(x - y) <= 0.05 ? SAME('S-25') : DIFF('S-25'); }
   function ruleUnitLabel(a, b) { const n = t => cmpTrim(t).toLowerCase().replace(/^(unit|apt|apartment|ste|suite|#)\s*/, '').replace(/^#/, '').replace(/^0+(?=\d)/, ''); return n(a) === n(b) ? SAME('S-26') : DIFF('S-26'); }   // S-26
   const EQUIP_ALIAS = { CU: 'CONDENSER', COND: 'CONDENSER', CONDENSINGUNIT: 'CONDENSER', OUTDOORUNIT: 'CONDENSER', CONDENSER: 'CONDENSER', AH: 'AIRHANDLER', AHU: 'AIRHANDLER', AIRHANDLER: 'AIRHANDLER', INDOORUNIT: 'AIRHANDLER', HP: 'HEATPUMP', HEATPUMP: 'HEATPUMP', FURN: 'FURNACE', FURNACE: 'FURNACE' };
@@ -11057,7 +11064,7 @@ body.light-theme .proof-box{color:#0f172a}
       (d.hint ? '<div class="pd-hint">' + esc(d.hint) + '</div>' : '') + (d.conflict ? '<div class="pd-hint pd-conflict">' + esc(d.conflict) + '</div>' : '') + '<div class="pd-photo-view"></div>' +
       '<div class="pd-btns">' + btn('typo', 'Typo on file') + (contact ? '' : btn(house ? 'newCust' : 'newEquip', house ? 'New customer' : 'New equipment')) + (mode === 'close' ? btn('leave', 'Leave as is') + btn('follow', 'Follow up') : (d.followup ? btn('leave', 'Leave as is') : '') + btn('later', 'Later')) +   /* 0.29.0: a reopened follow-up can be settled with Leave as is */
       '<label class="pd-photo">Photo<input type="file" accept="image/*" hidden></label>' + (mode === 'close' ? btn('back', 'Back', 'pd-back') : '') + '</div>';
-    el.dataset.id = id; el.dataset.mode = mode; el.style.display = ''; cardFor = { id, mode, next };
+    el.dataset.id = id; el.dataset.mode = mode; el.style.display = ''; cardFor = { id, mode, next, view: currentView };   // 0.30.1 (R7): the screen it belongs to
     try { document.activeElement && document.activeElement.blur && document.activeElement.blur(); } catch (e) {}
   }
   function closeCard() { const el = document.getElementById('proof-diff'); if (el) el.style.display = 'none'; cardFor = null; }
@@ -11076,7 +11083,8 @@ body.light-theme .proof-box{color:#0f172a}
     e.stopPropagation(); const d = openDiffs()[0]; if (!d) return; const b = document.querySelector('#viewport-canvas-frame .proof-box[data-key="' + d.id + '"]'); if (b) b.scrollIntoView({ block: 'center' }); openCard(d.id, 'leave'); }, true);
   document.addEventListener('input', e => { const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b || !b.dataset.key || !call.__file) return; try { refreshDiff(b.dataset.key); paintDiffs(); } catch (x) {} });   // amber while typing, no pop-up
   document.addEventListener('focusout', e => { const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b || !b.dataset.key) return; const k = b.dataset.key;   // leaving the box: the card
-    setTimeout(() => { const d = (call.__diffs || {})[k]; if (d && d.choice === 'open' && !cardFor) openCard(k, 'leave'); }, 0); }, true);
+    const v0 = currentView, c0 = call;   // 0.30.1 (R7): not after the screen or the call changed
+    setTimeout(() => { const d = (call.__diffs || {})[k]; if (d && d.choice === 'open' && !cardFor && currentView === v0 && call === c0) openCard(k, 'leave'); }, 0); }, true);
   function askAtClose(done) {   // Copy report / New: every open line again; Back stops (nothing is lost)
     const q = openDiffs().map(d => d.id), next = () => { const id = q.shift(); if (!id) { done(); return; } openCard(id, 'close', next); }; next(); }
   { const copy0 = window.EngineActions['copy-report'], new0 = window.EngineActions['new-call'];
@@ -11085,10 +11093,14 @@ body.light-theme .proof-box{color:#0f172a}
   const followText = () => Object.keys(call.__diffs || {}).map(k => call.__diffs[k]).filter(d => d.choice === 'follow' || (d.followup && (d.choice === 'later' || d.choice === 'open'))).map(d => d.name + ': on file ' + d.file + ', entered ' + d.entered).join(' | ');   // 0.29.0: a reopened follow-up stays until settled
   const REASON = { typo: 'Correction', newEquip: 'New equipment', newCust: 'New customer', add: 'Added' };
   function ensureRecords() {   // 0.28.0: a call picked by 0.24.0 to 0.27.0 has no records yet: made from the place and the pieces it kept
-    const f = call.__file; if (!f || f.records || !ONFILE || !f.place) return; const P = placeById(f.place); if (!P) return; const recs = {}, by = {};
+    const f = call.__file; if (!f || !ONFILE || !f.place) return; const P = placeById(f.place); if (!P) return;
+    if (f.records) { Object.keys(f.records).forEach(k => { const r = f.records[k]; if (r.tab === 'Places' && COMBINE[r.col] && !r.inh) Object.assign(r, ownOf(P, r.col)); }); return; }   // 0.30.1 (R8 / R3a): 0.28.0-0.29.0 records get own / inherited
+    const recs = {}, by = {};
     Object.keys(f.pieces || {}).forEach(sl => { const pc = ONFILE.pieces.find(x => x.id === f.pieces[sl]); if (pc) by[sl] = pc; });
+    if (!f.pieces) { const act = ONFILE.pieces.filter(x => x.place === P.id && x.status === 'active'), sys = f.system || ([...new Set(act.map(x => x.system))].sort()[0] || '');   // 0.30.1 (R8): a 0.24.0 / 0.25.x call kept no pieces: the Active ones of its place and system
+      act.filter(x => x.system === sys).forEach(pc => { if (pc.slot && !by[pc.slot]) by[pc.slot] = pc; }); }
     FCTL.forEach(F => { if (!F.saveTab || !F.saveCols.length) return; const col = F.saveCols[0];
-      if (F.saveTab === 'Places') { if (!(f.inherited || {})[F.id]) recs[F.id] = { tab: 'Places', id: P.id, col }; return; }
+      if (F.saveTab === 'Places') { if (COMBINE[col]) recs[F.id] = Object.assign({ tab: 'Places', id: P.id, col }, ownOf(P, col)); else if (!(f.inherited || {})[F.id]) recs[F.id] = { tab: 'Places', id: P.id, col }; return; }
       const pc = F.equip ? by[F.equip] : Object.keys(by).map(k => by[k]).find(x => x.cols[col]); if (pc) recs[F.id] = { tab: 'Equipment', id: pc.id, col, slot: pc.slot }; });
     f.records = recs;
   }
@@ -11111,8 +11123,28 @@ body.light-theme .proof-box{color:#0f172a}
     FCTL.forEach(F => { if (F.saveTab === 'Places' && F.saveCols[0] && String(call[F.id] == null ? '' : call[F.id]).trim()) cols[F.saveCols[0]] = String(call[F.id]); });
     return cols['Customer'] && cols['Address'] ? { from: call.__placeId || '', cols } : null;
   }
+  // 0.30.1 (R9 / R7): a call whose file changes are on their way is kept here (key pending.v1) until the door answers; an answer for a call that
+  // is not on screen any more is settled on that copy, and a 'changed meanwhile' goes to the Follow-ups list (never dropped)
+  const K_PENDING = 'proof-containers.pending.v1';
+  const pendingAll = () => { const o = lsGet(K_PENDING, {}); return o && typeof o === 'object' && !Array.isArray(o) ? o : {}; };
+  function keepPending(vid, c, view) { const o = pendingAll(); if (c) o[vid] = { call: JSON.parse(JSON.stringify(c)), view: JSON.parse(JSON.stringify(view || {})), at: Date.now() }; else delete o[vid];
+    Object.keys(o).sort((a, b) => o[b].at - o[a].at).slice(20).forEach(k => { delete o[k]; }); lsSet(K_PENDING, o); }
   function settleReply(vid, r) {   // 0.28.0: what the door did with each change
-    if (!call.__visit || call.__visit.id !== vid || !r) return; let touched = false;
+    if (!r) return;
+    if (!call.__visit || call.__visit.id !== vid) { settleAway(vid, r); return; }
+    const t = settleOn(call, r);
+    if (t) { lsSet(K.call, call); try { paintDiffs(); paintSpec(); syncFollow(); } catch (e) {} }
+    try { if (!fileChanges().length) keepPending(vid, null); else keepPending(vid, call, callView); } catch (e) {}
+  }
+  function settleAway(vid, r) {   // 0.30.1 (R9): the answer for a call that left the screen
+    const pd = pendingAll()[vid]; if (!pd || !pd.call) return; const c = pd.call; settleOn(c, r);
+    const hit = Object.keys(c.__diffs || {}).map(k => c.__diffs[k]).filter(d => d.conflict && d.choice === 'open');
+    hit.forEach(d => { d.followup = true; d.choice = 'later'; c.__followIds = c.__followIds || {}; c.__followIds[d.id] = 1; });
+    if (hit.length) { const l = followList().filter(x => x.vid !== vid), en = followEntry(c, pd.view); if (en) { l.unshift(en); lsSet(K_FOLLOW, l.slice(0, 50)); } try { paintFollow(); } catch (e) {} }
+    keepPending(vid, null);
+  }
+  function settleOn(call, r) {   // the door's answer applied to one call (the one on screen, or a kept copy); true when it changed something
+    let touched = false;
     if (r.placeId && call.__placeId !== r.placeId) { const ph = /^PH-(.+)$/.exec(call.__placeId || ''); call.__placeId = r.placeId; touched = true;
       if (ph) { const l = lsGet(K.sites, []); if (Array.isArray(l)) { l.forEach(x => { if (x && x.id === ph[1]) x.placeId = r.placeId; }); lsSet(K.sites, l); } } }   // 0.30.0 (R4): the phone learns the Place Id
     const f = call.__file || {};
@@ -11122,9 +11154,9 @@ body.light-theme .proof-box{color:#0f172a}
         if (c.newId && f.records) { const r0 = f.records[c.key]; if (r0) { const oldId = r0.id; Object.keys(f.records).forEach(k => { const r2 = f.records[k]; if (r2.tab === 'Equipment' && r2.id === oldId) { r2.id = c.newId; if (f.values && call[k] != null) f.values[k] = String(call[k]); if (f.spec) delete f.spec[k]; } });
           if (f.pieces && r0.slot) f.pieces[r0.slot] = c.newId; } }
         if (call.__adds && call.__adds[c.key] === d) delete call.__adds[c.key]; else if (call.__diffs) delete call.__diffs[c.key]; }
-      else if (c.status === 'changed') { d.choice = 'open'; d.conflict = 'The sheet changed meanwhile: it now says "' + c.now + '"'; d.file = String(c.now); if (f.values) f.values[c.key] = String(c.now); }
+      else if (c.status === 'changed') { d.choice = 'open'; d.conflict = 'The sheet changed meanwhile: it now says "' + c.now + '"' + (c.note ? ' (' + c.note + ')' : ''); d.file = String(c.now); if (f.values) f.values[c.key] = String(c.now); }
       else if (c.status === 'missing') { d.applied = true; d.missing = true; } });
-    if (touched) { lsSet(K.call, call); try { paintDiffs(); paintSpec(); syncFollow(); } catch (e) {} }
+    return touched;
   }
   window.__proofCompare = { judge, kindOf: id => kindOf((FCTL || []).find(x => x.id === id) || {}), diffs: () => call.__diffs || {}, adds: () => call.__adds || {} };   // for the tests only
 
@@ -11139,10 +11171,13 @@ body.light-theme .proof-box{color:#0f172a}
   const followOf = c => Object.keys(c.__diffs || {}).map(k => c.__diffs[k]).filter(d => d.choice === 'follow' || d.followup);
   function syncFollow() {   // keep this call's entry in the list up to date (added on 'Follow up', removed when settled)
     if (!call.__visit) return; const vid = call.__visit.id, open = followOf(call).filter(d => d.choice === 'follow' || d.choice === 'later' || d.choice === 'open');
-    let l = followList().filter(x => x.vid !== vid);
-    if (open.length) { const f = call.__file || {}; l.unshift({ vid, place: f.place || call.__placeId || '', name: String(call['f:customer'] || '').trim() || (f.place || 'Call'), date: call.__visit.date || '',
-      qs: open.map(d => ({ id: d.id, name: d.name, file: d.file, entered: d.entered })), call: JSON.parse(JSON.stringify(call)), view: JSON.parse(JSON.stringify(callView)), at: Date.now() }); }
+    let l = followList().filter(x => x.vid !== vid); const en = open.length ? followEntry(call, callView) : null; if (en) l.unshift(en);
     lsSet(K_FOLLOW, l.slice(0, 50)); paintFollow();
+  }
+  function followEntry(c, view) {   // 0.30.1: one Follow-ups entry for a call (the one on screen, or a kept copy, R9)
+    if (!c || !c.__visit) return null; const open = followOf(c).filter(d => d.choice === 'follow' || d.choice === 'later' || d.choice === 'open'); if (!open.length) return null; const f = c.__file || {};
+    return { vid: c.__visit.id, place: f.place || c.__placeId || '', name: String(c['f:customer'] || '').trim() || (f.place || 'Call'), date: c.__visit.date || '',
+      qs: open.map(d => ({ id: d.id, name: d.name, file: d.file, entered: d.entered, note: d.conflict || '' })), call: JSON.parse(JSON.stringify(c)), view: JSON.parse(JSON.stringify(view || {})), at: Date.now() };
   }
   function paintFollow() { const n = followList().length, t = n ? n + ' open follow-up' + (n > 1 ? 's' : '') + ' · tap to see' : '';
     document.querySelectorAll('#viewport-canvas-frame .proof-followline').forEach(e => { if (e.textContent !== t) e.textContent = t; }); }
@@ -11151,7 +11186,7 @@ body.light-theme .proof-box{color:#0f172a}
     let el = document.getElementById('proof-follow'); if (!el) { el = document.createElement('div'); el.id = 'proof-follow'; document.body.appendChild(el); }
     const l = followList();
     el.innerHTML = '<div class="pf-title">Follow-ups on this phone</div>' + (l.length ? l.map((x, i) => '<button type="button" class="pf-item" data-i="' + i + '"><b>' + esc(x.name) + '</b> · ' + esc(x.date) + '<br>' +
-      x.qs.map(q => esc(q.name + ': on file ' + q.file + ', entered ' + q.entered)).join('<br>') + '</button>').join('') : '<div class="pf-none">No open follow-ups.</div>') + '<button type="button" class="pf-close">Close</button>';
+      x.qs.map(q => esc(q.name + ': on file ' + q.file + ', entered ' + q.entered) + (q.note ? '<br><i>' + esc(q.note) + '</i>' : '')).join('<br>') + '</button>').join('') : '<div class="pf-none">No open follow-ups.</div>') + '<button type="button" class="pf-close">Close</button>';
     el.style.display = '';
   }
   function closeFollowList() { const el = document.getElementById('proof-follow'); if (el) el.style.display = 'none'; }
@@ -11228,6 +11263,7 @@ body.light-theme .proof-box{color:#0f172a}
     if (!scriptUrl()) { saveSt = { st: 'off', why: '', at: '', missing: [] }; paintChip(); return; }
     const body = visitBody(), sig = JSON.stringify(body), last = lsGet(K_SAVED, {}) || {};
     if (last[body.visitId] === sig && !/^tap/.test(why)) { flushOutbox(); return; }
+    try { keepPending(body.visitId, body.changes && body.changes.length ? call : null, callView); } catch (e) {}   // 0.30.1 (R9): kept until the door answers
     const ob = outbox().filter(x => x.vid !== body.visitId || x.inFlight);   // the newest copy per Visit Id
     ob.push({ vid: body.visitId, cid: body.visitId.slice(2) + '-' + Date.now().toString(36) + '-' + rand(4), body: sig, why, at: Date.now() });
     lsSet(K_OUTBOX, ob); last[body.visitId] = sig; Object.keys(last).slice(0, -20).forEach(k => { delete last[k]; }); lsSet(K_SAVED, last);
@@ -11396,7 +11432,7 @@ body.light-theme .proof-box{color:#0f172a}
   const partIdx = part => { const m = /handleSplitClick\((\d+), (\d+), (\d+), (\d+)/.exec(part.getAttribute('onclick') || ''); return m ? m.slice(1, 5).map(Number) : null; };
   let visBusy = false;
   function applyVis() {
-    try { paintViewLine(); paintChip(); paintDiffs(); paintFollow(); followNote(); } catch (e) {}   // 0.22.2 (F12); C7b: the save chip
+    try { paintViewLine(); paintChip(); paintDiffs(); paintFollow(); followNote(); if (cardFor && cardFor.view !== currentView) closeCard(); } catch (e) {}   // 0.30.1 (R7): another screen closes the card   // 0.22.2 (F12); C7b: the save chip
     const frame = document.getElementById('viewport-canvas-frame'); if (!frame || visBusy) return;
     visBusy = true;
     try {
