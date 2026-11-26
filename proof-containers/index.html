@@ -759,7 +759,7 @@ body:not(.proof-ready) #reopen-inspector-fab{display:none!important}
 #viewport-canvas-frame .grid-split-partition.proof-diffline{background:rgba(245,158,11,.16)!important;box-shadow:inset 0 -2px 0 #f59e0b}
 #viewport-canvas-frame .proof-checkcount{display:flex;align-items:center;justify-content:center;height:100%;color:#fbbf24;font-weight:700;cursor:pointer;text-align:center;line-height:1.1}
 #viewport-canvas-frame .proof-systems button.add{border-style:dashed;color:#5eead4;background:transparent}#proof-addsys{position:fixed;left:0;right:0;bottom:0;z-index:2147483001;background:#0b1220;color:#e5e7eb;border-top:2px solid #5eead4;border-radius:14px 14px 0 0;padding:14px 14px calc(14px + env(safe-area-inset-bottom,0px));font:15px system-ui,sans-serif;box-shadow:0 -8px 24px rgba(0,0,0,.5)}#proof-addsys .pa-title{font-weight:700;margin-bottom:10px;color:#5eead4}#proof-addsys button{display:block;width:100%;text-align:left;margin:0 0 8px;padding:10px 12px;border:1px solid #334155;border-radius:10px;background:#1f2937;color:#f8fafc;font:600 15px system-ui,sans-serif}#proof-addsys button small{display:block;font:400 12px system-ui,sans-serif;color:#94a3b8;margin-top:2px}#proof-addsys button[data-a=cancel]{background:transparent;color:#cbd5e1}
-#viewport-canvas-frame .proof-systems{display:flex;gap:6px;align-items:center;height:100%;overflow-x:auto;padding:2px 6px;scrollbar-width:none}#viewport-canvas-frame .proof-systems button{flex:0 0 auto;min-height:32px;padding:2px 12px;border:1px solid #334155;border-radius:16px;background:#111827;color:#e5e7eb;font:600 13px system-ui,sans-serif;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}#viewport-canvas-frame .proof-systems button small{font:500 10px system-ui,sans-serif;color:#94a3b8}#viewport-canvas-frame .proof-systems button.on{background:#0f766e;border-color:#5eead4;color:#f0fdfa}#viewport-canvas-frame .proof-systems button.has::after{content:'';position:absolute;top:3px;right:5px;width:6px;height:6px;border-radius:50%;background:#fbbf24}.proof-rp-head{font-weight:700;color:#5eead4;margin:0 0 6px}
+#viewport-canvas-frame .proof-face:has(.proof-namebox){padding:0 4px}#viewport-canvas-frame .proof-systems{display:flex;gap:6px;align-items:center;height:100%;overflow:hidden;padding:2px 6px}#viewport-canvas-frame .proof-sys-list{display:flex;gap:6px;align-items:center;flex:1 1 auto;min-width:0;overflow-x:auto;scrollbar-width:none}#viewport-canvas-frame .proof-sys-list::-webkit-scrollbar{display:none}#viewport-canvas-frame .proof-sys-end{display:flex;gap:6px;align-items:center;flex:0 0 auto}#viewport-canvas-frame .proof-systems button.proof-chip-pin{min-height:26px;padding:2px 9px;border:1px solid #f59e0b;border-radius:10px;background:#451a03;color:#fde68a;font:600 11px/1.2 system-ui,sans-serif}#viewport-canvas-frame .proof-systems button.proof-chip-pin[hidden]{display:none}#viewport-canvas-frame .proof-systems button.same{border-style:dashed;color:#5eead4;background:transparent;font-size:12px}#viewport-canvas-frame .proof-systems button{flex:0 0 auto;min-height:32px;padding:2px 12px;border:1px solid #334155;border-radius:16px;background:#111827;color:#e5e7eb;font:600 13px system-ui,sans-serif;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}#viewport-canvas-frame .proof-systems button small{font:500 10px system-ui,sans-serif;color:#94a3b8}#viewport-canvas-frame .proof-systems button.on{background:#0f766e;border-color:#5eead4;color:#f0fdfa}#viewport-canvas-frame .proof-systems button.has::after{content:'';position:absolute;top:3px;right:5px;width:6px;height:6px;border-radius:50%;background:#fbbf24}.proof-rp-head{font-weight:700;color:#5eead4;margin:0 0 6px}
 #viewport-canvas-frame .proof-pretag{position:absolute;right:4px;top:1px;z-index:3;font:700 9px/12px system-ui,sans-serif;color:#0f172a;background:#5eead4;border-radius:4px;padding:0 4px;pointer-events:none;white-space:nowrap}#proof-fmenu button.on{border-color:#5eead4;color:#5eead4}
 #proof-storewarn{position:fixed;left:8px;right:8px;top:calc(env(safe-area-inset-top,0px) + 4px);z-index:2147483002;padding:6px 10px;border:1px solid #f59e0b;border-radius:8px;background:#1f1406;color:#fbbf24;font:600 12px/16px system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}#proof-storewarn.open{white-space:normal;overflow:visible;text-overflow:clip}
 #proof-badge .proof-door{color:inherit;display:inline-block;white-space:nowrap;font-size:.85em}#proof-badge .proof-door.old{color:#f59e0b;font-weight:700}#proof-badge .proof-door.wait{color:#94a3b8}
@@ -3712,7 +3712,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.33.1", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.34.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3722,7 +3722,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.33.1', stamp: '2026-11-25 21:12:34', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.34.0', stamp: '2026-11-25 21:36:33', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8399,7 +8399,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.33.1';
+  const PROOF_VERSION = '0.34.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -9206,8 +9206,11 @@ body.light-theme .proof-box{color:#0f172a}
     closeFMenu(); closePick(); closeAsk(); closeCap(); closeFilter();
     const pinned = isPinned(F.id), el = document.createElement('div'); el.id = 'proof-fmenu'; el.setAttribute('role', 'dialog');
     const groups = [F, nameOfLine(F)].filter(Boolean).map(G => ({ G, o: preOptions(G), cur: (call.__pre || {})[G.id] })).filter(g => g.o.length);   // 0.31.0 (CT-28): the line's choices, before or while typing
-    el.innerHTML = '<div class="pp-title">' + esc(fieldName(F.id)) + '</div>' + groups.map(g => (groups.length > 1 || g.G !== F ? '<div class="pp-sub">' + esc(g.G.name) + '</div>' : '') + g.o.map(o => '<button type="button" data-m="pc:' + esc(g.G.id) + ':' + o[0] + '"' + (g.cur === o[0] ? ' class="on"' : '') + '>' + (g.cur === o[0] ? '\u2713 ' : '') + esc(o[1]) + '<small>' + esc(o[2]) + '</small></button>').join('')).join('') + '<button type="button" data-m="pin">' + (pinned ? 'Unpin from future reports' : 'Pin for future reports') + '<small>Template: ' + esc(tplKey() || 'none') + '</small></button><button type="button" data-m="close">Close</button>';
+    el.innerHTML = '<div class="pp-title">' + esc(fieldName(F.id)) + '</div>' + groups.map(g => (groups.length > 1 || g.G !== F ? '<div class="pp-sub">' + esc(g.G.name) + '</div>' : '') + g.o.map(o => '<button type="button" data-m="pc:' + esc(g.G.id) + ':' + o[0] + '"' + (g.cur === o[0] ? ' class="on"' : '') + '>' + (g.cur === o[0] ? '\u2713 ' : '') + esc(o[1]) + '<small>' + esc(o[2]) + '</small></button>').join('')).join('') + '<button type="button" data-m="pin">' + (pinned ? 'Unpin from future reports' : 'Pin for future reports') + '<small>Template: ' + esc(tplKey() || 'none') + '</small></button>' +
+      (call.__sys && call.__sys.order.length > 1 ? '<button type="button" data-m="incall">Include on all systems<small>This line in every system\'s report</small></button><button type="button" data-m="excall">Remove from all systems<small>This line out of every system\'s report</small></button>' : '') +   /* 0.34.0 (B1) */
+      '<button type="button" data-m="close">Close</button>';
     el.addEventListener('click', e => { const b = e.target.closest('[data-m]'); if (!b) return; e.stopPropagation(); if (b.dataset.m === 'pin') { togglePin(F.id); try { paintInc(); paintReport(); } catch (x) {} }
+      else if (b.dataset.m === 'incall' || b.dataset.m === 'excall') { includeAll(F.id, b.dataset.m === 'incall'); }
       else if (/^pc:/.test(b.dataset.m)) { const m = /^pc:(.+):([A-Za-z]+)$/.exec(b.dataset.m); if (m) setPre(m[1], m[2]); } closeFMenu(); });
     document.body.appendChild(el);
   }
@@ -9386,7 +9389,7 @@ body.light-theme .proof-box{color:#0f172a}
     callView.callType = t.type; callView.tpl = t.template; callView.view = 'template'; saveView(); try { applyDefaults(); } catch (e) {}
     eachCell(engineState, p => { if (p.proofField && p.proofField.find === 'calltype' && !isDraft(p.proofKey)) call[p.proofField.id] = t.type; });
     lsSet(K.call, call); ctFilter = '';
-    goView('entry'); try { applyVis(); markActive(); } catch (e) {} paintNotes(); say('Call type: ' + t.type + ' (template ' + t.template + ')' + (call.__file && call.__file.systems > 1 ? '. ' + call.__file.systems + ' systems on file; System 1 loaded.' : ''), 'done');   // C7a: the systems note stays in view
+    goView('entry'); try { applyVis(); markActive(); } catch (e) {} paintNotes();   // 0.34.0 (B3): no 'Call type: ...' note any more (the Call type line shows it; the systems strip shows the systems)
   }
   // 0.23.0 (no. 153, B): the call type line works like the other lines: a tap on its value or its small caret opens the call types as the
   // Items row's Input style says: blank / list = the call-type list (the screen with the call-types Slot); wheel = a wheel with Use / Cancel
@@ -9427,7 +9430,7 @@ body.light-theme .proof-box{color:#0f172a}
   let trayPinned = false;
   try { const tt = toggleTray; toggleTray = function () { const sc = document.getElementById('viewport-outer-scroller'); const wasPinned = trayPinned; trayPinned = !document.body.classList.contains('proof-tray-open') && !!(sc && sc.scrollTop > 4);
     if (trayPinned || wasPinned) keepPlace(() => tt.apply(this, arguments)); else tt.apply(this, arguments); }; } catch (e) {}
-  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; try { closeWheel(); closeAsk(); closePick(); } catch (e) {}   /* 0.12.2 (R6) */ try { applyEquip(); } catch (e) {} /* C4b */ const r = rc.apply(this, arguments); try { decorate(); } catch (e) {} try { paintFolds(); } catch (e) {} try { paintInc(); calcCells().forEach(paintCalcBox); paintCm(); } catch (e) {} try { paintClamp(); fitBoxLines(); syncMirrors(); pinTray(); } catch (e) {} /* 0.22.2 */ try { paintDebug(); } catch (e) {} /* 0.22.4 */ try { paintEmptyTa(); } catch (e) {} /* 0.23.0 */ try { paintSpec(); } catch (e) {} /* C7a */ try { paintNoCust(); } catch (e) {} /* 0.22.3 */ try { paintMissing(); } catch (e) {} /* 0.26.1 */ return r; }; }
+  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; try { closeWheel(); closeAsk(); closePick(); } catch (e) {}   /* 0.12.2 (R6) */ try { applyEquip(); } catch (e) {} /* C4b */ const r = rc.apply(this, arguments); try { decorate(); } catch (e) {} try { paintFolds(); } catch (e) {} try { paintInc(); calcCells().forEach(paintCalcBox); paintCm(); } catch (e) {} try { paintClamp(); fitBoxLines(); syncMirrors(); pinTray(); } catch (e) {} /* 0.22.2 */ try { fitContacts(); } catch (e) {} /* 0.34.0 (B6) */ try { paintDebug(); } catch (e) {} /* 0.22.4 */ try { paintEmptyTa(); } catch (e) {} /* 0.23.0 */ try { paintSpec(); } catch (e) {} /* C7a */ try { paintNoCust(); } catch (e) {} /* 0.22.3 */ try { paintMissing(); } catch (e) {} /* 0.26.1 */ return r; }; }
 
   document.addEventListener('input', e => {
     const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b) return;
@@ -10187,7 +10190,7 @@ body.light-theme .proof-box{color:#0f172a}
       const src = from[col]; if (!src || src === P.id || COMBINE[col]) records[F.id] = Object.assign({ tab: 'Places', id: P.id, col }, COMBINE[col] ? ownOf(P, col) : {}); });
     call.__file = { place: P.id, placeLevel: P.level, system: s1, systems: sys.length, pieces: {}, inherited, records, values: vals, spec: {}, at: Date.now() };   // 0.26.0 (R5): Piece Ids per slot, the place level, where inherited values came from
     delete call.__sys; ensureSys(); prefillSystem(P, s1);
-    if (sys.length > 1) setTimeout(() => say(sys.length + ' systems on file; System 1 loaded. Tap a system on the strip to switch.', 'info', 4000), 50);
+    if (sys.length > 1) setTimeout(() => { if (!document.querySelector('#viewport-canvas-frame .proof-systems')) say(sys.length + ' systems on file; System 1 loaded.', 'info', 4000); }, 50);   // 0.34.0 (B3): only on a sheet with no systems strip
   }
   function prefillSystem(P, sid) {   // 0.32.0 (C7d): one system's equipment lines, ratings (spec) and records from the Equipment copy
     const act = ONFILE.pieces.filter(x => x.place === P.id && x.status === 'active'), mine = act.filter(x => x.system === sid), f = call.__file;
@@ -10987,6 +10990,13 @@ body.light-theme .proof-box{color:#0f172a}
     let fs = parseFloat(getComputedStyle(sp).fontSize) || 12; for (let i = 0; i < 12 && fs > 9 && (sp.scrollWidth > sp.clientWidth + 1 || sp.scrollHeight > sp.clientHeight + 1); i++) { fs -= 0.5; sp.style.fontSize = fs + 'px'; } }); }
   // 0.22.2 (F15): a box with Box lines always shows its rows: when its Line is too short for them, that Line (and its Section) grows by the
   // missing pixels; the other Lines keep their size
+  function fitContacts() {   // 0.34.0 (B6): on a Phone / Email line the name and the number shrink their text to fit the box (down to 10 px), never cut
+    document.querySelectorAll('#viewport-canvas-frame .proof-namebox').forEach(nb => { const row = nb.closest('.grid-stack-row'); if (!row) return;
+      row.querySelectorAll('input.proof-box').forEach(b => { if (!b.offsetParent || document.activeElement === b || b.dataset.fs != null) return;
+        if (b.dataset.fit1 == null) b.dataset.fit1 = b.style.fontSize || ''; b.style.fontSize = b.dataset.fit1; let fs = parseFloat(getComputedStyle(b).fontSize) || 14, k = 0;
+        while (b.scrollWidth > b.clientWidth + 0.5 && fs > 10 && k++ < 16) { fs -= 0.5; b.style.fontSize = fs + 'px'; } }); });
+  }
+  document.addEventListener('focusout', e => { if (e.target && e.target.closest && e.target.closest('.grid-stack-row') && e.target.closest('.grid-stack-row').querySelector('.proof-namebox')) setTimeout(() => { try { fitContacts(); } catch (x) {} }, 0); }, true);
   function fitBoxLines() {
     // undo the last fit first (each fit starts from the engine's own sizes, so running it again never adds up)
     document.querySelectorAll('#viewport-canvas-frame [data-fit0]').forEach(el => { const v = el.dataset.fit0; if (el.classList.contains('grid-stack-row')) el.style.flex = v; else el.style.height = v; delete el.dataset.fit0; });
@@ -11293,17 +11303,23 @@ body.light-theme .proof-box{color:#0f172a}
     SYS_MAPS.forEach(m => { const o = call[m]; if (!o || typeof o !== 'object') return; bag.maps[m] = {}; Object.keys(o).forEach(id => { if (!sysShared(id)) { bag.maps[m][id] = o[id]; delete o[id]; } }); });
     const f = call.__file; if (f) { bag.file = { system: f.system, pieces: f.pieces || {}, spec: f.spec || {}, records: {}, values: {} };
       ['records', 'values'].forEach(k => { const o = f[k] || {}; Object.keys(o).forEach(id => { if (!sysShared(id)) { bag.file[k][id] = o[id]; delete o[id]; } }); }); f.pieces = {}; f.spec = {}; }
-    delete call.__equip; return bag;
+    delete call.__equip;
+    const inc = callView.included || {}; bag.incl = {}; Object.keys(inc).forEach(id => { if (!sysShared(id)) { bag.incl[id] = inc[id]; delete inc[id]; } });   // 0.34.0 (B1): each system its own report choices
+    bag.order = (callView.order || []).slice(); callView.order = []; return bag;   // and its own report order
   }
   function sysUnbag(bag) {
     Object.keys(bag.vals || {}).forEach(k => { call[k] = bag.vals[k]; });
     Object.keys(bag.maps || {}).forEach(m => { call[m] = call[m] || {}; Object.assign(call[m], bag.maps[m]); });
     const f = call.__file; if (f && bag.file) { f.system = bag.file.system; f.pieces = bag.file.pieces || {}; f.spec = bag.file.spec || {}; f.records = Object.assign(f.records || {}, bag.file.records); f.values = Object.assign(f.values || {}, bag.file.values); }
     if (bag.equip) call.__equip = bag.equip;
+    if (bag.incl) { callView.included = callView.included || {}; Object.assign(callView.included, bag.incl); }   // 0.34.0 (B1)
+    if (bag.order) callView.order = bag.order.slice();
   }
   function swapTo(to) {   // pure: no saving, no painting (the save builds every row through it)
-    const s = ensureSys(); if (s.cur === to) return; s.store[s.cur] = sysBag(); const bag = s.store[to]; delete s.store[to];
-    if (bag) sysUnbag(bag); else { const P = call.__file && placeById(call.__file.place); if (P) prefillSystem(P, to); else if (call.__file) call.__file.system = to; }
+    const s = ensureSys(); if (s.cur === to) return; const mine = s.store[s.cur] = sysBag(), bag = s.store[to]; delete s.store[to];
+    if (bag && !('incl' in bag)) { bag.incl = Object.assign({}, mine.incl); bag.order = (mine.order || []).slice(); }   // 0.34.0 (B1): a system kept by 0.32.0-0.33.1 had the SHARED report choices: it starts from them
+    if (bag) sysUnbag(bag); else { const P = call.__file && placeById(call.__file.place); if (P) prefillSystem(P, to); else if (call.__file) call.__file.system = to;
+      const pv = s.preView && s.preView[to]; if (pv) { callView.included = callView.included || {}; Object.assign(callView.included, pv.incl || {}); callView.order = (pv.order || []).slice(); delete s.preView[to]; } }   // 0.34.0 (B1)
     s.cur = to;
   }
   const bagTouched = bag => { const fv = (bag.file && bag.file.values) || {};
@@ -11328,19 +11344,36 @@ body.light-theme .proof-box{color:#0f172a}
       out.push(b); });
     swapTo(orig); return out;
   }
+  const preViewOf = (s, id) => { s.preView = s.preView || {}; return s.preView[id] || (s.preView[id] = { incl: {}, order: [] }); };   // 0.34.0 (B1): report choices for a system not opened yet
+  function includeAll(id, v) {   // 0.34.0 (B1): one line in (or out of) EVERY system's report
+    callView.included = callView.included || {}; callView.included[id] = !!v; const s = call.__sys;
+    if (s && !sysShared(id)) s.order.forEach(k => { if (k === s.cur) return; const b = s.store[k] || preViewOf(s, k); b.incl = b.incl || {}; b.incl[id] = !!v; });
+    saveView(); lsSet(K.call, call); try { paintInc(); paintReport(); } catch (e) {} say((v ? 'Included on' : 'Removed from') + ' all systems: ' + fieldName(id), 'done', 2500);
+  }
+  function sameAll() {   // 0.34.0 (B1): the selected system's report choices (and order) for every system
+    const s = ensureSys(), inc = callView.included || {}, mine = {}; Object.keys(inc).forEach(id => { if (!sysShared(id)) mine[id] = inc[id]; });
+    s.order.forEach(id => { if (id === s.cur) return; const b = s.store[id] || preViewOf(s, id); b.incl = Object.assign({}, mine); b.order = (callView.order || []).slice(); });   // a system not opened yet: kept until it is
+    saveView(); lsSet(K.call, call); say('Same report choices on all systems', 'done', 2500);
+  }
   const sysHeading = () => { const s = call.__sys; if (!s || s.order.length < 2) return ''; return (s.labels[s.cur] || 'System') + (s.areas[s.cur] ? ' · ' + s.areas[s.cur] : ''); };
   window.EngineSlots['systems'] = { render(p) { return '<div class="proof-cell proof-systems" style="font-size:' + (p.fontSize || 13) + 'px"></div>'; } };
   function paintStrip() {
     const els = document.querySelectorAll('#viewport-canvas-frame .proof-systems'); if (!els.length) return;
     const s = call.__file || call.__placeId || call.__sys ? ensureSys() : null, ids = s ? s.order : ['A'], cur = s ? s.cur : 'A';   // 0.33.1 (R7): a phone customer too
-    const html = ids.map(id => '<button type="button" data-sys="' + esc(id) + '" class="' + (id === cur ? 'on' : '') + (id !== cur && sysHasEntries(id) || (id === cur && s && sysHasEntries(id)) ? ' has' : '') + '">' + esc(s ? s.labels[id] : 'System 1') +
-      (s && s.areas[id] ? '<small>' + esc(s.areas[id]) + '</small>' : '') + '</button>').join('') + (s && ((call.__file && call.__file.place) || call.__placeId) ? '<button type="button" class="add">+ Add system</button>' : '');   // 0.33.0: the flow (0.33.1, R7: a phone customer too)
-    els.forEach(e => { if (e.dataset.h !== html) { e.innerHTML = html; e.dataset.h = html; } });
+    const btns = ids.map(id => '<button type="button" data-sys="' + esc(id) + '" class="' + (id === cur ? 'on' : '') + (s && sysHasEntries(id) ? ' has' : '') + '">' + esc(s ? s.labels[id] : 'System 1') +
+      (s && s.areas[id] ? '<small>' + esc(s.areas[id]) + '</small>' : '') + '</button>').join('');
+    const add = s && ((call.__file && call.__file.place) || call.__placeId) ? '<button type="button" class="add">+ Add system</button>' : '';   // 0.33.0: the flow (0.33.1, R7: a phone customer too)
+    const same = s && ids.length > 1 ? '<button type="button" class="same">Same on all systems</button>' : '';   // 0.34.0 (B1): the Report page only
+    els.forEach(e => { const rep = !!e.closest('[data-pid="systems.report"]'), html = '<div class="proof-sys-list">' + btns + '</div><div class="proof-sys-end">' + (rep ? same : add) + '<button type="button" class="proof-chip proof-chip-pin" hidden></button></div>';   /* B4: the '+N hidden' chip of a Section under the frozen rows (taps: the chip's own handler) */   // 0.34.0 (B5): the end buttons stay whole at the right
+      if (e.dataset.h !== html) { e.innerHTML = html; e.dataset.h = html; }
+      const l = e.querySelector('.proof-sys-list'), on = l && l.querySelector('button.on'); if (l && on) { const a = on.offsetLeft - l.offsetLeft, z = a + on.offsetWidth;   // the selected one scrolled into view (sideways only)
+        if (a < l.scrollLeft) l.scrollLeft = Math.max(0, a - 4); else if (z > l.scrollLeft + l.clientWidth) l.scrollLeft = z - l.clientWidth + 4; } });
+    try { pinChips(); } catch (e) {}
   }
   function switchSystem(id, quiet) {
     const s = ensureSys(); if (!s || id === s.cur || s.order.indexOf(id) < 0) return;
     try { blurNow(); if (!quiet) closeCard(); closeFMenu(); } catch (e) {} try { saveCall('switch'); } catch (e) {}
-    swapTo(id); if (!s.store[id]) { try { applyDefaults(); } catch (e) {} } runCalcs(); lsSet(K.call, call);   // (R4 (3) of the 0.33.0 review: not reproduced, a comment the tech cleared stays cleared; unchanged)
+    swapTo(id); if (!s.store[id]) { try { applyDefaults(); } catch (e) {} } runCalcs(); lsSet(K.call, call); try { saveView(); } catch (e) {}   // 0.34.0 (B1): the report choices moved too   // (R4 (3) of the 0.33.0 review: not reproduced, a comment the tech cleared stays cleared; unchanged)
     if (quiet) { try { renderCanvas(); paintStrip(); paintDiffs(); } catch (e) {} } else goView(currentView === 'report' ? 'report' : 'entry');
     say(s.labels[id] + (s.areas[id] ? ' · ' + s.areas[id] : ''), 'done', 1500);
   }
@@ -11424,6 +11457,8 @@ body.light-theme .proof-box{color:#0f172a}
       typed.filter(F => F !== F0).forEach(add); });
     return out;
   }
+  document.addEventListener('click', e => { const b = e.target && e.target.closest && e.target.closest('#viewport-canvas-frame .proof-systems button.same'); if (!b || !isLiveInteraction) return;   // 0.34.0 (B1)
+    e.preventDefault(); e.stopPropagation(); sameAll(); }, true);
   document.addEventListener('click', e => { const b = e.target && e.target.closest && e.target.closest('#viewport-canvas-frame .proof-systems button.add'); if (!b || !isLiveInteraction) return;
     e.preventDefault(); e.stopPropagation(); addSystemFlow({ from: 'strip' }); }, true);
   window.__proofSystems = { flow: addSystemFlow, plan: () => (call.__sys || {}).plan || null };   // for the tests only
@@ -11747,11 +11782,15 @@ body.light-theme .proof-box{color:#0f172a}
   let pinQueued = false;
   function pinChips() {
     const frame = document.getElementById('viewport-canvas-frame'); if (!frame) return;
-    const chips = frame.querySelectorAll('.grid-row-band > .proof-chip'); if (!chips.length) return;
+    const chips = frame.querySelectorAll('.grid-row-band > .proof-chip'); if (!chips.length) { frame.querySelectorAll('.proof-systems .proof-chip-pin').forEach(x => { x.hidden = true; }); return; }
     const vv = window.visualViewport, head = Math.max(vv ? vv.offsetTop : 0, ...Array.from(frame.querySelectorAll('.row-sticky')).map(e => { const r = e.getBoundingClientRect(); return r.height ? r.bottom : 0; }));
-    chips.forEach(ch => { const band = ch.parentElement.getBoundingClientRect(), h = ch.offsetHeight || 22;
+    const pin = Array.from(frame.querySelectorAll('.proof-systems .proof-chip-pin')).find(x => x.closest('.proof-systems').getBoundingClientRect().height); let used = false;   // 0.34.0 (B4): the frozen strip holds the pinned chip
+    chips.forEach(ch => { const bandEl = ch.parentElement, band = bandEl.getBoundingClientRect(), h = ch.offsetHeight || 22;
+      if (pin) { const under = band.top + CHIP_TOP < head && band.bottom > head + h; ch.style.top = CHIP_TOP + 'px'; ch.style.visibility = under ? 'hidden' : '';   // never over a line: it stays on its Section's title
+        if (under && !used) { used = true; if (pin.textContent !== ch.textContent) pin.textContent = ch.textContent; pin.dataset.row = ch.dataset.row || ''; pin.dataset.act = ch.dataset.act || ''; pin.hidden = false; } return; }
       const want = Math.max(CHIP_TOP, Math.min(head + CHIP_TOP - band.top, band.height - h - CHIP_TOP)), top = Math.round(Math.max(CHIP_TOP, want)) + 'px';
       if (ch.style.top !== top) ch.style.top = top; });
+    if (pin && !used && !pin.hidden) pin.hidden = true;
   }
   const CHIP_TOP = 2;   // the chip's gap from the top of its Section (and from the frozen header when pinned)
   const queuePin = () => { if (pinQueued) return; pinQueued = true; requestAnimationFrame(() => { pinQueued = false; pinChips(); }); };
