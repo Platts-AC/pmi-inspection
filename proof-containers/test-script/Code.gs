@@ -1,5 +1,7 @@
 // =====================================================================================================
 // PMI container proof (TEST) - Apps Script web app for the TEST sheet 'PMI container proof (test)' ONLY.
+// test-door-7 (proof 0.36.0-0.38.0, Prompts no. 179, round C7e; grows over the 3 stages, pasted once): part 1 = a new UNIT or SPECIAL place
+// (b.newPlace with Level unit / special: one Places row under its building, made on the call's first save, found again by its Address key).
 // test-door-6 (proof 0.33.1, Prompts no. 175, fix round after C7d: a new piece logs EVERY field it is made with in Changes (R3); an addPiece
 // update in place keeps the old-value guard (R3); a new or replacement piece takes only identity columns, never ratings (R9, CT-19)).
 // test-door-5 (proof 0.33.0, Prompts no. 172, round C7d: the change 'addPiece' = a NEW piece for a system (an Additional system, or a slot
@@ -31,7 +33,7 @@ var ACCENTS = { '': 1, cyan: 1, emerald: 1, amber: 1, purple: 1, rose: 1 };
 var MAX_BODY = 20000;          // characters in one save
 var MAX_ROWS_PER_SAVE = 100;   // tweak rows in one save
 var MAX_TOTAL_ROWS = 2000;     // tweak rows on the whole tab
-var SCRIPT_VERSION = 'test-door-6';
+var SCRIPT_VERSION = 'test-door-7';
 var NUM_FMT = 'General';   // test-door-4: the Automatic number format ('35', '2.5'); 0.#### shows a bare dot ('35.')
 var VISITS_TAB = 'Visits';
 var VISITS_FIXED = ['Visit Id', 'Call token', 'Date', 'Time', 'Tech', 'Call type', 'Template', 'Place Id', 'System Id', 'System label', 'Status', 'Team tag', 'Merged into', 'Revision of', 'Follow-up', 'Area temp', 'Lat', 'Lng', 'Created', 'Last saved'];
@@ -186,6 +188,7 @@ function visitsSave_(b, body) {
     var at = now_(), missing = [], newNotes = [];
     var fc = fileChanges_(ss, b, fixed, at);   // test-door-2: Places / Equipment / Changes first (a new Place Id goes on this row)
     if (fc.placeId) fixed['Place Id'] = fc.placeId;
+    else if (/^NU-/.test(String(fixed['Place Id'] || ''))) fixed['Place Id'] = '';   // test-door-7: a unit in waiting the door could not make: no made-up Place Id on the row
     VISITS_FIXED.forEach(function (c) { var i = byHead[c]; if (i == null) return;
       if (c === 'Visit Id') return put(i, vid);
       if (c === 'Last saved') return put(i, at);
@@ -234,6 +237,7 @@ function tabOf_(ss, name) {
   t.all = function () { var lr = sh.getLastRow(); return lr < 2 ? [] : sh.getRange(2, 1, lr - 1, head.length).getDisplayValues(); };
   return t;
 }
+var UNIT_COLS_ = ['Customer', 'Phone 1', 'Phone 1 name', 'Phone 2', 'Phone 2 name', 'Phone 3', 'Phone 3 name', 'Phone 4', 'Phone 4 name', 'Email 1', 'Email 1 name', 'Email 2', 'Email 2 name', 'Email 3', 'Email 3 name', 'Access codes', 'Site notes'];   // test-door-7: what a new unit row may take from the call
 var META_COLS_ = ['Place Id', 'System Id', 'System label', 'Service area', 'Slot', 'Type'];   // test-door-6: a new piece's place / system words (the 'Piece' Changes row says them)
 var normC_ = function (v) { return String(v == null ? '' : v).replace(/\s+/g, ' ').trim().toLowerCase(); };
 function fileChanges_(ss, b, fixed, at) {
@@ -241,6 +245,23 @@ function fileChanges_(ss, b, fixed, at) {
   var T = function (n) { if (!(n in tabs)) tabs[n] = tabOf_(ss, n); return tabs[n]; };
   var log = function (tab, rec, field, oldV, newV, reason) { var C = T(CHANGES_TAB); if (C) C.append({ 'When': at, 'Who': who, 'Visit Id': vid, 'Tab': tab, 'Record Id': rec, 'Field': field, 'Old': oldV, 'New': newV, 'Reason': reason }); };
   var np = b.newPlace;
+  if (np && (np.level === 'unit' || np.level === 'special')) {   // test-door-7 (C7e): a unit / special room of a building, made on its first save
+    var PU = T('Places'), par = String(np.parent || '').trim(), lab = String(np.cols && np.cols['Unit label'] || '').trim();
+    if (PU && par && lab && /^[A-Za-z0-9 #._-]{1,40}$/.test(lab)) {
+      var pr = PU.rowOf('Place Id', par), plev = pr ? normC_(PU.get(pr, 'Level')) : '';
+      if (pr && plev === 'building') {
+        var bkey = String(PU.get(pr, 'Address key') || '').trim() || addrKey_(PU.get(pr, 'Address')), ukey = (bkey + ' #' + lab).toLowerCase(), uid = 'U-' + vid.replace(/^V-/, ''), hitU = '';
+        var hc = PU.head, ci = hc.indexOf('Place Id'), cp = hc.indexOf('Parent Id'), ck = hc.indexOf('Address key'), cl = hc.indexOf('Unit label');
+        PU.all().forEach(function (x) { if (hitU) return; if (String(x[ci]).trim() === uid) { hitU = uid; return; }
+          if (cp >= 0 && String(x[cp]).trim() === par && ((ck >= 0 && String(x[ck]).trim().toLowerCase() === ukey) || (cl >= 0 && normC_(x[cl]) === normC_(lab)))) hitU = String(x[ci]).trim(); });
+        if (!hitU) { var ou = { 'Place Id': uid, 'Level': np.level, 'Parent Id': par, 'Unit label': lab, 'Floor': String(np.cols['Floor'] || ''), 'Address key': ukey, 'Active': 'yes', 'Created by': who, 'Created at': at };
+          Object.keys(np.cols || {}).forEach(function (k) { if (PU.col(k) >= 0 && !(k in ou) && UNIT_COLS_.indexOf(k) >= 0) ou[k] = String(np.cols[k] == null ? '' : np.cols[k]).trim(); });
+          PU.append(ou); log('Places', uid, 'Place', String(np.from || ''), uid + ' (' + lab + ')', 'New unit'); hitU = uid; }
+        out.placeId = hitU;
+      }
+    }
+    np = null;
+  }
   if (np && np.cols && String(np.cols['Customer'] || '').trim() && String(np.cols['Address'] || '').trim()) {
     var P = T('Places'), pid = 'P-' + vid.replace(/^V-/, ''), key = addrKey_(np.cols['Address']);
     if (P && !P.rowOf('Place Id', pid)) {   // test-door-3 (R4): ONE row per house: a Places row with the same Address key is that customer's row
