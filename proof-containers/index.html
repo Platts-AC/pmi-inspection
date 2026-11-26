@@ -3712,7 +3712,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.33.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.33.1", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3722,7 +3722,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.33.0', stamp: '2026-11-25 10:16:22', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.33.1', stamp: '2026-11-25 21:12:34', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8399,7 +8399,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.33.0';
+  const PROOF_VERSION = '0.33.1';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8596,19 +8596,20 @@ body.light-theme .proof-box{color:#0f172a}
   // 0.30.2 (no. 169): iOS closes the database while the page is in the background ('The database connection is closing'). A failed write
   // reopens it and tries once more; IndexedDB is turned off only after 3 failed writes in a row (each one already kept in the browser storage).
   let storeReopening = null;
-  function storeReopen() { if (!storeReopening) storeReopening = (async () => { try { try { storeDb && storeDb.close(); } catch (e) {} storeDb = await idbOpen(4000); return true; } catch (e) { STORE.lastErr = errText(e); return false; } finally { setTimeout(() => { storeReopening = null; }, 0); } })(); return storeReopening; }
+  function storeReopen() { if (!storeReopening) storeReopening = (async () => { try { try { storeDb && storeDb.close(); } catch (e) {} storeDb = await idbOpen(4000); try { const d0 = storeDb; d0.onclose = () => { d0.__closed = true; }; } catch (x) {} return true; } catch (e) { STORE.lastErr = errText(e); return false; } finally { setTimeout(() => { storeReopening = null; }, 0); } })(); return storeReopening; }
   async function storeRetry(puts) {
     storeLog('write failed: ' + (STORE.lastErr || '?'));
     if (await storeReopen() && await idbWrite(puts)) { STORE.fails = 0; return; }
     STORE.fails = (STORE.fails || 0) + 1; if (STORE.fails >= 3) storeFail('write failed: ' + (STORE.lastErr || 'no reason given'));
   }
-  const storeWake = () => { if (STORE.on && STORE.booted && document.visibilityState !== 'hidden') storeReopen(); };
+  const storeAlive = () => { if (!storeDb || storeDb.__closed) return false; try { storeDb.transaction(STORE_OS); return true; } catch (e) { return false; } };   // 0.33.1 (R8): a quick read test, nothing is aborted
+  const storeWake = () => { if (STORE.on && STORE.booted && document.visibilityState !== 'hidden' && !storeAlive()) storeReopen(); };   // reopen only a database that is really closed
   document.addEventListener('visibilitychange', storeWake); window.addEventListener('pageshow', e => { if (e.persisted) storeWake(); });
   const recOk = r => !!(r && r.v === 1 && typeof r.json === 'string' && (() => { try { JSON.parse(r.json); return true; } catch (e) { return false; } })());
   let bootMem = {};   // what the start has decided so far: kept in memory whatever happens next (fix 1)
   async function storeBootInner() {
     if (typeof indexedDB === 'undefined' || !indexedDB) throw new Error('not available');
-    storeDb = await idbOpen(2500);
+    storeDb = await idbOpen(2500); { const d0 = storeDb; try { d0.onclose = () => { d0.__closed = true; }; } catch (x) {} }   // 0.33.1 (R8)
     const recs = await tl(idbAll(storeDb), 2500);
     const raw = STORE_START.raw, meta = STORE_START.meta, mem = bootMem, puts = {}, dels = [], backToLs = [], now = Date.now();
     const cleared = !Object.keys(raw).length;   // the whole backup is gone (cleared or evicted): IndexedDB has it all
@@ -9292,8 +9293,7 @@ body.light-theme .proof-box{color:#0f172a}
   let leaveTapUntil = 0;   // 0.31.0 (CT-28 d): a tap that only takes the focus out of a box never selects (or pins) a line
   document.addEventListener('pointerdown', e => { if (!isLiveInteraction) return; const id = labelOf(e); if (!id) return;
     const a = document.activeElement, ab = a && a.closest && a.closest('.proof-box');
-    const sameLine = ab && (() => { const r1 = ab.getBoundingClientRect(), r2 = e.target.getBoundingClientRect(); return r1.top < r2.bottom - 1 && r2.top < r1.bottom - 1; })();
-    if (ab && !(e.target.closest && e.target.closest('.proof-box')) && ab.dataset.key !== id && !sameLine) { leaveTapUntil = Date.now() + 800; clearPress(); return; }   // another line's label: only 'leave'
+    if (ab && !(e.target.closest && e.target.closest('.proof-box'))) { leaveTapUntil = Date.now() + 800; clearPress(); return; }   // a label while a box has the focus: only 'leave' (0.33.1, R6: the same line too)
     clearPress(); pressAt = [e.clientX, e.clientY];
     pressT = setTimeout(() => { pressT = null; holdSuppress = Date.now() + 500; togglePin(id); paintInc(); paintNotes(); }, 550); }, true);   // the main app's 550 ms
   document.addEventListener('pointermove', e => { if (pressT && pressAt && Math.hypot(e.clientX - pressAt[0], e.clientY - pressAt[1]) > 10) clearPress(); }, true);
@@ -9444,7 +9444,7 @@ body.light-theme .proof-box{color:#0f172a}
   // a found or new customer goes into the call: every value box whose Field has a Find fill gets that part of the site (0.12.2, R7:
   // no Field Id named here); then Find (and any New customer draft) is cleared and Entry opens
   function loadSite(x, extra) {
-    try { closeCard(); } catch (e) {}   // 0.30.1 (R7): a new pick closes an open card
+    try { closeCard(); } catch (e) {} try { flowClose(); addsysFor = null; } catch (e) {}   // 0.30.1 (R7): a new pick closes an open card (0.33.1: and the Add system sheet)
     // 0.13.1 (R6): every house-Scope Field is cleared first (old tabs: the Find fill Fields), then filled from the site
     const hf = houseFields || Object.keys(FIND_FILL_FALLBACK).map(id => ({ id, find: FIND_FILL_FALLBACK[id] }));
     hf.forEach(f => { delete call[f.id]; }); delete call.__file; delete call.__sys;   // 0.32.0 (C7d): a new pick = a new systems list
@@ -9502,9 +9502,10 @@ body.light-theme .proof-box{color:#0f172a}
   const TAP_GUARD_MS = 300; let tapGuardUntil = 0;
   window.addEventListener('click', e => { if (Date.now() >= tapGuardUntil) return; const t = e.target && e.target.closest && e.target.closest('button, .proof-hit, .proof-ct-item');
     if (t && !(document.getElementById('proof-ask') || { contains: () => false }).contains(t)) { e.preventDefault(); e.stopPropagation(); } }, true);
+  window.__proofTapReady = () => Date.now() >= tapGuardUntil;   // 0.33.1 (C4): for the tests only (wait for the guard instead of a fixed time)
   function clearFind() { Object.keys(find).forEach(k => { find[k] = ''; }); }
   function blurNow() { try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (e) {} }
-  function goView(v) { blurNow(); resetTypingOrder(); setView(v); try { closeCard(); } catch (e) {} }   // 0.30.1 (R7): an open card never floats over another screen
+  function goView(v) { blurNow(); resetTypingOrder(); setView(v); try { closeCard(); } catch (e) {} try { flowClose(); addsysFor = null; } catch (e) {} }   /* 0.33.1 (R7): the Add system sheet too */   // 0.30.1 (R7): an open card never floats over another screen
 
   // ---------- round 8: the tapped value box stays in view (replaces round 2's 'results under the box', which moved the list
   // between the boxes with CSS order and left it there while the box kept focus after the keyboard closed: Danny's 13:00 screenshot).
@@ -10906,7 +10907,7 @@ body.light-theme .proof-box{color:#0f172a}
   const badgeText = () => 'v' + PROOF_VERSION + (PRETEND ? ' (acting as ' + PRETEND + ')' : '');
   // 0.30.0 (no. 168, CARRY C7 row 30): the badge also shows the TEST SCRIPT that answers: 'v0.30.0 · D03' (D + two digits = test-door-N, from
   // its answer to the start ping and to every save); the D part is amber when this page needs a newer script; a tap says which and gives the link
-  const DOOR_NEED = 5, K_DOOR = 'proof-containers.door.v1', RAW_GS = 'https://raw.githubusercontent.com/Platts-AC/pmi-inspection/main/proof-containers/test-script/Code.gs';
+  const DOOR_NEED = 6, K_DOOR = 'proof-containers.door.v1', RAW_GS = 'https://raw.githubusercontent.com/Platts-AC/pmi-inspection/main/proof-containers/test-script/Code.gs';
   let doorSeen = String(lsGet(K_DOOR, '') || '');
   const doorNum = v => { const m = /^test-door-(\d+)$/.exec(String(v || '')); return m ? Number(m[1]) : 0; };
   const dd = n => 'D' + String(n).padStart(2, '0');
@@ -10921,7 +10922,8 @@ body.light-theme .proof-box{color:#0f172a}
   function badgeFit(e) {   // 0.30.2 (no. 169): the whole badge always shows in portrait: the text shrinks to fit (down to 8 px), never '…'
     const d = e.querySelector('.proof-door'), lab = (d && d.parentElement !== e ? d.parentElement : null) || Array.from(e.querySelectorAll('span,div')).filter(x => !x.children.length && x.textContent.trim()).pop(); if (!lab) return;
     lab.style.fontSize = ''; lab.style.textOverflow = 'clip'; e.style.paddingLeft = e.style.paddingRight = ''; let fs = parseFloat(getComputedStyle(lab).fontSize) || 12, padded = false;
-    const over = () => lab.scrollWidth > Math.min(lab.clientWidth, e.clientWidth - 2) + 0.5 || (d && d.getBoundingClientRect().right > e.getBoundingClientRect().right + 0.5);
+    const cell = e.closest('.grid-split-partition') || e.parentElement, avail = () => cell ? cell.clientWidth - 2 : e.clientWidth;   // 0.33.1 (C3): the CELL's width decides (the button is as wide as its text)
+    const over = () => lab.scrollWidth > lab.clientWidth || lab.scrollWidth + (e.offsetWidth - lab.clientWidth) > avail() || (d && d.getBoundingClientRect().right > e.getBoundingClientRect().right + 0.5);
     let guard = 0; while (over() && guard++ < 16) { if (!padded) { padded = true; e.style.paddingLeft = e.style.paddingRight = '3px'; continue; } if (fs <= 8) break; fs -= 0.5; lab.style.fontSize = fs + 'px'; }   // first the side padding, then the font
   }
   const badgeRefit = () => { try { const e = document.getElementById('proof-badge'); if (e) badgeFit(e); } catch (x) {} };
@@ -10938,6 +10940,7 @@ body.light-theme .proof-box{color:#0f172a}
     else { if (!d) { d = document.createElement('span'); d.className = 'proof-door'; const lab = Array.from(e.querySelectorAll('span,div')).filter(x => !x.children.length && x.textContent.trim()).pop(); (lab || e).appendChild(d); /* on the version's own line */ } const t = ' \u00b7 ' + (n ? dd(n) : 'D--'); if (d.textContent !== t) d.textContent = t;
       d.classList.toggle('old', !!n && n < DOOR_NEED); d.classList.toggle('wait', !n); if (!staleV) e.title = 'Version ' + PROOF_VERSION + ' · script ' + (doorSeen || 'not answered yet'); }
     badgeFit(e);
+    try { if (window.ResizeObserver && part.__badgeRO !== e) { if (part.__ro) part.__ro.disconnect(); part.__badgeRO = e; part.__ro = new ResizeObserver(() => { try { badgeFit(e); } catch (x) {} }); part.__ro.observe(part); } } catch (x) {}   // 0.33.1 (C3): its cell's size changes later = fit again (the 375 px clip)
     paintViewLine();
   }
   // 0.22.3 (no. 151, fix 1): the box of a read-only editor field with Box lines (capacitor, filter) shows its text in a plain wrapping
@@ -11103,10 +11106,13 @@ body.light-theme .proof-box{color:#0f172a}
     return (CMP_RULES[kind] || ruleText)(onFile, entered);
   }
   const kindOf = F => F.compareAs || (F.kind === 'number' || F.kind === 'calculated' ? 'rating' : 'text');
+  const planLine = F => { const s = call.__sys, pl = s && s.plan && s.plan[s.cur]; return !!(pl && F && F.saveTab === 'Equipment' && F.equip && (pl.kind === 'add' || pl.slots === 'all' || (pl.slots || []).indexOf(F.equip) >= 0)); };
   const fileValOf = id => call.__file && call.__file.values ? call.__file.values[id] : undefined;
   function refreshDiff(id) {   // the call's verdict for one Field; a decision stays while the typed value stays the same
     const F = (FCTL || []).find(x => x.id === id); if (!F || !call.__file) return;
     const fv = fileValOf(id), ev = call[id] == null ? '' : String(call[id]);
+    { const pd = (call.__diffs || {})[id]; if (pd && pd.plan) { if (cmpTrim(ev) !== cmpTrim(pd.entered)) delete call.__diffs[id]; return; } }   // 0.33.1 (R3): a new piece's line the sheet changed: kept until retyped or settled
+    if (planLine(F)) { if (call.__adds) delete call.__adds[id]; if (call.__diffs) delete call.__diffs[id]; return; }   // 0.33.1: a NEW piece's line is not compared with the file (its own changes go as addPiece)
     if (F.fileCheck === 'add') { if (cmpTrim(ev) && ruleText(fv || '', ev).v !== 'same') { call.__adds = call.__adds || {}; call.__adds[id] = { id, name: F.name, file: String(fv || ''), entered: ev, rule: 'add' }; } else if (call.__adds) delete call.__adds[id]; return; }
     if (F.fileCheck !== 'alert') return;
     const j = judge(kindOf(F), fv, ev); call.__diffs = call.__diffs || {}; call.__adds = call.__adds || {};
@@ -11119,14 +11125,18 @@ body.light-theme .proof-box{color:#0f172a}
     if (call.__pre && call.__pre[id]) call.__diffs[id].choice = call.__pre[id];   // 0.31.0 (CT-28): chosen in the \u22ef menu = no card
   }
   const openDiffs = () => Object.keys(call.__diffs || {}).map(k => call.__diffs[k]).filter(d => d.choice === 'open' || d.choice === 'later');
+  const otherOpen = () => { const s = call.__sys, out = []; if (!s || !s.store) return out;   // 0.33.1 (R4): the open lines of the systems NOT on screen
+    s.order.forEach(id => { const b = s.store[id], m = b && b.maps && b.maps.__diffs; if (!m || id === s.cur) return; Object.keys(m).forEach(k => { const d = m[k]; if (d && (d.choice === 'open' || d.choice === 'later')) out.push({ sys: id, id: d.id }); }); });
+    return out; };
+  const allOpenCount = () => openDiffs().length + otherOpen().length;
   function paintDiffs() {   // amber on every cell of a line whose value is still open (open / later)
     const open = {}; openDiffs().forEach(d => { open[d.id] = 1; });
     const mark = {}; document.querySelectorAll('#viewport-canvas-frame .proof-box[data-key]').forEach(b => { if (open[b.dataset.key]) { const p = b.closest('.grid-split-partition'); if (p) mark[p.getAttribute('data-pid')] = 1; } });
     document.querySelectorAll('#viewport-canvas-frame .grid-split-partition[data-pid]').forEach(p => { const id = p.getAttribute('data-pid'), on = Object.keys(mark).some(m => id === m || id.indexOf(m + '.') === 0); p.classList.toggle('proof-diffline', on); });
     paintCount();
   }
-  function paintCount() { const n = openDiffs().length, t = n ? n + ' to check' : ''; document.querySelectorAll('#viewport-canvas-frame .proof-checkcount').forEach(c => { if (c.textContent !== t) c.textContent = t; }); }
-  window.EngineSlots['check-count'] = { render(p) { const n = openDiffs().length; return '<div class="proof-cell proof-checkcount" role="button" tabindex="0" style="font-size:' + Math.min(12, p.fontSize || 11) + 'px">' + (n ? n + ' to check' : '') + '</div>'; } };
+  function paintCount() { const n = allOpenCount(), t = n ? n + ' to check' : '';   /* 0.33.1 (R4): every system */ document.querySelectorAll('#viewport-canvas-frame .proof-checkcount').forEach(c => { if (c.textContent !== t) c.textContent = t; }); }
+  window.EngineSlots['check-count'] = { render(p) { const n = allOpenCount(); return '<div class="proof-cell proof-checkcount" role="button" tabindex="0" style="font-size:' + Math.min(12, p.fontSize || 11) + 'px">' + (n ? n + ' to check' : '') + '</div>'; } };
   let cardFor = null;
   // 0.30.0 (R3b): a contact name (Phone / Email N name) gets Typo on file / Later only (no New customer)
   function openCard(id, mode, next) {   // mode: leave (after leaving the box) / close (Copy report, New: adds Leave as is, Follow up, Back)
@@ -11135,8 +11145,8 @@ body.light-theme .proof-box{color:#0f172a}
     const contact = d.tab === 'Places' && /^(Phone|Email) \d+ name$/.test(String((d.cols || [])[0] || '')), house = d.tab === 'Places', btn = (c, t, cls) => '<button type="button" data-choice="' + c + '"' + (cls ? ' class="' + cls + '"' : '') + '>' + t + '</button>';
     el.innerHTML = '<div class="pd-title">' + esc(d.name) + ': different from file</div><div class="pd-cols"><div><div class="pd-h">ON FILE</div><div class="pd-v pd-file">' + esc(d.file) + '</div></div><div><div class="pd-h">YOU ENTERED</div><div class="pd-v pd-entered">' + esc(d.entered) + '</div></div></div>' +
       (d.hint ? '<div class="pd-hint">' + esc(d.hint) + '</div>' : '') + (d.conflict ? '<div class="pd-hint pd-conflict">' + esc(d.conflict) + '</div>' : '') + '<div class="pd-photo-view"></div>' +
-      '<div class="pd-btns">' + btn('typo', 'Typo on file') + (contact ? '' : btn(house ? 'newCust' : 'newEquip', house ? 'New customer' : 'New equipment')) + (mode === 'close' ? btn('leave', 'Leave as is') + btn('follow', 'Follow up') : (d.followup ? btn('leave', 'Leave as is') : '') + btn('later', 'Later')) +   /* 0.29.0: a reopened follow-up can be settled with Leave as is */
-      '<label class="pd-photo">Photo<input type="file" accept="image/*" hidden></label>' + (mode === 'close' ? btn('back', 'Back', 'pd-back') : '') + '</div>';
+      '<div class="pd-btns">' + (d.plan ? btn('keep', 'Keep mine') + btn('take', "Take the sheet's") + btn('later', 'Later') + (mode === 'close' ? btn('back', 'Back', 'pd-back') : '') + '</div>' : '') + (d.plan ? '' : btn('typo', 'Typo on file') + (contact ? '' : btn(house ? 'newCust' : 'newEquip', house ? 'New customer' : 'New equipment')) + (mode === 'close' ? btn('leave', 'Leave as is') + btn('follow', 'Follow up') : (d.followup ? btn('leave', 'Leave as is') : '') + btn('later', 'Later')) +   /* 0.29.0: a reopened follow-up can be settled with Leave as is */
+      '<label class="pd-photo">Photo<input type="file" accept="image/*" hidden></label>' + (mode === 'close' ? btn('back', 'Back', 'pd-back') : '') + '</div>');   // 0.33.1 (R3): a plan line has its own 3 choices
     el.dataset.id = id; el.dataset.mode = mode; el.style.display = ''; cardFor = { id, mode, next, view: currentView };   // 0.30.1 (R7): the screen it belongs to
     try { document.activeElement && document.activeElement.blur && document.activeElement.blur(); } catch (e) {}
   }
@@ -11147,27 +11157,34 @@ body.light-theme .proof-box{color:#0f172a}
     const c = b.dataset.choice, f = cardFor; closeCard();
     if (c === 'back') { say('Stopped: settle the line(s) to check first', 'warn'); return; }
     if (c === 'newEquip') { const d0 = (call.__diffs || {})[f.id], F0 = (FCTL || []).find(x => x.id === f.id) || {}; addSystemFlow({ from: 'card', fid: f.id, slot: F0.equip || '', value: d0 ? d0.entered : String(call[f.id] || ''), next: f.next }); return; }   // 0.33.0 (C7d): the one flow
-    const d = (call.__diffs || {})[f.id]; if (d) { d.choice = c; d.at = Date.now(); lsSet(K.call, call); }
+    const d = (call.__diffs || {})[f.id];
+    if (d && d.plan && (c === 'keep' || c === 'take')) { const sy = call.__sys, pl = sy && sy.plan && sy.plan[sy.cur]; if (pl) { pl.sent = pl.sent || {}; pl.sent[f.id] = d.file; }   // 0.33.1 (R3): keep mine = sent again over the sheet's value; take = the sheet's value
+      if (c === 'take') { call[f.id] = d.file; document.querySelectorAll('#viewport-canvas-frame .proof-box[data-key="' + f.id + '"]').forEach(b => { b.value = d.file; }); } delete call.__diffs[f.id]; lsSet(K.call, call); }
+    else if (d) { d.choice = c; d.at = Date.now(); lsSet(K.call, call); }
     try { paintDiffs(); saveCall('diff'); } catch (x) {}
     if (f.next) f.next();
   }, true);
   document.addEventListener('change', e => { const i = e.target; if (!i || !i.closest || !i.closest('#proof-diff') || i.type !== 'file' || !i.files || !i.files[0]) return;   // view only (keeping photos is C9)
     const v = document.querySelector('#proof-diff .pd-photo-view'); if (v) v.innerHTML = '<img alt="tag photo" src="' + URL.createObjectURL(i.files[0]) + '">'; });
   document.addEventListener('click', e => { const c = e.target && e.target.closest && e.target.closest('.proof-checkcount'); if (!c || !isLiveInteraction) return;   // tap the count = the first open line
-    e.stopPropagation(); const d = openDiffs()[0]; if (!d) return; const b = document.querySelector('#viewport-canvas-frame .proof-box[data-key="' + d.id + '"]'); if (b) b.scrollIntoView({ block: 'center' }); openCard(d.id, 'leave'); }, true);
+    e.stopPropagation(); let d = openDiffs()[0]; if (!d) { const o = otherOpen()[0]; if (!o) return; switchSystem(o.sys); d = (call.__diffs || {})[o.id]; if (!d) return; } const b = document.querySelector('#viewport-canvas-frame .proof-box[data-key="' + d.id + '"]'); if (b) b.scrollIntoView({ block: 'center' }); openCard(d.id, 'leave'); }, true);
   document.addEventListener('input', e => { const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b || !b.dataset.key || !call.__file) return; try { refreshDiff(b.dataset.key); paintDiffs(); } catch (x) {} });   // amber while typing, no pop-up
   document.addEventListener('focusout', e => { const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b || !b.dataset.key) return; const k = b.dataset.key;   // leaving the box: the card
     const v0 = currentView, c0 = call;   // 0.30.1 (R7): not after the screen or the call changed
-    setTimeout(() => { const d = (call.__diffs || {})[k]; if (Date.now() - menuDownAt < 1000 || document.getElementById('proof-fmenu')) return;   // 0.31.0: the \u22ef menu was tapped: its choices instead of the card
-      if (d && d.choice === 'open' && !cardFor && currentView === v0 && call === c0) openCard(k, 'leave'); }, 0); }, true);
+    setTimeout(() => { const d = (call.__diffs || {})[k]; if (Date.now() - menuDownAt < 400 || document.getElementById('proof-fmenu')) return;   // 0.31.0: the \u22ef menu was tapped: its choices instead of the card
+      if (d && d.choice === 'open' && !cardFor && currentView === v0 && call === c0) openCard(k, 'leave'); }, 0); }, true);   // 0.33.1: the \u22ef tap's own leave = within 400 ms (was 1 s: a quick next edit lost its card)
   let menuDownAt = 0; document.addEventListener('pointerdown', e => { if (e.target && e.target.closest && e.target.closest('.proof-fbtn[data-fact="menu"]')) menuDownAt = Date.now(); }, true);
-  document.addEventListener('keydown', e => { if (e.key !== 'Enter' || e.isComposing) return; const b = e.target && e.target.closest && e.target.closest('.proof-box');   // 0.31.0 (CT-28 c): Return leaves the box (the card opens)
-    if (!b || !b.dataset.key || b.tagName === 'TEXTAREA' || currentView !== 'entry') return; e.preventDefault(); try { b.blur(); } catch (x) {} }, true);
+  document.addEventListener('keydown', e => { if (e.isComposing || !/^(Enter|ArrowUp|ArrowDown)$/.test(e.key)) return; const b = e.target && e.target.closest && e.target.closest('.proof-box');   // 0.31.0 (CT-28 c): Return leaves the box (the card opens)
+    if (!b || !b.dataset.key || currentView !== 'entry') return; if (b.tagName === 'TEXTAREA' && Number(b.getAttribute('rows') || 2) > 1) return;   // 0.33.1 (R6): Up / Down arrows too; a one-line text area like a box
+    e.preventDefault(); try { b.blur(); } catch (x) {} }, true);
   function askAtClose(done) {   // Copy report / New: every open line again; Back stops (nothing is lost)
-    const q = openDiffs().map(d => d.id), next = () => { const id = q.shift(); if (!id) { done(); return; } openCard(id, 'close', next); }; next(); }
+    // 0.33.1 (R4): the open lines of EVERY system: the strip switches to a line's system before its card; after the last one, back to the system you were on
+    const s = call.__sys, home = s ? s.cur : null, q = openDiffs().map(d => ({ sys: home, id: d.id })).concat(otherOpen());
+    const next = () => { const x = q.shift(); if (!x) { if (s && home && call.__sys === s && s.cur !== home) switchSystem(home, true); done(); return; }
+      if (s && x.sys && call.__sys === s && s.cur !== x.sys) switchSystem(x.sys, true); if (!(call.__diffs || {})[x.id]) { next(); return; } openCard(x.id, 'close', next); }; next(); }
   { const copy0 = window.EngineActions['copy-report'], new0 = window.EngineActions['new-call'];
-    window.EngineActions['copy-report'] = () => { if (openDiffs().length) { askAtClose(() => copy0()); return; } copy0(); };
-    window.EngineActions['new-call'] = () => { if (openDiffs().length) { askAtClose(() => { newArmed = Date.now(); new0(); }); return; } new0(); }; }
+    window.EngineActions['copy-report'] = () => { if (allOpenCount()) { askAtClose(() => copy0()); return; } copy0(); };   // 0.33.1 (R4): every system
+    window.EngineActions['new-call'] = () => { if (allOpenCount()) { askAtClose(() => { newArmed = Date.now(); new0(); }); return; } new0(); }; }
   const followText = () => Object.keys(call.__diffs || {}).map(k => call.__diffs[k]).filter(d => d.choice === 'follow' || (d.followup && (d.choice === 'later' || d.choice === 'open'))).map(d => d.name + ': on file ' + d.file + ', entered ' + d.entered).join(' | ');   // 0.29.0: a reopened follow-up stays until settled
   const REASON = { typo: 'Correction', newEquip: 'New equipment', newCust: 'New customer', add: 'Added' };
   function ensureRecords() {   // 0.28.0: a call picked by 0.24.0 to 0.27.0 has no records yet: made from the place and the pieces it kept
@@ -11210,10 +11227,12 @@ body.light-theme .proof-box{color:#0f172a}
   function settleReply(vid, r) {   // 0.28.0: what the door did with each change
     if (!r) return;
     const sid = rowSysOf(vid); if (sid === null) { settleAway(vid, r); return; }   // 0.32.0 (C7d): a row of this call = its system's entries
+    const oldPid = call.__placeId;   // 0.33.1 (R8): a phone customer's own id, replaced by the new Place Id in the queued rows too
     const s = call.__sys, orig = s && s.cur; if (s && sid && sid !== s.cur) swapTo(sid);
     const t = settleOn(call, r); let left = 0; try { left = fileChanges().length; } catch (e) {}
     if (s && orig !== s.cur) swapTo(orig);
-    if (t) { lsSet(K.call, call); try { paintDiffs(); paintSpec(); syncFollow(); } catch (e) {} }
+    if (r.placeId && oldPid && oldPid !== r.placeId) patchQueued(r.placeId, oldPid);   // 0.33.1 (R8): the other systems' queued rows get the new Place Id before they are sent
+    if (t) { lsSet(K.call, call); try { paintDiffs(); paintSpec(); syncFollow(); paintPreTags(); paintStrip(); } catch (e) {} }
     try { keepPending(vid, left ? call : null, callView); } catch (e) {}
   }
   function settleAway(vid, r) {   // 0.30.1 (R9): the answer for a call that left the screen
@@ -11223,21 +11242,32 @@ body.light-theme .proof-box{color:#0f172a}
     if (hit.length) { const l = followList().filter(x => x.vid !== vid), en = followEntry(c, pd.view); if (en) { l.unshift(en); lsSet(K_FOLLOW, l.slice(0, 50)); } try { paintFollow(); } catch (e) {} }
     keepPending(vid, null);
   }
+  function patchQueued(pid, from) {   // 0.33.1 (R8): rows of the same Call token still waiting in the outbox with the phone customer's own id
+    const tok = call.__visit && call.__visit.token; if (!tok) return; let n = 0; const ob = outbox();
+    ob.forEach(x => { if (x.inFlight) return; let b; try { b = JSON.parse(x.body); } catch (e) { return; } const f = b && b.fixed; if (!f || f['Call token'] !== tok || String(f['Place Id'] || '') !== from) return; f['Place Id'] = pid; x.body = JSON.stringify(b); n++; });
+    if (n) lsSet(K_OUTBOX, ob);
+  }
   function settleOn(call, r) {   // the door's answer applied to one call (the one on screen, or a kept copy); true when it changed something
     let touched = false;
     if (r.placeId && call.__placeId !== r.placeId) { const ph = /^PH-(.+)$/.exec(call.__placeId || ''); call.__placeId = r.placeId; touched = true;
       if (ph) { const l = lsGet(K.sites, []); if (Array.isArray(l)) { l.forEach(x => { if (x && x.id === ph[1]) x.placeId = r.placeId; }); lsSet(K.sites, l); } } }   // 0.30.0 (R4): the phone learns the Place Id
     const f = call.__file || {};
     (r.changes || []).forEach(c => { const d = (call.__diffs || {})[c.key] || (call.__adds || {})[c.key]; if (!d) return; touched = true;
+      if ((c.status === 'applied' || c.status === 'already') && c.new != null && (call.__diffs || {})[c.key] === d && cmpTrim(d.entered) !== cmpTrim(c.new)) { if (f.values) f.values[c.key] = String(c.new); return; }   // 0.33.1: an answer for an OLDER value (retyped since): the file has that value now; the new one stays to check
       if (c.status === 'applied' || c.status === 'already') { d.applied = true; d.conflict = '';
         if (f.values) f.values[c.key] = String(d.entered);
         if (c.newId && f.records) { const r0 = f.records[c.key]; if (r0) { const oldId = r0.id; Object.keys(f.records).forEach(k => { const r2 = f.records[k]; if (r2.tab === 'Equipment' && r2.id === oldId) { r2.id = c.newId; if (f.values && call[k] != null) f.values[k] = String(call[k]); if (f.spec) delete f.spec[k]; } });
           if (f.pieces && r0.slot) f.pieces[r0.slot] = c.newId; } }
-        if (call.__adds && call.__adds[c.key] === d) delete call.__adds[c.key]; else if (call.__diffs) delete call.__diffs[c.key]; }
+        if (call.__adds && call.__adds[c.key] === d) delete call.__adds[c.key]; else if (call.__diffs) delete call.__diffs[c.key];
+        if (call.__pre && call.__pre[c.key]) delete call.__pre[c.key]; }   // 0.33.1 (R6): the \u22ef choice is used up (the next edit gets the card again)
       else if (c.status === 'changed') { d.choice = 'open'; d.conflict = 'The sheet changed meanwhile: it now says "' + c.now + '"' + (c.note ? ' (' + c.note + ')' : ''); d.file = String(c.now); if (f.values) f.values[c.key] = String(c.now); }
       else if (c.status === 'missing') { d.applied = true; d.missing = true; } });
     { const s = call.__sys, pl = s && s.plan && s.plan[s.cur];   // 0.33.0 (C7d): a new piece of the plan is known by its Piece Id from now on
-      if (pl) (r.changes || []).forEach(c => { if (!c.newId || (c.status !== 'applied' && c.status !== 'already')) return; const F = (FCTL || []).find(x => x.id === c.key); if (F && F.equip && (!pl.done || pl.done[F.equip] !== c.newId)) { pl.done = pl.done || {}; pl.done[F.equip] = c.newId; touched = true; } }); }
+      if (pl) (r.changes || []).forEach(c => { const F = (FCTL || []).find(x => x.id === c.key); if (!c.newId || !F || !F.equip) return;
+        if (c.status === 'changed' && pl.done && pl.done[F.equip] === c.newId) { call.__diffs = call.__diffs || {};   // 0.33.1 (R3): the new piece was changed on the sheet meanwhile
+          call.__diffs[c.key] = { id: c.key, name: F.name, file: String(c.now == null ? '' : c.now), entered: String(c.new == null ? '' : c.new), choice: 'open', plan: true, conflict: 'The sheet changed meanwhile: it now says "' + c.now + '"', at: Date.now(), tab: 'Equipment', cols: F.saveCols }; touched = true; return; }
+        if (c.status !== 'applied' && c.status !== 'already') return; pl.sent = pl.sent || {}; if (pl.sent[c.key] !== c.new) { pl.sent[c.key] = c.new; touched = true; }
+        if (!pl.done || pl.done[F.equip] !== c.newId) { pl.done = pl.done || {}; pl.done[F.equip] = c.newId; touched = true; } }); }
     return touched;
   }
   window.__proofCompare = { judge, kindOf: id => kindOf((FCTL || []).find(x => x.id === id) || {}), diffs: () => call.__diffs || {}, adds: () => call.__adds || {} };   // for the tests only
@@ -11284,10 +11314,15 @@ body.light-theme .proof-box{color:#0f172a}
   const rowVid = id => { const V = visitOf(), s = call.__sys; return !s || id === s.first ? V.id : V.id + '-' + id; };
   const rowSysOf = vid => { if (!call.__visit) return null; const b = call.__visit.id, s = call.__sys; if (vid === b) return s ? s.first : '';
     return vid.indexOf(b + '-') === 0 && s && s.order.indexOf(vid.slice(b.length + 1)) >= 0 ? vid.slice(b.length + 1) : null; };
-  function rowBodies() {   // one Visits row per system with entries (the first system always)
+  const sharedTouched = () => { const fv = ((call.__file || {}).values) || {};   // 0.33.1 (R5): a house / call fact typed (not only the file's pre-fill, the date and the call type)
+    return Object.keys(call).some(k => { if (k.indexOf('__') === 0 || !sysShared(k) || k === 'f:date' || k === 'f:callType') return false; const v = String(call[k] == null ? '' : call[k]).trim();
+      return !!v && !(fv[k] != null && String(fv[k]).trim() === v) && !untouchedDefault(k); }); };
+  function rowBodies(why) {   // one Visits row per system with entries (0.33.1: the first one only when it has entries, or as the call's only row)
     const s = call.__sys; if (!s || (s.order.length < 2 && !Object.keys(s.store).length)) { const b = visitBody(); if (s) b.visitId = rowVid(s.cur); return [b]; }
     const orig = s.cur, out = [], ids = s.order.filter(id => id === s.first || id === orig ? true : !!s.store[id]);
-    ids.forEach(id => { if (id !== s.first && !sysHasEntries(id)) return; swapTo(id); const b = visitBody(); b.visitId = rowVid(id);
+    // 0.33.1 (R5): the first system gets a row only when it has entries, or when no system has any (a house / call only call still saves)
+    const withE = ids.filter(id => sysHasEntries(id)), use = withE.length ? withE : (sharedTouched() || /^(tap|copy|new call)/.test(String(why || '')) ? [s.first] : []);
+    ids.forEach(id => { if (use.indexOf(id) < 0) return; swapTo(id); const b = visitBody(); b.visitId = rowVid(id);
       if (id !== s.first) { b.changes = (b.changes || []).filter(c => c.tab !== 'Places'); delete b.newPlace;
         b.fixed['Follow-up'] = Object.keys(call.__diffs || {}).map(k => call.__diffs[k]).filter(d => !sysShared(d.id) && (d.choice === 'follow' || (d.followup && (d.choice === 'later' || d.choice === 'open')))).map(d => d.name + ': on file ' + d.file + ', entered ' + d.entered).join(' | '); }
       out.push(b); });
@@ -11297,16 +11332,17 @@ body.light-theme .proof-box{color:#0f172a}
   window.EngineSlots['systems'] = { render(p) { return '<div class="proof-cell proof-systems" style="font-size:' + (p.fontSize || 13) + 'px"></div>'; } };
   function paintStrip() {
     const els = document.querySelectorAll('#viewport-canvas-frame .proof-systems'); if (!els.length) return;
-    const s = call.__file ? ensureSys() : null, ids = s ? s.order : ['A'], cur = s ? s.cur : 'A';
+    const s = call.__file || call.__placeId || call.__sys ? ensureSys() : null, ids = s ? s.order : ['A'], cur = s ? s.cur : 'A';   // 0.33.1 (R7): a phone customer too
     const html = ids.map(id => '<button type="button" data-sys="' + esc(id) + '" class="' + (id === cur ? 'on' : '') + (id !== cur && sysHasEntries(id) || (id === cur && s && sysHasEntries(id)) ? ' has' : '') + '">' + esc(s ? s.labels[id] : 'System 1') +
-      (s && s.areas[id] ? '<small>' + esc(s.areas[id]) + '</small>' : '') + '</button>').join('') + (s && call.__file && call.__file.place ? '<button type="button" class="add">+ Add system</button>' : '');   // 0.33.0: the flow
+      (s && s.areas[id] ? '<small>' + esc(s.areas[id]) + '</small>' : '') + '</button>').join('') + (s && ((call.__file && call.__file.place) || call.__placeId) ? '<button type="button" class="add">+ Add system</button>' : '');   // 0.33.0: the flow (0.33.1, R7: a phone customer too)
     els.forEach(e => { if (e.dataset.h !== html) { e.innerHTML = html; e.dataset.h = html; } });
   }
-  function switchSystem(id) {
+  function switchSystem(id, quiet) {
     const s = ensureSys(); if (!s || id === s.cur || s.order.indexOf(id) < 0) return;
-    try { blurNow(); closeCard(); closeFMenu(); } catch (e) {} try { saveCall('switch'); } catch (e) {}
-    swapTo(id); if (!s.store[id]) { try { applyDefaults(); } catch (e) {} } runCalcs(); lsSet(K.call, call);
-    goView(currentView === 'report' ? 'report' : 'entry'); say(s.labels[id] + (s.areas[id] ? ' · ' + s.areas[id] : ''), 'done', 1500);
+    try { blurNow(); if (!quiet) closeCard(); closeFMenu(); } catch (e) {} try { saveCall('switch'); } catch (e) {}
+    swapTo(id); if (!s.store[id]) { try { applyDefaults(); } catch (e) {} } runCalcs(); lsSet(K.call, call);   // (R4 (3) of the 0.33.0 review: not reproduced, a comment the tech cleared stays cleared; unchanged)
+    if (quiet) { try { renderCanvas(); paintStrip(); paintDiffs(); } catch (e) {} } else goView(currentView === 'report' ? 'report' : 'entry');
+    say(s.labels[id] + (s.areas[id] ? ' · ' + s.areas[id] : ''), 'done', 1500);
   }
   document.addEventListener('click', e => { const b = e.target && e.target.closest && e.target.closest('#viewport-canvas-frame .proof-systems button[data-sys]'); if (!b || !isLiveInteraction) return;
     e.preventDefault(); e.stopPropagation(); switchSystem(b.dataset.sys); }, true);
@@ -11379,9 +11415,10 @@ body.light-theme .proof-box{color:#0f172a}
       const nid = (pl.done || {})[slot] || ('EQ-' + V.id.replace(/^V-/, '') + '-' + s.cur + '-' + slot.replace(/[^A-Za-z0-9]/g, ''));
       const meta = { 'Place Id': place, 'System Id': s.cur, 'System label': s.labels[s.cur] || '', 'Service area': s.areas[s.cur] || '', 'Slot': SLOT_SHEET[slot] || slot, 'Type': (call.__equip || {})[slot] || (EQUIP_TYPES[slot] || [''])[0] };
       const piece = Object.assign({}, meta); typed.forEach(F => { piece[F.saveCols[0]] = String(call[F.id]).trim(); });
-      const old = (pl.old || {})[slot], add = F => out.push({ key: F.id, tab: 'Equipment', record: nid, col: F.saveCols[0], old: '', new: String(call[F.id] == null ? '' : call[F.id]).trim(), reason: 'New equipment', choice: 'addPiece', newId: nid, piece });
+      const old = (pl.old || {})[slot], add = F => { if (((call.__diffs || {})[F.id] || {}).plan) return;   // 0.33.1 (R3): a line the sheet changed meanwhile waits for its card
+        out.push({ key: F.id, tab: 'Equipment', record: nid, col: F.saveCols[0], old: String((pl.sent || {})[F.id] == null ? '' : pl.sent[F.id]), new: String(call[F.id] == null ? '' : call[F.id]).trim(), reason: 'New equipment', choice: 'addPiece', newId: nid, piece }); };
       if (pl.kind === 'add' || (pl.done || {})[slot] || !old) { typed.forEach(add); return; }
-      if (pl.slots !== 'all' && !typed.length) return;
+      if (!typed.length) return;   // 0.33.1 (R2): a slot is replaced only when it gets a model, serial or mfg date (also for a whole system)
       const F0 = typed[0] || fs[0]; if (!F0) return;
       out.push({ key: F0.id, tab: 'Equipment', record: old.id, col: F0.saveCols[0], old: String(old.cols[F0.saveCols[0]] == null ? '' : old.cols[F0.saveCols[0]]), new: String(call[F0.id] == null ? '' : call[F0.id]).trim(), reason: 'New equipment', choice: 'newEquip', newId: nid, piece });
       typed.filter(F => F !== F0).forEach(add); });
@@ -11477,7 +11514,7 @@ body.light-theme .proof-box{color:#0f172a}
   const valText = v => v == null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v);
   function visitBody() {   // the whole row (no client id: that is added per send)
     const V = visitOf(), file = call.__file || {}, fixed = {}, values = [];
-    const sys = file.system || 'A', piece = (ONFILE && ONFILE.pieces || []).find(x => x.place === file.place && x.system === sys && x.label);
+    const sys = file.system || (call.__sys && call.__sys.cur) || 'A', piece = (ONFILE && ONFILE.pieces || []).find(x => x.place === file.place && x.system === sys && x.label);
     fixed['Call token'] = V.token; fixed['Date'] = valText(call['f:date']).trim() || V.date; fixed['Time'] = V.time; fixed['Tech'] = String(SETTINGS['tech name'] || '').trim() || DEVICE;
     fixed['Call type'] = callView.callType || valText(call['f:callType']); fixed['Template'] = callView.tpl || ''; fixed['Place Id'] = file.place || call.__placeId || '';
     fixed['System Id'] = sys; fixed['System label'] = (call.__sys && call.__sys.labels[sys]) || (piece ? piece.label : ''); /* 0.32.0 (C7d) */ fixed['Status'] = V.done ? 'Done' : 'In progress'; fixed['Created'] = V.created;
@@ -11495,7 +11532,7 @@ body.light-theme .proof-box{color:#0f172a}
     try { if (call.__visit) syncFollow(); } catch (e) {}   // 0.29.0 (C7c-3)
     if (!scriptUrl()) { saveSt = { st: 'off', why: '', at: '', missing: [] }; paintChip(); return; }
     const last = lsGet(K_SAVED, {}) || {}; let ob = null;
-    rowBodies().forEach(body => {   // 0.32.0 (C7d): one row per system with entries
+    rowBodies(why).forEach(body => {   // 0.32.0 (C7d): one row per system with entries
       const sig = JSON.stringify(body); if (last[body.visitId] === sig && !/^tap/.test(why)) return;
       try { keepPending(body.visitId, body.changes && body.changes.length ? call : null, callView); } catch (e) {}   // 0.30.1 (R9): kept until the door answers
       ob = (ob || outbox()).filter(x => x.vid !== body.visitId || x.inFlight);   // the newest copy per Visit Id
@@ -11778,7 +11815,7 @@ body.light-theme .proof-box{color:#0f172a}
   let wheel = null;
   function closeWheel() { if (wheel) { const padded = wheel.padded; wheel.el.remove(); wheel = null; document.body.classList.remove('proof-wheel-open'); if (padded && !isTyping()) kbPad(0); } }
   // 0.12.2 (R6): the wheel closes on any screen change, a redraw, Adjust / Advanced and a tap outside it
-  { const sv = setView; setView = function () { closeWheel(); closeAsk(); closePick(); tapGuardUntil = Date.now() + TAP_GUARD_MS; return sv.apply(this, arguments); }; }   // 0.14.1: C1B-43, C1B-52
+  { const sv = setView; setView = function () { closeWheel(); closeAsk(); closePick(); try { flowClose(); addsysFor = null; } catch (e) {} /* 0.33.1 (R7) */ tapGuardUntil = Date.now() + TAP_GUARD_MS; return sv.apply(this, arguments); }; }   // 0.14.1: C1B-43, C1B-52
   document.addEventListener('pointerdown', e => { if (wheel && !wheel.el.contains(e.target)) closeWheel(); }, true);
   function openWheel(box) {
     const p = boxCell(box); if (!p || !p.proofWheel) return;

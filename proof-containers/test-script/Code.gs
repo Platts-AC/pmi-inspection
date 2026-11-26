@@ -1,5 +1,7 @@
 // =====================================================================================================
 // PMI container proof (TEST) - Apps Script web app for the TEST sheet 'PMI container proof (test)' ONLY.
+// test-door-6 (proof 0.33.1, Prompts no. 175, fix round after C7d: a new piece logs EVERY field it is made with in Changes (R3); an addPiece
+// update in place keeps the old-value guard (R3); a new or replacement piece takes only identity columns, never ratings (R9, CT-19)).
 // test-door-5 (proof 0.33.0, Prompts no. 172, round C7d: the change 'addPiece' = a NEW piece for a system (an Additional system, or a slot
 // that had none); never a 2nd Active piece in one slot). test-door-4 (proof 0.30.2, Prompts no. 169: phone-test fixes: number cells in the Automatic format 'General' (0.#### showed '35.'), every written
 // value trimmed). test-door-3 = proof 0.30.0 (fix round after C7c, Review 0.28.0 R1-R5 / R10). test-door-2 = proof 0.28.0 (C7c-2: FILE CHANGES). test-door-1 = proof 0.25.0 (C7b, Visits). proof-test-2 = rounds 2 / 3 (Tweaks only).
@@ -29,7 +31,7 @@ var ACCENTS = { '': 1, cyan: 1, emerald: 1, amber: 1, purple: 1, rose: 1 };
 var MAX_BODY = 20000;          // characters in one save
 var MAX_ROWS_PER_SAVE = 100;   // tweak rows in one save
 var MAX_TOTAL_ROWS = 2000;     // tweak rows on the whole tab
-var SCRIPT_VERSION = 'test-door-5';
+var SCRIPT_VERSION = 'test-door-6';
 var NUM_FMT = 'General';   // test-door-4: the Automatic number format ('35', '2.5'); 0.#### shows a bare dot ('35.')
 var VISITS_TAB = 'Visits';
 var VISITS_FIXED = ['Visit Id', 'Call token', 'Date', 'Time', 'Tech', 'Call type', 'Template', 'Place Id', 'System Id', 'System label', 'Status', 'Team tag', 'Merged into', 'Revision of', 'Follow-up', 'Area temp', 'Lat', 'Lng', 'Created', 'Last saved'];
@@ -40,6 +42,7 @@ var CHANGE_TABS = { 'Places': 'Place Id', 'Equipment': 'Piece Id' };   // the ta
 var CHANGES_TAB = 'Changes';
 var MAX_CHANGES = 60;          // file changes in one save
 var PIECE_COPY = ['Place Id', 'System Id', 'System label', 'Service area', 'Slot', 'Type'];   // a new piece keeps these from the one it replaces; ratings start BLANK (CT-19)
+var PIECE_IDENT = ['Brand', 'Model', 'Serial', 'Mfg date', 'Refrigerant', 'Metering', 'Notes', 'Place Id', 'System Id', 'System label', 'Service area', 'Slot', 'Type'];   // test-door-6 (R9): the ONLY columns a new piece takes from the page (never ratings)
 var FOLLOW_COLOR = '#fde68a';  // the Visits 'Follow-up' column's color when it holds a question
 // test-door-3 (R5): the ONLY columns of Places / Equipment that hold numbers; every other column is Plain text, whatever its old cell held
 // (so '0405', '0012345', '1/12' keep their form). A number column gets a number only when the value is a plain number.
@@ -231,9 +234,10 @@ function tabOf_(ss, name) {
   t.all = function () { var lr = sh.getLastRow(); return lr < 2 ? [] : sh.getRange(2, 1, lr - 1, head.length).getDisplayValues(); };
   return t;
 }
+var META_COLS_ = ['Place Id', 'System Id', 'System label', 'Service area', 'Slot', 'Type'];   // test-door-6: a new piece's place / system words (the 'Piece' Changes row says them)
 var normC_ = function (v) { return String(v == null ? '' : v).replace(/\s+/g, ' ').trim().toLowerCase(); };
 function fileChanges_(ss, b, fixed, at) {
-  var out = { results: [], placeId: '' }, tabs = {}, who = String(fixed['Tech'] || ''), vid = String(b.visitId || ''), done = {};
+  var out = { results: [], placeId: '' }, logged = {}, tabs = {}, who = String(fixed['Tech'] || ''), vid = String(b.visitId || ''), done = {};
   var T = function (n) { if (!(n in tabs)) tabs[n] = tabOf_(ss, n); return tabs[n]; };
   var log = function (tab, rec, field, oldV, newV, reason) { var C = T(CHANGES_TAB); if (C) C.append({ 'When': at, 'Who': who, 'Visit Id': vid, 'Tab': tab, 'Record Id': rec, 'Field': field, 'Old': oldV, 'New': newV, 'Reason': reason }); };
   var np = b.newPlace;
@@ -255,8 +259,10 @@ function fileChanges_(ss, b, fixed, at) {
     if (!t || t.col(String(c.col)) < 0) { res.status = 'missing'; return; }
     if (c.choice === 'addPiece' && c.tab === 'Equipment') {   // test-door-5 (C7d): a new piece; sent again = the same row, its cell set in place
       var aid = String(c.newId || c.record || ''); if (!/^EQ-[A-Za-z0-9-]{4,80}$/.test(aid)) { res.status = 'missing'; return; }
-      var ar = t.rowOf('Piece Id', aid), nv5 = res['new'];
+      if (PIECE_IDENT.indexOf(String(c.col)) < 0) { res.status = 'missing'; return; }   // test-door-6 (R9): never a rating
+      var ar = t.rowOf('Piece Id', aid), nv5 = res['new'], ov5 = String(c.old == null ? '' : c.old).trim();
       if (ar) { var av = t.get(ar, c.col); if (normC_(av) === normC_(nv5)) { res.status = 'already'; res.newId = aid; return; }
+        if (normC_(av) !== normC_(ov5)) { res.status = 'changed'; res.now = av; res.newId = aid; return; }   // test-door-6 (R3): the old-value guard
         t.set(ar, c.col, nv5); log('Equipment', aid, c.col, av, nv5, 'New equipment'); res.status = 'applied'; res.newId = aid; return; }
       var pc5 = c.piece || {}, pl5 = String(pc5['Place Id'] || fixed['Place Id'] || '').trim(), sy5 = String(pc5['System Id'] || '').trim(), sl5 = String(pc5['Slot'] || '').trim();
       if (!pl5 || !sy5 || !sl5) { res.status = 'missing'; return; }
@@ -264,8 +270,9 @@ function fileChanges_(ss, b, fixed, at) {
       t.all().forEach(function (x) { if (!clash && String(x[pc_]).trim() === pl5 && String(x[sc5]).trim() === sy5 && String(x[lc5]).trim() === sl5 && normC_(x[stc5]) === 'active') clash = String(x[ic5]).trim(); });
       if (clash) { res.status = 'changed'; res.now = ''; res.note = sy5 + ' already has an Active ' + sl5 + ' (' + clash + ')'; return; }
       var o5 = { 'Piece Id': aid, 'Status': 'Active', 'Since': String(fixed['Date'] || at.slice(0, 10)), 'Created at': at, 'Place Id': pl5, 'System Id': sy5, 'Slot': sl5 };
-      Object.keys(pc5).forEach(function (k) { if (t.col(k) >= 0 && !(k in o5)) o5[k] = String(pc5[k] == null ? '' : pc5[k]).trim(); }); o5[String(c.col)] = nv5;
-      t.append(o5); log('Equipment', aid, 'Piece', '', aid + ' (' + sy5 + ' ' + sl5 + ')', 'New equipment'); if (nv5) log('Equipment', aid, c.col, '', nv5, 'New equipment');
+      Object.keys(pc5).forEach(function (k) { if (t.col(k) >= 0 && !(k in o5) && PIECE_IDENT.indexOf(k) >= 0) o5[k] = String(pc5[k] == null ? '' : pc5[k]).trim(); }); o5[String(c.col)] = nv5;   // test-door-6 (R9)
+      t.append(o5); log('Equipment', aid, 'Piece', '', aid + ' (' + sy5 + ' ' + sl5 + ')', 'New equipment');
+      PIECE_IDENT.forEach(function (k) { if (META_COLS_.indexOf(k) < 0 && t.col(k) >= 0 && String(o5[k] == null ? '' : o5[k]).trim()) log('Equipment', aid, k, '', o5[k], 'New equipment'); });   // test-door-6 (R3): every field it is made with
       res.status = 'applied'; res.newId = aid; return;
     }
     var r = t.rowOf(idCol, c.record); if (!r) { res.status = 'missing'; return; }
@@ -276,16 +283,18 @@ function fileChanges_(ss, b, fixed, at) {
         if (normC_(cur) === normC_(newV)) { res.status = 'already'; res.newId = nid; return; }
         if (normC_(cur) !== normC_(oldV)) { res.status = 'changed'; res.now = cur; return; }
         t.set(r, c.col, newV); log('Equipment', nid, c.col, cur, newV, 'New equipment'); res.status = 'applied'; res.newId = nid; return; }
-      if (done[c.record] === nid) { log('Equipment', nid, c.col, oldV, newV, 'New equipment'); res.status = 'applied'; res.newId = nid; return; }   // a 2nd field of the same new piece in this save
+      if (done[c.record] === nid) { if (!logged[nid + '|' + c.col]) log('Equipment', nid, c.col, oldV, newV, 'New equipment'); res.status = 'applied'; res.newId = nid; return; }   // a 2nd field of the same new piece in this save
       if (t.get(r, 'Replaced by') === nid) { res.status = 'already'; res.newId = nid; return; }
       var st = t.get(r, 'Status');   // test-door-3 (R2): only an Active piece is replaced (never two Active pieces in one slot)
       if (t.col('Status') >= 0 && normC_(st) !== 'active') { var rb = t.get(r, 'Replaced by'); res.status = 'changed'; res.now = cur; res.note = 'This piece is ' + st + (rb ? ' (replaced by ' + rb + ')' : ''); return; }
       if (normC_(cur) !== normC_(oldV)) { res.status = 'changed'; res.now = cur; return; }
       if (!done[c.record]) { var o2 = { 'Piece Id': nid, 'Status': 'Active', 'Since': String(fixed['Date'] || at.slice(0, 10)), 'Created at': at };
-        PIECE_COPY.forEach(function (k) { o2[k] = t.get(r, k); }); Object.keys(c.piece || {}).forEach(function (k) { if (t.col(k) >= 0 && PIECE_COPY.indexOf(k) < 0 && k !== 'Piece Id') o2[k] = c.piece[k]; });
+        PIECE_COPY.forEach(function (k) { o2[k] = t.get(r, k); }); Object.keys(c.piece || {}).forEach(function (k) { if (t.col(k) >= 0 && PIECE_COPY.indexOf(k) < 0 && k !== 'Piece Id' && PIECE_IDENT.indexOf(k) >= 0) o2[k] = String(c.piece[k] == null ? '' : c.piece[k]).trim(); });   // test-door-6 (R9): identity only
+        o2[String(c.col)] = newV;
         t.set(r, 'Status', 'Replaced'); t.set(r, 'Until', String(fixed['Date'] || at.slice(0, 10))); t.set(r, 'Replaced by', nid); t.append(o2);
-        log('Equipment', c.record, 'Status', 'Active', 'Replaced by ' + nid, 'New equipment'); done[c.record] = nid; }
-      log('Equipment', nid, c.col, oldV, newV, 'New equipment'); res.status = 'applied'; res.newId = nid; return;
+        log('Equipment', c.record, 'Status', 'Active', 'Replaced by ' + nid, 'New equipment'); done[c.record] = nid;
+        PIECE_IDENT.forEach(function (k) { if (META_COLS_.indexOf(k) < 0 && k !== String(c.col) && t.col(k) >= 0 && String(o2[k] == null ? '' : o2[k]).trim()) { log('Equipment', nid, k, '', o2[k], 'New equipment'); logged[nid + '|' + k] = 1; } }); }   // test-door-6 (R3)
+      if (!logged[nid + '|' + c.col]) log('Equipment', nid, c.col, oldV, newV, 'New equipment'); res.status = 'applied'; res.newId = nid; return;
     }
     if (c.choice === 'add') {
       if (!normC_(newV)) { res.status = 'already'; return; }
