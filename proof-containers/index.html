@@ -738,19 +738,19 @@
 .proof-ct .proof-ct-item.ct-on{border-color:#f59e0b;background:#2a1a05}
 .proof-ct .proof-ct-item i{font-size:11px;color:#fbbf24;font-style:normal;margin-left:6px}
 .proof-ct .proof-empty{color:#fbbf24;font-size:13px;padding:6px 0}
-.proof-cd{display:flex;flex-direction:column;height:100%;min-height:0}
+.proof-cd{height:100%;width:100%;display:flex;flex-direction:column;overflow:hidden;min-height:0;padding:4px 6px;box-sizing:border-box;text-align:left}
 .proof-cd .proof-cd-crumb{font-size:13px;color:#93c5fd;margin:0 0 6px}
 .proof-cd .proof-cd-list{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .proof-cd .proof-cd-b{display:block;width:100%;text-align:left;margin:0 0 6px;padding:10px 12px;border-radius:8px;border:1px solid #234d82;background:#0c1a2e;color:#e2e8f0;font-size:15px}
 .proof-cd .proof-cd-b i{display:block;font-size:12px;color:#94a3b8;font-style:normal}
-.proof-cd .proof-cd-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 6px}
-.proof-cd .proof-cd-fl{flex:0 0 44px;font-size:12px;color:#94a3b8;text-align:right;padding-right:2px}
-.proof-cd .proof-cd-u{flex:0 0 auto;min-width:56px;min-height:40px;padding:6px 8px;border-radius:8px;border:1px solid #234d82;background:#0c1a2e;color:#e2e8f0;font-size:15px}
+.proof-cd .proof-cd-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 6px;padding-left:38px;position:relative;min-height:40px}
+.proof-cd .proof-cd-fl{position:absolute;left:0;top:12px;width:32px;font-size:12px;color:#94a3b8;text-align:right}
+.proof-cd .proof-cd-u{flex:0 0 auto;min-width:52px;min-height:40px;padding:6px 5px;border-radius:8px;border:1px solid #234d82;background:#0c1a2e;color:#e2e8f0;font-size:15px}
 .proof-cd .proof-cd-u.cd-on{border-color:#14b8a6;background:#063a36;color:#ccfbf1}
 .proof-cd .proof-cd-u i{display:block;font-size:10px;color:#94a3b8;font-style:normal}
 .proof-cd .proof-cd-sprow,.proof-cd .proof-cd-other{border-top:1px solid #1e3a5f;padding-top:6px}
 .proof-cd .proof-empty{color:#fbbf24;font-size:13px;padding:6px 0}
-.proof-sb{height:100%;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;color:#e2e8f0}
+.proof-sb{height:100%;width:100%;box-sizing:border-box;padding:4px 6px;text-align:left;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;color:#e2e8f0}
 .proof-sb .proof-form{display:block}
 .proof-sb label{display:block;font-size:12px;color:#94a3b8;margin:0 0 6px}
 .proof-sb .proof-sb-in{display:block;width:100%;box-sizing:border-box;margin:2px 0 0;padding:8px 10px;border-radius:8px;border:1px solid #234d82;background:#0c1a2e;color:#e2e8f0;font-size:16px}
@@ -762,6 +762,7 @@
 .proof-sb .proof-sb-add{display:block;width:100%;padding:10px;border-radius:8px;border:1px dashed #234d82;background:transparent;color:#93c5fd;font-size:14px;margin:0 0 8px}
 .proof-sb .proof-sb-sum{font-size:13px;line-height:1.5;border-top:1px solid #1e3a5f;padding:8px 0 4px}
 .proof-sb .proof-empty{color:#fbbf24;font-size:13px;padding:6px 0}
+.proof-hit .proof-dist{display:block;font-style:normal;font-size:12px;color:#5eead4}
 .pi{display:inline-block;width:1em;height:1em;vertical-align:-0.15em;flex:0 0 auto}
 #proof-pick .pp-item .pp-num{position:absolute;right:10px;top:50%;transform:translateY(-50%);min-width:20px;height:20px;border-radius:10px;background:#22d3ee;color:#0b1626;font:700 12px/20px system-ui,sans-serif;text-align:center}
 #proof-badge .proof-viewline{display:block;font-size:9px;line-height:1.1;font-weight:600;color:#7dd3fc;white-space:nowrap;letter-spacing:0}
@@ -906,6 +907,8 @@ body:not(.proof-ready) #reopen-inspector-fab{display:none!important}
 .proof-report-empty{color:#64748b}
 .grid-split-partition:has(.proof-ct){align-items:stretch}
 .grid-split-partition:has(.proof-ct) > *{height:100%;align-self:stretch}
+.grid-split-partition:has(.proof-cd),.grid-split-partition:has(.proof-sb){align-items:stretch}
+.grid-split-partition:has(.proof-cd) > *,.grid-split-partition:has(.proof-sb) > *{height:100%;align-self:stretch}
 .proof-results{height:100%;width:100%;display:flex;flex-direction:column;overflow:hidden;padding:4px 6px;box-sizing:border-box;text-align:left}
 .proof-results .proof-list{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;border-top:1px solid #1e3a5f;padding-top:6px}
 .proof-results .proof-hint{color:#64748b;font-size:13px}
@@ -3736,7 +3739,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.37.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.38.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3746,7 +3749,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.37.0', stamp: '2026-11-26 10:57:21', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.38.0', stamp: '2026-11-26 11:26:47', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8423,7 +8426,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.37.0';
+  const PROOF_VERSION = '0.38.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8442,7 +8445,7 @@ body.light-theme .proof-box{color:#0f172a}
   const findFillOf = p => p.proofField ? (p.proofField.find || '') : (FIND_BOX_FILL[p.proofKey] || FIND_FILL_FALLBACK[p.proofKey] || '');
   const TYPES = { button: 1, text: 1, logo: 1, badge: 1 };
   const TOOL_ACTIONS = { 'reload-layout': 1, 'proof-save-tweaks': 1, 'proof-clear-tweaks': 1, 'proof-profile': 1, 'toggle-tray': 1, 'proof-adjust': 1, 'refresh-page': 1 };
-  const ACTIONS = Object.assign({ 'proof-badge': 1, 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1, 'new-call': 1, 'reveal-hidden': 1, 'start-new-customer': 1, 'save-new-customer': 1, 'open-call-type': 1, 'call-type-back': 1, 'condo-back': 1, 'site-back': 1, 'save-site': 1, 'copy-report': 1, 'open-followups': 1 },   /* 0.29.0: open-followups */ TOOL_ACTIONS);   // C2b: copy-report   // 0.14.1: call-type-back   // C1b: open-call-type   // C1a: Blueprint P8 (Stage C)
+  const ACTIONS = Object.assign({ 'proof-badge': 1, 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1, 'new-call': 1, 'reveal-hidden': 1, 'start-new-customer': 1, 'save-new-customer': 1, 'open-call-type': 1, 'call-type-back': 1, 'condo-back': 1, 'site-back': 1, 'save-site': 1, 'use-location': 1, 'location-menu': 1, 'near-me': 1, 'copy-report': 1, 'open-followups': 1 },   /* 0.29.0: open-followups */ TOOL_ACTIONS);   // C2b: copy-report   // 0.14.1: call-type-back   // C1b: open-call-type   // C1a: Blueprint P8 (Stage C)
   const TPL_NAME = /^[A-Za-z0-9][A-Za-z0-9 _.-]{0,29}$/, TPL_ACTION = /^set-template:([A-Za-z0-9][A-Za-z0-9 _.-]{0,29})?$/;   // round B2: set-template:<name> (set-template: alone = no template)
   // What a tweak can change (DESIGN.md). Each rule turns a value into its normal text form, or returns an error.
   const PLACES = { 'top-left': ['left', 'top'], 'top-center': ['center', 'top'], 'top-right': ['right', 'top'], 'middle-left': ['left', 'middle'], 'middle': ['center', 'middle'],
@@ -8527,8 +8530,8 @@ body.light-theme .proof-box{color:#0f172a}
   // Customer required: no / remind (start value: blank or missing) / yes
   let SETTINGS = {};
   const SETTING_VALUES = { 'customer required': ['no', 'remind', 'yes'], 'debug boxes': ['no', 'yes'], 'report format': ['rated first', 'within range', 'measured first', 'slash'],
-    'script url': '*', 'save chip': '*', 'tech name': '*' };   // '*' = free text, kept as typed (C7b, 0.25.0)   // Debug boxes: 0.22.4; Report format: 0.24.0 (C7a)
-  const SETTING_START = { 'customer required': 'remind', 'debug boxes': 'no', 'report format': 'rated first', 'script url': '', 'save chip': 'Saved {time}', 'tech name': '' };
+    'script url': '*', 'save chip': '*', 'tech name': '*', 'location at save': ['only when i used gps on the call', 'silent read at save if i did not use gps', 'off'] };   // 0.38.0 (C7e): Location at save   // '*' = free text, kept as typed (C7b, 0.25.0)   // Debug boxes: 0.22.4; Report format: 0.24.0 (C7a)
+  const SETTING_START = { 'customer required': 'remind', 'debug boxes': 'no', 'report format': 'rated first', 'script url': '', 'save chip': 'Saved {time}', 'tech name': '', 'location at save': 'only when i used gps on the call' };
   function parseSettings(rows, notes) {
     const out = {}; (rows || []).forEach((r, i) => { const k = g2(r, 'Setting').toLowerCase(), v = g2(r, 'Value').toLowerCase(); if (!k) return;
       if (!SETTING_VALUES[k]) { notes.push('Settings row ' + (i + 2) + ': "' + g2(r, 'Setting') + '" is not a setting this page knows; not used.'); return; }
@@ -8716,6 +8719,7 @@ body.light-theme .proof-box{color:#0f172a}
 
   let call = lsGet(K.call, {}) || {};
   const find = { 'find.name': '', 'find.address': '', 'find.phone': '' };
+  let nearMe = null;   // 0.38.0 (C7e): Near me (the phone's location; Find sorted by distance)
   // Round C1a: the value boxes of the New customer screen (the Screen with the save-new-customer button, opened by start-new-customer) fill a DRAFT, not the call,
   // until save-new-customer; their key is DRAFT + the Field Id, kept with the Find boxes (cleared together).
   // 0.13.1 (R8): no screen name in the code: the New customer screen is the Screen that holds the save-new-customer button (build())
@@ -8807,7 +8811,7 @@ body.light-theme .proof-box{color:#0f172a}
   let houseFields = null;   // 0.13.1 (R6): the house-Scope Fields [{ id, find }] of the layout that won (null = old tabs)
   const phoneSites = () => { const a = lsGet(K.sites, []); return Array.isArray(a) ? a.filter(x => x && (x.name || x.address)) : []; };
   const allSites = () => (ONFILE ? placesForFind() : (SITES || HOUSES)).concat(phoneSites().filter(x => !(ONFILE && x.placeId && placeById(x.placeId))).map(x => Object.assign({ onPhone: true }, x)));   // 0.30.0 (R4): once the sheet has it, listed once   // C7a: Places first; Sites the fallback
-  const PART_W = { address: 3, phone: 2, name: 1 }, PART_WORD = { address: 'Address', phone: 'Phone', name: 'Name' };
+  const PART_W = { address: 3, phone: 2, name: 1, near: 0 }, PART_WORD = { address: 'Address', phone: 'Phone', name: 'Name', near: 'Near me' };   // 0.38.0: near
   function hasAll(text, typedText) {
     const have = []; words(text).forEach(w => { have.push(w); if (ABBR[w]) have.push(ABBR[w]); if (LONG[w]) have.push(LONG[w]); if (/^0+\d/.test(w)) have.push(w.replace(/^0+/, '')); });   // 0.26.0 (R6): '405' finds unit 0405
     const t = words(typedText); return !!t.length && t.every(q => have.some(h => h.indexOf(q) === 0));
@@ -8836,11 +8840,11 @@ body.light-theme .proof-box{color:#0f172a}
   }
   const sameSite = (a, b) => words(a.name).join(' ') === words(b.name).join(' ') && words(a.address).map(short).join(' ') === words(b.address).map(short).join(' ');
   function matches() {
-    const q = typed(); if (!q.some(Boolean)) return null;
+    const q = typed(); if (!q.some(Boolean)) return nearMe ? nearList() : null;   // 0.38.0 (C7e): Near me = every place by distance
     const d = digits(q[2]), ka = addrParts(q[1]), out = [];
     allSites().forEach((h, i) => {
       const why = [], rel = ka ? addrRel(ka, h.address) : 0;   // 0.22.4 (F11): '1827 Oak Street' also finds '1827 Oak' (likely)
-      if (q[1] && (hasAll(h.address, q[1]) || rel)) why.push('address');
+      if (q[1] && (hasAll(h.address, q[1]) || rel || (q[1].indexOf(',') > 0 && hasAll(h.address, q[1].split(',')[0])))) why.push('address');   // 0.38.0: 'Test Ocean Dr, Testville' (Use my location) finds the street on file
       const phs = h.phonesAll || [h.phone];   // C7a: every phone on file
       if (d.length >= 3 && phs.some(x => digits(x).includes(d))) why.push('phone');
       if (q[0] && (hasAll(h.name, q[0]) || (h.alsoNames && hasAll(h.alsoNames, q[0])))) why.push('name');   // 0.26.0 (R11): a unit is also found by its building / site name
@@ -9543,12 +9547,12 @@ body.light-theme .proof-box{color:#0f172a}
     const num = ' inputmode="numeric"';
     const bl = d.buildings.map((x, i) => '<div class="proof-sb-card"><div class="proof-sb-h"><b>Building ' + (i + 1) + '</b>' + (d.buildings.length > 1 ? '<button type="button" class="proof-sb-x" data-sbx="rmb" data-i="' + i + '">Remove</button>' : '') + '</div>'
       + '<label>Name' + sbIn('b.' + i + '.name', x.name, 'e.g. North tower') + '</label><label>Address' + sbIn('b.' + i + '.address', x.address, 'e.g. 1805 Ocean Dr') + '</label>'
-      + '<div class="proof-sb-two"><label>Floors from' + sbIn('b.' + i + '.floorFrom', x.floorFrom, '1', num) + '</label><label>to' + sbIn('b.' + i + '.floorTo', x.floorTo, '12', num) + '</label></div>'
-      + '<div class="proof-sb-two"><label>Units per floor' + sbIn('b.' + i + '.units', x.units, '4', num) + '</label><label>Prefix' + sbIn('b.' + i + '.prefix', x.prefix, 'none') + '</label></div>'
-      + '<label>Unit numbers (or leave blank: 01, 02 …)' + sbIn('b.' + i + '.numbers', x.numbers, '01, 02, 03, 04') + '</label></div>').join('');
+      + '<div class="proof-sb-two"><label>Floors from' + sbIn('b.' + i + '.floorFrom', x.floorFrom, 'e.g. 1', num) + '</label><label>to' + sbIn('b.' + i + '.floorTo', x.floorTo, 'e.g. 12', num) + '</label></div>'
+      + '<div class="proof-sb-two"><label>Units per floor' + sbIn('b.' + i + '.units', x.units, 'e.g. 4', num) + '</label><label>Prefix' + sbIn('b.' + i + '.prefix', x.prefix, 'none') + '</label></div>'
+      + '<label>Unit numbers (or leave blank: 01, 02 …)' + sbIn('b.' + i + '.numbers', x.numbers, 'e.g. 01, 02, 03, 04') + '</label></div>').join('');
     const opt = (sel) => d.buildings.map((x, i) => '<option value="' + (i + 1) + '"' + (Number(sel) === i + 1 ? ' selected' : '') + '>' + esc(String(x.name || '').trim() || 'Building ' + (i + 1)) + '</option>').join('');
     const rm = d.rooms.map((r, i) => '<div class="proof-sb-card"><div class="proof-sb-h"><b>Room ' + (i + 1) + '</b><button type="button" class="proof-sb-x" data-sbx="rmr" data-i="' + i + '">Remove</button></div>'
-      + '<label>Name' + sbIn('r.' + i + '.label', r.label, 'e.g. Lobby, Elevator room') + '</label><div class="proof-sb-two"><label>Building<select class="proof-sb-in" data-sb="r.' + i + '.building">' + opt(r.building) + '</select></label><label>Floor' + sbIn('r.' + i + '.floor', r.floor, '1', num) + '</label></div></div>').join('');
+      + '<label>Name' + sbIn('r.' + i + '.label', r.label, 'e.g. Lobby, Elevator room') + '</label><div class="proof-sb-two"><label>Building<select class="proof-sb-in" data-sb="r.' + i + '.building">' + opt(r.building) + '</select></label><label>Floor' + sbIn('r.' + i + '.floor', r.floor, 'e.g. 1', num) + '</label></div></div>').join('');
     return '<div class="proof-sb"><form class="proof-form" autocomplete="off" onsubmit="return false"><label>Site name' + sbIn('name', d.name, 'e.g. Oceana') + '</label><label>Site access codes (all buildings)' + sbIn('access', d.access, 'optional') + '</label>'
       + '<div class="proof-sb-sec">Buildings</div>' + bl + '<button type="button" class="proof-sb-add" data-sbx="addb">+ Add building</button>'
       + '<div class="proof-sb-sec">Special rooms (Lobby, Elevator room …)</div>' + rm + '<button type="button" class="proof-sb-add" data-sbx="addr">+ Add room</button>'
@@ -9577,6 +9581,7 @@ body.light-theme .proof-box{color:#0f172a}
     try { r = await withTimeout(fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ token: TOKEN, op: 'newSite', tech: String(SETTINGS['tech name'] || '').trim() || DEVICE, site }) }).then(a => a.json()), 30000); }
     catch (e) { sbBusy = false; say('No answer from the sheet (no signal?). Nothing saved; the site stays on this phone. Tap Save site again.', 'warn', 9000); return; }
     sbBusy = false; if (r && r.version) noteDoor(r.version);
+    if (r && r.error === 'unknown op') { say('Saving a site needs the test script test-door-7 (paste it, then New version). Nothing saved; the site stays on this phone.', 'warn', 12000); return; }
     if (!r || !r.ok) { say('The sheet refused the site: ' + ((r && r.error) || 'no answer') + '. Nothing saved.', 'warn', 12000); return; }
     if (ONFILE) { const at = r.at || '', add = o => { if (!ONFILE.list.find(x => x.id === o.id)) ONFILE.list.push(o); };   // shown at once; the next sheet read brings the real rows
       add({ id: site.id, level: 'site', parent: '', active: true, row: 0, cols: { 'Place Id': site.id, 'Level': 'site', 'Name': site.name, 'Access codes': site.access, 'Created at': at } });
@@ -9588,6 +9593,76 @@ body.light-theme .proof-box{color:#0f172a}
     say('Site saved: ' + site.name + ' (' + site.buildings.length + ' building' + (site.buildings.length === 1 ? '' : 's') + '). Pick the unit.', 'done', 6000);
     const P = placeById(site.id); if (!(P && condoOpen(P))) goView('find');
   };
+  // 0.38.0 (C7e stage 3, Prompts no. 179): Use my location / Near me / Location at save. The phone's location (never stored on the sheet
+  // except as below) -> the test script's whereAmI (Maps geocoder) -> the Address box of Find, as 'Street + city' (street name + city, no
+  // house number, the part GPS gets wrong; the default) or 'Full address' (number, street, city, state, ZIP; never the country). The choice and
+  // the 'Location at save' choice are kept PER TECH on this phone (the Settings 'Tech name'); switching the address choice refills the box
+  // from the last lookup (no new lookup). Near me sorts Find by distance (no lookup). Location at save (Settings default, a per-tech switch
+  // in the ⋯ menu): 'Only when I used GPS on the call' (default) / 'Silent read at save if I did not use GPS' / 'Off'. Any location goes
+  // to the script with the save; it fills a place's Lat / Lng ONLY when both are empty (a unit's building), and the Visits Lat / Lng; it
+  // never changes an address. Use my location only fills the Find box.
+  const K_LOC = 'proof-containers.location.v1', LOC_FRESH = 30 * 60 * 1000, LOC_ACC = 100;
+  const LAS = { 'only when i used gps on the call': 'used', 'silent read at save if i did not use gps': 'silent', 'off': 'off' }, LAS_LABEL = { used: 'Only when I used GPS on the call', silent: 'Silent read at save if I did not use GPS', off: 'Off' };
+  const LOC_MSG = { signal: 'Use my location needs signal. Typing the address still works.', denied: 'This phone does not let the page see where you are. On an iPhone: Settings > Privacy & Security > Location Services: on, then Safari Websites: While Using the App. Then try again.',
+    gps: 'The phone could not find where you are. Try again in a moment, or type the address.', script: 'The address lookup needs the test script (Script URL on the Settings tab). Near me works without it.', old: 'Use my location needs the test script test-door-7.' };
+  let locBusy = false, silentBusy = false;
+  const techKey = () => String(SETTINGS['tech name'] || '').trim() || DEVICE;
+  const locStore = () => { const m = lsGet(K_LOC, {}); return m && typeof m === 'object' ? m : {}; };
+  const locPref = () => { const m = locStore(), t = (m.byTech || {})[techKey()] || {}; return { parts: t.parts === 'full' ? 'full' : 'street', atSave: LAS_LABEL[t.atSave] ? t.atSave : '' }; };
+  const setLocPref = (k, v) => { const m = locStore(); m.byTech = m.byTech || {}; const t = m.byTech[techKey()] = m.byTech[techKey()] || {}; t[k] = v; lsSet(K_LOC, m); };
+  const atSaveMode = () => locPref().atSave || LAS[String(SETTINGS['location at save'] || '').toLowerCase()] || 'used';
+  const miles = d => (d < 0.1 ? '0.1' : d < 10 ? d.toFixed(1) : String(Math.round(d))) + ' mi';
+  function distMi(a, b, c, d) { const R = 3958.8, r = x => x * Math.PI / 180, dl = r(c - a), dn = r(d - b), h = Math.sin(dl / 2) ** 2 + Math.cos(r(a)) * Math.cos(r(c)) * Math.sin(dn / 2) ** 2; return 2 * R * Math.asin(Math.min(1, Math.sqrt(h))); }
+  function nearList() {
+    const out = allSites().map((h, i) => { const la = parseFloat(h.lat), ln = parseFloat(h.lng), ok = isFinite(la) && isFinite(ln) && !(la === 0 && ln === 0);
+      return { h, i, why: ['near'], exact: 0, likely: false, score: 0, dist: ok ? distMi(nearMe.lat, nearMe.lng, la, ln) : null }; });
+    return out.sort((a, b) => (a.dist == null) - (b.dist == null) || (a.dist != null && b.dist != null ? a.dist - b.dist : a.i - b.i));
+  }
+  function here(how) {   // the phone's location now (a fix with its accuracy)
+    if (typeof navigator !== 'undefined' && navigator.onLine === false && how === 'lookup') return Promise.reject(new Error(LOC_MSG.signal));
+    if (!navigator.geolocation) return Promise.reject(new Error(LOC_MSG.denied));
+    return new Promise((ok, no) => navigator.geolocation.getCurrentPosition(p => ok({ lat: Number(p.coords.latitude.toFixed(6)), lng: Number(p.coords.longitude.toFixed(6)), acc: Math.round(Number(p.coords.accuracy) || 0), at: Date.now() }),
+      er => no(new Error(er && er.code === 1 ? LOC_MSG.denied : LOC_MSG.gps)), { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 }));
+  }
+  const keepLoc = (f, how) => { call.__loc = Object.assign({}, f, { how }); lsSet(K.call, call); };
+  function addrFrom(parts, kind) { const p = parts || {}, st = String(p.street || '').trim(), city = String(p.city || '').trim();
+    if (kind === 'full') return [[p.number, st].filter(Boolean).join(' '), city, [p.state, p.zip].filter(Boolean).join(' ')].filter(Boolean).join(', ');
+    return [st, city].filter(Boolean).join(', '); }
+  function fillFindAddr(text) { find['find.address'] = text; nearMe = null; document.querySelectorAll('.proof-box[data-key="find.address"]').forEach(b => { b.value = text; }); paintResults(); }
+  window.EngineActions['use-location'] = async () => {
+    blurNow(); if (locBusy) return; const url = scriptUrl(); locBusy = true; say('Finding where you are…', 'info', 20000); let f;
+    try { f = await here('lookup'); } catch (e) { locBusy = false; say(e.message, 'warn', 12000); return; }
+    keepLoc(f, 'used');
+    if (!url) { locBusy = false; say(LOC_MSG.script, 'warn', 9000); return; }
+    let r = null; try { r = await withTimeout(fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ token: TOKEN, op: 'whereAmI', tech: techKey(), lat: f.lat, lng: f.lng }) }).then(a => a.json()), 20000); }
+    catch (e) { locBusy = false; say(LOC_MSG.signal, 'warn', 9000); return; }
+    locBusy = false; if (r && r.version) noteDoor(r.version);
+    if (!r || !r.ok || !r.parts) { say(r && (/^test-door-[1-6]$/.test(String(r.version || '')) || r.error === 'unknown op') ? LOC_MSG.old : ((r && r.error) || LOC_MSG.gps), 'warn', 12000); return; }
+    const m = locStore(); m.last = { parts: r.parts, full: r.full || '', at: Date.now() }; lsSet(K_LOC, m);
+    const t = addrFrom(r.parts, locPref().parts); fillFindAddr(t); say('From your location: ' + t + ' (⋯: street + city or full address)', 'done', 6000);
+  };
+  window.EngineActions['near-me'] = async () => {
+    blurNow(); if (locBusy) return; locBusy = true; say('Finding where you are…', 'info', 20000); let f;
+    try { f = await here('near'); } catch (e) { locBusy = false; say(e.message, 'warn', 12000); return; }
+    locBusy = false; keepLoc(f, 'used'); clearFind(); nearMe = f; document.querySelectorAll('.proof-box[data-key^="find."]').forEach(b => { b.value = ''; }); paintResults(); say('Nearest first (places with no location on file come last).', 'done', 5000);
+  };
+  window.EngineActions['location-menu'] = () => { blurNow(); const pr = locPref(), on = k => (pr.parts === k ? ' ✓' : '');
+    ask('Use my location fills the Address box with:', [['Street + city' + on('street'), () => pickParts('street')], ['Full address' + on('full'), () => pickParts('full')], ['Location at save…', () => askAtSave()], ['Close', () => {}]]); };
+  function pickParts(k) { setLocPref('parts', k); const l = locStore().last; if (l && l.parts) { const t = addrFrom(l.parts, k); fillFindAddr(t); say((k === 'full' ? 'Full address' : 'Street + city') + ': ' + t, 'done', 5000); } else say((k === 'full' ? 'Full address' : 'Street + city') + ' it is (for ' + techKey() + ').', 'done', 4000); }
+  function askAtSave() { const cur = atSaveMode(), mine = locPref().atSave, dflt = LAS[String(SETTINGS['location at save'] || '').toLowerCase()] || 'used';
+    ask('Location at save (the sheet\'s default: ' + LAS_LABEL[dflt] + '). A location only fills an EMPTY Lat / Lng; it never changes an address.', ['used', 'silent', 'off'].map(k => [LAS_LABEL[k] + (cur === k ? ' ✓' : ''), () => { setLocPref('atSave', k); say('Location at save: ' + LAS_LABEL[k] + (k === dflt && !mine ? '' : ' (for ' + techKey() + ' on this phone)'), 'done', 5000); }]).concat([['Back', () => window.EngineActions['location-menu']()]])); }
+  function locForSave() {   // the location a save carries, by the Location at save choice
+    const mode = atSaveMode(), lc = call.__loc; if (mode === 'off' || !lc) return null;
+    if (!(isFinite(lc.lat) && isFinite(lc.lng)) || !(lc.acc >= 0 && lc.acc <= LOC_ACC) || Date.now() - (lc.at || 0) > LOC_FRESH) return null;
+    if (lc.how === 'silent' && mode !== 'silent') return null; return lc;
+  }
+  async function silentLoc() {
+    if (silentBusy || atSaveMode() !== 'silent' || locForSave() || !navigator.geolocation || !(call.__file || call.__placeId)) return;
+    let st = 'prompt'; try { st = navigator.permissions ? (await navigator.permissions.query({ name: 'geolocation' })).state : 'prompt'; } catch (e) {}
+    if (st !== 'granted') return;   // silent = never a question on screen
+    silentBusy = true; const pid = (call.__file && call.__file.place) || call.__placeId;
+    try { const f = await here('silent'); silentBusy = false; if (((call.__file && call.__file.place) || call.__placeId) !== pid) return; keepLoc(Object.assign(f, { place: pid }), 'silent'); saveCall('location'); } catch (e) { silentBusy = false; }
+  }
   const hasNewCustomer = () => { let y = false; eachCell(engineState, p => { if (p.clickAction === 'start-new-customer') y = true; }); return y; };
   function resultsHtml() {
     const all = matches();
@@ -9595,9 +9670,9 @@ body.light-theme .proof-box{color:#0f172a}
     const q = typed(); if (!all.length && q[2] && !q[0] && !q[1] && digits(q[2]).length < 3) return '<div class="proof-count proof-hint">Type 3 or more digits</div>';   // 0.13.1 (R2)
     if (!all.length) return '<div class="proof-empty">No match. Change what you typed' + (hasNewCustomer() ? ', or tap New customer.' : '.') + '</div>';
     const m = all.slice(0, LIST_MAX);
-    const count = all.length > LIST_MAX ? LIST_MAX + ' of ' + all.length + ': keep typing' : all.length + (all.length === 1 ? ' match' : ' matches');
+    const count = (nearMe && !typed().some(Boolean) ? 'Near me, nearest first: ' : '') + (all.length > LIST_MAX ? LIST_MAX + ' of ' + all.length + ': keep typing' : all.length + (all.length === 1 ? ' match' : ' matches'));
     return '<div class="proof-count">' + count + '</div><div class="proof-list">' + m.map(x => '<button type="button" class="proof-hit" data-i="' + x.i + '"><em class="proof-why">Matched: ' + x.why.map(w => PART_WORD[w]).join(', ') + (x.likely ? ' (likely)' : '') + '</em><b>' + esc(x.h.name) + '</b>' + (x.h.onPhone ? ' <i>on this phone</i>' : '') +
-      '<span>' + esc(x.h.address) + (x.h.phone ? ' · ' + esc(x.h.phone) : '') + '</span></button>').join('') + '</div>';
+      '<span>' + esc(x.h.address) + (x.h.phone ? ' · ' + esc(x.h.phone) : '') + '</span>' + (x.dist != null ? '<em class="proof-dist">' + esc(miles(x.dist)) + '</em>' : '') + '</button>').join('') + '</div>';
   }
   const paintResults = () => document.querySelectorAll('.proof-results').forEach(el => { el.innerHTML = resultsHtml(); });
   window.__proofRepaints = 0;
@@ -9610,7 +9685,7 @@ body.light-theme .proof-box{color:#0f172a}
   document.addEventListener('input', e => {
     const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b) return;
     const k = b.dataset.key;
-    if (k in find || isDraft(k)) { find[k] = b.value; if (FIND_KEYS[k]) paintResults(); }   // C1a: a New customer box fills the draft
+    if (k in find || isDraft(k)) { find[k] = b.value; if (FIND_KEYS[k]) { nearMe = null; paintResults(); } }   // 0.38.0: typing leaves Near me   // C1a: a New customer box fills the draft
     else { call[k] = b.value; { const p = cellOfPart(b.closest('.grid-split-partition')); if (p && p.proofField && p.proofField.calc) setSrc(k, String(b.value).trim() ? 'typed' : ''); } runCalcs(); lsSet(K.call, call); try { paintLimit(b); applyVis(); paintFolds(); } catch (e) {} }   // C2a: calc values and fold status, no redraw   // round B2: Hard min / max note; when-filled Lines
   });
   document.addEventListener('click', e => {
@@ -9624,6 +9699,7 @@ body.light-theme .proof-box{color:#0f172a}
   // no Field Id named here); then Find (and any New customer draft) is cleared and Entry opens
   function loadSite(x, extra) {
     if (!(x && x.place && x.place.pending)) delete call.__newUnit;   // 0.36.0 (C7e): a unit in waiting only for its own pick
+    try { const lc = call.__loc, pid = x && x.place ? x.place.id : ''; if (lc && ((lc.place && lc.place !== pid) || Date.now() - (lc.at || 0) > LOC_FRESH)) delete call.__loc; } catch (e) {}   // 0.38.0: a location taken for another place, or old, is not this call's
     try { closeCard(); } catch (e) {} try { flowClose(); addsysFor = null; } catch (e) {}   // 0.30.1 (R7): a new pick closes an open card (0.33.1: and the Add system sheet)
     // 0.13.1 (R6): every house-Scope Field is cleared first (old tabs: the Find fill Fields), then filled from the site
     const hf = houseFields || Object.keys(FIND_FILL_FALLBACK).map(id => ({ id, find: FIND_FILL_FALLBACK[id] }));
@@ -9684,7 +9760,7 @@ body.light-theme .proof-box{color:#0f172a}
   window.addEventListener('click', e => { if (Date.now() >= tapGuardUntil) return; const t = e.target && e.target.closest && e.target.closest('button, .proof-hit, .proof-ct-item');
     if (t && !(document.getElementById('proof-ask') || { contains: () => false }).contains(t)) { e.preventDefault(); e.stopPropagation(); } }, true);
   window.__proofTapReady = () => Date.now() >= tapGuardUntil;   // 0.33.1 (C4): for the tests only (wait for the guard instead of a fixed time)
-  function clearFind() { Object.keys(find).forEach(k => { find[k] = ''; }); }
+  function clearFind() { Object.keys(find).forEach(k => { find[k] = ''; }); nearMe = null; }
   function blurNow() { try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (e) {} }
   function goView(v) { blurNow(); resetTypingOrder(); setView(v); try { closeCard(); } catch (e) {} try { flowClose(); addsysFor = null; } catch (e) {} }   /* 0.33.1 (R7): the Add system sheet too */   // 0.30.1 (R7): an open card never floats over another screen
 
@@ -10359,7 +10435,7 @@ body.light-theme .proof-box{color:#0f172a}
       const ctx = isUnit ? ((bld && bld.cols['Name']) || (usite && usite.cols['Name']) || '') : '';
       const own = c['Customer'] || c['Name'], name = own || (isUnit ? 'Unit ' + c['Unit label'] + (ctx ? ', ' + ctx : '') : '') || (site ? site.cols['Name'] : '');
       const shown = name + (site && site.cols['Name'] && name.indexOf(site.cols['Name']) < 0 ? ' (' + site.cols['Name'] + ')' : '') + (isUnit && own && ctx ? ' (' + ctx + ')' : '');
-      return { id: P.id, place: P, name: shown, alsoNames: [bld && bld.cols['Name'], usite && usite.cols['Name'], site && site.cols['Name']].filter(Boolean).join(' '), address: c['Address'], phone: c['Phone 1'], phonesAll: phoneCols(c).map(k => c[k]).filter(Boolean), email: c['Email 1'], notes: c['Site notes'] }; });
+      return { id: P.id, place: P, lat: c['Lat'], lng: c['Lng'], name: shown, alsoNames: [bld && bld.cols['Name'], usite && usite.cols['Name'], site && site.cols['Name']].filter(Boolean).join(' '), address: c['Address'], phone: c['Phone 1'], phonesAll: phoneCols(c).map(k => c[k]).filter(Boolean), email: c['Email 1'], notes: c['Site notes'] }; });
   }
   // pre-fill on pick (C7a): every Field whose Pre-fill is yes / spec gets its value from its Save to; snapshot kept as call.__file
   function prefillPlace(P) {   // 0.32.0 (C7d): the house part here; each system's part in prefillSystem() (System 1 now, the others on a tap)
@@ -11763,10 +11839,12 @@ body.light-theme .proof-box{color:#0f172a}
     Object.keys(spec).forEach(fid => { const cols = (spec[fid] && spec[fid].cols) || {}; Object.keys(cols).forEach(c => { if (seen[c]) return; seen[c] = 1;
       values.push({ kind: 'rating', id: c, col: RATING_HEAD[c] || ('Rated ' + c), v: valText(cols[c]), num: c !== 'Filter size' && c !== 'ODF HP' }); }); });   // 0.30.0 (R11): ODF HP is always text ('1/12', '0.5')
     const np = newPlaceOf(); const body = { op: 'saveVisit', visitId: V.id, fixed, values, changes: fileChanges().concat(sysChanges()) };   /* 0.33.0: + the system plan */ if (np) body.newPlace = np;   // changes + newPlace: test-door-2 (C7c-2)
+    let lc = null; try { lc = locForSave(); } catch (e) {} if (lc) { fixed['Lat'] = lc.lat; fixed['Lng'] = lc.lng; body.loc = { lat: lc.lat, lng: lc.lng, acc: lc.acc, how: lc.how }; if (!lc.place && fixed['Place Id']) call.__loc.place = fixed['Place Id']; }   // 0.38.0 (C7e): Location at save
     return body;
   }
   function saveCall(why) {   // queue the call when it changed since its last queued copy; then send
     if (!savingOn() || TAB.passive) return;
+    try { silentLoc(); } catch (e) {}   // 0.38.0 (C7e): 'Silent read at save if I did not use GPS'
     if (!call.__visit && !callHasContent()) return;
     try { if (call.__visit) syncFollow(); } catch (e) {}   // 0.29.0 (C7c-3)
     if (!scriptUrl()) { saveSt = { st: 'off', why: '', at: '', missing: [] }; paintChip(); return; }

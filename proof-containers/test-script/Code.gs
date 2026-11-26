@@ -1,7 +1,9 @@
 // =====================================================================================================
 // PMI container proof (TEST) - Apps Script web app for the TEST sheet 'PMI container proof (test)' ONLY.
 // test-door-7 (proof 0.36.0-0.38.0, Prompts no. 179, round C7e; grows over the 3 stages, pasted once): part 1 = a new UNIT or SPECIAL place
-// (b.newPlace with Level unit / special: one Places row under its building, made on the call's first save, found again by its Address key).
+// (b.newPlace with Level unit / special: one Places row under its building, made on the call's first save, found again by its Address key);
+// part 2 = op newSite (the site builder); part 3 = op whereAmI (Use my location, Maps geocoder; run authorizeLocation once) and the
+// phone's location at save into EMPTY Places Lat / Lng only (placeLoc_).
 // test-door-6 (proof 0.33.1, Prompts no. 175, fix round after C7d: a new piece logs EVERY field it is made with in Changes (R3); an addPiece
 // update in place keeps the old-value guard (R3); a new or replacement piece takes only identity columns, never ratings (R9, CT-19)).
 // test-door-5 (proof 0.33.0, Prompts no. 172, round C7d: the change 'addPiece' = a NEW piece for a system (an Additional system, or a slot
@@ -189,6 +191,7 @@ function visitsSave_(b, body) {
     var fc = fileChanges_(ss, b, fixed, at);   // test-door-2: Places / Equipment / Changes first (a new Place Id goes on this row)
     if (fc.placeId) fixed['Place Id'] = fc.placeId;
     else if (/^NU-/.test(String(fixed['Place Id'] || ''))) fixed['Place Id'] = '';   // test-door-7: a unit in waiting the door could not make: no made-up Place Id on the row
+    try { placeLoc_(ss, String(fixed['Place Id'] || ''), b.loc, fixed, at, vid); } catch (eL) {}   // test-door-7 part 3: Lat / Lng into EMPTY Places cells only
     VISITS_FIXED.forEach(function (c) { var i = byHead[c]; if (i == null) return;
       if (c === 'Visit Id') return put(i, vid);
       if (c === 'Last saved') return put(i, at);
@@ -390,6 +393,48 @@ function newSite_(b) {
   } catch (err) { return out_({ ok: false, error: String(err && err.message || err) }); } finally { try { lock.releaseLock(); } catch (e) {} }
 }
 
+// ===================================== LOCATION (test-door-7 part 3, proof 0.38.0) ====================
+// whereAmI: the phone's lat / lng -> the street address parts (Google's Maps geocoder, like the main app's v54). Nothing is stored.
+// A daily cap per tech. placeLoc_: a save that carries the phone's location fills the place's Lat / Lng ONLY when both are empty
+// (a unit / special fills its building's); an address is never changed.
+var LOC_DAILY_LIMIT = 100;
+function locOk_(l) { var lat = Number(l && l.lat), lng = Number(l && l.lng); return l && String(l.lat) !== '' && String(l.lng) !== '' && isFinite(lat) && isFinite(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180 && !(lat === 0 && lng === 0); }
+function whereAmI_(b) {
+  if (!locOk_(b)) return { ok: false, error: 'No location was sent.', version: SCRIPT_VERSION };
+  var c = CacheService.getScriptCache(), k = 'loc-' + now_().slice(0, 10) + '-' + String(b.tech || 'tech').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 30), n = Number(c.get(k) || 0);
+  if (n >= LOC_DAILY_LIMIT) return { ok: false, error: 'Use my location was used ' + LOC_DAILY_LIMIT + ' times today. Type the address.', version: SCRIPT_VERSION };
+  c.put(k, String(n + 1), 21600);
+  var res; try { res = Maps.newGeocoder().reverseGeocode(Number(b.lat), Number(b.lng)); }
+  catch (e) { var m = String(e && e.message || e);
+    if (/permission|authori[sz]|scope/i.test(m)) return { ok: false, error: 'The test script is not yet allowed to look up addresses. Open the script, run authorizeLocation once, then deploy a new version.', version: SCRIPT_VERSION };
+    return { ok: false, error: 'Google Maps did not give an address right now. Type the address.', version: SCRIPT_VERSION }; }
+  var best = locBest_(res); if (!best) return { ok: false, error: 'No street address was found for where you are. Type the address.', version: SCRIPT_VERSION };
+  var part = function (t, short) { var a = (best.address_components || []).filter(function (x) { return (x.types || []).indexOf(t) >= 0; })[0]; return a ? String(short ? a.short_name : a.long_name) : ''; };
+  return { ok: true, version: SCRIPT_VERSION, parts: { number: part('street_number'), street: part('route', true), city: part('locality') || part('sublocality') || part('postal_town') || part('administrative_area_level_3'), state: part('administrative_area_level_1', true), zip: part('postal_code') },
+    full: String(best.formatted_address || '').replace(/,\s*(USA|United States)\s*$/i, '').trim().slice(0, 200) };
+}
+function locBest_(res) {   // a street address or a building first, else any result with a house number, else one with a street
+  var list = (res && res.results) || [], has = function (r, t) { return (r.types || []).indexOf(t) >= 0; }, comp = function (r, t) { return (r.address_components || []).some(function (a) { return (a.types || []).indexOf(t) >= 0; }); };
+  for (var i = 0; i < list.length; i++) if (has(list[i], 'street_address') || has(list[i], 'premise') || has(list[i], 'subpremise')) return list[i];
+  for (var j = 0; j < list.length; j++) if (comp(list[j], 'street_number')) return list[j];
+  for (var k = 0; k < list.length; k++) if (comp(list[k], 'route')) return list[k];
+  return null;
+}
+function placeLoc_(ss, pid, l, fixed, at, vid) {
+  if (!pid || !locOk_(l) || /^(NU-|PH-)/.test(pid) || !(Number(l.acc) >= 0 && Number(l.acc) <= 100)) return;
+  var P = tabOf_(ss, 'Places'); if (!P) return; var r = P.rowOf('Place Id', pid); if (!r) return;
+  var lev = normC_(P.get(r, 'Level')); if ((lev === 'unit' || lev === 'special') && P.get(r, 'Parent Id')) { var pr = P.rowOf('Place Id', String(P.get(r, 'Parent Id')).trim()); if (pr) { r = pr; pid = String(P.get(r, 'Place Id')); } }
+  if (String(P.get(r, 'Lat')).trim() !== '' || String(P.get(r, 'Lng')).trim() !== '') return;   // never over a value already there
+  var lat = Number(Number(l.lat).toFixed(6)), lng = Number(Number(l.lng).toFixed(6));
+  P.set(r, 'Lat', lat); P.set(r, 'Lng', lng);
+  var C = tabOf_(ss, CHANGES_TAB); if (C) C.append({ 'When': at, 'Who': String(fixed['Tech'] || ''), 'Visit Id': vid, 'Tab': 'Places', 'Record Id': pid, 'Field': 'Lat / Lng', 'Old': '', 'New': lat + ', ' + lng, 'Reason': 'Location at save (' + (l.how === 'silent' ? 'silent read' : 'GPS used on the call') + ')' });
+}
+// Run once from the editor (pick authorizeLocation, then Run). It looks up one address so Google asks for the Maps permission.
+function authorizeLocation() {
+  var r = whereAmI_({ lat: 28.6122, lng: -80.8076, tech: 'editor' });
+  Logger.log('Use my location is allowed. Test lookup gave: ' + (r.ok ? (r.full || '(no street address there, that is fine)') : r.error) + '. Now deploy a new version.');
+}
+
 // ===================================== DOORS (send each request to its block) =======================
 function doGet(e) {
   try {
@@ -409,6 +454,7 @@ function doPost(e) {
     book_();
     if (b.op === 'saveVisit') return visitsSave_(b, body);
     if (b.op === 'newSite') return newSite_(b);   // test-door-7 part 2 (proof 0.37.0): the site builder
+    if (b.op === 'whereAmI') return out_(whereAmI_(b));   // test-door-7 part 3 (proof 0.38.0): Use my location
     return tweaksPost_(b, body);
   } catch (err) { return out_({ ok: false, error: String(err && err.message || err) }); }
 }
