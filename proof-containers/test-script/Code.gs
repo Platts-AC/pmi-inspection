@@ -48,7 +48,7 @@ var PIECE_IDENT = ['Brand', 'Model', 'Serial', 'Mfg date', 'Refrigerant', 'Meter
 var FOLLOW_COLOR = '#fde68a';  // the Visits 'Follow-up' column's color when it holds a question
 // test-door-3 (R5): the ONLY columns of Places / Equipment that hold numbers; every other column is Plain text, whatever its old cell held
 // (so '0405', '0012345', '1/12' keep their form). A number column gets a number only when the value is a plain number.
-var NUM_COLS = { 'Places': ['Lat', 'Lng'], 'Equipment': ['Tons', 'RLA', 'LRA', 'ODF FLA', 'IDF FLA', 'Herm cap', 'ODF cap', 'IDF cap', 'Target SC', 'Rated static', 'Factory charge', 'MCA', 'Max breaker', 'Max fuse'] };
+var NUM_COLS = { 'Places': ['Lat', 'Lng'], 'Place rules': ['Floor from', 'Floor to', 'Units per floor'], 'Equipment': ['Tons', 'RLA', 'LRA', 'ODF FLA', 'IDF FLA', 'Herm cap', 'ODF cap', 'IDF cap', 'Target SC', 'Rated static', 'Factory charge', 'MCA', 'Max breaker', 'Max fuse'] };
 var STREET_WORDS = { st: 1, street: 1, dr: 1, drive: 1, ave: 1, avenue: 1, rd: 1, road: 1, blvd: 1, ln: 1, lane: 1, ct: 1, court: 1, way: 1, pl: 1, place: 1, cir: 1, circle: 1, ter: 1, pkwy: 1, hwy: 1, trl: 1 };
 
 // ===================================== SHARED HELPERS ===============================================
@@ -345,6 +345,51 @@ function followColor_(sh, head) {   // the Follow-up column gets its color once 
   sh.setConditionalFormatRules(rules);
 }
 
+// ===================================== NEW SITE (test-door-7 part 2, proof 0.37.0) ===================
+// b.site = { id: 'S-<stamp>', name, notes, buildings: [{ name, address, floorFrom, floorTo, units, numbers, prefix }], rooms: [{ label, building (1-based), floor }] }
+// One Places row for the site ('S-<id>'), one per building ('S-<id>-B<n>', Parent = the site), one Place rules row per building's floors
+// ('S-<id>-R<n>') and per room. All or nothing: checked first, then written. Sent again = nothing doubled (rows found by Id).
+// A building whose Address key is already on Places (another place) is refused, and nothing is written.
+function newSite_(b) {
+  var lock = LockService.getScriptLock(); try { lock.waitLock(20000); } catch (e) { return out_({ ok: false, error: 'busy, try again' }); }
+  try {
+    var S = b.site || {}, ss = SpreadsheetApp.getActiveSpreadsheet(), at = now_(), who = String(b.tech || '');
+    var sid = String(S.id || '').trim(), name = String(S.name || '').trim(), B = Array.isArray(S.buildings) ? S.buildings : [], R = Array.isArray(S.rooms) ? S.rooms : [];
+    if (!/^S-[A-Za-z0-9-]{4,40}$/.test(sid)) return out_({ ok: false, error: 'the site needs an id like S-20261126-ABCD' });
+    if (!name || name.length > 80) return out_({ ok: false, error: 'the site needs a name (80 letters at most)' });
+    if (!B.length || B.length > 30) return out_({ ok: false, error: 'a site needs 1 to 30 buildings' });
+    var P = tabOf_(ss, 'Places'), PR = tabOf_(ss, 'Place rules'); if (!P || !PR) return out_({ ok: false, error: 'the sheet has no Places or Place rules tab' });
+    var ci = P.head.indexOf('Place Id'), ck = P.head.indexOf('Address key'), rows = P.all(), keys = {}, ids = {};
+    rows.forEach(function (x) { ids[String(x[ci]).trim()] = 1; if (ck >= 0 && String(x[ck]).trim()) keys[String(x[ck]).trim().toLowerCase()] = String(x[ci]).trim(); });
+    var why = [], seen = {}, plan = [];
+    B.forEach(function (x, i) { var n = i + 1, bid = sid + '-B' + n, bn = String(x.name || '').trim(), ad = String(x.address || '').trim(), key = addrKey_(ad).toLowerCase();
+      var f0 = Number(x.floorFrom), f1 = Number(x.floorTo), u = Number(x.units || 0), nums = String(x.numbers || '').trim(), pre = String(x.prefix || '').trim();
+      if (!bn || !ad) why.push('building ' + n + ' needs a name and an address');
+      else if (!/^\d/.test(key)) why.push('building ' + n + ': "' + ad + '" needs a house number');
+      else if (seen[key]) why.push('building ' + n + ': ' + ad + ' is typed twice');
+      else if (keys[key] && keys[key] !== bid) why.push('building ' + n + ': ' + ad + ' is already on Places (' + keys[key] + ')');
+      seen[key] = 1;
+      var hasF = String(x.floorFrom == null ? '' : x.floorFrom).trim() !== '';
+      if (hasF && (!(f0 >= 0) || !(f1 >= f0) || f1 - f0 > 199 || Math.floor(f0) !== f0 || Math.floor(f1) !== f1)) why.push('building ' + n + ': floors must be whole numbers, from at most to');
+      if (hasF && !nums && !(u >= 1 && u <= 60)) why.push('building ' + n + ': units per floor must be 1 to 60 (or type the unit numbers)');
+      if (!/^[A-Za-z0-9 ,;-]{0,200}$/.test(nums) || !/^[A-Za-z0-9-]{0,6}$/.test(pre)) why.push('building ' + n + ': unit numbers / prefix may hold letters, digits, commas only');
+      plan.push({ bid: bid, bn: bn, ad: ad, key: key, hasF: hasF, f0: f0, f1: f1, u: u, nums: nums, pre: pre, access: String(x.access || '').trim() }); });
+    R.forEach(function (r, i) { var lab = String(r.label || '').trim(), bi = Number(r.building); if (!lab || lab.length > 40 || !/^[A-Za-z0-9 #._-]+$/.test(lab)) why.push('room ' + (i + 1) + ' needs a short name');
+      if (!(bi >= 1 && bi <= B.length)) why.push('room ' + (i + 1) + ' needs its building'); });
+    if (why.length) return out_({ ok: false, error: why.join('; '), refused: why });
+    var made = [], log = function (rec, txt) { var C = tabOf_(ss, CHANGES_TAB); if (C) C.append({ 'When': at, 'Who': who, 'Visit Id': '', 'Tab': 'Places', 'Record Id': rec, 'Field': 'Place', 'Old': '', 'New': txt, 'Reason': 'New site' }); };
+    if (!ids[sid]) { P.append({ 'Place Id': sid, 'Level': 'site', 'Name': name, 'Site notes': String(S.notes || '').trim(), 'Access codes': String(S.access || '').trim(), 'Active': 'yes', 'Created by': who, 'Created at': at }); made.push(sid); log(sid, sid + ' (' + name + ')'); }
+    plan.forEach(function (x) { if (ids[x.bid]) return;
+      P.append({ 'Place Id': x.bid, 'Level': 'building', 'Parent Id': sid, 'Name': x.bn, 'Address': x.ad, 'Address key': x.key, 'Access codes': x.access, 'Active': 'yes', 'Created by': who, 'Created at': at }); made.push(x.bid); log(x.bid, x.bid + ' (' + x.bn + ')'); });
+    var rc = PR.head.indexOf('Rule Id'), rids = {}; PR.all().forEach(function (x) { rids[String(x[rc]).trim()] = 1; }); var k = 0;
+    plan.forEach(function (x) { if (!x.hasF) return; var rid = sid + '-R' + (++k); if (rids[rid]) return;
+      PR.append({ 'Rule Id': rid, 'Site Id': sid, 'Building Id': x.bid, 'Kind': 'floors', 'Label': 'Floors', 'Floor from': x.f0, 'Floor to': x.f1, 'Units per floor': x.nums ? '' : x.u, 'Unit numbers': x.nums, 'Prefix': x.pre, 'Active': 'yes' }); made.push(rid); });
+    R.forEach(function (r) { var rid = sid + '-R' + (++k); if (rids[rid]) return; var fl = String(r.floor == null ? '' : r.floor).trim();
+      PR.append({ 'Rule Id': rid, 'Site Id': sid, 'Building Id': sid + '-B' + Number(r.building), 'Kind': 'special', 'Label': String(r.label).trim(), 'Floor from': fl, 'Floor to': fl, 'Active': 'yes' }); made.push(rid); });
+    return out_({ ok: true, version: SCRIPT_VERSION, siteId: sid, buildings: plan.map(function (x) { return x.bid; }), made: made, at: at });
+  } catch (err) { return out_({ ok: false, error: String(err && err.message || err) }); } finally { try { lock.releaseLock(); } catch (e) {} }
+}
+
 // ===================================== DOORS (send each request to its block) =======================
 function doGet(e) {
   try {
@@ -363,6 +408,7 @@ function doPost(e) {
     if (b.token !== TOKEN) return out_({ ok: false, error: 'bad token' });
     book_();
     if (b.op === 'saveVisit') return visitsSave_(b, body);
+    if (b.op === 'newSite') return newSite_(b);   // test-door-7 part 2 (proof 0.37.0): the site builder
     return tweaksPost_(b, body);
   } catch (err) { return out_({ ok: false, error: String(err && err.message || err) }); }
 }
