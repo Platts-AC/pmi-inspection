@@ -3739,7 +3739,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.38.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.38.1", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3749,7 +3749,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.38.0', stamp: '2026-11-26 11:26:47', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.38.1', stamp: '2026-11-26 13:06:54', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8426,7 +8426,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.38.0';
+  const PROOF_VERSION = '0.38.1';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -9581,7 +9581,7 @@ body.light-theme .proof-box{color:#0f172a}
     try { r = await withTimeout(fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ token: TOKEN, op: 'newSite', tech: String(SETTINGS['tech name'] || '').trim() || DEVICE, site }) }).then(a => a.json()), 30000); }
     catch (e) { sbBusy = false; say('No answer from the sheet (no signal?). Nothing saved; the site stays on this phone. Tap Save site again.', 'warn', 9000); return; }
     sbBusy = false; if (r && r.version) noteDoor(r.version);
-    if (r && r.error === 'unknown op') { say('Saving a site needs the test script test-door-7 (paste it, then New version). Nothing saved; the site stays on this phone.', 'warn', 12000); return; }
+    if (r && r.error === 'unknown op') { say('Saving a site needs the newer test script (test-door-8: paste it, then New version). Nothing saved; the site stays on this phone.', 'warn', 12000); return; }
     if (!r || !r.ok) { say('The sheet refused the site: ' + ((r && r.error) || 'no answer') + '. Nothing saved.', 'warn', 12000); return; }
     if (ONFILE) { const at = r.at || '', add = o => { if (!ONFILE.list.find(x => x.id === o.id)) ONFILE.list.push(o); };   // shown at once; the next sheet read brings the real rows
       add({ id: site.id, level: 'site', parent: '', active: true, row: 0, cols: { 'Place Id': site.id, 'Level': 'site', 'Name': site.name, 'Access codes': site.access, 'Created at': at } });
@@ -9604,7 +9604,7 @@ body.light-theme .proof-box{color:#0f172a}
   const K_LOC = 'proof-containers.location.v1', LOC_FRESH = 30 * 60 * 1000, LOC_ACC = 100;
   const LAS = { 'only when i used gps on the call': 'used', 'silent read at save if i did not use gps': 'silent', 'off': 'off' }, LAS_LABEL = { used: 'Only when I used GPS on the call', silent: 'Silent read at save if I did not use GPS', off: 'Off' };
   const LOC_MSG = { signal: 'Use my location needs signal. Typing the address still works.', denied: 'This phone does not let the page see where you are. On an iPhone: Settings > Privacy & Security > Location Services: on, then Safari Websites: While Using the App. Then try again.',
-    gps: 'The phone could not find where you are. Try again in a moment, or type the address.', script: 'The address lookup needs the test script (Script URL on the Settings tab). Near me works without it.', old: 'Use my location needs the test script test-door-7.' };
+    gps: 'The phone could not find where you are. Try again in a moment, or type the address.', script: 'The address lookup needs the test script (Script URL on the Settings tab). Near me works without it.', old: 'Use my location needs the newer test script (test-door-8).' };
   let locBusy = false, silentBusy = false;
   const techKey = () => String(SETTINGS['tech name'] || '').trim() || DEVICE;
   const locStore = () => { const m = lsGet(K_LOC, {}); return m && typeof m === 'object' ? m : {}; };
@@ -11172,7 +11172,7 @@ body.light-theme .proof-box{color:#0f172a}
   const badgeText = () => 'v' + PROOF_VERSION + (PRETEND ? ' (acting as ' + PRETEND + ')' : '');
   // 0.30.0 (no. 168, CARRY C7 row 30): the badge also shows the TEST SCRIPT that answers: 'v0.30.0 · D03' (D + two digits = test-door-N, from
   // its answer to the start ping and to every save); the D part is amber when this page needs a newer script; a tap says which and gives the link
-  const DOOR_NEED = 7, K_DOOR = 'proof-containers.door.v1', RAW_GS = 'https://raw.githubusercontent.com/Platts-AC/pmi-inspection/main/proof-containers/test-script/Code.gs';
+  const DOOR_NEED = 8, K_DOOR = 'proof-containers.door.v1', RAW_GS = 'https://raw.githubusercontent.com/Platts-AC/pmi-inspection/main/proof-containers/test-script/Code.gs';
   let doorSeen = String(lsGet(K_DOOR, '') || '');
   const doorNum = v => { const m = /^test-door-(\d+)$/.exec(String(v || '')); return m ? Number(m[1]) : 0; };
   const dd = n => 'D' + String(n).padStart(2, '0');

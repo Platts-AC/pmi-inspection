@@ -1,5 +1,7 @@
 // =====================================================================================================
 // PMI container proof (TEST) - Apps Script web app for the TEST sheet 'PMI container proof (test)' ONLY.
+// test-door-8 (proof 0.38.1, Prompts no. 179 follow-up): the SAME code as the final test-door-7, renamed so the badge tells it apart from the
+// earlier test-door-7 copies published at stages 1 and 2 (Danny's rule: every script edit gets the next door number).
 // test-door-7 (proof 0.36.0-0.38.0, Prompts no. 179, round C7e; grows over the 3 stages, pasted once): part 1 = a new UNIT or SPECIAL place
 // (b.newPlace with Level unit / special: one Places row under its building, made on the call's first save, found again by its Address key);
 // part 2 = op newSite (the site builder); part 3 = op whereAmI (Use my location, Maps geocoder; run authorizeLocation once) and the
@@ -35,7 +37,7 @@ var ACCENTS = { '': 1, cyan: 1, emerald: 1, amber: 1, purple: 1, rose: 1 };
 var MAX_BODY = 20000;          // characters in one save
 var MAX_ROWS_PER_SAVE = 100;   // tweak rows in one save
 var MAX_TOTAL_ROWS = 2000;     // tweak rows on the whole tab
-var SCRIPT_VERSION = 'test-door-7';
+var SCRIPT_VERSION = 'test-door-8';
 var NUM_FMT = 'General';   // test-door-4: the Automatic number format ('35', '2.5'); 0.#### shows a bare dot ('35.')
 var VISITS_TAB = 'Visits';
 var VISITS_FIXED = ['Visit Id', 'Call token', 'Date', 'Time', 'Tech', 'Call type', 'Template', 'Place Id', 'System Id', 'System label', 'Status', 'Team tag', 'Merged into', 'Revision of', 'Follow-up', 'Area temp', 'Lat', 'Lng', 'Created', 'Last saved'];
