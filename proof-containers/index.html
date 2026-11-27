@@ -755,6 +755,11 @@
 .proof-cd .proof-cd-floor .proof-cd-u{flex:1 1 0;min-width:0;max-width:72px;min-height:38px;padding:4px 0;border-radius:6px;text-align:center;white-space:nowrap;overflow:hidden;letter-spacing:-0.02em;font-size:var(--fs,min(15px,calc(((100vw - 92px) / var(--n,4) - 4px) / 2.5)))}
 @supports (width:1cqw){.proof-cd .proof-cd-floor .proof-cd-u{font-size:var(--fs,min(15px,calc(((100cqw - 24px) / var(--n,4) - 4px) / 2.5)))}}
 .proof-sb .proof-sb-warn{color:#fbbf24;font-size:12px;margin:4px 0 0}
+.proof-cd .proof-cd-edit{float:right;margin:-2px 0 0 8px;padding:4px 10px;border-radius:8px;border:1px solid #234d82;background:#0c1a2e;color:#93c5fd;font-size:13px}
+.proof-sb .proof-sb-edit{font-size:13px;color:#fbbf24;margin:0 0 8px}
+.proof-sb .proof-sb-ch{font-size:13px;color:#fbbf24;margin:0 0 4px}
+.proof-sb .proof-sb-gone{opacity:.75;border-style:dashed}.proof-sb .proof-sb-gone .proof-sb-add{width:auto;margin:0;padding:6px 12px}
+.proof-sb .proof-sb-rmsite{display:block;width:100%;margin:8px 0}
 .proof-cd .proof-empty{color:#fbbf24;font-size:13px;padding:6px 0}
 .proof-sb{height:100%;width:100%;box-sizing:border-box;padding:4px 6px;text-align:left;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;color:#e2e8f0}
 .proof-sb .proof-form{display:block}
@@ -3745,7 +3750,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.39.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.40.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3755,7 +3760,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.39.0', stamp: '2026-11-26 19:13:34', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.40.0', stamp: '2026-11-26 19:49:17', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8432,7 +8437,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.39.0';
+  const PROOF_VERSION = '0.40.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8683,6 +8688,9 @@ body.light-theme .proof-box{color:#0f172a}
   }
   // reads: the memory copy (IndexedDB's, or this session's writes), else localStorage
   const lsGet = (k, d) => { try { const v = k in STORE.mem ? STORE.mem[k] : localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } };
+  // 0.40.0 (no. 180): a key REMOVED from all three copies (memory, localStorage, IndexedDB). Before this a saved site's draft was only taken out
+  // of localStorage, so the memory / IndexedDB copy came back: the old draft 'stuck' (Danny's River Palm / Test Osprey).
+  const lsDrop = k => { if (TAB.passive) return; delete STORE.mem[k]; if (STORE.pending) delete STORE.pending[k]; try { localStorage.removeItem(k); } catch (e) {} if (STORE.on) { try { idbWrite({}, [k]); } catch (e) {} } };
   // writes: memory now, the localStorage backup now, IndexedDB behind it (with what localStorage holds now); true = kept somewhere.
   // 0.22.1 (fix 3): a tab that is not the active one saves nothing.
   const lsSet = (k, v) => {
@@ -9495,7 +9503,8 @@ body.light-theme .proof-box{color:#0f172a}
   window.EngineSlots['condo-grid'] = { render() {
     condoCells = []; const S = condo.site && placeById(condo.site), B = condo.bld && placeById(condo.bld);
     if (!ONFILE || (!S && !B)) return '<div class="proof-cd"><div class="proof-empty">Pick a site or a building in Find first.</div></div>';
-    const crumb = '<div class="proof-cd-crumb">' + esc((S && S.cols['Name']) || '') + (B ? (S ? ' › ' : '') + esc(B.cols['Name'] || B.cols['Address'] || B.id) : '') + '</div>';
+    const ed = S && siteView ? '<button type="button" class="proof-cd-edit" data-cdedit="1">Edit site</button>' : '';   // 0.40.0 (no. 180 stage 2): change the saved site
+    const crumb = '<div class="proof-cd-crumb">' + ed + esc((S && S.cols['Name']) || '') + (B ? (S ? ' › ' : '') + esc(B.cols['Name'] || B.cols['Address'] || B.id) : '') + '</div>';
     if (!B) return '<div class="proof-cd">' + crumb + '<div class="proof-cd-list">' + condoBuildingsOf(S).map(x => '<button type="button" class="proof-cd-b" data-b="' + esc(x.id) + '"><b>' + esc(x.cols['Name'] || x.id) + '</b>' + (x.cols['Address'] ? '<i>' + esc(x.cols['Address']) + '</i>' : '') + '</button>').join('') + '</div></div>';
     const g = condoUnits(B), put = u => { condoCells.push(u); return condoCell(u, condoCells.length - 1); };
     const rows = g.floors.map(r => '<div class="proof-cd-row proof-cd-floor" style="--n:' + Math.max(4, r.units.length) + '"><span class="proof-cd-fl">' + esc(r.floor) + '</span>' + r.units.map(put).join('') + '</div>').join('');   // 0.39.0 (no. 180, 4): one line per floor, all its units side by side
@@ -9515,6 +9524,7 @@ body.light-theme .proof-box{color:#0f172a}
     const was = call.__newUnit; call.__newUnit = nu; const P = pendingUnit(id); if (was) call.__newUnit = was; else delete call.__newUnit;   // 0.39.0: set for good only when the pick goes ahead
     if (!P) return; loadSite({ id, place: P, nu });   // loadSite keeps nu as the call's unit in waiting (it clears only the place facts)
   }
+  document.addEventListener('click', e => { const t = e.target && e.target.closest && e.target.closest('[data-cdedit]'); if (!t) return; e.preventDefault(); e.stopPropagation(); if (Date.now() < tapGuardUntil) return; openSiteEdit(condo.site); }, true);
   document.addEventListener('click', e => {
     const t = e.target && e.target.closest && e.target.closest('.proof-cd-u, .proof-cd-b'); if (!t) return;
     e.preventDefault(); e.stopPropagation(); if (Date.now() < tapGuardUntil) return;
@@ -9532,15 +9542,43 @@ body.light-theme .proof-box{color:#0f172a}
   const SB_NEW_B = () => ({ name: '', address: '', floorFrom: '', floorTo: '', units: '', numbers: '', prefix: '' });
   let sbDraft = null, sbBusy = false;
   const sbStamp = () => { const d = new Date(), p = n => String(n).padStart(2, '0'); return 'S-' + d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + '-' + Math.random().toString(36).slice(2, 7).toUpperCase(); };
-  function sbGet() { if (!sbDraft) { const d = lsGet(K_SITEDRAFT, null); sbDraft = d && typeof d === 'object' && Array.isArray(d.buildings) ? d : null; } return sbDraft; }
-  function sbKeep() { if (sbDraft) lsSet(K_SITEDRAFT, sbDraft); }
+  // 0.40.0 (no. 180 stage 2): the builder also EDITS a saved site (Edit site on the condo screen): that draft has d.edit = the site's Place Id and
+  // is kept apart (K_SITEEDIT), so a new site's draft is never touched by an edit; K_SBMODE = which one the builder screen shows.
+  const K_SITEEDIT = 'proof-containers.siteedit.v1', K_SBMODE = 'proof-containers.sitemode.v1';
+  const sbOk = d => d && typeof d === 'object' && Array.isArray(d.buildings) && Array.isArray(d.rooms);
+  function sbGet() { if (!sbDraft) { const d = lsGet(lsGet(K_SBMODE, 'new') === 'edit' ? K_SITEEDIT : K_SITEDRAFT, null); sbDraft = sbOk(d) ? d : null; } return sbDraft; }
+  function sbKeep() { if (sbDraft) lsSet(sbDraft.edit ? K_SITEEDIT : K_SITEDRAFT, sbDraft); }
   function sbFresh() { sbDraft = { id: sbStamp(), name: String(find['find.name'] || '').trim(), access: '', buildings: [Object.assign(SB_NEW_B(), { address: String(find['find.address'] || '').trim() })], rooms: [] }; sbKeep(); }
   function openSiteBuilder() {   // 0.39.0 (no. 180, 6b): another name typed in Find than the draft's = the question, never the old draft silently
+    lsSet(K_SBMODE, 'new'); if (sbDraft && sbDraft.edit) sbDraft = null;   // 0.40.0: the new-site draft, never an edit
     const d = sbGet(), nm = String(find['find.name'] || '').trim(), dn = d ? String(d.name || '').trim() : '';
     if (!d) { sbFresh(); goView(siteView); return; }
     if (nm && dn && nm.toLowerCase() !== dn.toLowerCase()) { ask('Continue the ' + dn + ' draft, or start new for ' + nm + '?', [['Continue ' + dn, () => goView(siteView)], ['Start new: ' + nm, () => { sbFresh(); goView(siteView); }], ['Cancel', () => {}]]); return; }
     if (nm && !dn) { d.name = nm; sbKeep(); }
     goView(siteView);
+  }
+  function editDraftOf(S) {   // 0.40.0: a saved site as the builder shows it (from Places + Place rules); orig = to tell what changed
+    const bl = condoBuildingsOf(S), rules = (ONFILE.rules || []).filter(r => String(r['Active'] || '').toLowerCase() !== 'no' && r['Site Id'] === S.id), rooms = [];
+    const buildings = bl.map((B, i) => { const fr = rules.filter(r => r['Building Id'] === B.id && String(r['Kind']).toLowerCase() === 'floors'), f = fr[0] || {};
+      rules.filter(r => r['Building Id'] === B.id && String(r['Kind']).toLowerCase() === 'special').forEach(r => rooms.push({ ruleId: r['Rule Id'], label: String(r['Label'] || ''), building: i + 1, floor: String(r['Floor from'] == null ? '' : r['Floor from']) }));
+      return { id: B.id, name: String(B.cols['Name'] || ''), address: String(B.cols['Address'] || ''), floorFrom: String(f['Floor from'] == null ? '' : f['Floor from']), floorTo: String(f['Floor to'] == null ? '' : f['Floor to']), units: String(f['Units per floor'] == null ? '' : f['Units per floor']), numbers: String(f['Unit numbers'] || ''), prefix: String(f['Prefix'] || ''), more: Math.max(0, fr.length - 1) }; });
+    const d = { edit: S.id, id: S.id, name: String(S.cols['Name'] || ''), access: String(S.cols['Access codes'] || ''), buildings, rooms };
+    d.orig = JSON.parse(JSON.stringify({ name: d.name, access: d.access, buildings, rooms })); return d;
+  }
+  function openSiteEdit(sid) {
+    const S = placeById(sid); if (!S || S.level !== 'site' || !siteView) return;
+    const old = lsGet(K_SITEEDIT, null); lsSet(K_SBMODE, 'edit');
+    if (sbOk(old) && old.edit === sid && sbChanges(old).length) { ask('Continue your changes to ' + (S.cols['Name'] || sid) + ', or start again from the sheet?', [['Continue', () => { sbDraft = old; goView(siteView); }], ['Start again', () => { sbDraft = editDraftOf(S); sbKeep(); goView(siteView); }], ['Cancel', () => { lsSet(K_SBMODE, 'new'); }]]); return; }
+    sbDraft = editDraftOf(S); sbKeep(); goView(siteView);
+  }
+  function sbChanges(d) {   // 0.40.0: what an edit changes (words for the summary); [] = nothing yet
+    if (!d || !d.edit || !d.orig) return []; const o = d.orig, out = [], K = ['name', 'address', 'floorFrom', 'floorTo', 'units', 'numbers', 'prefix'], t = v => String(v == null ? '' : v).trim();
+    if (t(d.name) !== t(o.name)) out.push('site name'); if (t(d.access) !== t(o.access)) out.push('site codes');
+    d.buildings.forEach(x => { const w = String(x.name || '').trim() || 'a building'; if (!x.id) { out.push('new building ' + w); return; } if (x.remove) { out.push('remove ' + w); return; }
+      const ob = o.buildings.find(y => y.id === x.id); if (ob && K.some(k => t(x[k]) !== t(ob[k]))) out.push(w + ' changed'); });
+    d.rooms.forEach(r => { const w = String(r.label || '').trim() || 'a room'; if (!r.ruleId) { out.push('new room ' + w); return; } if (r.remove) { out.push('remove room ' + w); return; }
+      const orr = o.rooms.find(y => y.ruleId === r.ruleId); if (orr && (t(orr.label) !== t(r.label) || Number(orr.building) !== Number(r.building) || t(orr.floor) !== t(r.floor))) out.push('room ' + w + ' changed'); });
+    return out;
   }
   function unitLabels(f0, f1, numbers, per) {   // the same rule as the condo grid: floor + each unit number (0.39.0: smart numbers; the Prefix is kept, not shown)
     const nums = expandNums(numbers, per);
@@ -9552,25 +9590,29 @@ body.light-theme .proof-box{color:#0f172a}
     if (!String(d.name || '').trim()) why.push('The site needs a name.');
     if (!d.buildings.length) why.push('Add a building.');
     d.buildings.forEach((x, i) => { const n = 'Building ' + (i + 1) + (String(x.name || '').trim() ? ' (' + x.name.trim() + ')' : ''), ad = String(x.address || '').trim();
+      if (x.remove) return;   // 0.40.0: an edit's building to remove
       if (!String(x.name || '').trim() || !ad) { why.push(n + ' needs a name and an address.'); return; }
       const ap = addrParts(ad); if (!ap) { why.push(n + ': "' + ad + '" needs a house number and a street.'); return; }
       const k = ap.num + ' ' + ap.name; if (seen[k]) why.push(n + ': ' + ad + ' is typed twice.'); seen[k] = 1;
-      const on = ONFILE && ONFILE.list.find(o => o.cols['Address'] && addrRel(ad, o.cols['Address']) === 2); if (on) why.push(n + ': ' + ad + ' is already on file (' + (on.cols['Name'] || on.cols['Customer'] || on.id) + ').');
+      const on = ONFILE && ONFILE.list.find(o => o.id !== x.id && o.active && o.level !== 'unit' && o.level !== 'special' && o.cols['Address'] && addrRel(ad, o.cols['Address']) === 2); if (on) why.push(n + ': ' + ad + ' is already on file (' + (on.cols['Name'] || on.cols['Customer'] || on.id) + ').');   // 0.40.0: never the building itself (an edit)
       const hasF = String(x.floorFrom || '').trim() !== '' || String(x.floorTo || '').trim() !== '';
       if (hasF) { const a = condoInt(x.floorFrom), b = condoInt(x.floorTo === '' ? x.floorFrom : x.floorTo);
         if (a == null || b == null || b < a || a < 0) why.push(n + ': floors from / to must be whole numbers, from at most to.');
         else if (!String(x.numbers || '').trim() && !(condoInt(x.units) >= 1 && condoInt(x.units) <= 60)) why.push(n + ': type the units per floor (1 to 60) or the unit numbers.'); }
       if (!/^[A-Za-z0-9 ,;-]{0,200}$/.test(String(x.numbers || '')) || !/^[A-Za-z0-9-]{0,6}$/.test(String(x.prefix || '').trim())) why.push(n + ': unit numbers / prefix: letters, digits and commas only.'); });
-    d.rooms.forEach((r, i) => { if (!String(r.label || '').trim()) why.push('Room ' + (i + 1) + ' needs a name.'); else if (!/^[A-Za-z0-9 #._-]{1,40}$/.test(String(r.label).trim())) why.push('Room ' + (i + 1) + ': a short name, letters and digits.');
-      if (!(Number(r.building) >= 1 && Number(r.building) <= d.buildings.length)) why.push('Room ' + (i + 1) + ' needs its building.'); });
+    if (d.edit && !d.buildings.some(x => !x.remove)) why.push('A site keeps at least 1 building (or Remove this site).');
+    d.rooms.forEach((r, i) => { if (r.remove) return; if (!String(r.label || '').trim()) why.push('Room ' + (i + 1) + ' needs a name.'); else if (!/^[A-Za-z0-9 #._-]{1,40}$/.test(String(r.label).trim())) why.push('Room ' + (i + 1) + ': a short name, letters and digits.');
+      if (!(Number(r.building) >= 1 && Number(r.building) <= d.buildings.length) || (d.buildings[Number(r.building) - 1] || {}).remove) why.push('Room ' + (i + 1) + ' needs its building.'); });
     return why;
   }
   function sbSummary(d) {
-    let total = 0; const lines = d.buildings.map((x, i) => { const u = unitLabels(x.floorFrom, x.floorTo, x.numbers, x.units), rm = d.rooms.filter(r => Number(r.building) === i + 1).map(r => String(r.label || '').trim()).filter(Boolean); total += u.length;
+    let total = 0; const live = d.buildings.filter(x => !x.remove), rooms = d.rooms.filter(r => !r.remove);
+    const lines = d.buildings.map((x, i) => { if (x.remove) return ''; const u = unitLabels(x.floorFrom, x.floorTo, x.numbers, x.units), rm = rooms.filter(r => Number(r.building) === i + 1).map(r => String(r.label || '').trim()).filter(Boolean); total += u.length;
       return '<div>' + esc(String(x.name || '').trim() || 'Building ' + (i + 1)) + ': ' + (u.length ? 'floors ' + esc(condoInt(x.floorFrom)) + '-' + esc(condoInt(x.floorTo === '' ? x.floorFrom : x.floorTo)) + ', ' + u.length + ' units (' + esc(u[0]) + ' … ' + esc(u[u.length - 1]) + ')' : 'no floors') + (rm.length ? '; rooms: ' + esc(rm.join(', ')) : '') + '</div>'; });
     const warn = sbCountWarn(d).map(t => '<div class="proof-sb-warn">' + esc(t) + '</div>').join('');   // 0.39.0 (6a): a list that is not Units per floor long
-    const rules = d.buildings.filter(x => String(x.floorFrom || '').trim() !== '').length + d.rooms.length;
-    return '<b>This makes: 1 site, ' + d.buildings.length + ' building' + (d.buildings.length === 1 ? '' : 's') + ', ' + rules + ' rule' + (rules === 1 ? '' : 's') + ' (' + total + ' units, ' + d.rooms.length + ' room' + (d.rooms.length === 1 ? '' : 's') + ')</b>' + lines.join('') + warn;
+    const rules = live.filter(x => String(x.floorFrom || '').trim() !== '').length + rooms.length, ch = d.edit ? sbChanges(d) : null;
+    return (ch ? '<div class="proof-sb-ch"><b>' + (ch.length ? 'Changes: ' + esc(ch.join(', ')) : 'No changes yet') + '</b></div>' : '')   // 0.40.0: an edit says what it will change
+      + '<b>' + (d.edit ? 'The site will have: ' : 'This makes: 1 site, ') + live.length + ' building' + (live.length === 1 ? '' : 's') + ', ' + rules + ' rule' + (rules === 1 ? '' : 's') + ' (' + total + ' units, ' + rooms.length + ' room' + (rooms.length === 1 ? '' : 's') + ')</b>' + lines.join('') + warn;
   }
   function sbCountWarn(d) { const out = [];
     d.buildings.forEach((x, i) => { const c = listCount(x.numbers), n = condoInt(x.units); if (c >= 2 && n && c !== n) out.push((String(x.name || '').trim() || 'Building ' + (i + 1)) + ': the unit numbers list has ' + c + ', Units per floor says ' + n + '. The list is used.'); });
@@ -9579,18 +9621,21 @@ body.light-theme .proof-box{color:#0f172a}
   window.EngineSlots['site-builder'] = { render() {
     const d = sbGet(); if (!d) return '<div class="proof-sb"><div class="proof-empty">Tap New customer, then A condo / site.</div></div>';
     const num = ' inputmode="numeric"';
-    const bl = d.buildings.map((x, i) => '<div class="proof-sb-card"><div class="proof-sb-h"><b>Building ' + (i + 1) + '</b>' + (d.buildings.length > 1 ? '<button type="button" class="proof-sb-x" data-sbx="rmb" data-i="' + i + '">Remove</button>' : '') + '</div>'
+    const gone = (what, i, x, w) => '<div class="proof-sb-card proof-sb-gone"><div class="proof-sb-h"><span>' + what + ' ' + (i + 1) + ' (' + esc(String(x.name || x.label || '').trim()) + '): will be removed (Active no; its units and visits stay)</span><button type="button" class="proof-sb-add" data-sbx="' + w + '" data-i="' + i + '">Undo</button></div></div>';   // 0.40.0
+    const bl = d.buildings.map((x, i) => x.remove ? gone('Building', i, x, 'unb') : '<div class="proof-sb-card"><div class="proof-sb-h"><b>Building ' + (i + 1) + '</b>' + (d.buildings.filter(y => !y.remove).length > 1 ? '<button type="button" class="proof-sb-x" data-sbx="rmb" data-i="' + i + '">Remove</button>' : '') + '</div>'
       + '<label>Name' + sbIn('b.' + i + '.name', x.name, 'e.g. North tower') + '</label><label>Address' + sbIn('b.' + i + '.address', x.address, 'e.g. 1805 Ocean Dr') + '</label>'
       + '<div class="proof-sb-two"><label>Floors from' + sbIn('b.' + i + '.floorFrom', x.floorFrom, 'e.g. 1', num) + '</label><label>to' + sbIn('b.' + i + '.floorTo', x.floorTo, 'e.g. 12', num) + '</label></div>'
       + '<div class="proof-sb-two"><label>Units per floor' + sbIn('b.' + i + '.units', x.units, 'e.g. 4', num) + '</label><label>Prefix' + sbIn('b.' + i + '.prefix', x.prefix, 'none') + '</label></div>'
-      + '<label>Unit numbers (blank = 01, 02 …; one number = where they start)' + sbIn('b.' + i + '.numbers', x.numbers, 'e.g. 01 or 1 or A') + '</label></div>').join('');
+      + '<label>Unit numbers (blank = 01, 02 …; one number = where they start)' + sbIn('b.' + i + '.numbers', x.numbers, 'e.g. 01 or 1 or A') + '</label>' + (x.more ? '<div class="proof-sb-warn">This building has ' + (x.more + 1) + ' floor rules on the sheet; only the first one is shown and changed here.</div>' : '') + '</div>').join('');
     const opt = (sel) => d.buildings.map((x, i) => '<option value="' + (i + 1) + '"' + (Number(sel) === i + 1 ? ' selected' : '') + '>' + esc(String(x.name || '').trim() || 'Building ' + (i + 1)) + '</option>').join('');
-    const rm = d.rooms.map((r, i) => '<div class="proof-sb-card"><div class="proof-sb-h"><b>Room ' + (i + 1) + '</b><button type="button" class="proof-sb-x" data-sbx="rmr" data-i="' + i + '">Remove</button></div>'
+    const rm = d.rooms.map((r, i) => r.remove ? gone('Room', i, r, 'unr') : '<div class="proof-sb-card"><div class="proof-sb-h"><b>Room ' + (i + 1) + '</b><button type="button" class="proof-sb-x" data-sbx="rmr" data-i="' + i + '">Remove</button></div>'
       + '<label>Name' + sbIn('r.' + i + '.label', r.label, 'e.g. Lobby, Elevator room') + '</label><div class="proof-sb-two"><label>Building<select class="proof-sb-in" data-sb="r.' + i + '.building">' + opt(r.building) + '</select></label><label>Floor' + sbIn('r.' + i + '.floor', r.floor, 'e.g. 1', num) + '</label></div></div>').join('');
-    return '<div class="proof-sb"><form class="proof-form" autocomplete="off" onsubmit="return false"><label>Site name' + sbIn('name', d.name, 'e.g. Oceana') + '</label><label>Site access codes (all buildings)' + sbIn('access', d.access, 'optional') + '</label>'
+    const top = d.edit ? '<div class="proof-sb-edit">Editing ' + esc(String((d.orig || {}).name || d.name)) + '. Nothing is written until Save site.</div>' : '';   // 0.40.0
+    const bottom = d.edit ? '<button type="button" class="proof-sb-x proof-sb-rmsite" data-sbx="rmsite">Remove this site</button>' : '';
+    return '<div class="proof-sb"><form class="proof-form" autocomplete="off" onsubmit="return false">' + top + '<label>Site name' + sbIn('name', d.name, 'e.g. Oceana') + '</label><label>Site access codes (all buildings)' + sbIn('access', d.access, 'optional') + '</label>'
       + '<div class="proof-sb-sec">Buildings</div>' + bl + '<button type="button" class="proof-sb-add" data-sbx="addb">+ Add building</button>'
       + '<div class="proof-sb-sec">Special rooms (Lobby, Elevator room …)</div>' + rm + '<button type="button" class="proof-sb-add" data-sbx="addr">+ Add room</button>'
-      + '<div class="proof-sb-sum">' + sbSummary(d) + '</div></form></div>';
+      + '<div class="proof-sb-sum">' + sbSummary(d) + '</div>' + bottom + '</form></div>';
   } };
   const paintSb = () => { document.querySelectorAll('.proof-sb-sum').forEach(el => { const d = sbGet(); if (d) el.innerHTML = sbSummary(d); }); };
   const sbSet = (k, v) => { const d = sbGet(); if (!d) return; const m = /^(b|r)\.(\d+)\.(\w+)$/.exec(k); if (m) { const L2 = m[1] === 'b' ? d.buildings : d.rooms, o = L2[+m[2]]; if (o) o[m[3]] = v; } else if (k === 'name' || k === 'access') d[k] = v; sbKeep(); };
@@ -9600,13 +9645,18 @@ body.light-theme .proof-box{color:#0f172a}
     const t = e.target && e.target.closest && e.target.closest('[data-sbx]'); if (!t) return; e.preventDefault(); e.stopPropagation(); const d = sbGet(); if (!d) return; blurNow();
     const i = +t.dataset.i, w = t.dataset.sbx;
     if (w === 'addb') d.buildings.push(SB_NEW_B()); else if (w === 'addr') d.rooms.push({ label: '', building: 1, floor: '' });
+    else if (w === 'rmsite') { ask('Remove ' + (d.orig ? d.orig.name : d.name) + ' and its buildings and rules? (Active no; units and visits stay on the sheet)', [['Remove the site', () => window.EngineActions['save-site']('remove')], ['Cancel', () => {}]]); return; }
+    else if (w === 'unb' && d.buildings[i]) { delete d.buildings[i].remove; d.rooms.forEach(r => { if (r.withB && Number(r.building) === i + 1) { delete r.remove; delete r.withB; } }); } else if (w === 'unr' && d.rooms[i]) delete d.rooms[i].remove;
+    else if (w === 'rmb' && d.buildings[i] && d.buildings[i].id) { d.buildings[i].remove = true; d.rooms.forEach((r, k) => { if (Number(r.building) !== i + 1) return; if (r.ruleId) { if (!r.remove) { r.remove = true; r.withB = true; } } else r.__drop = 1; }); d.rooms = d.rooms.filter(r => !r.__drop); }   // 0.40.0: a saved building = Active no
+    else if (w === 'rmr' && d.rooms[i] && d.rooms[i].ruleId) d.rooms[i].remove = true;
     else if (w === 'rmb' && d.buildings.length > 1) { d.buildings.splice(i, 1); d.rooms = d.rooms.filter(r => Number(r.building) !== i + 1).map(r => Object.assign(r, { building: Number(r.building) > i + 1 ? Number(r.building) - 1 : Number(r.building) })); }
     else if (w === 'rmr') d.rooms.splice(i, 1);
     sbKeep(); goView(siteView);
   }, true);
-  window.EngineActions['site-back'] = () => { blurNow(); goView('find'); };   // the draft stays on this phone (Save site later); 0.39.0 (6e): straight back to Find
+  window.EngineActions['site-back'] = () => { blurNow(); const d = sbGet(); if (d && d.edit) { const S = placeById(d.edit); lsSet(K_SBMODE, 'new'); sbDraft = null; if (S && condoOpen(S)) return; } goView('find'); };   // 0.40.0: Back from an edit = the site's condo screen (the edit stays kept)   // the draft stays on this phone (Save site later); 0.39.0 (6e): straight back to Find
   window.EngineActions['save-site'] = async (sure) => {
     blurNow(); const d = sbGet(); if (!d || sbBusy) return;
+    if (d.edit) return saveEdit(d, sure);   // 0.40.0 (no. 180 stage 2): a saved site's changes
     const why = sbCheck(d); if (why.length) { say(why.slice(0, 3).join(' '), 'warn', 9000); return; }
     const cw = sbCountWarn(d); if (cw.length && sure !== true) { ask(cw.join(' ') + ' Save with the list?', [['Save with the list', () => window.EngineActions['save-site'](true)], ['Back', () => {}]]); return; }   // 0.39.0 (6a)
     const url = scriptUrl(); if (!url) { say('Saving a site needs the test script (Script URL on the Settings tab). Nothing saved; the site stays on this phone.', 'warn', 9000); return; }
@@ -9617,7 +9667,8 @@ body.light-theme .proof-box{color:#0f172a}
     try { r = await withTimeout(fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ token: TOKEN, op: 'newSite', tech: String(SETTINGS['tech name'] || '').trim() || DEVICE, site }) }).then(a => a.json()), 30000); }
     catch (e) { sbBusy = false; say('No answer from the sheet (no signal, or the sheet is slow). It may have saved: tap Save site again (nothing is doubled; it says what it finds).', 'warn', 12000); return; }
     sbBusy = false; if (r && r.version) noteDoor(r.version);
-    if (r && r.error === 'unknown op') { say('Saving a site needs the newer test script (test-door-8: paste it, then New version). Nothing saved; the site stays on this phone.', 'warn', 12000); return; }
+    if (r && r.error === 'unknown op') { say('Saving a site needs the newer test script (test-door-' + DOOR_NEED + ': paste it, then New version). Nothing saved; the site stays on this phone.', 'warn', 12000); return; }
+    if (r && !r.ok && r.taken === d.id) { d.id = sbStamp(); sbKeep(); say('Nothing was written: ' + r.error + '. Tap Save site again to save ' + site.name + ' as a new site.', 'warn', 15000); return; }   // 0.40.0 (test-door-9): the id is another site's
     if (!r || !r.ok) { say('The sheet refused the site: ' + ((r && r.error) || 'no answer') + '. Nothing saved.', 'warn', 12000); return; }
     // 0.39.0 (no. 180, 6c): 'Site saved' ONLY when the sheet says it wrote rows. A door answer with no rows made = the id was already on the
     // sheet: the same site (its earlier answer was lost) = saved; another site = nothing written, the draft gets a new id.
@@ -9626,7 +9677,7 @@ body.light-theme .proof-box{color:#0f172a}
       try { await reload(); } catch (e) {}
       const S0 = placeById(site.id), same = S0 && String(S0.cols['Name'] || '').trim().toLowerCase() === site.name.toLowerCase();
       if (!same) { d.id = sbStamp(); sbKeep(); say('Nothing was written: this draft\'s id is already used on the sheet' + (S0 ? ' by ' + (S0.cols['Name'] || S0.id) : '') + ' (saved earlier). Tap Save site again to save ' + site.name + ' as a new site.', 'warn', 15000); return; }
-      sbDraft = null; try { localStorage.removeItem(K_SITEDRAFT); } catch (e) {}
+      sbDraft = null; lsDrop(K_SITEDRAFT);
       say('Already on the sheet: ' + site.name + ' (saved earlier). Pick the unit.', 'done', 6000);
       if (!condoOpen(S0)) goView('find'); return;
     }
@@ -9638,13 +9689,40 @@ body.light-theme .proof-box{color:#0f172a}
       const addR = o => { if (madeOk(o['Rule Id']) && !ONFILE.rules.find(x => x['Rule Id'] === o['Rule Id'])) ONFILE.rules.push(o); };
       site.buildings.forEach((x, i) => { if (!x.floorFrom) return; addR({ 'Rule Id': site.id + '-R' + (++k), 'Site Id': site.id, 'Building Id': site.id + '-B' + (i + 1), 'Kind': 'floors', 'Label': 'Floors', 'Floor from': x.floorFrom, 'Floor to': x.floorTo, 'Units per floor': x.numbers ? '' : x.units, 'Unit numbers': x.numbers, 'Prefix': x.prefix, 'Access notes': '', 'Active': 'yes' }); });
       site.rooms.forEach(rr => addR({ 'Rule Id': site.id + '-R' + (++k), 'Site Id': site.id, 'Building Id': site.id + '-B' + rr.building, 'Kind': 'special', 'Label': rr.label, 'Floor from': rr.floor, 'Floor to': rr.floor, 'Units per floor': '', 'Unit numbers': '', 'Prefix': '', 'Access notes': '', 'Active': 'yes' })); }
-    sbDraft = null; try { localStorage.removeItem(K_SITEDRAFT); } catch (e) {}
+    sbDraft = null; lsDrop(K_SITEDRAFT);
     say('Site saved: ' + site.name + ' (' + site.buildings.length + ' building' + (site.buildings.length === 1 ? '' : 's') + (made ? ', ' + made.length + ' rows written' : '') + '). Pick the unit.', 'done', 6000);
     const P = placeById(site.id); if (!(P && condoOpen(P))) goView('find');
-    const keepL = ONFILE ? ONFILE.list.filter(o => madeOk(o.id) && made && made.indexOf(o.id) >= 0) : [], keepR = ONFILE ? (ONFILE.rules || []).filter(o => made && made.indexOf(o['Rule Id']) >= 0) : [];
-    setTimeout(() => { reload().then(() => { if (ONFILE) { keepL.forEach(o => { if (!ONFILE.list.find(x => x.id === o.id)) ONFILE.list.push(o); }); ONFILE.rules = ONFILE.rules || []; keepR.forEach(o => { if (!ONFILE.rules.find(x => x['Rule Id'] === o['Rule Id'])) ONFILE.rules.push(o); }); }   // a sheet read that is a little behind never drops the new rows
-      if (currentView === condoView) goView(condoView); }).catch(() => {}); }, 300);   // the grid from the sheet's own rows
+    // 0.40.0: no full sheet read here (it redrew the screen under the next tap); the rows added above are exactly the rows the sheet made
   };
+  // 0.40.0 (no. 180 stage 2): Save site on an EDIT = one 'editSite' request (all or nothing, test-door-9); 'remove' = the whole site
+  // Active no. The answer brings the site's Places rows and Place rules rows as they are now: the phone takes those (no waiting for a read).
+  async function saveEdit(d, how) {
+    const remove = how === 'remove', ch = sbChanges(d);
+    if (!remove) { if (!ch.length) { say('No changes to save.', 'info', 4000); return; }
+      const why = sbCheck(d); if (why.length) { say(why.slice(0, 3).join(' '), 'warn', 9000); return; }
+      const cw = sbCountWarn(d); if (cw.length && how !== true) { ask(cw.join(' ') + ' Save with the list?', [['Save with the list', () => saveEdit(d, true)], ['Back', () => {}]]); return; } }
+    const url = scriptUrl(); if (!url) { say('Changing a site needs the test script (Script URL on the Settings tab). Nothing changed.', 'warn', 9000); return; }
+    const site = { id: d.edit, name: String(d.name || '').trim(), access: String(d.access || '').trim(), remove,
+      buildings: d.buildings.map(x => { const ff = String(x.floorFrom || '').trim(), nl = ff ? expandNums(x.numbers, x.units) : [], typed = String(x.numbers || '').trim();
+        return { id: x.id || '', remove: !!x.remove, name: String(x.name || '').trim(), address: String(x.address || '').trim(), floorFrom: ff, floorTo: String((x.floorTo === '' ? x.floorFrom : x.floorTo) || '').trim(), units: nl.length ? String(nl.length) : String(x.units || '').trim(), numbers: typed && nl.length ? nl.join(', ') : '', prefix: String(x.prefix || '').trim() }; }),
+      rooms: d.rooms.map(r => ({ ruleId: r.ruleId || '', remove: !!r.remove, label: String(r.label || '').trim(), building: Number(r.building), floor: String(r.floor == null ? '' : r.floor).trim() })) };
+    sbBusy = true; say(remove ? 'Removing the site…' : 'Saving the changes…', 'info', 30000); let r = null;
+    try { r = await withTimeout(fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ token: TOKEN, op: 'editSite', tech: String(SETTINGS['tech name'] || '').trim() || DEVICE, site }) }).then(a => a.json()), 30000); }
+    catch (e) { sbBusy = false; say('No answer from the sheet (no signal, or the sheet is slow). It may have changed: tap Reload, then Edit site to see.', 'warn', 12000); return; }
+    sbBusy = false; if (r && r.version) noteDoor(r.version);
+    if (r && r.error === 'unknown op') { say('Changing a site needs the newer test script (test-door-' + DOOR_NEED + ': paste it, then New version). Nothing changed; your changes stay on this phone.', 'warn', 12000); return; }
+    if (!r || !r.ok) { say('The sheet refused the changes: ' + ((r && r.error) || 'no answer') + '. Nothing changed.', 'warn', 12000); return; }
+    if (ONFILE && Array.isArray(r.places)) {
+      const ids = r.places.map(o => String(o['Place Id'] || '').trim()).filter(Boolean); ONFILE.list = ONFILE.list.filter(o => ids.indexOf(o.id) < 0);
+      r.places.forEach(o => { const cols = {}; Object.keys(o).forEach(k => { cols[k] = o[k] == null ? '' : String(o[k]); }); const id = String(cols['Place Id']).trim();
+        ONFILE.list.push({ id, level: String(cols['Level']).trim().toLowerCase(), parent: String(cols['Parent Id'] || '').trim(), active: String(cols['Active'] || '').trim().toLowerCase() !== 'no', row: 0, cols }); });
+      if (Array.isArray(r.rules)) { ONFILE.rules = (ONFILE.rules || []).filter(x => x['Site Id'] !== d.edit); r.rules.forEach(o => { const x = {}; RULES_COLS.forEach(c => { x[c] = o[c] == null ? '' : String(o[c]); }); ONFILE.rules.push(x); }); } }
+    lsDrop(K_SITEEDIT); lsSet(K_SBMODE, 'new'); sbDraft = null;
+    const S = placeById(d.edit), n = (r.changed || []).length;
+    if (remove) { say('Site removed: ' + site.name + ' (Active no; its units and visits stay on the sheet).', 'done', 8000); condo = { site: '', bld: '' }; goView('find'); return; }
+    say('Site changed: ' + site.name + ' (' + n + ' change' + (n === 1 ? '' : 's') + ' on the sheet).', 'done', 6000);
+    if (!(S && condoOpen(S))) goView('find');
+  }
   // 0.38.0 (C7e stage 3, Prompts no. 179): Use my location / Near me / Location at save. The phone's location (never stored on the sheet
   // except as below) -> the test script's whereAmI (Maps geocoder) -> the Address box of Find, as 'Street + city' (street name + city, no
   // house number, the part GPS gets wrong; the default) or 'Full address' (number, street, city, state, ZIP; never the country). The choice and
@@ -11249,7 +11327,7 @@ body.light-theme .proof-box{color:#0f172a}
   const badgeText = () => 'v' + PROOF_VERSION + (PRETEND ? ' (acting as ' + PRETEND + ')' : '');
   // 0.30.0 (no. 168, CARRY C7 row 30): the badge also shows the TEST SCRIPT that answers: 'v0.30.0 · D03' (D + two digits = test-door-N, from
   // its answer to the start ping and to every save); the D part is amber when this page needs a newer script; a tap says which and gives the link
-  const DOOR_NEED = 8, K_DOOR = 'proof-containers.door.v1', RAW_GS = 'https://raw.githubusercontent.com/Platts-AC/pmi-inspection/main/proof-containers/test-script/Code.gs';
+  const DOOR_NEED = 9, K_DOOR = 'proof-containers.door.v1', RAW_GS = 'https://raw.githubusercontent.com/Platts-AC/pmi-inspection/main/proof-containers/test-script/Code.gs';
   let doorSeen = String(lsGet(K_DOOR, '') || '');
   const doorNum = v => { const m = /^test-door-(\d+)$/.exec(String(v || '')); return m ? Number(m[1]) : 0; };
   const dd = n => 'D' + String(n).padStart(2, '0');

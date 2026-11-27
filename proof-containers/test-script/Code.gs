@@ -1,5 +1,10 @@
 // =====================================================================================================
 // PMI container proof (TEST) - Apps Script web app for the TEST sheet 'PMI container proof (test)' ONLY.
+// test-door-9 (proof 0.40.0, Prompts no. 180 stage 2): op editSite (change a saved site: its name / codes, a building's name, address,
+// floors, units, numbering, prefix; add or remove (Active no) a building or room; remove the site; all or nothing, Changes rows 'Site edited',
+// nothing ever deleted); newSite refuses a site id already used with ANOTHER name (never 'ok' with nothing written); a new unit / special whose
+// 'U-<visit>' id is already another label's row gets its own id ('U-<visit>-2'); a unit row found again takes the call's values into its EMPTY
+// cells only.
 // test-door-8 (proof 0.38.1, Prompts no. 179 follow-up): the SAME code as the final test-door-7, renamed so the badge tells it apart from the
 // earlier test-door-7 copies published at stages 1 and 2 (Danny's rule: every script edit gets the next door number).
 // test-door-7 (proof 0.36.0-0.38.0, Prompts no. 179, round C7e; grows over the 3 stages, pasted once): part 1 = a new UNIT or SPECIAL place
@@ -37,7 +42,7 @@ var ACCENTS = { '': 1, cyan: 1, emerald: 1, amber: 1, purple: 1, rose: 1 };
 var MAX_BODY = 20000;          // characters in one save
 var MAX_ROWS_PER_SAVE = 100;   // tweak rows in one save
 var MAX_TOTAL_ROWS = 2000;     // tweak rows on the whole tab
-var SCRIPT_VERSION = 'test-door-8';
+var SCRIPT_VERSION = 'test-door-9';
 var NUM_FMT = 'General';   // test-door-4: the Automatic number format ('35', '2.5'); 0.#### shows a bare dot ('35.')
 var VISITS_TAB = 'Visits';
 var VISITS_FIXED = ['Visit Id', 'Call token', 'Date', 'Time', 'Tech', 'Call type', 'Template', 'Place Id', 'System Id', 'System label', 'Status', 'Team tag', 'Merged into', 'Revision of', 'Follow-up', 'Area temp', 'Lat', 'Lng', 'Created', 'Last saved'];
@@ -257,8 +262,14 @@ function fileChanges_(ss, b, fixed, at) {
       if (pr && plev === 'building') {
         var bkey = String(PU.get(pr, 'Address key') || '').trim() || addrKey_(PU.get(pr, 'Address')), ukey = (bkey + ' #' + lab).toLowerCase(), uid = 'U-' + vid.replace(/^V-/, ''), hitU = '';
         var hc = PU.head, ci = hc.indexOf('Place Id'), cp = hc.indexOf('Parent Id'), ck = hc.indexOf('Address key'), cl = hc.indexOf('Unit label');
-        PU.all().forEach(function (x) { if (hitU) return; if (String(x[ci]).trim() === uid) { hitU = uid; return; }
+        var allU = PU.all(), taken = {};
+        allU.forEach(function (x) { taken[String(x[ci]).trim()] = 1; if (hitU) return;
+          if (String(x[ci]).trim() === uid && cl >= 0 && normC_(x[cl]) === normC_(lab)) { hitU = uid; return; }   // test-door-9: the id alone is not enough (another label = another place)
           if (cp >= 0 && String(x[cp]).trim() === par && ((ck >= 0 && String(x[ck]).trim().toLowerCase() === ukey) || (cl >= 0 && normC_(x[cl]) === normC_(lab)))) hitU = String(x[ci]).trim(); });
+        if (!hitU && taken[uid]) { var nn = 2; while (taken[uid + '-' + nn]) nn++; uid = uid + '-' + nn; }   // test-door-9: 'U-<visit>' used by another unit (one call over 2 places)
+        if (hitU) { var hr = PU.rowOf('Place Id', hitU);   // test-door-9: found again = the call's values into its EMPTY cells only (an earlier answer may have been lost)
+          if (hr) Object.keys(np.cols || {}).forEach(function (k) { if (UNIT_COLS_.indexOf(k) < 0 || PU.col(k) < 0) return; var v = String(np.cols[k] == null ? '' : np.cols[k]).trim();
+            if (v && !String(PU.get(hr, k)).trim()) { PU.set(hr, k, v); log('Places', hitU, k, '', v, 'Added'); } }); }
         if (!hitU) { var ou = { 'Place Id': uid, 'Level': np.level, 'Parent Id': par, 'Unit label': lab, 'Floor': String(np.cols['Floor'] || ''), 'Address key': ukey, 'Active': 'yes', 'Created by': who, 'Created at': at };
           Object.keys(np.cols || {}).forEach(function (k) { if (PU.col(k) >= 0 && !(k in ou) && UNIT_COLS_.indexOf(k) >= 0) ou[k] = String(np.cols[k] == null ? '' : np.cols[k]).trim(); });
           PU.append(ou); log('Places', uid, 'Place', String(np.from || ''), uid + ' (' + lab + ')', 'New unit'); hitU = uid; }
@@ -381,7 +392,9 @@ function newSite_(b) {
       plan.push({ bid: bid, bn: bn, ad: ad, key: key, hasF: hasF, f0: f0, f1: f1, u: u, nums: nums, pre: pre, access: String(x.access || '').trim() }); });
     R.forEach(function (r, i) { var lab = String(r.label || '').trim(), bi = Number(r.building); if (!lab || lab.length > 40 || !/^[A-Za-z0-9 #._-]+$/.test(lab)) why.push('room ' + (i + 1) + ' needs a short name');
       if (!(bi >= 1 && bi <= B.length)) why.push('room ' + (i + 1) + ' needs its building'); });
-    if (why.length) return out_({ ok: false, error: why.join('; '), refused: why });
+    if (ids[sid]) { var sr = P.rowOf('Place Id', sid), sn = sr ? String(P.get(sr, 'Name')).trim() : '';   // test-door-9: a site id already used by ANOTHER site = refused (never 'ok' with nothing written)
+      if (normC_(sn) !== normC_(name)) why.push('the site id ' + sid + ' is already used by ' + (sn || 'another place') + ' (saved earlier); nothing written'); }
+    if (why.length) return out_({ ok: false, error: why.join('; '), refused: why, taken: ids[sid] ? sid : '' });
     var made = [], log = function (rec, txt) { var C = tabOf_(ss, CHANGES_TAB); if (C) C.append({ 'When': at, 'Who': who, 'Visit Id': '', 'Tab': 'Places', 'Record Id': rec, 'Field': 'Place', 'Old': '', 'New': txt, 'Reason': 'New site' }); };
     if (!ids[sid]) { P.append({ 'Place Id': sid, 'Level': 'site', 'Name': name, 'Site notes': String(S.notes || '').trim(), 'Access codes': String(S.access || '').trim(), 'Active': 'yes', 'Created by': who, 'Created at': at }); made.push(sid); log(sid, sid + ' (' + name + ')'); }
     plan.forEach(function (x) { if (ids[x.bid]) return;
@@ -392,6 +405,79 @@ function newSite_(b) {
     R.forEach(function (r) { var rid = sid + '-R' + (++k); if (rids[rid]) return; var fl = String(r.floor == null ? '' : r.floor).trim();
       PR.append({ 'Rule Id': rid, 'Site Id': sid, 'Building Id': sid + '-B' + Number(r.building), 'Kind': 'special', 'Label': String(r.label).trim(), 'Floor from': fl, 'Floor to': fl, 'Active': 'yes' }); made.push(rid); });
     return out_({ ok: true, version: SCRIPT_VERSION, siteId: sid, buildings: plan.map(function (x) { return x.bid; }), made: made, at: at });
+  } catch (err) { return out_({ ok: false, error: String(err && err.message || err) }); } finally { try { lock.releaseLock(); } catch (e) {} }
+}
+
+// test-door-9 (proof 0.40.0, Prompts no. 180 stage 2): change a saved site. b.site = { id, name, access, remove, buildings: [{ id (blank = new),
+// name, address, floorFrom, floorTo, units, numbers, prefix, remove }], rooms: [{ ruleId (blank = new), label, building (1-based index into
+// buildings), floor, remove }] }. Checked first, then written (all or nothing). A building or room removed = Active no (its units and visits
+// stay); the site removed = Active no on the site, its buildings and its rules. Every change = a Changes row (Reason 'Site edited' /
+// 'Site removed'). Nothing is ever deleted. Answers the site's Places rows and Place rules rows as they are now.
+function editSite_(b) {
+  var lock = LockService.getScriptLock(); try { lock.waitLock(20000); } catch (e) { return out_({ ok: false, error: 'busy, try again' }); }
+  try {
+    var S = b.site || {}, ss = SpreadsheetApp.getActiveSpreadsheet(), at = now_(), who = String(b.tech || '');
+    var P = tabOf_(ss, 'Places'), PR = tabOf_(ss, 'Place rules'); if (!P || !PR) return out_({ ok: false, error: 'the sheet has no Places or Place rules tab' });
+    var sid = String(S.id || '').trim(), sr = sid ? P.rowOf('Place Id', sid) : 0;
+    if (!sr || normC_(P.get(sr, 'Level')) !== 'site') return out_({ ok: false, error: 'no site ' + sid + ' on the Places tab' });
+    var name = String(S.name || '').trim(), B = Array.isArray(S.buildings) ? S.buildings : [], R = Array.isArray(S.rooms) ? S.rooms : [], why = [];
+    var ci = P.head.indexOf('Place Id'), ck = P.head.indexOf('Address key'), cpar = P.head.indexOf('Parent Id'), clev = P.head.indexOf('Level'), rows = P.all(), keys = {}, ids = {}, mine = {};
+    rows.forEach(function (x) { var id = String(x[ci]).trim(); ids[id] = 1; if (ck >= 0 && String(x[ck]).trim()) keys[String(x[ck]).trim().toLowerCase()] = id;
+      if (cpar >= 0 && String(x[cpar]).trim() === sid && normC_(x[clev]) === 'building') mine[id] = 1; });
+    if (!S.remove) {
+      if (!name || name.length > 80) why.push('the site needs a name (80 letters at most)');
+      var seen = {};
+      B.forEach(function (x, i) { var n = i + 1, bid = String(x.id || '').trim(), bn = String(x.name || '').trim(), ad = String(x.address || '').trim(), key = addrKey_(ad).toLowerCase();
+        if (bid && !mine[bid]) { why.push('building ' + n + ': ' + bid + ' is not a building of ' + sid); return; }
+        if (x.remove) return;
+        if (!bn || !ad) { why.push('building ' + n + ' needs a name and an address'); return; }
+        if (!/^\d/.test(key)) { why.push('building ' + n + ': "' + ad + '" needs a house number'); return; }
+        if (seen[key]) why.push('building ' + n + ': ' + ad + ' is typed twice'); seen[key] = 1;
+        if (keys[key] && keys[key] !== bid) why.push('building ' + n + ': ' + ad + ' is already on Places (' + keys[key] + ')');
+        var hasF = String(x.floorFrom == null ? '' : x.floorFrom).trim() !== '', f0 = Number(x.floorFrom), f1 = Number(x.floorTo === '' || x.floorTo == null ? x.floorFrom : x.floorTo), u = Number(x.units || 0), nums = String(x.numbers || '').trim(), pre = String(x.prefix || '').trim();
+        if (hasF && (!(f0 >= 0) || !(f1 >= f0) || f1 - f0 > 199 || Math.floor(f0) !== f0 || Math.floor(f1) !== f1)) why.push('building ' + n + ': floors must be whole numbers, from at most to');
+        if (hasF && !nums && !(u >= 1 && u <= 60)) why.push('building ' + n + ': units per floor must be 1 to 60 (or type the unit numbers)');
+        if (!/^[A-Za-z0-9 ,;-]{0,200}$/.test(nums) || !/^[A-Za-z0-9-]{0,6}$/.test(pre)) why.push('building ' + n + ': unit numbers / prefix may hold letters, digits, commas only'); });
+      if (!B.some(function (x) { return !x.remove; })) why.push('a site keeps at least 1 building (or remove the site)');
+      R.forEach(function (r, i) { if (r.remove) return; var lab = String(r.label || '').trim(), bi = Number(r.building);
+        if (!lab || lab.length > 40 || !/^[A-Za-z0-9 #._-]+$/.test(lab)) why.push('room ' + (i + 1) + ' needs a short name');
+        if (!(bi >= 1 && bi <= B.length) || B[bi - 1].remove) why.push('room ' + (i + 1) + ' needs a building that stays'); });
+    }
+    var rc = PR.head.indexOf('Rule Id'), rsite = PR.head.indexOf('Site Id'), rall = PR.all(), rids = {}, ruleOf = {};
+    rall.forEach(function (x) { var id = String(x[rc]).trim(); rids[id] = 1; if (String(x[rsite]).trim() === sid) ruleOf[id] = 1; });
+    R.forEach(function (r, i) { var rid = String(r.ruleId || '').trim(); if (rid && !ruleOf[rid]) why.push('room ' + (i + 1) + ': rule ' + rid + ' is not a rule of ' + sid); });
+    if (why.length) return out_({ ok: false, error: why.join('; '), refused: why });
+    var changed = [], made = [], reason = S.remove ? 'Site removed' : 'Site edited';
+    var log = function (tab, rec, f, o, nv) { var C = tabOf_(ss, CHANGES_TAB); if (C) C.append({ 'When': at, 'Who': who, 'Visit Id': '', 'Tab': tab, 'Record Id': rec, 'Field': f, 'Old': o, 'New': nv, 'Reason': reason }); changed.push(rec + ' ' + f); };
+    var setP = function (r, rec, col, v) { v = String(v == null ? '' : v); var o = String(P.get(r, col)); if (P.col(col) < 0 || normC_(o) === normC_(v)) return; P.set(r, col, v); log('Places', rec, col, o, v); };
+    var setR = function (r, rec, col, v) { var o = String(PR.get(r, col)), t = String(v == null ? '' : v); if (PR.col(col) < 0 || normC_(o) === normC_(t)) return; PR.set(r, col, v); log('Place rules', rec, col, o, t); };
+    var nextId = function (pre, have) { var m = 0; Object.keys(have).forEach(function (id) { if (id.indexOf(pre) === 0) { var k = Number(id.slice(pre.length)); if (k > m) m = k; } }); return pre + (m + 1); };
+    var rulesOfB = function (bid, kind) { var out = []; PR.all().forEach(function (x, i) { if (String(x[rsite]).trim() === sid && String(x[PR.head.indexOf('Building Id')]).trim() === bid && normC_(x[PR.head.indexOf('Kind')]) === kind && normC_(x[PR.head.indexOf('Active')]) !== 'no') out.push({ id: String(x[rc]).trim(), r: i + 2 }); }); return out; };
+    if (S.remove) {
+      setP(sr, sid, 'Active', 'no');
+      Object.keys(mine).forEach(function (bid) { var r = P.rowOf('Place Id', bid); if (r) setP(r, bid, 'Active', 'no'); });
+      PR.all().forEach(function (x, i) { if (String(x[rsite]).trim() === sid) setR(i + 2, String(x[rc]).trim(), 'Active', 'no'); });
+    } else {
+      setP(sr, sid, 'Name', name); setP(sr, sid, 'Access codes', String(S.access || '').trim());
+      var bidOf = [];
+      B.forEach(function (x) { var bid = String(x.id || '').trim(), ad = String(x.address || '').trim();
+        if (x.remove) { if (bid) { var r0 = P.rowOf('Place Id', bid); setP(r0, bid, 'Active', 'no'); rulesOfB(bid, 'floors').concat(rulesOfB(bid, 'special')).forEach(function (q) { setR(q.r, q.id, 'Active', 'no'); }); } bidOf.push(bid); return; }
+        if (!bid) { bid = nextId(sid + '-B', ids); ids[bid] = 1; P.append({ 'Place Id': bid, 'Level': 'building', 'Parent Id': sid, 'Name': String(x.name).trim(), 'Address': ad, 'Address key': addrKey_(ad).toLowerCase(), 'Active': 'yes', 'Created by': who, 'Created at': at }); made.push(bid); log('Places', bid, 'Place', '', bid + ' (' + String(x.name).trim() + ')'); }
+        else { var r = P.rowOf('Place Id', bid); setP(r, bid, 'Name', String(x.name).trim()); if (normC_(P.get(r, 'Address')) !== normC_(ad)) { setP(r, bid, 'Address', ad); setP(r, bid, 'Address key', addrKey_(ad).toLowerCase()); } }
+        bidOf.push(bid);
+        var hasF = String(x.floorFrom == null ? '' : x.floorFrom).trim() !== '', fr = rulesOfB(bid, 'floors'), nums = String(x.numbers || '').trim();
+        var f0 = Number(x.floorFrom), f1 = Number(x.floorTo === '' || x.floorTo == null ? x.floorFrom : x.floorTo);
+        if (hasF && fr.length) { var q = fr[0]; setR(q.r, q.id, 'Floor from', f0); setR(q.r, q.id, 'Floor to', f1); setR(q.r, q.id, 'Units per floor', nums ? '' : Number(x.units)); setR(q.r, q.id, 'Unit numbers', nums); setR(q.r, q.id, 'Prefix', String(x.prefix || '').trim()); }
+        else if (hasF) { var rid = nextId(sid + '-R', rids); rids[rid] = 1; PR.append({ 'Rule Id': rid, 'Site Id': sid, 'Building Id': bid, 'Kind': 'floors', 'Label': 'Floors', 'Floor from': f0, 'Floor to': f1, 'Units per floor': nums ? '' : Number(x.units), 'Unit numbers': nums, 'Prefix': String(x.prefix || '').trim(), 'Active': 'yes' }); made.push(rid); log('Place rules', rid, 'Rule', '', rid + ' (floors ' + f0 + '-' + f1 + ')'); }
+        else fr.forEach(function (q) { setR(q.r, q.id, 'Active', 'no'); }); });
+      R.forEach(function (r) { var rid = String(r.ruleId || '').trim(), fl = String(r.floor == null ? '' : r.floor).trim(), bid = bidOf[Number(r.building) - 1];
+        if (r.remove) { if (rid) { var rr0 = PR.rowOf('Rule Id', rid); if (rr0) setR(rr0, rid, 'Active', 'no'); } return; }
+        if (rid) { var rr = PR.rowOf('Rule Id', rid); setR(rr, rid, 'Label', String(r.label).trim()); setR(rr, rid, 'Building Id', bid); setR(rr, rid, 'Floor from', fl === '' ? '' : Number(fl)); setR(rr, rid, 'Floor to', fl === '' ? '' : Number(fl)); return; }
+        var nid = nextId(sid + '-R', rids); rids[nid] = 1; PR.append({ 'Rule Id': nid, 'Site Id': sid, 'Building Id': bid, 'Kind': 'special', 'Label': String(r.label).trim(), 'Floor from': fl === '' ? '' : Number(fl), 'Floor to': fl === '' ? '' : Number(fl), 'Active': 'yes' }); made.push(nid); log('Place rules', nid, 'Rule', '', nid + ' (' + String(r.label).trim() + ')'); });
+    }
+    var hp = P.head, placesNow = P.all().filter(function (x) { var id = String(x[ci]).trim(); return id === sid || String(x[cpar]).trim() === sid; }).map(function (x) { var o = {}; hp.forEach(function (h, i) { o[h] = x[i]; }); return o; });
+    var hr = PR.head, rulesNow = PR.all().filter(function (x) { return String(x[rsite]).trim() === sid; }).map(function (x) { var o = {}; hr.forEach(function (h, i) { o[h] = x[i]; }); return o; });
+    return out_({ ok: true, version: SCRIPT_VERSION, siteId: sid, made: made, changed: changed, places: placesNow, rules: rulesNow, at: at });
   } catch (err) { return out_({ ok: false, error: String(err && err.message || err) }); } finally { try { lock.releaseLock(); } catch (e) {} }
 }
 
@@ -456,6 +542,7 @@ function doPost(e) {
     book_();
     if (b.op === 'saveVisit') return visitsSave_(b, body);
     if (b.op === 'newSite') return newSite_(b);   // test-door-7 part 2 (proof 0.37.0): the site builder
+    if (b.op === 'editSite') return editSite_(b);   // test-door-9 (proof 0.40.0): change a saved site
     if (b.op === 'whereAmI') return out_(whereAmI_(b));   // test-door-7 part 3 (proof 0.38.0): Use my location
     return tweaksPost_(b, body);
   } catch (err) { return out_({ ok: false, error: String(err && err.message || err) }); }
