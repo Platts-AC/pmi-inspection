@@ -926,7 +926,7 @@ body:not(.proof-ready) #reopen-inspector-fab{display:none!important}
 #proof-kbpad{width:100%;pointer-events:none}
 .proof-results .proof-count{font-size:11px;color:#94a3b8;margin:2px 0 4px}
 .proof-results .proof-hit{display:block;width:100%;text-align:left;margin:0 0 6px;padding:8px 10px;border-radius:8px;border:1px solid #234d82;background:#0c1a2e;color:#e2e8f0;font-size:14px}
-.proof-results .proof-hit span{display:block;font-size:12px;color:#94a3b8}
+.proof-results .proof-hit span{display:block;font-size:12px;color:#94a3b8}.proof-hit span.proof-hist-b{float:right;display:inline-block;margin:-2px -2px 2px 8px;padding:3px 9px;border-radius:8px;border:1px solid #334155;background:#111827;color:#5eead4;font:600 12px system-ui,sans-serif}.proof-hist{font-size:14px;color:#e2e8f0}.proof-hi-title{font-weight:700;color:#5eead4;margin:2px 0 6px}.proof-hi-sys,.proof-hi-tog{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}.proof-hi-sys button,.proof-hi-tog button{min-height:32px;padding:2px 12px;border:1px solid #334155;border-radius:16px;background:#111827;color:#e5e7eb;font:600 13px system-ui,sans-serif}.proof-hi-sys button.on,.proof-hi-tog button.on{background:#0f766e;border-color:#5eead4;color:#f0fdfa}.proof-hi-st{font-size:12px;color:#fbbf24;margin:0 0 8px}.proof-hi-v{display:block;width:100%;text-align:left;margin:0 0 6px;padding:8px 10px;border-radius:8px;border:1px solid #234d82;background:#0c1a2e;color:#e2e8f0;font-size:14px}.proof-hi-v b{display:block}.proof-hi-v i{display:block;font-size:12px;color:#93c5fd;font-style:normal}.proof-hi-v span{display:block;font-size:12px;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.proof-hi-v em{display:block;font-size:11px;color:#94a3b8}.proof-hi-v.leg,.proof-hi-one.leg .proof-hi-body{opacity:.75;border-color:#475569;background:#111827}.proof-hi-leg,.proof-hi-mine{font-size:11px;color:#94a3b8}.proof-hi-one-h{margin:0 0 8px}.proof-hi-note{font-size:12px;color:#fbbf24;margin:0 0 6px}.proof-hi-rep{white-space:pre-wrap;font:14px/1.45 system-ui,sans-serif;margin:0;padding:8px 10px;border-radius:8px;background:#0b1220;border:1px solid #1f2937;user-select:text;-webkit-user-select:text}.proof-hi-grp{margin:0 0 10px}.proof-hi-gh{font-weight:700;color:#5eead4;font-size:13px;margin:0 0 4px}.proof-hi-kv{display:flex;gap:8px;justify-content:space-between;padding:3px 0;border-bottom:1px solid #1f2937;font-size:13px}.proof-hi-kv span{color:#94a3b8}.proof-hi-kv b{text-align:right;font-weight:600;white-space:pre-wrap}#viewport-canvas-frame .proof-systems button.hist{color:#5eead4;background:transparent;padding:2px 10px}
 .proof-results .proof-hit .proof-why{float:right;margin-left:8px;font-style:normal;font-size:11px;line-height:20px;color:#fbbf24}
 .proof-results .proof-hit i{font-size:11px;color:#94a3b8}
 .proof-results .proof-empty{color:#fbbf24;font-size:13px;padding:6px 0}
@@ -3750,7 +3750,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.41.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.42.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3760,7 +3760,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.41.0', stamp: '2026-11-27 03:22:37', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.42.0', stamp: '2026-11-27 05:48:21', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8437,7 +8437,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.41.0';
+  const PROOF_VERSION = '0.42.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8456,7 +8456,7 @@ body.light-theme .proof-box{color:#0f172a}
   const findFillOf = p => p.proofField ? (p.proofField.find || '') : (FIND_BOX_FILL[p.proofKey] || FIND_FILL_FALLBACK[p.proofKey] || '');
   const TYPES = { button: 1, text: 1, logo: 1, badge: 1 };
   const TOOL_ACTIONS = { 'reload-layout': 1, 'proof-save-tweaks': 1, 'proof-clear-tweaks': 1, 'proof-profile': 1, 'toggle-tray': 1, 'proof-adjust': 1, 'refresh-page': 1 };
-  const ACTIONS = Object.assign({ 'proof-badge': 1, 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1, 'new-call': 1, 'reveal-hidden': 1, 'start-new-customer': 1, 'save-new-customer': 1, 'open-call-type': 1, 'call-type-back': 1, 'condo-back': 1, 'site-back': 1, 'save-site': 1, 'use-location': 1, 'location-menu': 1, 'near-me': 1, 'copy-report': 1, 'open-followups': 1 },   /* 0.29.0: open-followups */ TOOL_ACTIONS);   // C2b: copy-report   // 0.14.1: call-type-back   // C1b: open-call-type   // C1a: Blueprint P8 (Stage C)
+  const ACTIONS = Object.assign({ 'proof-badge': 1, 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1, 'new-call': 1, 'reveal-hidden': 1, 'start-new-customer': 1, 'save-new-customer': 1, 'open-call-type': 1, 'call-type-back': 1, 'condo-back': 1, 'history-back': 1, 'site-back': 1, 'save-site': 1, 'use-location': 1, 'location-menu': 1, 'near-me': 1, 'copy-report': 1, 'open-followups': 1 },   /* 0.29.0: open-followups */ TOOL_ACTIONS);   // C2b: copy-report   // 0.14.1: call-type-back   // C1b: open-call-type   // C1a: Blueprint P8 (Stage C)
   const TPL_NAME = /^[A-Za-z0-9][A-Za-z0-9 _.-]{0,29}$/, TPL_ACTION = /^set-template:([A-Za-z0-9][A-Za-z0-9 _.-]{0,29})?$/;   // round B2: set-template:<name> (set-template: alone = no template)
   // What a tweak can change (DESIGN.md). Each rule turns a value into its normal text form, or returns an error.
   const PLACES = { 'top-left': ['left', 'top'], 'top-center': ['center', 'top'], 'top-right': ['right', 'top'], 'middle-left': ['left', 'middle'], 'middle': ['center', 'middle'],
@@ -9374,7 +9374,7 @@ body.light-theme .proof-box{color:#0f172a}
   // ---------- Round C1b: the Call types tab, the call-type question (Slot call-types, Action open-call-type) ----------
   // Call types: Call type | Template | Aliases (separated by |) | Active | Order | Notes. Missing tab = no question (Entry as before).
   const CT_COLS = ['Call type', 'Template', 'Aliases', 'Active', 'Order', 'Notes'];
-  let CALL_TYPES = null, ctView = '', ctFilter = '', condoView = '', siteView = '';
+  let CALL_TYPES = null, ctView = '', ctFilter = '', condoView = '', siteView = '', histView = '';
   function parseCallTypes(rows, notes) {
     const out = [], seen = {};
     (rows || []).forEach((r, i) => {
@@ -9505,7 +9505,8 @@ body.light-theme .proof-box{color:#0f172a}
     condoCells = []; const S = condo.site && placeById(condo.site), B = condo.bld && placeById(condo.bld);
     if (!ONFILE || (!S && !B)) return '<div class="proof-cd"><div class="proof-empty">Pick a site or a building in Find first.</div></div>';
     const ed = S && siteView ? '<button type="button" class="proof-cd-edit" data-cdedit="1">Edit site</button>' : '';   // 0.40.0 (no. 180 stage 2): change the saved site
-    const crumb = '<div class="proof-cd-crumb">' + ed + esc((S && S.cols['Name']) || '') + (B ? (S ? ' › ' : '') + esc(B.cols['Name'] || B.cols['Address'] || B.id) : '') + '</div>';
+    const hb = histView ? '<button type="button" class="proof-cd-edit proof-cd-hist" data-chist="1">History</button>' : '';   // 0.42.0 (C7f): this building's (or site's) visits
+    const crumb = '<div class="proof-cd-crumb">' + ed + hb + esc((S && S.cols['Name']) || '') + (B ? (S ? ' › ' : '') + esc(B.cols['Name'] || B.cols['Address'] || B.id) : '') + '</div>';
     if (!B) return '<div class="proof-cd">' + crumb + '<div class="proof-cd-list">' + condoBuildingsOf(S).map(x => '<button type="button" class="proof-cd-b" data-b="' + esc(x.id) + '"><b>' + esc(x.cols['Name'] || x.id) + '</b>' + (x.cols['Address'] ? '<i>' + esc(x.cols['Address']) + '</i>' : '') + '</button>').join('') + '</div></div>';
     const g = condoUnits(B), put = u => { condoCells.push(u); return condoCell(u, condoCells.length - 1); };
     const rows = g.floors.map(r => '<div class="proof-cd-row proof-cd-floor" style="--n:' + Math.max(4, r.units.length) + '"><span class="proof-cd-fl">' + esc(r.floor) + '</span>' + r.units.map(put).join('') + '</div>').join('');   // 0.39.0 (no. 180, 4): one line per floor, all its units side by side
@@ -9535,6 +9536,136 @@ body.light-theme .proof-box{color:#0f172a}
   window.EngineActions['condo-back'] = () => { const S = condo.site && placeById(condo.site);
     if (condo.bld && S && condoBuildingsOf(S).length > 1) { condo.bld = ''; goView(condoView); return; }
     condo = { site: '', bld: '' }; goView('find'); };
+  // 0.42.0 (Prompts no. 185, round C7f stage 1): HISTORY, read only. A 'History' button on each place line in Find (a house, a unit / room,
+  // a building = its own visits + all its units', a site = everything under it), beside 'Edit site' on the condo screen, and at the end of
+  // the systems strip on Entry (this place, the SELECTED system). The History screen (sheet rows: Slot 'history') has two modes: the list
+  // (newest first, one line per visit + a short line, a system filter) and one visit (Report = the text the customer got, or Everything =
+  // every saved value, grouped). Nothing on it can be typed into or saved. Back returns exactly where the tech was (the screen, the system,
+  // the scroll). Rows come from the test script (op 'history', test-door-11); every row the phone has seen, and this phone's own saved
+  // calls, stay on the phone (the newest 300) for when there is no signal.
+  const K_HIST = 'proof-containers.history.v1', K_HISTNAV = 'proof-containers.histnav.v1', HIST_KEEP = 300;
+  let hist = lsGet(K_HISTNAV, null) || null;   // { places, title, sys, from: { view, top }, mode: 'list' | 'one', vid, show: 'report' | 'all' }
+  let histNet = { key: '', st: '', rows: null, at: '', err: '' };
+  const hg = (r, c) => String(r && r[c] != null ? r[c] : '').trim();
+  const histKey = r => hg(r, 'Date') + ' ' + hg(r, 'Time');
+  function histCache() { const c = lsGet(K_HIST, null); return c && c.rows ? c : { rows: {}, at: {} }; }
+  function histKeep(rows, mine) {   // rows into the phone's copy (by Visit Id), the newest HIST_KEEP kept
+    const c = histCache(), t = new Date(), at = ymd(t) + ' ' + hms(t).slice(0, 5);
+    rows.forEach(r => { const id = hg(r, 'Visit Id'); if (!id) return; if (!mine && c.rows[id] && c.rows[id]._mine && !r._mine) delete c.rows[id]._mine; c.rows[id] = Object.assign({}, mine ? r : (c.rows[id] && c.rows[id]._mine && !mine ? Object.assign({}, r) : r), mine ? { _mine: true } : {}); c.at[id] = at; });
+    const ids = Object.keys(c.rows).sort((a, b) => histKey(c.rows[b]).localeCompare(histKey(c.rows[a])));
+    ids.slice(HIST_KEEP).forEach(id => { delete c.rows[id]; delete c.at[id]; }); lsSet(K_HIST, c);
+  }
+  function histMine(body) {   // a saved call of this phone, as the row the sheet will hold
+    try { const r = Object.assign({ 'Visit Id': body.visitId }, body.fixed || {}); (body.values || []).forEach(v => { if (v && v.col && String(v.v == null ? '' : v.v).trim() !== '') r[v.col] = String(v.v); });
+      Object.keys(r).forEach(k => { if (String(r[k] == null ? '' : r[k]).trim() === '') delete r[k]; else r[k] = String(r[k]); }); if (r['Place Id']) histKeep([r], true); } catch (e) {}
+  }
+  function histPlaces(P) {   // a place + everything under it (a site: its buildings and their units; a building: its units)
+    const out = [], walk = (id, d) => { if (!id || out.indexOf(id) >= 0 || d > 4) return; out.push(id); ((ONFILE && ONFILE.list) || []).forEach(o => { if (o.parent === id) walk(o.id, d + 1); }); };
+    walk(P && P.id, 0); return out;
+  }
+  const placeTitle = P => { const c = (P && P.cols) || {}; return c['Name'] || c['Customer Name'] || c['Unit label'] || c['Address'] || (P && P.id) || ''; };
+  function openHistory(places, title, sys) {
+    if (!histView) { say('This sheet has no History screen yet.', 'warn', 6000); return; }
+    places = (places || []).filter(Boolean); if (!places.length) return;
+    const sc = document.getElementById('viewport-outer-scroller'), back = currentView === histView ? (hist && hist.from) : { view: currentView || 'find', top: sc ? sc.scrollTop : 0 };
+    hist = { places, title: title || places[0], sys: sys || '', from: back, mode: 'list', vid: '', show: 'report' }; lsSet(K_HISTNAV, hist);
+    histNet = { key: '', st: '', rows: null, at: '', err: '' }; goView(histView); histFetch();
+  }
+  async function histFetch() {
+    if (!hist) return; const key = hist.places.join('|'), url = scriptUrl();
+    if (!url) { histNet = { key, st: 'off', rows: null, at: '', err: 'no Script URL' }; paintHist(); return; }
+    histNet = { key, st: 'loading', rows: null, at: '', err: '' }; paintHist(); let r = null;
+    try { r = await withTimeout(fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ token: TOKEN, op: 'history', places: hist.places, limit: 100 }) }).then(a => a.json()), 20000); } catch (e) { r = null; }
+    if (!hist || hist.places.join('|') !== key) return;
+    if (r && r.version) { try { noteDoor(r.version); } catch (e) {} }
+    if (r && r.ok && Array.isArray(r.rows)) { histKeep(r.rows, false); histNet = { key, st: 'ok', rows: r.rows, at: r.at || '', err: '', total: r.total }; }
+    else histNet = { key, st: 'off', rows: null, at: '', err: r && r.error === 'unknown op' ? 'old script' : r ? (r.error || 'refused') : 'no answer' };
+    paintHist();
+  }
+  function histRows() {   // what the list shows: the sheet's answer (+ this phone's calls not on it yet), or the phone's copy
+    if (!hist) return []; const want = {}; hist.places.forEach(p => { want[p] = 1; }); const c = histCache(), seen = {}, out = [];
+    if (histNet.st === 'ok' && histNet.key === hist.places.join('|')) histNet.rows.forEach(r => { seen[hg(r, 'Visit Id')] = 1; out.push(r); });
+    Object.keys(c.rows).forEach(id => { const r = c.rows[id]; if (seen[id] || !want[hg(r, 'Place Id')]) return; if (histNet.st === 'ok' && !r._mine) return; out.push(Object.assign({ _cached: c.at[id] || '' }, r)); });
+    histLab = {}; out.forEach(r => { const id = hg(r, 'System Id'), l = hg(r, 'System label'); if (id && l && !histLab[id]) histLab[id] = l; });
+    return out.sort((a, b) => histKey(b).localeCompare(histKey(a)));
+  }
+  let histLab = {};   // System Id -> its label, from the rows that have one (an old / legacy row may lack it)
+  const sysName = r => hg(r, 'System label') || histLab[hg(r, 'System Id')] || (hg(r, 'System Id') ? 'System ' + hg(r, 'System Id') : '');
+  const readingFields = () => (FCTL || []).filter(F => F.visitsCol && (F.kind === 'number' || F.kind === 'calculated'));
+  const shortName = F => String(F.short || F.name || F.visitsCol).replace(/\s*\(.*\)\s*$/, '');
+  function histShort(r) {   // the follow-up if any, else the first 3 readings
+    const fu = hg(r, 'Follow-up'); if (fu) return 'Follow-up: ' + fu;
+    const out = []; readingFields().some(F => { const v = hg(r, F.visitsCol); if (v !== '') out.push(shortName(F) + ' ' + v); return out.length >= 3; });
+    return out.join(' · ') || hg(r, 'Recap');
+  }
+  function histFilterBar(rows) {
+    const sy = {}; rows.forEach(r => { const id = hg(r, 'System Id'); if (id && !sy[id]) sy[id] = sysName(r); });
+    if (hist.sys && !sy[hist.sys]) { const s = call.__sys; sy[hist.sys] = (s && s.labels && s.labels[hist.sys]) || 'System ' + hist.sys; }
+    const ids = Object.keys(sy).sort(); if (ids.length < 2 && !hist.sys) return '';
+    return '<div class="proof-hi-sys">' + ['<button type="button" data-hsys=""' + (!hist.sys ? ' class="on"' : '') + '>All</button>'].concat(ids.map(id => '<button type="button" data-hsys="' + esc(id) + '"' + (hist.sys === id ? ' class="on"' : '') + '>' + esc(sy[id]) + '</button>')).join('') + '</div>';
+  }
+  function histStatus(rows) {
+    if (histNet.st === 'loading') return rows.length ? 'Looking for newer visits… (showing the ones saved on this phone)' : 'Looking up the visits…';
+    if (histNet.st === 'ok') return '';
+    const as = rows.reduce((m, r) => r._cached && r._cached > m ? r._cached : m, '');
+    const why = histNet.err === 'old script' ? 'History needs the newer test script (test-door-' + DOOR_NEED + ').' : histNet.err === 'no Script URL' ? 'No Script URL on the Settings tab.' : 'No answer from the sheet.';
+    return why + (rows.length ? ' Saved on this phone, as of ' + as + '.' : ' Nothing saved on this phone for this place yet.');
+  }
+  function histOneRow() { return histRows().find(r => hg(r, 'Visit Id') === hist.vid) || (histCache().rows[hist.vid] || null); }
+  const HIST_JOB = ['Date', 'Time', 'Tech', 'Call type', 'Template', 'System label', 'Status', 'Follow-up', 'Area temp'], HIST_SKIP = ['Visit Id', 'Call token', 'Place Id', 'System Id', 'Lat', 'Lng', 'Created', 'Last saved', 'Report text', 'Merged into', 'Revision of', 'Team tag', '_legacy', '_mine', '_cached'];
+  const HIST_PLACE = ['Customer Name', 'Address', 'Phone', 'Phone 1 name', 'Phone 2', 'Phone 2 name', 'Phone 3', 'Phone 3 name', 'Phone 4', 'Phone 4 name', 'Email', 'Email 1 name', 'Email 2', 'Email 2 name', 'Email 3', 'Email 3 name', 'Access codes', 'Site notes', 'Site', 'Building', 'System', 'Unit'];
+  function histReport(r) {   // the text the customer got; an older visit: rebuilt from its saved values with the sheet's In report lines
+    const t = hg(r, 'Report text'); if (t) return { text: t, rebuilt: false };
+    const lines = []; (FCTL || []).forEach(F => { if (!F.visitsCol || F.inReport === 'no') return; const v = hg(r, F.visitsCol); if (v === '') return; lines.push((F.name || F.visitsCol) + ': ' + v + (F.unit && /^-?[\d.]+$/.test(v) ? ' ' + F.unit : '')); });
+    if (hg(r, 'Recap') && !lines.some(l => /^Recap:/.test(l))) lines.push('Recap: ' + hg(r, 'Recap'));
+    return { text: (sysName(r) ? sysName(r) + '\n' : '') + lines.join('\n'), rebuilt: true };
+  }
+  function histEverything(r) {   // every filled cell, grouped: the job, the place, the readings and checks (in the Fields order), the rest
+    const used = {}, grp = (name, keys) => { const ls = keys.filter(k => !used[k] && hg(r, k) !== '' && HIST_SKIP.indexOf(k) < 0).map(k => { used[k] = 1; return '<div class="proof-hi-kv"><span>' + esc(k) + '</span><b>' + esc(hg(r, k)) + '</b></div>'; });
+      return ls.length ? '<div class="proof-hi-grp"><div class="proof-hi-gh">' + esc(name) + '</div>' + ls.join('') + '</div>' : ''; };
+    const fc = (FCTL || []).filter(F => F.visitsCol).map(F => F.visitsCol);
+    return grp('Job', HIST_JOB) + grp('Customer and place', HIST_PLACE) + grp('Readings and checks', fc) + grp('Other', Object.keys(r));
+  }
+  function histHtml() {
+    if (!hist) return '<div class="proof-hi"><div class="proof-empty">Open History from Find, the condo screen or the systems strip.</div></div>';
+    const all = histRows(), head = '<div class="proof-hi-title">' + esc(hist.title) + '</div>';
+    if (hist.mode === 'one') { const r = histOneRow(); if (!r) { hist.mode = 'list'; return histHtml(); }
+      const tg = '<div class="proof-hi-tog"><button type="button" data-hshow="report"' + (hist.show !== 'all' ? ' class="on"' : '') + '>Report</button><button type="button" data-hshow="all"' + (hist.show === 'all' ? ' class="on"' : '') + '>Everything</button></div>';
+      const top = '<div class="proof-hi-one-h"><b>' + esc(hg(r, 'Date') + (hg(r, 'Time') ? ' ' + hg(r, 'Time') : '')) + '</b> · ' + esc([hg(r, 'Call type'), hg(r, 'Tech'), sysName(r)].filter(Boolean).join(' · ')) + (r._legacy ? ' <i class="proof-hi-leg">Legacy (read only)</i>' : '') + (r._mine ? ' <i class="proof-hi-mine">on this phone</i>' : '') + '</div>';
+      let body; if (hist.show === 'all') body = histEverything(r); else { const rp = histReport(r); body = (rp.rebuilt ? '<div class="proof-hi-note">Rebuilt from the saved values (this visit was saved before the report was kept).</div>' : '') + '<pre class="proof-hi-rep">' + esc(rp.text || 'No report lines.') + '</pre>'; }
+      return '<div class="proof-hi proof-hi-one' + (r._legacy ? ' leg' : '') + '">' + head + top + tg + '<div class="proof-hi-body">' + body + '</div></div>'; }
+    const rows = hist.sys ? all.filter(r => hg(r, 'System Id') === hist.sys) : all, st = histStatus(all);
+    const list = rows.map(r => '<button type="button" class="proof-hi-v' + (r._legacy ? ' leg' : '') + '" data-hvid="' + esc(hg(r, 'Visit Id')) + '"><b>' + esc([hg(r, 'Date'), hg(r, 'Call type'), hg(r, 'Tech'), sysName(r)].filter(Boolean).join(' · ')) + '</b>' +
+      (hist.places.length > 1 && hg(r, 'Address') ? '<i>' + esc(hg(r, 'Address')) + '</i>' : '') + '<span>' + esc(histShort(r)) + '</span>' + (r._legacy ? '<em>Legacy (read only)</em>' : r._mine && histNet.st === 'ok' ? '<em>on this phone, not on the sheet yet</em>' : '') + '</button>').join('');
+    const none = histNet.st === 'loading' && !all.length ? '' : '<div class="proof-empty">' + (all.length ? 'No visits for this system yet.' : 'No visits yet.') + '</div>';
+    return '<div class="proof-hi">' + head + histFilterBar(all) + (st ? '<div class="proof-hi-st">' + esc(st) + '</div>' : '') + '<div class="proof-hi-list">' + (list || none) + '</div></div>';
+  }
+  window.EngineSlots['history'] = { render() { if (hist && !histNet.st) { histNet.st = 'loading'; setTimeout(histFetch, 0); } return '<div class="proof-hist">' + histHtml() + '</div>'; } };   // after a reload on History: look again
+  const paintHist = () => document.querySelectorAll('#viewport-canvas-frame .proof-hist').forEach(el => { el.innerHTML = histHtml(); });
+  document.addEventListener('click', e => {
+    const t = e.target && e.target.closest && e.target.closest('#viewport-canvas-frame .proof-hist button'); if (!t || !hist) return;
+    e.preventDefault(); e.stopPropagation(); if (Date.now() < tapGuardUntil) return;
+    if (t.dataset.hvid) { hist.mode = 'one'; hist.vid = t.dataset.hvid; hist.show = 'report'; }
+    else if ('hsys' in t.dataset) hist.sys = t.dataset.hsys;
+    else if (t.dataset.hshow) hist.show = t.dataset.hshow;
+    else return;
+    lsSet(K_HISTNAV, hist); paintHist(); const sc = document.getElementById('viewport-outer-scroller'); if (sc && t.dataset.hvid) sc.scrollTop = 0;
+  }, true);
+  window.EngineActions['history-back'] = () => {
+    if (hist && hist.mode === 'one') { hist.mode = 'list'; hist.vid = ''; lsSet(K_HISTNAV, hist); paintHist(); return; }
+    const to = (hist && hist.from) || { view: 'find', top: 0 }; hist = null; lsSet(K_HISTNAV, null);
+    goView(to.view && to.view !== histView ? to.view : 'find');
+    const put = () => { const sc = document.getElementById('viewport-outer-scroller'); if (sc && to.top) sc.scrollTop = to.top; };
+    requestAnimationFrame(() => requestAnimationFrame(() => { put(); try { paintStrip(); } catch (e) {} setTimeout(put, 60); }));
+  };
+  // the three ways in
+  document.addEventListener('click', e => { const t = e.target && e.target.closest && e.target.closest('[data-chist]'); if (!t) return; e.preventDefault(); e.stopPropagation(); if (Date.now() < tapGuardUntil) return;
+    const P = (condo.bld && placeById(condo.bld)) || (condo.site && placeById(condo.site)); if (P) openHistory(histPlaces(P), placeTitle(P)); }, true);
+  document.addEventListener('click', e => { const b = e.target && e.target.closest && e.target.closest('#viewport-canvas-frame .proof-systems button.hist'); if (!b || !isLiveInteraction) return;
+    e.preventDefault(); e.stopPropagation(); if (Date.now() < tapGuardUntil) return; try { blurNow(); saveCall('history'); } catch (x) {}
+    const pid = (call.__file && call.__file.place) || call.__placeId, P = pid && placeById(pid), s = call.__sys;
+    openHistory([pid], (P ? placeTitle(P) : (call['f:customerName'] || pid)) + ' · ' + ((s && s.labels && s.labels[s.cur]) || 'System 1'), (s && s.cur) || 'A'); }, true);
+  window.PMIProof = Object.assign(window.PMIProof || {}, { history: { open: openHistory, state: () => hist, net: () => histNet, cache: histCache, rows: histRows } });
   // 0.37.0 (C7e stage 2, Prompts no. 179): the site builder (New customer -> 'A condo / site'). A draft on this phone until Save site:
   // the site's name, its buildings (name, address, floors from-to, units per floor or the unit numbers, prefix; uneven buildings allowed;
   // a building with no floors = rooms only), the special rooms (name, building, floor), a summary. Save site = one 'newSite' request to the
@@ -9634,7 +9765,7 @@ body.light-theme .proof-box{color:#0f172a}
       + '<label>Unit numbers (blank = 01, 02 …; one number = where they start)' + sbIn('b.' + i + '.numbers', x.numbers, 'e.g. 01 or 1 or A') + '</label>' + (x.more ? '<div class="proof-sb-warn">This building has ' + (x.more + 1) + ' floor rules on the sheet; only the first one is shown and changed here.</div>' : '') + '</div>').join('');
     const opt = (sel) => d.buildings.map((x, i) => x.remove ? '' : '<option value="' + (i + 1) + '"' + (Number(sel) === i + 1 ? ' selected' : '') + '>' + esc(String(x.name || '').trim() || 'Building ' + (i + 1)) + '</option>').join('');   // 0.41.0 (R6): not a building marked for removal
     const rm = d.rooms.map((r, i) => r.remove ? gone('Room', i, r, 'unr') : '<div class="proof-sb-card"><div class="proof-sb-h"><b>Room ' + (i + 1) + '</b><button type="button" class="proof-sb-x" data-sbx="rmr" data-i="' + i + '">Remove</button></div>'
-      + '<label>Name' + sbIn('r.' + i + '.label', r.label, 'e.g. Lobby, Elevator room') + '</label><div class="proof-sb-two"><label>Building<select class="proof-sb-in" data-sb="r.' + i + '.building">' + opt(r.building) + '</select></label><label>Floor' + sbIn('r.' + i + '.floor', r.floor, 'e.g. 1', num) + '</label></div></div>').join('');
+      + '<label>Name' + sbIn('r.' + i + '.label', r.label, 'e.g. Lobby, Elevator room') + '</label><div class="proof-sb-two"><label>Building<select class="proof-sb-in" data-sb="r.' + i + '.building">' + opt(r.building) + '</select></label><label>Floor' + sbIn('r.' + i + '.floor', r.floor, 'e.g. 1, PH, Roof', ' inputmode="text" autocapitalize="characters"') + '</label></div></div>').join('');
     const top = d.edit ? '<div class="proof-sb-edit">Editing ' + esc(String((d.orig || {}).name || d.name)) + '. Nothing is written until Save site.</div>' : '';   // 0.40.0
     const bottom = d.edit ? '<button type="button" class="proof-sb-x proof-sb-rmsite" data-sbx="rmsite">Remove this site</button>' : '';
     return '<div class="proof-sb"><form class="proof-form" autocomplete="off" onsubmit="return false">' + top + '<label>Site name' + sbIn('name', d.name, 'e.g. Oceana') + '</label><label>Site access codes (all buildings)' + sbIn('access', d.access, 'optional') + '</label>'
@@ -9808,7 +9939,7 @@ body.light-theme .proof-box{color:#0f172a}
     if (!all.length) return '<div class="proof-empty">No match. Change what you typed' + (hasNewCustomer() ? ', or tap New customer.' : '.') + '</div>';
     const m = all.slice(0, LIST_MAX);
     const count = (nearMe && !typed().some(Boolean) ? 'Near me, nearest first: ' : '') + (all.length > LIST_MAX ? LIST_MAX + ' of ' + all.length + ': keep typing' : all.length + (all.length === 1 ? ' match' : ' matches'));
-    return '<div class="proof-count">' + count + '</div><div class="proof-list">' + m.map(x => '<button type="button" class="proof-hit" data-i="' + x.i + '"><em class="proof-why">Matched: ' + x.why.map(w => PART_WORD[w]).join(', ') + (x.likely ? ' (likely)' : '') + '</em><b>' + esc(x.h.name) + '</b>' + (x.h.onPhone ? ' <i>on this phone</i>' : '') +
+    return '<div class="proof-count">' + count + '</div><div class="proof-list">' + m.map(x => '<button type="button" class="proof-hit" data-i="' + x.i + '">' + (histView && x.h.place && x.h.place.id && !/^NU-/.test(x.h.place.id) ? '<span class="proof-hist-b" role="button" data-hp="' + x.i + '">History</span>' : '') + '<em class="proof-why">Matched: ' + x.why.map(w => PART_WORD[w]).join(', ') + (x.likely ? ' (likely)' : '') + '</em><b>' + esc(x.h.name) + '</b>' + (x.h.onPhone ? ' <i>on this phone</i>' : '') +
       '<span>' + esc(x.h.address) + (x.h.phone ? ' · ' + esc(x.h.phone) : '') + '</span>' + (x.dist != null ? '<em class="proof-dist">' + esc(miles(x.dist)) + '</em>' : '') + '</button>').join('') + '</div>';
   }
   const paintResults = () => document.querySelectorAll('.proof-results').forEach(el => { el.innerHTML = resultsHtml(); });
@@ -9829,6 +9960,7 @@ body.light-theme .proof-box{color:#0f172a}
     const h = e.target && e.target.closest && e.target.closest('.proof-hit'); if (!h) return;
     e.preventDefault(); e.stopPropagation();
     const x = allSites()[+h.dataset.i]; if (!x) return;
+    if (e.target.closest('.proof-hist-b')) { if (Date.now() < tapGuardUntil) return; if (x.place) openHistory(histPlaces(x.place), x.name || placeTitle(x.place)); return; }   // 0.42.0 (C7f): History of this place, not a pick
     if (x.place && condoOpen(x.place)) return;   // 0.36.0 (C7e): a site / a building with a floor grid -> the condo picker
     loadSite(x);
   }, true);
@@ -9981,6 +10113,7 @@ body.light-theme .proof-box{color:#0f172a}
     const ctScreen = String((rows.find(r => String(r['Slot'] || '').trim() === 'call-types') || {})['Screen'] || '').trim().toLowerCase();   // C1b: the call-type question
     const condoScreen = String((rows.find(r => String(r['Slot'] || '').trim() === 'condo-grid') || {})['Screen'] || '').trim().toLowerCase();   // 0.36.0 (C7e): the condo picker
     const siteScreen = String((rows.find(r => String(r['Slot'] || '').trim() === 'site-builder') || {})['Screen'] || '').trim().toLowerCase();   // 0.37.0 (C7e): the site builder
+    const histScreen = String((rows.find(r => String(r['Slot'] || '').trim() === 'history') || {})['Screen'] || '').trim().toLowerCase();   // 0.42.0 (C7f): History
     const out = []; const byRow = {}; let used = 0; const colW = {}, freezeOf = {}, foldOf = {}, lineH = {}, warned = [];
     let badgeDrawn = false;
     const holes = [];
@@ -10030,7 +10163,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (g('Align') && !/^(left|center|right)$/i.test(g('Align'))) why.push('Align "' + g('Align') + '" must be left, center or right');   // 0.12.1 (BT-48): no silent center
       if (!TYPES[type]) why.push('unknown Type "' + type + '"');
       const fd = r._fieldDef || null;   // round B1: the Field this piece belongs to (made by bundleRows from the Fields tab)
-      if (slot && slot !== 'box' && slot !== 'results' && slot !== 'call-types' && slot !== 'condo-grid' && slot !== 'site-builder' && slot !== 'report-body' && slot !== 'view-line' && slot !== 'save-chip' && slot !== 'check-count' && slot !== 'follow-line' && slot !== 'systems' && !((slot === 'unit' || slot === 'report-value' || FIELD_SLOTS[slot]) && fd)) why.push('unknown Slot "' + slot + '"');
+      if (slot && slot !== 'box' && slot !== 'results' && slot !== 'call-types' && slot !== 'condo-grid' && slot !== 'history' && slot !== 'site-builder' && slot !== 'report-body' && slot !== 'view-line' && slot !== 'save-chip' && slot !== 'check-count' && slot !== 'follow-line' && slot !== 'systems' && !((slot === 'unit' || slot === 'report-value' || FIELD_SLOTS[slot]) && fd)) why.push('unknown Slot "' + slot + '"');
       if (slot === 'box' && !fd && !FIELD_FALLBACK[content] && !FIND_KEYS[content]) why.push('unknown field "' + content + '"');
       if (type === 'button') { const a = content; const ok = ACTIONS[a] || (/^set-view:/.test(a) && screens[a.slice(9)]) || /^set-show:(all|template|values)$/.test(a) || TPL_ACTION.test(a); /* round B2 actions */ if (!ok) why.push('unknown action "' + a + '" (this page may be out of date: tap Reload, or refresh the browser)'); }
       if (!VIS_RULES[vis]) why.push('Visible when must be always, never, when-filled or reserved');   // round B2: when-filled, reserved (Blueprint P9)
@@ -10075,7 +10208,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (fd) { cell.proofField = fd; if (r._join) cell.proofJoin = r._join; if (r._label) cell.proofLabel = r._label; }
       if (slot === 'box') { cell.slot = 'box'; cell.proofKey = fd && draftScreen && screen === draftScreen ? DRAFT + fd.id : content; cell.label = ''; }   // C1a: a draft box
       else if (slot === 'unit' || slot === 'report-value' || FIELD_SLOTS[slot]) { cell.slot = slot; cell.proofKey = content; cell.label = ''; }   // C4b: f-plus, f-menu, f-equip
-      else if (slot === 'results' || slot === 'call-types' || slot === 'condo-grid' || slot === 'site-builder' || slot === 'report-body' || slot === 'view-line' || slot === 'save-chip' || slot === 'check-count' || slot === 'follow-line' || slot === 'systems') { cell.slot = slot; cell.label = ''; }   // 0.22.3: view-line   // C2b: report-body   // C1b: call-types (a list, like results)
+      else if (slot === 'results' || slot === 'call-types' || slot === 'condo-grid' || slot === 'history' || slot === 'site-builder' || slot === 'report-body' || slot === 'view-line' || slot === 'save-chip' || slot === 'check-count' || slot === 'follow-line' || slot === 'systems') { cell.slot = slot; cell.label = ''; }   // 0.22.3: view-line   // C2b: report-body   // C1b: call-types (a list, like results)
       else if (type === 'button') { cell.label = g('Label') || content;
         // round 9 migration: on older tabs New (Id hdr.newcall) only opened Find (set-view:find); it now clears the call first
         cell.clickAction = (id === 'hdr.newcall' && content === 'set-view:find') ? 'new-call' : content; }
@@ -10091,7 +10224,7 @@ body.light-theme .proof-box{color:#0f172a}
     const state = { layoutVersion: 'proof-' + PROOF_VERSION, viewportWidth: 'auto', showWireframes: false, activeSelection: null, rows: out.map((R, ri) => {
       let tall = 0;
       const containers = num(R.cont).map(ci => {
-        const stacks = num(R.cont[ci]).map(si => { const cells = num(R.cont[ci][si]).map(pi => R.cont[ci][si][pi]); const big = cells.some(c => c.slot === 'results' || c.slot === 'call-types' || c.slot === 'condo-grid' || c.slot === 'site-builder' || c.slot === 'report-body'); const lh = lineH[R.key + '\u0002' + ci + '\u0002' + si];
+        const stacks = num(R.cont[ci]).map(si => { const cells = num(R.cont[ci][si]).map(pi => R.cont[ci][si][pi]); const big = cells.some(c => c.slot === 'results' || c.slot === 'call-types' || c.slot === 'condo-grid' || c.slot === 'history' || c.slot === 'site-builder' || c.slot === 'report-body'); const lh = lineH[R.key + '\u0002' + ci + '\u0002' + si];
           const st = { id: 'S' + si, weight: big ? (lh ? lh.v : 7) : (lh ? lh.v : 1), splits: cells, _big: big, _lh: !!lh, proofLine: (cells[0] || {}).proofLine };
           const lt = (cells.find(c => c.proofLTpl) || {}).proofLTpl;   // round B2: the Line's Templates (Structure); never on the badge's Line
           if (lt && cells.some(isBadge)) warned.push('Line "' + st.proofLine + '": Templates not used (the version badge is on this Line and cannot be hidden).');
@@ -10116,6 +10249,7 @@ body.light-theme .proof-box{color:#0f172a}
     state.proofNewView = draftScreen;   // 0.13.1 (R8)
     state.proofCtView = ctScreen;   // C1b
     state.proofCondoView = condoScreen;   // 0.36.0 (C7e)
+    state.proofHistView = histScreen;   // 0.42.0 (C7f)
     state.proofSiteView = siteScreen;   // 0.37.0 (C7e)
     return { state, refused, used, warned };
   }
@@ -10304,7 +10438,7 @@ body.light-theme .proof-box{color:#0f172a}
     if (FD) FD.msgs.forEach(m => out.push(m));
     out._house = FD ? Object.keys(FD.map).map(k => FD.map[k]).filter(f => f.scope === 'house').map(f => ({ id: f.id, find: f.find || '' })) : null;   // 0.13.1 (R6)
     out._scope = FD ? Object.fromEntries(Object.keys(FD.map).map(k => [k, FD.map[k].scope || ''])) : null;   // 0.32.0 (C7d)
-    out._fctl = FD ? Object.keys(FD.map).map(k => FD.map[k]).filter(f => f.saveTab || f.inReport || f.visitsCol).map(f => ({ id: f.id, name: f.name, unit: f.unit, equip: f.equip || '', prefill: f.prefill, saveTab: f.saveTab, saveCols: f.saveCols, inReport: f.inReport, kind: f.kind, visitsCol: f.visitsCol || '', fileCheck: f.fileCheck || '', compareAs: f.compareAs || '' })) : null;   // C7a; C7b: every Field with a Visits column
+    out._fctl = FD ? Object.keys(FD.map).map(k => FD.map[k]).filter(f => f.saveTab || f.inReport || f.visitsCol).map(f => ({ id: f.id, name: f.name, short: f.short || '', unit: f.unit, equip: f.equip || '', prefill: f.prefill, saveTab: f.saveTab, saveCols: f.saveCols, inReport: f.inReport, kind: f.kind, visitsCol: f.visitsCol || '', fileCheck: f.fileCheck || '', compareAs: f.compareAs || '' })) : null;   // C7a; C7b: every Field with a Visits column
     const ids = {};
     items.forEach((r, i) => {
       const where = 'Items row ' + (i + 2), why = formulaErrors(r);
@@ -10924,7 +11058,7 @@ body.light-theme .proof-box{color:#0f172a}
     registerTemplateActions(b.state); usesB2 = layoutUsesB2(b.state);   // round B2
     const keepView = currentView, wasEdit = !isLiveInteraction, keepSel = selectedId();
     engineState = b.state; reselect(keepSel);
-    newView = b.state.proofNewView || ''; ctView = b.state.proofCtView || ''; condoView = b.state.proofCondoView || ''; siteView = b.state.proofSiteView || '';   // 0.13.1 (R8); C1b
+    newView = b.state.proofNewView || ''; ctView = b.state.proofCtView || ''; condoView = b.state.proofCondoView || ''; siteView = b.state.proofSiteView || ''; histView = b.state.proofHistView || '';   // 0.13.1 (R8); C1b
     CALL_TYPES = Array.isArray(L.rows._ctypes) ? L.rows._ctypes : null;   // C1b: from the copy that won
     COMMENTS = L.rows._comments || null; try { applyDefaults(); } catch (e) {}   // C3b
     SETTINGS = L.rows._settings || {};   // 0.22.3
@@ -11344,7 +11478,7 @@ body.light-theme .proof-box{color:#0f172a}
   const badgeText = () => 'v' + PROOF_VERSION + (PRETEND ? ' (acting as ' + PRETEND + ')' : '');
   // 0.30.0 (no. 168, CARRY C7 row 30): the badge also shows the TEST SCRIPT that answers: 'v0.30.0 · D03' (D + two digits = test-door-N, from
   // its answer to the start ping and to every save); the D part is amber when this page needs a newer script; a tap says which and gives the link
-  const DOOR_NEED = 10, K_DOOR = 'proof-containers.door.v1', RAW_GS = 'https://raw.githubusercontent.com/Platts-AC/pmi-inspection/main/proof-containers/test-script/Code.gs';
+  const DOOR_NEED = 11, K_DOOR = 'proof-containers.door.v1', RAW_GS = 'https://raw.githubusercontent.com/Platts-AC/pmi-inspection/main/proof-containers/test-script/Code.gs';
   let doorSeen = String(lsGet(K_DOOR, '') || '');
   const doorNum = v => { const m = /^test-door-(\d+)$/.exec(String(v || '')); return m ? Number(m[1]) : 0; };
   const dd = n => 'D' + String(n).padStart(2, '0');
@@ -11836,9 +11970,10 @@ body.light-theme .proof-box{color:#0f172a}
     const s = call.__file || call.__placeId || call.__sys ? ensureSys() : null, ids = s ? s.order : ['A'], cur = s ? s.cur : 'A';   // 0.33.1 (R7): a phone customer too
     const btns = ids.map(id => '<button type="button" data-sys="' + esc(id) + '" class="' + (id === cur ? 'on' : '') + (s && sysHasEntries(id) ? ' has' : '') + '">' + esc(s ? s.labels[id] : 'System 1') +
       (s && s.areas[id] ? '<small>' + esc(s.areas[id]) + '</small>' : '') + '</button>').join('');
-    const add = s && ((call.__file && call.__file.place) || call.__placeId) ? '<button type="button" class="add">+ Add system</button>' : '';   // 0.33.0: the flow (0.33.1, R7: a phone customer too)
+    const add = s && ((call.__file && call.__file.place) || call.__placeId) ? '<button type="button" class="add">+ Add system</button>' : '';
+    const hb = histView && s && ((call.__file && call.__file.place) || call.__placeId) ? '<button type="button" class="hist">History</button>' : '';   // 0.42.0 (C7f): this place, the selected system   // 0.33.0: the flow (0.33.1, R7: a phone customer too)
     const same = s && ids.length > 1 ? '<button type="button" class="same">Include on all systems</button>' : '';   // 0.34.0 (B1): the Report page only (0.35.0: add only)
-    els.forEach(e => { const rep = !!e.closest('[data-pid="systems.report"]'), html = '<div class="proof-sys-list">' + btns + '</div><div class="proof-sys-end">' + (rep ? same : add) + '</div>';   /* 0.35.0: the '+N hidden' chip no longer comes here (it took the system buttons' room) */   // 0.34.0 (B5): the end buttons stay whole at the right
+    els.forEach(e => { const rep = !!e.closest('[data-pid="systems.report"]'), html = '<div class="proof-sys-list">' + btns + '</div><div class="proof-sys-end">' + (rep ? same : add + hb) + '</div>';   /* 0.35.0: the '+N hidden' chip no longer comes here (it took the system buttons' room) */   // 0.34.0 (B5): the end buttons stay whole at the right
       if (e.dataset.h !== html) { e.innerHTML = html; e.dataset.h = html; }
       const l = e.querySelector('.proof-sys-list'), on = l && l.querySelector('button.on'); if (l && on) { const a = on.offsetLeft - l.offsetLeft, z = a + on.offsetWidth;   // the selected one scrolled into view (sideways only)
         if (a < l.scrollLeft) l.scrollLeft = Math.max(0, a - 4); else if (z > l.scrollLeft + l.clientWidth) l.scrollLeft = z - l.clientWidth + 4; } });
@@ -12027,6 +12162,7 @@ body.light-theme .proof-box{color:#0f172a}
     fixed['Call type'] = callView.callType || valText(call['f:callType']); fixed['Template'] = callView.tpl || ''; fixed['Place Id'] = file.place || call.__placeId || '';
     fixed['System Id'] = sys; fixed['System label'] = (call.__sys && call.__sys.labels[sys]) || (piece ? piece.label : ''); /* 0.32.0 (C7d) */ fixed['Status'] = V.done ? 'Done' : 'In progress'; fixed['Created'] = V.created;
     fixed['Follow-up'] = followText();   // 0.27.0 (C7c-1): the open question(s), blank when none
+    try { fixed['Report text'] = reportBody(); } catch (e) {}   // 0.42.0 (C7f): the report text of this system, kept on Visits (test-door-11)
     (FCTL || []).forEach(F => { if (!F.visitsCol || VISIT_FIXED.indexOf(F.visitsCol) >= 0) return; values.push({ id: F.id, col: F.visitsCol, v: valText(call[F.id]).trim(), num: F.kind === 'number' || F.kind === 'calculated' }); });   // 0.30.2: trimmed
     const spec = file.spec || {}, seen = {};   // ratings: one column each, from the file snapshot (never typed)
     Object.keys(spec).forEach(fid => { const cols = (spec[fid] && spec[fid].cols) || {}; Object.keys(cols).forEach(c => { if (seen[c]) return; seen[c] = 1;
@@ -12055,7 +12191,7 @@ body.light-theme .proof-box{color:#0f172a}
       const sig = JSON.stringify(body); if (last[body.visitId] === sig && !/^tap/.test(why)) return;
       try { keepPending(body.visitId, body.changes && body.changes.length ? call : null, callView); } catch (e) {}   // 0.30.1 (R9): kept until the door answers
       ob = (ob || outbox()).filter(x => x.vid !== body.visitId || x.inFlight);   // the newest copy per Visit Id
-      ob.push({ vid: body.visitId, cid: body.visitId.slice(2) + '-' + Date.now().toString(36) + '-' + rand(4), body: sig, why, at: Date.now() }); last[body.visitId] = sig; });
+      ob.push({ vid: body.visitId, cid: body.visitId.slice(2) + '-' + Date.now().toString(36) + '-' + rand(4), body: sig, why, at: Date.now() }); last[body.visitId] = sig; try { histMine(body); } catch (e) {} });   // 0.42.0 (C7f): this phone's own calls for History with no signal
     if (ob) { lsSet(K_OUTBOX, ob); Object.keys(last).slice(0, -20).forEach(k => { delete last[k]; }); lsSet(K_SAVED, last); }
     flushOutbox(why === 'hidden');
   }

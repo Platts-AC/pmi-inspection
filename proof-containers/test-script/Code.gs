@@ -1,5 +1,9 @@
 // =====================================================================================================
 // PMI container proof (TEST) - Apps Script web app for the TEST sheet 'PMI container proof (test)' ONLY.
+// test-door-11 (proof 0.42.0, Prompts no. 185, round C7f: HISTORY): op 'history' = the newest visits of some places (a house, a unit, a
+// building and all its units), every filled cell of each row, read only; it reads the Place Id / Date / Time columns to find them and
+// then only those rows, so it stays quick as Visits grows; a tab named 'Visits (legacy)', if there is one, is read the same way and its
+// rows are marked legacy (read only). saveVisit writes the report text into a 'Report text' column (made if missing).
 // test-door-10 (proof 0.41.0, Prompts no. 183: the C7e review R1-R7): a unit is matched like the page matches it (leading zeros '0405' = '405',
 // the building's rule Prefix 'N-404' = '404', Active no rows never); a later save of the SAME visit updates the unit row it made itself
 // (Changes 'Correction'; other visits' rows still only fill empty cells); newSite / editSite ignore Active no rows when an address is checked;
@@ -48,10 +52,11 @@ var ACCENTS = { '': 1, cyan: 1, emerald: 1, amber: 1, purple: 1, rose: 1 };
 var MAX_BODY = 20000;          // characters in one save
 var MAX_ROWS_PER_SAVE = 100;   // tweak rows in one save
 var MAX_TOTAL_ROWS = 2000;     // tweak rows on the whole tab
-var SCRIPT_VERSION = 'test-door-10';
+var SCRIPT_VERSION = 'test-door-11';
 var NUM_FMT = 'General';   // test-door-4: the Automatic number format ('35', '2.5'); 0.#### shows a bare dot ('35.')
 var VISITS_TAB = 'Visits';
-var VISITS_FIXED = ['Visit Id', 'Call token', 'Date', 'Time', 'Tech', 'Call type', 'Template', 'Place Id', 'System Id', 'System label', 'Status', 'Team tag', 'Merged into', 'Revision of', 'Follow-up', 'Area temp', 'Lat', 'Lng', 'Created', 'Last saved'];
+var VISITS_FIXED = ['Visit Id', 'Call token', 'Date', 'Time', 'Tech', 'Call type', 'Template', 'Place Id', 'System Id', 'System label', 'Status', 'Team tag', 'Merged into', 'Revision of', 'Follow-up', 'Area temp', 'Lat', 'Lng', 'Created', 'Last saved', 'Report text'];   // test-door-11: + Report text
+var LEGACY_TAB = 'Visits (legacy)', HISTORY_MAX = 100;
 var MAX_VISIT_BODY = 80000;    // characters in one Visits save
 var MAX_VISIT_VALUES = 400;    // Field + rating values in one Visits save
 var CLIENT_ID_HOURS = 6;       // a repeated save (same client id) within this time = the same row, nothing new
@@ -193,6 +198,7 @@ function visitsSave_(b, body) {
     var lastCol = sh.getLastColumn(), head = sh.getRange(1, 1, 1, lastCol).getDisplayValues()[0], notes = sh.getRange(1, 1, 1, lastCol).getNotes()[0];
     var byHead = {}, byNote = {}; head.forEach(function (h, i) { h = String(h).trim(); if (h && byHead[h] == null) byHead[h] = i; var n = String(notes[i] || '').trim(); if (n) byNote[n] = i; });
     var vcol = byHead['Visit Id']; if (vcol == null) return out_({ ok: false, error: 'the Visits tab has no Visit Id column' });
+    if (byHead['Report text'] == null && String(fixed['Report text'] || '').trim()) { if (sh.getMaxColumns && sh.insertColumnAfter && sh.getMaxColumns() <= lastCol) sh.insertColumnAfter(lastCol); sh.getRange(1, lastCol + 1).setValues([['Report text']]); byHead['Report text'] = lastCol; head.push('Report text'); lastCol++; }   // test-door-11: the column, once
     var lastRow = sh.getLastRow(), row = 0;
     if (lastRow > 1) { var ids = sh.getRange(2, vcol + 1, lastRow - 1, 1).getDisplayValues(); for (var i = 0; i < ids.length; i++) if (String(ids[i][0]).trim() === vid) { row = i + 2; break; } }
     var isNew = !row; if (isNew) row = Math.max(lastRow, 1) + 1;
@@ -375,6 +381,27 @@ function followColor_(sh, head) {   // the Follow-up column gets its color once 
 // One Places row for the site ('S-<id>'), one per building ('S-<id>-B<n>', Parent = the site), one Place rules row per building's floors
 // ('S-<id>-R<n>') and per room. All or nothing: checked first, then written. Sent again = nothing doubled (rows found by Id).
 // A building whose Address key is already on Places (another place) is refused, and nothing is written.
+// test-door-11 (proof 0.42.0, round C7f): HISTORY. b.places = Place Ids (at most 300), b.system = a System Id or blank, b.limit (50, at most
+// 100). Answers the newest rows first (Date, then Time), each row as { heading: text } with only the filled cells, + legacy: true for rows of
+// the 'Visits (legacy)' tab. Writes nothing.
+function history_(b) {
+  try {
+    var ids = (Array.isArray(b.places) ? b.places : []).map(function (x) { return String(x || '').trim(); }).filter(Boolean).slice(0, 300), want = {}; ids.forEach(function (x) { want[x] = 1; });
+    if (!ids.length) return out_({ ok: false, error: 'no place to look up' });
+    var sys = String(b.system || '').trim(), lim = Math.max(1, Math.min(HISTORY_MAX, Number(b.limit) || 50)), ss = book_(), found = [], total = 0;
+    [[VISITS_TAB, false], [LEGACY_TAB, true]].forEach(function (pair) {
+      var sh = ss.getSheetByName(pair[0]); if (!sh) return; var lr = sh.getLastRow(), lc = sh.getLastColumn(); if (lr < 2 || lc < 1) return;
+      var head = sh.getRange(1, 1, 1, lc).getDisplayValues()[0].map(function (h) { return String(h).trim(); });
+      var col = function (n) { var i = head.indexOf(n); return i < 0 ? null : sh.getRange(2, i + 1, lr - 1, 1).getDisplayValues().map(function (r) { return String(r[0]).trim(); }); };
+      var P = col('Place Id'); if (!P) return; var S = col('System Id'), D = col('Date') || [], T = col('Time') || [];
+      P.forEach(function (p, i) { if (!want[p] || (sys && S && S[i] !== sys)) return; total++; found.push({ tab: pair[0], legacy: pair[1], r: i + 2, key: (D[i] || '') + ' ' + (T[i] || ''), head: head, sh: sh, lc: lc }); });
+    });
+    found.sort(function (a, c) { return a.key < c.key ? 1 : a.key > c.key ? -1 : 0; });
+    var rows = found.slice(0, lim).map(function (f) { var v = f.sh.getRange(f.r, 1, 1, f.lc).getDisplayValues()[0], o = {};
+      f.head.forEach(function (h, i) { var t = String(v[i] == null ? '' : v[i]).trim(); if (h && t !== '') o[h] = t; }); if (f.legacy) o._legacy = true; return o; });
+    return out_({ ok: true, version: SCRIPT_VERSION, rows: rows, total: total, at: now_() });
+  } catch (err) { return out_({ ok: false, error: String(err && err.message || err) }); }
+}
 function unitNorm_(lab, pres) {   // test-door-10 (R3): the page's condoNorm + the rule's Prefix: 'N-0404' = '0404' = '404'
   var t = String(lab == null ? '' : lab).trim().toLowerCase().replace(/\s+/g, ' ');
   (pres || []).forEach(function (p) { p = String(p || '').trim().toLowerCase(); if (p && t.indexOf(p) === 0 && t.length > p.length) t = t.slice(p.length); });
@@ -568,6 +595,7 @@ function doPost(e) {
     if (b.op === 'saveVisit') return visitsSave_(b, body);
     if (b.op === 'newSite') return newSite_(b);   // test-door-7 part 2 (proof 0.37.0): the site builder
     if (b.op === 'editSite') return editSite_(b);   // test-door-9 (proof 0.40.0): change a saved site
+    if (b.op === 'history') return history_(b);   // test-door-11 (proof 0.42.0): past visits, read only
     if (b.op === 'whereAmI') return out_(whereAmI_(b));   // test-door-7 part 3 (proof 0.38.0): Use my location
     return tweaksPost_(b, body);
   } catch (err) { return out_({ ok: false, error: String(err && err.message || err) }); }
