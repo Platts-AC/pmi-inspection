@@ -926,7 +926,7 @@ body:not(.proof-ready) #reopen-inspector-fab{display:none!important}
 #proof-kbpad{width:100%;pointer-events:none}
 .proof-results .proof-count{font-size:11px;color:#94a3b8;margin:2px 0 4px}
 .proof-results .proof-hit{display:block;width:100%;text-align:left;margin:0 0 6px;padding:8px 10px;border-radius:8px;border:1px solid #234d82;background:#0c1a2e;color:#e2e8f0;font-size:14px}
-.proof-results .proof-hit span{display:block;font-size:12px;color:#94a3b8}.proof-hit span.proof-hist-b{float:right;display:inline-block;margin:-2px -2px 2px 8px;padding:3px 9px;border-radius:8px;border:1px solid #334155;background:#111827;color:#5eead4;font:600 12px system-ui,sans-serif}.proof-hist{font-size:14px;color:#e2e8f0}.proof-hi-title{font-weight:700;color:#5eead4;margin:2px 0 6px}.proof-hi-sys,.proof-hi-tog{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}.proof-hi-sys button,.proof-hi-tog button{min-height:32px;padding:2px 12px;border:1px solid #334155;border-radius:16px;background:#111827;color:#e5e7eb;font:600 13px system-ui,sans-serif}.proof-hi-sys button.on,.proof-hi-tog button.on{background:#0f766e;border-color:#5eead4;color:#f0fdfa}.proof-hi-st{font-size:12px;color:#fbbf24;margin:0 0 8px}.proof-hi-v{display:block;width:100%;text-align:left;margin:0 0 6px;padding:8px 10px;border-radius:8px;border:1px solid #234d82;background:#0c1a2e;color:#e2e8f0;font-size:14px}.proof-hi-v b{display:block}.proof-hi-v i{display:block;font-size:12px;color:#93c5fd;font-style:normal}.proof-hi-v span{display:block;font-size:12px;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.proof-hi-v em{display:block;font-size:11px;color:#94a3b8}.proof-hi-v.leg,.proof-hi-one.leg .proof-hi-body{opacity:.75;border-color:#475569;background:#111827}.proof-hi-leg,.proof-hi-mine{font-size:11px;color:#94a3b8}.proof-hi-one-h{margin:0 0 8px}.proof-hi-note{font-size:12px;color:#fbbf24;margin:0 0 6px}.proof-hi-rep{white-space:pre-wrap;font:14px/1.45 system-ui,sans-serif;margin:0;padding:8px 10px;border-radius:8px;background:#0b1220;border:1px solid #1f2937;user-select:text;-webkit-user-select:text}.proof-hi-grp{margin:0 0 10px}.proof-hi-gh{font-weight:700;color:#5eead4;font-size:13px;margin:0 0 4px}.proof-hi-kv{display:flex;gap:8px;justify-content:space-between;padding:3px 0;border-bottom:1px solid #1f2937;font-size:13px}.proof-hi-kv span{color:#94a3b8}.proof-hi-kv b{text-align:right;font-weight:600;white-space:pre-wrap}.proof-hi-v{position:relative}.proof-hi-v .proof-hi-tick{position:absolute;top:8px;right:8px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border:1px solid #475569;border-radius:6px;background:#0b1220;color:#5eead4;font:700 15px system-ui,sans-serif;overflow:visible;white-space:normal}.proof-hi-v b,.proof-hi-v span:not(.proof-hi-tick),.proof-hi-v i,.proof-hi-v em{padding-right:34px}.proof-hi-v.picked{border-color:#5eead4}.proof-hi-v em.proof-hi-eq,.proof-hi-eq{display:block;font-size:12px;color:#fbbf24;font-style:normal}.proof-hi-cmpbar{display:flex;gap:6px;align-items:center;margin:0 0 8px;font-size:12px;color:#94a3b8}.proof-hi-cmpbar button{min-height:32px;padding:2px 12px;border:1px solid #5eead4;border-radius:16px;background:#0f766e;color:#f0fdfa;font:600 13px system-ui,sans-serif}.proof-hi-cmpbar button[disabled]{opacity:.5}.proof-hi-cmpbar button[data-hclear]{background:transparent;color:#e5e7eb;border-color:#334155}.proof-hi-tab{width:100%;border-collapse:collapse;table-layout:fixed;font-size:12px}.proof-hi-tab th,.proof-hi-tab td{border-bottom:1px solid #1f2937;padding:4px 3px;text-align:right;vertical-align:top;overflow-wrap:anywhere}.proof-hi-tab th:first-child,.proof-hi-tab td:first-child{text-align:left;width:34%;color:#94a3b8}.proof-hi-tab th{color:#5eead4;font-weight:700}.proof-hi-tab th i{display:block;font-style:normal;font-weight:500;color:#94a3b8;font-size:11px}.proof-hi-tab td.diff{background:#451a03;color:#fde68a}.proof-hi-tab tr.eq td{color:#fbbf24}.proof-hi-tab small{color:#64748b}#viewport-canvas-frame .proof-systems button.hist{color:#5eead4;background:transparent;padding:2px 10px}
+.proof-results .proof-hit span{display:block;font-size:12px;color:#94a3b8}.proof-hit span.proof-hist-b{float:right;display:inline-block;margin:-2px -2px 2px 8px;padding:3px 9px;border-radius:8px;border:1px solid #334155;background:#111827;color:#5eead4;font:600 12px system-ui,sans-serif}.proof-hist{font-size:14px;color:#e2e8f0;width:100%;min-width:0;box-sizing:border-box;white-space:normal;text-align:left}#viewport-canvas-frame .grid-split-partition:has(.proof-hist){overflow:visible!important;align-items:flex-start!important;height:auto!important;min-height:0}#viewport-canvas-frame .grid-row-band:has(.proof-hist) .grid-stack-row{flex:0 0 auto!important;min-height:50px}#viewport-canvas-frame .grid-row-band:has(.proof-hist) .grid-stack-row:has(.proof-hist){flex:1 0 auto!important;min-height:0}#viewport-canvas-frame .grid-split-partition :has(> .proof-hist){width:100%;min-width:0;align-items:flex-start!important}.proof-hi-title{font-weight:700;color:#5eead4;margin:2px 0 6px}.proof-hi-sys,.proof-hi-tog{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}.proof-hi-sys button,.proof-hi-tog button{min-height:32px;padding:2px 12px;border:1px solid #334155;border-radius:16px;background:#111827;color:#e5e7eb;font:600 13px system-ui,sans-serif}.proof-hi-sys button.on,.proof-hi-tog button.on{background:#0f766e;border-color:#5eead4;color:#f0fdfa}.proof-hi-st{font-size:12px;color:#fbbf24;margin:0 0 8px}.proof-hi-v{display:block;width:100%;text-align:left;margin:0 0 6px;padding:8px 10px;border-radius:8px;border:1px solid #234d82;background:#0c1a2e;color:#e2e8f0;font-size:14px}.proof-hi-v b{display:block}.proof-hi-v i{display:block;font-size:12px;color:#93c5fd;font-style:normal}.proof-hi-v span{display:block;font-size:12px;color:#94a3b8;white-space:normal;overflow-wrap:anywhere}.proof-hi-v,.proof-hi-v b,.proof-hi-v i,.proof-hi-v em{white-space:normal;overflow-wrap:anywhere;box-sizing:border-box;max-width:100%}.proof-hi-kv b{flex:1 1 auto;min-width:0;overflow-wrap:anywhere}.proof-hi-kv span{flex:0 1 45%;min-width:0}.proof-hi-v em{display:block;font-size:11px;color:#94a3b8}.proof-hi-v.leg,.proof-hi-one.leg .proof-hi-body{opacity:.75;border-color:#475569;background:#111827}.proof-hi-leg,.proof-hi-mine{font-size:11px;color:#94a3b8}.proof-hi-one-h{margin:0 0 8px}.proof-hi-note{font-size:12px;color:#fbbf24;margin:0 0 6px}.proof-hi-rep{white-space:pre-wrap;font:14px/1.45 system-ui,sans-serif;margin:0;padding:8px 10px;border-radius:8px;background:#0b1220;border:1px solid #1f2937;user-select:text;-webkit-user-select:text}.proof-hi-grp{margin:0 0 10px}.proof-hi-gh{font-weight:700;color:#5eead4;font-size:13px;margin:0 0 4px}.proof-hi-kv{display:flex;gap:8px;justify-content:space-between;padding:3px 0;border-bottom:1px solid #1f2937;font-size:13px}.proof-hi-kv span{color:#94a3b8}.proof-hi-kv b{text-align:right;font-weight:600;white-space:pre-wrap}.proof-hi-v{position:relative}.proof-hi-v .proof-hi-tick{position:absolute;top:8px;right:8px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border:1px solid #475569;border-radius:6px;background:#0b1220;color:#5eead4;font:700 15px system-ui,sans-serif;overflow:visible;white-space:normal}.proof-hi-v b,.proof-hi-v span:not(.proof-hi-tick),.proof-hi-v i,.proof-hi-v em{padding-right:34px}.proof-hi-v.picked{border-color:#5eead4}.proof-hi-v em.proof-hi-eq,.proof-hi-eq{display:block;font-size:12px;color:#fbbf24;font-style:normal}.proof-hi-cmpbar{display:flex;gap:6px;align-items:center;margin:0 0 8px;font-size:12px;color:#94a3b8}.proof-hi-cmpbar button{min-height:32px;padding:2px 12px;border:1px solid #5eead4;border-radius:16px;background:#0f766e;color:#f0fdfa;font:600 13px system-ui,sans-serif}.proof-hi-cmpbar button[disabled]{opacity:.5}.proof-hi-cmpbar button[data-hclear]{background:transparent;color:#e5e7eb;border-color:#334155}.proof-hi-tab{width:100%;border-collapse:collapse;table-layout:fixed;font-size:12px}.proof-hi-tab th,.proof-hi-tab td{border-bottom:1px solid #1f2937;padding:4px 3px;text-align:right;vertical-align:top;overflow-wrap:anywhere}.proof-hi-tab th:first-child,.proof-hi-tab td:first-child{text-align:left;width:34%;color:#94a3b8}.proof-hi-tab th{color:#5eead4;font-weight:700}.proof-hi-tab th i{display:block;font-style:normal;font-weight:500;color:#94a3b8;font-size:11px}.proof-hi-tab td.diff{background:#451a03;color:#fde68a}.proof-hi-tab tr.eq td{color:#fbbf24}.proof-hi-tab small{color:#64748b}#viewport-canvas-frame .proof-systems button.hist{color:#5eead4;background:transparent;padding:2px 10px}
 .proof-results .proof-hit .proof-why{float:right;margin-left:8px;font-style:normal;font-size:11px;line-height:20px;color:#fbbf24}
 .proof-results .proof-hit i{font-size:11px;color:#94a3b8}
 .proof-results .proof-empty{color:#fbbf24;font-size:13px;padding:6px 0}
@@ -3750,7 +3750,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.43.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.44.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3760,7 +3760,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.43.0', stamp: '2026-11-27 06:04:17', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.44.0', stamp: '2026-11-27 10:33:37', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8437,7 +8437,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.43.0';
+  const PROOF_VERSION = '0.44.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8877,7 +8877,8 @@ body.light-theme .proof-box{color:#0f172a}
   [['superheat', ['suction line', 'vapor sat'], diff], ['subcooling', ['liquid sat', 'liquid line'], diff], ['approach', ['liquid line', 'outdoor ambient'], diff],
    ['evapTD', ['return dry bulb', 'vapor sat'], diff], ['deltaT', ['return dry bulb', 'supply dry bulb'], diff], ['deltaDP', ['return dew point', 'supply dew point'], diff],
    ['indoorSH', ['indoor suction line', 'vapor sat'], diff], ['indoorSC', ['liquid sat', 'indoor liquid line'], diff], ['condenserTD', ['liquid sat', 'outdoor ambient'], diff],
-   ['compressionRatio', ['discharge psig', 'suction psig'], (a, b) => (b + 14.7 > 0 && a + 14.7 > 0 ? ((a + 14.7) / (b + 14.7)).toFixed(2) : '')],
+   ['compressionRatio', ['liquid psig', 'suction psig'],   // 0.44.0 (no. 189, PART 6): LIQUID pressure, never discharge (Danny only hooks up the liquid port)
+    (a, b) => (b + 14.7 > 0 && a + 14.7 > 0 ? ((a + 14.7) / (b + 14.7)).toFixed(2) : '')],
    ['capacitorUf', ['volts', 'amps'], (v, a) => (v > 0 && a >= 0 ? (2652 * a / v).toFixed(2) : '')]
   ].forEach(([name, inputs, fn]) => { CALC_RULES[name.toLowerCase()] = { name, inputs, fn }; });
   const numOf = v => { const t = String(v == null ? '' : v).trim(); return t !== '' && isFinite(Number(t)) ? Number(t) : null; };
@@ -9557,13 +9558,13 @@ body.light-theme .proof-box{color:#0f172a}
   }
   function histMine(body) {   // a saved call of this phone, as the row the sheet will hold
     try { const r = Object.assign({ 'Visit Id': body.visitId }, body.fixed || {}); (body.values || []).forEach(v => { if (v && v.col && String(v.v == null ? '' : v.v).trim() !== '') r[v.col] = String(v.v); });
-      Object.keys(r).forEach(k => { if (String(r[k] == null ? '' : r[k]).trim() === '') delete r[k]; else r[k] = String(r[k]); }); if (r['Place Id']) histKeep([r], true); } catch (e) {}
+      Object.keys(r).forEach(k => { if (String(r[k] == null ? '' : r[k]).trim() === '') delete r[k]; else r[k] = String(r[k]); }); if (r['Place Id']) histKeep([r], true); } catch (e) {}   // (R10 'not reproduced' in 0.44.0: the save after the reply re-files it under the real Place Id; r60 R10 guards it)
   }
   function histPlaces(P) {   // a place + everything under it (a site: its buildings and their units; a building: its units)
     const out = [], walk = (id, d) => { if (!id || out.indexOf(id) >= 0 || d > 4) return; out.push(id); ((ONFILE && ONFILE.list) || []).forEach(o => { if (o.parent === id) walk(o.id, d + 1); }); };
     walk(P && P.id, 0); return out;
   }
-  const placeTitle = P => { const c = (P && P.cols) || {}; return c['Name'] || c['Customer Name'] || c['Unit label'] || c['Address'] || (P && P.id) || ''; };
+  const placeTitle = P => { const c = (P && P.cols) || {}; return c['Name'] || c['Customer'] || c['Unit label'] || c['Address'] || (P && P.id) || ''; };
   function openHistory(places, title, sys) {
     if (!histView) { say('This sheet has no History screen yet.', 'warn', 6000); return; }
     places = (places || []).filter(Boolean); if (!places.length) return;
@@ -9572,11 +9573,11 @@ body.light-theme .proof-box{color:#0f172a}
     histNet = { key: '', st: '', rows: null, at: '', err: '' }; goView(histView); histFetch();
   }
   async function histFetch() {
-    if (!hist) return; const key = hist.places.join('|'), url = scriptUrl();
+    if (!hist) return; const key = hist.places.join('|') + '#' + (hist.sys || ''), url = scriptUrl();   // 0.44.0 (R7): the answer is for these places AND this system
     if (!url) { histNet = { key, st: 'off', rows: null, at: '', err: 'no Script URL' }; paintHist(); return; }
     histNet = { key, st: 'loading', rows: null, at: '', err: '' }; paintHist(); let r = null;
-    try { r = await withTimeout(fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ token: TOKEN, op: 'history', places: hist.places, limit: 100 }) }).then(a => a.json()), 20000); } catch (e) { r = null; }
-    if (!hist || hist.places.join('|') !== key) return;
+    try { r = await withTimeout(fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ token: TOKEN, op: 'history', places: hist.places, system: hist.sys || '', limit: 100 }) }).then(a => a.json()), 20000); } catch (e) { r = null; }
+    if (!hist || hist.places.join('|') + '#' + (hist.sys || '') !== key) return;
     if (r && r.version) { try { noteDoor(r.version); } catch (e) {} }
     if (r && r.ok && Array.isArray(r.rows)) { histKeep(r.rows, false); histNet = { key, st: 'ok', rows: r.rows, at: r.at || '', err: '', total: r.total }; }
     else histNet = { key, st: 'off', rows: null, at: '', err: r && r.error === 'unknown op' ? 'old script' : r ? (r.error || 'refused') : 'no answer' };
@@ -9584,7 +9585,7 @@ body.light-theme .proof-box{color:#0f172a}
   }
   function histRows() {   // what the list shows: the sheet's answer (+ this phone's calls not on it yet), or the phone's copy
     if (!hist) return []; const want = {}; hist.places.forEach(p => { want[p] = 1; }); const c = histCache(), seen = {}, out = [];
-    if (histNet.st === 'ok' && histNet.key === hist.places.join('|')) histNet.rows.forEach(r => { seen[hg(r, 'Visit Id')] = 1; out.push(r); });
+    if (histNet.st === 'ok' && histNet.key.split('#')[0] === hist.places.join('|')) histNet.rows.forEach(r => { seen[hg(r, 'Visit Id')] = 1; out.push(r); });
     Object.keys(c.rows).forEach(id => { const r = c.rows[id]; if (seen[id] || !want[hg(r, 'Place Id')]) return; if (histNet.st === 'ok' && !r._mine) return; out.push(Object.assign({ _cached: c.at[id] || '' }, r)); });
     histLab = {}; out.forEach(r => { const id = hg(r, 'System Id'), l = hg(r, 'System label'); if (id && l && !histLab[id]) histLab[id] = l; });
     return out.sort((a, b) => histKey(b).localeCompare(histKey(a)));
@@ -9606,7 +9607,7 @@ body.light-theme .proof-box{color:#0f172a}
   }
   function histStatus(rows) {
     if (histNet.st === 'loading') return rows.length ? 'Looking for newer visits… (showing the ones saved on this phone)' : 'Looking up the visits…';
-    if (histNet.st === 'ok') return '';
+    if (histNet.st === 'ok') return histNet.total > (histNet.rows || []).length ? 'Showing newest ' + histNet.rows.length + ' of ' + histNet.total + '.' : '';   // 0.44.0 (R7)
     const as = rows.reduce((m, r) => r._cached && r._cached > m ? r._cached : m, '');
     const why = histNet.err === 'old script' ? 'History needs the newer test script (test-door-' + DOOR_NEED + ').' : histNet.err === 'no Script URL' ? 'No Script URL on the Settings tab.' : 'No answer from the sheet.';
     return why + (rows.length ? ' Saved on this phone, as of ' + as + '.' : ' Nothing saved on this phone for this place yet.');
@@ -9633,7 +9634,12 @@ body.light-theme .proof-box{color:#0f172a}
     const pid = hg(r, 'Place Id'), sid = hg(r, 'System Id') || 'A', d = hg(r, 'Date'), out = []; if (!ONFILE || !ONFILE.pieces || !pid || !d) return out;
     const mine = ONFILE.pieces.filter(x => x.place === pid && (x.system || 'A') === sid && x.slot), slots = {};
     mine.forEach(x => { (slots[x.slot] = slots[x.slot] || []).push(x); });
+    const OWN = { outdoor: ['Condenser Model', 'Condenser Serial'], indoor1: ['Air handler Model', 'Air handler Serial'], indoor2: ['Furnace Model', 'Furnace Serial'] }, low = v => String(v || '').trim().toLowerCase();
     Object.keys(slots).forEach(sl => { const ps = slots[sl]; if (ps.length < 2) return;
+      const om = OWN[sl] ? low(hg(r, OWN[sl][0])) : '', os = OWN[sl] ? low(hg(r, OWN[sl][1])) : '';   // 0.44.0 (R4): the visit's own Model / Serial first
+      if (om || os) { const hit = ps.find(x => (os && low(x.cols['Serial']) === os) || (om && low(x.cols['Model']) === om)); if (!hit) return;
+        const old = hit.status !== 'active', si = String(hit.cols['Since'] || '').trim(), w = hit.cols['Type'] || SLOT_WORD[sl] || sl;
+        out.push({ slot: sl, id: hit.id, text: w + ' ' + (hit.cols['Model'] || hit.id) + (old ? ' (old)' : si ? ' (new since ' + si + ')' : ''), old }); return; }
       const cov = ps.map(x => { const si = String(x.cols['Since'] || '').trim(), un = String(x.cols['Until'] || '').trim();
         return { x, si, un, ok: (!si || si <= d) && (!un || d < un), sc: (si ? 1 : 0) + (un ? 1 : 0) + (x.status === 'active' ? 0.5 : 0) }; }).filter(o => o.ok).sort((a, b) => b.sc - a.sc);
       const c = cov[0]; if (!c) return; const old = c.x.status !== 'active', w = c.x.cols['Type'] || SLOT_WORD[sl] || sl;
@@ -9652,17 +9658,20 @@ body.light-theme .proof-box{color:#0f172a}
     CMP_EQ.forEach(k => { if (has(k)) put(k, rs.map(r => hg(r, k))); });
     const seen = {}; (FCTL || []).filter(F => F.visitsCol && (F.kind === 'number' || F.kind === 'calculated')).forEach(F => { if (seen[F.visitsCol] || !has(F.visitsCol)) return; seen[F.visitsCol] = 1; put(F.visitsCol, rs.map(r => hg(r, F.visitsCol)), F.unit); });
     if (has('Area temp') && !seen['Area temp']) put('Area temp', rs.map(r => hg(r, 'Area temp')), '°F');
-    if (!has('ΔT')) { const pairs = [['Return Dry Bulb', 'Supply Dry Bulb'], ['Return temp (PM)', 'Supply temp (PM)']];
+    { const pairs = [['Return Dry Bulb', 'Supply Dry Bulb'], ['Return temp (PM)', 'Supply temp (PM)']];   // 0.44.0 (R9): Delta T per visit, where that visit has no saved ΔT
       const dt = rs.map(r => { const p = pairs.find(q => numOf(hg(r, q[0])) != null && numOf(hg(r, q[1])) != null); return p ? String(Math.round((numOf(hg(r, p[0])) - numOf(hg(r, p[1]))) * 10) / 10) : ''; });
-      if (dt.some(Boolean)) put('Delta T (return − supply)', dt, '°F'); }
+      const row = out.find(x => x.name === 'ΔT');
+      if (row) row.vals = row.vals.map((v, i) => v !== '' ? v : dt[i]); else if (dt.some(Boolean)) put('Delta T (return − supply)', dt, '°F'); }
     return out;
   }
+  const cmpDiff = (a, b) => { const x = String(a == null ? '' : a).trim(), y = String(b == null ? '' : b).trim(); if (!x || !y) return false;   // 0.44.0 (R9): a blank never amber; 10.0 = 10
+    const nx = numOf(x), ny = numOf(y); return nx !== null && ny !== null ? nx !== ny : x.toLowerCase() !== y.toLowerCase(); };
   function cmpHtml() {
     const all = histRows(), rs = (hist.pick || []).map(id => all.find(r => hg(r, 'Visit Id') === id)).filter(Boolean).sort((a, b) => histKey(b).localeCompare(histKey(a)));
     if (rs.length < 2) { hist.mode = 'list'; return null; }
     const head = '<tr><th></th>' + rs.map(r => '<th>' + esc(hg(r, 'Date')) + '<i>' + esc([hg(r, 'Call type'), hg(r, 'Tech')].filter(Boolean).join(' · ')) + '</i>' + (r._legacy ? '<i>Legacy</i>' : '') + '</th>').join('') + '</tr>';
     const body = cmpRows(rs).map(x => '<tr' + (x.name === 'Equipment that day' ? ' class="eq"' : '') + '><td>' + esc(x.name) + (x.unit ? ' <small>' + esc(x.unit) + '</small>' : '') + '</td>' +
-      x.vals.map((v, i) => '<td' + (i > 0 && v !== x.vals[0] ? ' class="diff"' : '') + '>' + esc(v === '' ? '–' : v) + '</td>').join('') + '</tr>').join('');
+      x.vals.map((v, i) => '<td' + (i > 0 && cmpDiff(v, x.vals[0]) ? ' class="diff"' : '') + '>' + esc(v === '' ? '–' : v) + '</td>').join('') + '</tr>').join('');
     return '<div class="proof-hi proof-hi-cmp"><div class="proof-hi-title">' + esc(hist.title) + ' · ' + esc(sysName(rs[0])) + '</div><div class="proof-hi-note">Side by side, newest first. Amber = different from the newest visit.</div><table class="proof-hi-tab">' + head + body + '</table></div>';
   }
   function histHtml() {
@@ -9676,8 +9685,9 @@ body.light-theme .proof-box{color:#0f172a}
       return '<div class="proof-hi proof-hi-one' + (r._legacy ? ' leg' : '') + '">' + head + top + tg + '<div class="proof-hi-body">' + body + '</div></div>'; }
     const rows = hist.sys ? all.filter(r => hg(r, 'System Id') === hist.sys) : all, st = histStatus(all);
     const pk = hist.pick || [];
-    const list = rows.map(r => '<button type="button" class="proof-hi-v' + (r._legacy ? ' leg' : '') + (pk.indexOf(hg(r, 'Visit Id')) >= 0 ? ' picked' : '') + '" data-hvid="' + esc(hg(r, 'Visit Id')) + '"><span class="proof-hi-tick" role="checkbox" aria-checked="' + (pk.indexOf(hg(r, 'Visit Id')) >= 0) + '" data-htick="' + esc(hg(r, 'Visit Id')) + '">' + (pk.indexOf(hg(r, 'Visit Id')) >= 0 ? '✓' : '') + '</span><b>' + esc([hg(r, 'Date'), hg(r, 'Call type'), hg(r, 'Tech'), sysName(r)].filter(Boolean).join(' · ')) + '</b>' +
-      (hist.places.length > 1 && hg(r, 'Address') ? '<i>' + esc(hg(r, 'Address')) + '</i>' : '') + '<span>' + esc(histShort(r)) + '</span>' + (eqLine(r) ? '<em class="proof-hi-eq">' + esc(eqLine(r)) + '</em>' : '') + (r._legacy ? '<em>Legacy (read only)</em>' : r._mine && histNet.st === 'ok' ? '<em>on this phone, not on the sheet yet</em>' : '') + '</button>').join('');
+    const junk = r => /^test junk$/i.test(hg(r, 'Status'));   // 0.44.0 (R3): a row marked 'Test junk' on the sheet shows greyed
+    const list = rows.map(r => '<button type="button" class="proof-hi-v' + (r._legacy || junk(r) ? ' leg' : '') + (pk.indexOf(hg(r, 'Visit Id')) >= 0 ? ' picked' : '') + '" data-hvid="' + esc(hg(r, 'Visit Id')) + '"><span class="proof-hi-tick" role="checkbox" aria-checked="' + (pk.indexOf(hg(r, 'Visit Id')) >= 0) + '" data-htick="' + esc(hg(r, 'Visit Id')) + '">' + (pk.indexOf(hg(r, 'Visit Id')) >= 0 ? '✓' : '') + '</span><b>' + esc([hg(r, 'Date'), hg(r, 'Call type'), hg(r, 'Tech'), sysName(r)].filter(Boolean).join(' · ')) + '</b>' +
+      (hist.places.length > 1 && hg(r, 'Address') ? '<i>' + esc(hg(r, 'Address')) + '</i>' : '') + '<span>' + esc(histShort(r)) + '</span>' + (eqLine(r) ? '<em class="proof-hi-eq">' + esc(eqLine(r)) + '</em>' : '') + (junk(r) ? '<em>Test junk</em>' : r._legacy ? '<em>Legacy (read only)</em>' : r._mine && histNet.st === 'ok' ? '<em>on this phone, not on the sheet yet</em>' : '') + '</button>').join('');
     const none = histNet.st === 'loading' && !all.length ? '' : '<div class="proof-empty">' + (all.length ? 'No visits for this system yet.' : 'No visits yet.') + '</div>';
     const cmpBar = '<div class="proof-hi-cmpbar">' + (pk.length ? '<button type="button" data-hcmp="1"' + (pk.length < 2 ? ' disabled' : '') + '>Compare ' + pk.length + ' visit' + (pk.length === 1 ? '' : 's') + '</button><button type="button" data-hclear="1">Clear</button>' : '<span>Tick up to 3 visits of one system to compare them.</span>') + '</div>';
     return '<div class="proof-hi">' + head + histFilterBar(all) + (rows.length > 1 ? cmpBar : '') + (st ? '<div class="proof-hi-st">' + esc(st) + '</div>' : '') + '<div class="proof-hi-list">' + (list || none) + '</div></div>';
@@ -9696,7 +9706,10 @@ body.light-theme .proof-box{color:#0f172a}
     else if (t.dataset.hcmp) { if ((hist.pick || []).length < 2) return; hist.mode = 'cmp'; }
     else if (t.dataset.hclear) hist.pick = [];
     else if (t.dataset.hvid) { hist.mode = 'one'; hist.vid = t.dataset.hvid; hist.show = 'report'; }
-    else if ('hsys' in t.dataset) hist.sys = t.dataset.hsys;
+    else if ('hsys' in t.dataset) { const was = hist.sys, ns = t.dataset.hsys, all = histRows(); hist.sys = ns;
+      if (ns) hist.pick = (hist.pick || []).filter(id => { const r = all.find(x => hg(x, 'Visit Id') === id); return r && (hg(r, 'System Id') || 'A') === ns; });   // 0.44.0 (R8): other systems' ticks go
+      const nk = histNet.key.split('#')[1] || '', cut = histNet.st === 'ok' && histNet.total > (histNet.rows || []).length;
+      if (ns !== was && ((nk && nk !== ns) || cut)) { lsSet(K_HISTNAV, hist); histFetch(); return; } }   // 0.44.0 (R7): ask again when the answer was for one system or cut
     else if (t.dataset.hshow) hist.show = t.dataset.hshow;
     else return;
     lsSet(K_HISTNAV, hist); paintHist(); const sc = document.getElementById('viewport-outer-scroller'); if (sc && (t.dataset.hvid && !tk || t.dataset.hcmp)) sc.scrollTop = 0;
@@ -9712,10 +9725,10 @@ body.light-theme .proof-box{color:#0f172a}
   document.addEventListener('click', e => { const t = e.target && e.target.closest && e.target.closest('[data-chist]'); if (!t) return; e.preventDefault(); e.stopPropagation(); if (Date.now() < tapGuardUntil) return;
     const P = (condo.bld && placeById(condo.bld)) || (condo.site && placeById(condo.site)); if (P) openHistory(histPlaces(P), placeTitle(P)); }, true);
   document.addEventListener('click', e => { const b = e.target && e.target.closest && e.target.closest('#viewport-canvas-frame .proof-systems button.hist'); if (!b || !isLiveInteraction) return;
-    e.preventDefault(); e.stopPropagation(); if (Date.now() < tapGuardUntil) return; try { blurNow(); saveCall('history'); } catch (x) {}
+    e.preventDefault(); e.stopPropagation(); if (Date.now() < tapGuardUntil) return; try { blurNow(); } catch (x) {}   // 0.44.0 (R3): never a save from History
     const pid = (call.__file && call.__file.place) || call.__placeId, P = pid && placeById(pid), s = call.__sys;
     openHistory([pid], (P ? placeTitle(P) : (call['f:customerName'] || pid)) + ' · ' + ((s && s.labels && s.labels[s.cur]) || 'System 1'), (s && s.cur) || 'A'); }, true);
-  window.__proofHist = { open: openHistory, state: () => hist, net: () => histNet, cache: histCache, rows: histRows };   // for the tests only
+  window.__proofHist = { open: openHistory, state: () => hist, net: () => histNet, cache: histCache, rows: histRows, title: id => placeTitle(placeById(id)) };   // for the tests only
   // 0.37.0 (C7e stage 2, Prompts no. 179): the site builder (New customer -> 'A condo / site'). A draft on this phone until Save site:
   // the site's name, its buildings (name, address, floors from-to, units per floor or the unit numbers, prefix; uneven buildings allowed;
   // a building with no floors = rooms only), the special rooms (name, building, floor), a summary. Save site = one 'newSite' request to the
@@ -10289,7 +10302,9 @@ body.light-theme .proof-box{color:#0f172a}
         stacks.forEach(s => { delete s._big; delete s._lh; });
         return { id: 'C' + ci, weight: colW[R.key + '\u0002' + ci] || 1, stacks };   // round 6: 'Column width' (default 1)
       });
-      const row = { id: 'PR' + (ri + 1), name: R.name, heightPx: Math.max(56, tall), isAutoHeight: false, containers };
+      const histLine = containers.some(c => c.stacks.some(st => st.splits.some(p => p.slot === 'history')));   // 0.44.0 (no. 189, IC-2..IC-7): the History line grows with its content and the page scrolls
+      if (histLine) containers.forEach(c => c.stacks.forEach(st => st.splits.forEach(p => { if (p.slot === 'history') { p.vAlign = 'top'; p.wrap = true; } })));
+      const row = { id: 'PR' + (ri + 1), name: R.name, heightPx: Math.max(56, tall), isAutoHeight: histLine, containers };
       const frozen = freezeOf[R.key] ? freezeOf[R.key] === 'yes' : R.screen === 'all';   // round 6: 'Freeze' (empty = Screen all is frozen)
       if (frozen) row.sticky = true;
       if (foldOf[R.key]) row.proofFold = foldOf[R.key];   // C2a: applied per call by applyFolds()
@@ -10388,7 +10403,9 @@ body.light-theme .proof-box{color:#0f172a}
         if (!m) why.push('Calc "' + calcRaw + '" must look like rule: f:inputA, f:inputB');
         else if (!rule) why.push('Calc rule "' + m[1] + '" is not known (known: ' + Object.keys(CALC_RULES).map(k => CALC_RULES[k].name).join(', ') + ')');
         else if (ins.length !== rule.inputs.length) why.push('Calc ' + rule.name + ' needs ' + rule.inputs.length + ' inputs (' + rule.inputs.join(', ') + ')');
-        else calc = { rule, inputs: ins }; }
+        else { if (rule.name === 'compressionRatio' && /discharge/i.test(ins[0] || '')) { const liq = (rows || []).find(x => /^f:liquidPressure$/i.test(g2(x, 'Field Id'))) || (rows || []).find(x => /^liquid pressure$/i.test(g2(x, 'Name')));
+            if (liq) ins[0] = g2(liq, 'Field Id'); }   // 0.44.0 (PART 6): an older sheet's 'f:dischargePressure' = the liquid pressure field (no fallback to discharge)
+          calc = { rule, inputs: ins }; } }
       const ffCol = 'Find fill' in r, ff = ffCol ? g2(r, 'Find fill').toLowerCase() : (FIND_FILL_FALLBACK[id] || '');   // 0.12.2 (R7); no column = today's fill (migration)
       if (ffCol && ff && !FIND_FILLS[ff] && !why.length) why.push('Find fill "' + g2(r, 'Find fill') + '" must be name, address, phone, email or calltype (or blank)');
       if (!why.length) {
@@ -12021,7 +12038,7 @@ body.light-theme .proof-box{color:#0f172a}
     const btns = ids.map(id => '<button type="button" data-sys="' + esc(id) + '" class="' + (id === cur ? 'on' : '') + (s && sysHasEntries(id) ? ' has' : '') + '">' + esc(s ? s.labels[id] : 'System 1') +
       (s && s.areas[id] ? '<small>' + esc(s.areas[id]) + '</small>' : '') + '</button>').join('');
     const add = s && ((call.__file && call.__file.place) || call.__placeId) ? '<button type="button" class="add">+ Add system</button>' : '';
-    const hb = histView && s && ((call.__file && call.__file.place) || call.__placeId) ? '<button type="button" class="hist">History</button>' : '';   // 0.42.0 (C7f): this place, the selected system   // 0.33.0: the flow (0.33.1, R7: a phone customer too)
+    const hb = '';   // 0.44.0 (no. 189, Q2): History left the systems strip (the top-row History button, 0.45.0)   // 0.33.0: the flow (0.33.1, R7: a phone customer too)
     const same = s && ids.length > 1 ? '<button type="button" class="same">Include on all systems</button>' : '';   // 0.34.0 (B1): the Report page only (0.35.0: add only)
     els.forEach(e => { const rep = !!e.closest('[data-pid="systems.report"]'), html = '<div class="proof-sys-list">' + btns + '</div><div class="proof-sys-end">' + (rep ? same : add + hb) + '</div>';   /* 0.35.0: the '+N hidden' chip no longer comes here (it took the system buttons' room) */   // 0.34.0 (B5): the end buttons stay whole at the right
       if (e.dataset.h !== html) { e.innerHTML = html; e.dataset.h = html; }
@@ -12212,7 +12229,7 @@ body.light-theme .proof-box{color:#0f172a}
     fixed['Call type'] = callView.callType || valText(call['f:callType']); fixed['Template'] = callView.tpl || ''; fixed['Place Id'] = file.place || call.__placeId || '';
     fixed['System Id'] = sys; fixed['System label'] = (call.__sys && call.__sys.labels[sys]) || (piece ? piece.label : ''); /* 0.32.0 (C7d) */ fixed['Status'] = V.done ? 'Done' : 'In progress'; fixed['Created'] = V.created;
     fixed['Follow-up'] = followText();   // 0.27.0 (C7c-1): the open question(s), blank when none
-    try { fixed['Report text'] = reportBody(); } catch (e) {}   // 0.42.0 (C7f): the report text of this system, kept on Visits (test-door-11)
+    try { const rt = String(reportBody() || ''); if (rt.trim()) fixed['Report text'] = rt.length > 49000 ? rt.slice(0, 48980) + '\n… (cut)' : rt; } catch (e) {}   // 0.44.0 (R5): a blank report is never sent (a saved one stays), under the 50,000 cell limit   // 0.42.0 (C7f): the report text of this system, kept on Visits (test-door-11)
     (FCTL || []).forEach(F => { if (!F.visitsCol || VISIT_FIXED.indexOf(F.visitsCol) >= 0) return; values.push({ id: F.id, col: F.visitsCol, v: valText(call[F.id]).trim(), num: F.kind === 'number' || F.kind === 'calculated' }); });   // 0.30.2: trimmed
     const spec = file.spec || {}, seen = {};   // ratings: one column each, from the file snapshot (never typed)
     Object.keys(spec).forEach(fid => { const cols = (spec[fid] && spec[fid].cols) || {}; Object.keys(cols).forEach(c => { if (seen[c]) return; seen[c] = 1;
@@ -12279,7 +12296,8 @@ body.light-theme .proof-box{color:#0f172a}
   const visitNote = () => !savingOn() ? '' : !scriptUrl() ? 'Saving to the sheet is off (no script address)' : saveSt.missing && saveSt.missing.length ? 'The Visits tab has no column for: ' + saveSt.missing.join(', ') : '';
   window.EngineSlots['save-chip'] = { render(p) { return '<div class="proof-cell proof-savechip" role="button" tabindex="0" style="font-size:' + Math.min(11, p.fontSize || 10) + 'px">' + esc(chipText()) + '</div>'; } };
   document.addEventListener('click', e => { const c = e.target && e.target.closest && e.target.closest('.proof-savechip'); if (!c || !isLiveInteraction) return; e.stopPropagation(); saveCall('tap'); flushOutbox(); }, true);
-  setInterval(() => { try { saveCall('timer'); flushOutbox(); } catch (e) {} }, 30000);
+  const timerTick = () => { try { if (!(histView && currentView === histView)) saveCall('timer'); flushOutbox(); } catch (e) {} };   // 0.44.0 (R3): no save while History shows
+  setInterval(timerTick, 30000); window.__proofTimerTick = timerTick;   // (the tests call the 30 s tick directly)
   window.addEventListener('online', () => flushOutbox());
   document.addEventListener('visibilitychange', () => { try { if (document.hidden) saveCall('hidden'); else flushOutbox(); } catch (e) {} });
   window.addEventListener('pagehide', () => { try { saveCall('hidden'); } catch (e) {} });
