@@ -1,5 +1,11 @@
 // =====================================================================================================
 // PMI container proof (TEST) - Apps Script web app for the TEST sheet 'PMI container proof (test)' ONLY.
+// test-door-10 (proof 0.41.0, Prompts no. 183: the C7e review R1-R7): a unit is matched like the page matches it (leading zeros '0405' = '405',
+// the building's rule Prefix 'N-404' = '404', Active no rows never); a later save of the SAME visit updates the unit row it made itself
+// (Changes 'Correction'; other visits' rows still only fill empty cells); newSite / editSite ignore Active no rows when an address is checked;
+// a building's new address moves its units' Address keys; room floors that are not numbers ('G', 'PH', 'Roof') stay text (never NaN);
+// newSite logs its Place rules rows; clearing a building's floors turns off only its first floor rule; Use my location's 100 a day is a real
+// day (date-keyed script properties) and counts only real Maps lookups.
 // test-door-9 (proof 0.40.0, Prompts no. 180 stage 2): op editSite (change a saved site: its name / codes, a building's name, address,
 // floors, units, numbering, prefix; add or remove (Active no) a building or room; remove the site; all or nothing, Changes rows 'Site edited',
 // nothing ever deleted); newSite refuses a site id already used with ANOTHER name (never 'ok' with nothing written); a new unit / special whose
@@ -42,7 +48,7 @@ var ACCENTS = { '': 1, cyan: 1, emerald: 1, amber: 1, purple: 1, rose: 1 };
 var MAX_BODY = 20000;          // characters in one save
 var MAX_ROWS_PER_SAVE = 100;   // tweak rows in one save
 var MAX_TOTAL_ROWS = 2000;     // tweak rows on the whole tab
-var SCRIPT_VERSION = 'test-door-9';
+var SCRIPT_VERSION = 'test-door-10';
 var NUM_FMT = 'General';   // test-door-4: the Automatic number format ('35', '2.5'); 0.#### shows a bare dot ('35.')
 var VISITS_TAB = 'Visits';
 var VISITS_FIXED = ['Visit Id', 'Call token', 'Date', 'Time', 'Tech', 'Call type', 'Template', 'Place Id', 'System Id', 'System label', 'Status', 'Team tag', 'Merged into', 'Revision of', 'Follow-up', 'Area temp', 'Lat', 'Lng', 'Created', 'Last saved'];
@@ -262,14 +268,17 @@ function fileChanges_(ss, b, fixed, at) {
       if (pr && plev === 'building') {
         var bkey = String(PU.get(pr, 'Address key') || '').trim() || addrKey_(PU.get(pr, 'Address')), ukey = (bkey + ' #' + lab).toLowerCase(), uid = 'U-' + vid.replace(/^V-/, ''), hitU = '';
         var hc = PU.head, ci = hc.indexOf('Place Id'), cp = hc.indexOf('Parent Id'), ck = hc.indexOf('Address key'), cl = hc.indexOf('Unit label');
-        var allU = PU.all(), taken = {};
+        var allU = PU.all(), taken = {}, pres = prefixesOf_(ss, par), me = unitNorm_(lab, pres), ca = hc.indexOf('Active');
         allU.forEach(function (x) { taken[String(x[ci]).trim()] = 1; if (hitU) return;
-          if (String(x[ci]).trim() === uid && cl >= 0 && normC_(x[cl]) === normC_(lab)) { hitU = uid; return; }   // test-door-9: the id alone is not enough (another label = another place)
-          if (cp >= 0 && String(x[cp]).trim() === par && ((ck >= 0 && String(x[ck]).trim().toLowerCase() === ukey) || (cl >= 0 && normC_(x[cl]) === normC_(lab)))) hitU = String(x[ci]).trim(); });
+          if (ca >= 0 && normC_(x[ca]) === 'no') return;   // test-door-10 (R3): a row set Active no is never the unit
+          if (String(x[ci]).trim() === uid && cl >= 0 && unitNorm_(x[cl], pres) === me) { hitU = uid; return; }   // test-door-9: the id alone is not enough (another label = another place)
+          if (cp >= 0 && String(x[cp]).trim() === par && ((ck >= 0 && String(x[ck]).trim().toLowerCase() === ukey) || (cl >= 0 && unitNorm_(x[cl], pres) === me))) hitU = String(x[ci]).trim(); });
         if (!hitU && taken[uid]) { var nn = 2; while (taken[uid + '-' + nn]) nn++; uid = uid + '-' + nn; }   // test-door-9: 'U-<visit>' used by another unit (one call over 2 places)
-        if (hitU) { var hr = PU.rowOf('Place Id', hitU);   // test-door-9: found again = the call's values into its EMPTY cells only (an earlier answer may have been lost)
-          if (hr) Object.keys(np.cols || {}).forEach(function (k) { if (UNIT_COLS_.indexOf(k) < 0 || PU.col(k) < 0) return; var v = String(np.cols[k] == null ? '' : np.cols[k]).trim();
-            if (v && !String(PU.get(hr, k)).trim()) { PU.set(hr, k, v); log('Places', hitU, k, '', v, 'Added'); } }); }
+        if (hitU) { var hr = PU.rowOf('Place Id', hitU), own = hitU === 'U-' + vid.replace(/^V-/, '') || hitU.indexOf('U-' + vid.replace(/^V-/, '') + '-') === 0;   // test-door-10 (R4): made by THIS visit
+          // found again = the call's values into its EMPTY cells (an earlier answer may have been lost); a row this same visit made takes its newer values too
+          if (hr) Object.keys(np.cols || {}).forEach(function (k) { if (UNIT_COLS_.indexOf(k) < 0 || PU.col(k) < 0 || k === 'Unit label' || k === 'Floor') return; var v = String(np.cols[k] == null ? '' : np.cols[k]).trim(), cur = String(PU.get(hr, k)).trim();
+            if (v && !cur) { PU.set(hr, k, v); log('Places', hitU, k, '', v, 'Added'); }
+            else if (v && own && cur !== v) { PU.set(hr, k, v); log('Places', hitU, k, cur, v, 'Correction'); } }); }
         if (!hitU) { var ou = { 'Place Id': uid, 'Level': np.level, 'Parent Id': par, 'Unit label': lab, 'Floor': String(np.cols['Floor'] || ''), 'Address key': ukey, 'Active': 'yes', 'Created by': who, 'Created at': at };
           Object.keys(np.cols || {}).forEach(function (k) { if (PU.col(k) >= 0 && !(k in ou) && UNIT_COLS_.indexOf(k) >= 0) ou[k] = String(np.cols[k] == null ? '' : np.cols[k]).trim(); });
           PU.append(ou); log('Places', uid, 'Place', String(np.from || ''), uid + ' (' + lab + ')', 'New unit'); hitU = uid; }
@@ -366,6 +375,14 @@ function followColor_(sh, head) {   // the Follow-up column gets its color once 
 // One Places row for the site ('S-<id>'), one per building ('S-<id>-B<n>', Parent = the site), one Place rules row per building's floors
 // ('S-<id>-R<n>') and per room. All or nothing: checked first, then written. Sent again = nothing doubled (rows found by Id).
 // A building whose Address key is already on Places (another place) is refused, and nothing is written.
+function unitNorm_(lab, pres) {   // test-door-10 (R3): the page's condoNorm + the rule's Prefix: 'N-0404' = '0404' = '404'
+  var t = String(lab == null ? '' : lab).trim().toLowerCase().replace(/\s+/g, ' ');
+  (pres || []).forEach(function (p) { p = String(p || '').trim().toLowerCase(); if (p && t.indexOf(p) === 0 && t.length > p.length) t = t.slice(p.length); });
+  return t.replace(/^0+(?=\w)/, '');
+}
+function floorVal_(fl) { fl = String(fl == null ? '' : fl).trim(); return /^-?\d+$/.test(fl) ? Number(fl) : fl; }   // test-door-10 (R2): 'PH' stays text, never NaN
+function prefixesOf_(ss, bid) { var PR = tabOf_(ss, 'Place rules'), out = []; if (!PR) return out; var hb = PR.head.indexOf('Building Id'), hp = PR.head.indexOf('Prefix'); if (hb < 0 || hp < 0) return out;
+  PR.all().forEach(function (x) { if (String(x[hb]).trim() === bid && String(x[hp]).trim()) out.push(String(x[hp]).trim()); }); return out; }
 function newSite_(b) {
   var lock = LockService.getScriptLock(); try { lock.waitLock(20000); } catch (e) { return out_({ ok: false, error: 'busy, try again' }); }
   try {
@@ -375,8 +392,9 @@ function newSite_(b) {
     if (!name || name.length > 80) return out_({ ok: false, error: 'the site needs a name (80 letters at most)' });
     if (!B.length || B.length > 30) return out_({ ok: false, error: 'a site needs 1 to 30 buildings' });
     var P = tabOf_(ss, 'Places'), PR = tabOf_(ss, 'Place rules'); if (!P || !PR) return out_({ ok: false, error: 'the sheet has no Places or Place rules tab' });
-    var ci = P.head.indexOf('Place Id'), ck = P.head.indexOf('Address key'), rows = P.all(), keys = {}, ids = {};
-    rows.forEach(function (x) { ids[String(x[ci]).trim()] = 1; if (ck >= 0 && String(x[ck]).trim()) keys[String(x[ck]).trim().toLowerCase()] = String(x[ci]).trim(); });
+    var ci = P.head.indexOf('Place Id'), ck = P.head.indexOf('Address key'), ca0 = P.head.indexOf('Active'), rows = P.all(), keys = {}, ids = {};
+    rows.forEach(function (x) { ids[String(x[ci]).trim()] = 1; if (ca0 >= 0 && normC_(x[ca0]) === 'no') return;   // test-door-10 (R1): a removed place keeps no address
+      if (ck >= 0 && String(x[ck]).trim()) keys[String(x[ck]).trim().toLowerCase()] = String(x[ci]).trim(); });
     var why = [], seen = {}, plan = [];
     B.forEach(function (x, i) { var n = i + 1, bid = sid + '-B' + n, bn = String(x.name || '').trim(), ad = String(x.address || '').trim(), key = addrKey_(ad).toLowerCase();
       var f0 = Number(x.floorFrom), f1 = Number(x.floorTo), u = Number(x.units || 0), nums = String(x.numbers || '').trim(), pre = String(x.prefix || '').trim();
@@ -396,14 +414,15 @@ function newSite_(b) {
       if (normC_(sn) !== normC_(name)) why.push('the site id ' + sid + ' is already used by ' + (sn || 'another place') + ' (saved earlier); nothing written'); }
     if (why.length) return out_({ ok: false, error: why.join('; '), refused: why, taken: ids[sid] ? sid : '' });
     var made = [], log = function (rec, txt) { var C = tabOf_(ss, CHANGES_TAB); if (C) C.append({ 'When': at, 'Who': who, 'Visit Id': '', 'Tab': 'Places', 'Record Id': rec, 'Field': 'Place', 'Old': '', 'New': txt, 'Reason': 'New site' }); };
+    var logR = function (rec, txt) { var C = tabOf_(ss, CHANGES_TAB); if (C) C.append({ 'When': at, 'Who': who, 'Visit Id': '', 'Tab': 'Place rules', 'Record Id': rec, 'Field': 'Rule', 'Old': '', 'New': txt, 'Reason': 'New site' }); };   // test-door-10 (R2)
     if (!ids[sid]) { P.append({ 'Place Id': sid, 'Level': 'site', 'Name': name, 'Site notes': String(S.notes || '').trim(), 'Access codes': String(S.access || '').trim(), 'Active': 'yes', 'Created by': who, 'Created at': at }); made.push(sid); log(sid, sid + ' (' + name + ')'); }
     plan.forEach(function (x) { if (ids[x.bid]) return;
       P.append({ 'Place Id': x.bid, 'Level': 'building', 'Parent Id': sid, 'Name': x.bn, 'Address': x.ad, 'Address key': x.key, 'Access codes': x.access, 'Active': 'yes', 'Created by': who, 'Created at': at }); made.push(x.bid); log(x.bid, x.bid + ' (' + x.bn + ')'); });
     var rc = PR.head.indexOf('Rule Id'), rids = {}; PR.all().forEach(function (x) { rids[String(x[rc]).trim()] = 1; }); var k = 0;
     plan.forEach(function (x) { if (!x.hasF) return; var rid = sid + '-R' + (++k); if (rids[rid]) return;
-      PR.append({ 'Rule Id': rid, 'Site Id': sid, 'Building Id': x.bid, 'Kind': 'floors', 'Label': 'Floors', 'Floor from': x.f0, 'Floor to': x.f1, 'Units per floor': x.nums ? '' : x.u, 'Unit numbers': x.nums, 'Prefix': x.pre, 'Active': 'yes' }); made.push(rid); });
-    R.forEach(function (r) { var rid = sid + '-R' + (++k); if (rids[rid]) return; var fl = String(r.floor == null ? '' : r.floor).trim();
-      PR.append({ 'Rule Id': rid, 'Site Id': sid, 'Building Id': sid + '-B' + Number(r.building), 'Kind': 'special', 'Label': String(r.label).trim(), 'Floor from': fl, 'Floor to': fl, 'Active': 'yes' }); made.push(rid); });
+      PR.append({ 'Rule Id': rid, 'Site Id': sid, 'Building Id': x.bid, 'Kind': 'floors', 'Label': 'Floors', 'Floor from': x.f0, 'Floor to': x.f1, 'Units per floor': x.nums ? '' : x.u, 'Unit numbers': x.nums, 'Prefix': x.pre, 'Active': 'yes' }); made.push(rid); logR(rid, rid + ' (floors ' + x.f0 + '-' + x.f1 + ')'); });
+    R.forEach(function (r) { var rid = sid + '-R' + (++k); if (rids[rid]) return; var fl = floorVal_(r.floor);
+      PR.append({ 'Rule Id': rid, 'Site Id': sid, 'Building Id': sid + '-B' + Number(r.building), 'Kind': 'special', 'Label': String(r.label).trim(), 'Floor from': fl, 'Floor to': fl, 'Active': 'yes' }); made.push(rid); logR(rid, rid + ' (' + String(r.label).trim() + ')'); });
     return out_({ ok: true, version: SCRIPT_VERSION, siteId: sid, buildings: plan.map(function (x) { return x.bid; }), made: made, at: at });
   } catch (err) { return out_({ ok: false, error: String(err && err.message || err) }); } finally { try { lock.releaseLock(); } catch (e) {} }
 }
@@ -422,7 +441,9 @@ function editSite_(b) {
     if (!sr || normC_(P.get(sr, 'Level')) !== 'site') return out_({ ok: false, error: 'no site ' + sid + ' on the Places tab' });
     var name = String(S.name || '').trim(), B = Array.isArray(S.buildings) ? S.buildings : [], R = Array.isArray(S.rooms) ? S.rooms : [], why = [];
     var ci = P.head.indexOf('Place Id'), ck = P.head.indexOf('Address key'), cpar = P.head.indexOf('Parent Id'), clev = P.head.indexOf('Level'), rows = P.all(), keys = {}, ids = {}, mine = {};
-    rows.forEach(function (x) { var id = String(x[ci]).trim(); ids[id] = 1; if (ck >= 0 && String(x[ck]).trim()) keys[String(x[ck]).trim().toLowerCase()] = id;
+    var cact = P.head.indexOf('Active');
+    rows.forEach(function (x) { var id = String(x[ci]).trim(); ids[id] = 1; var off = cact >= 0 && normC_(x[cact]) === 'no';
+      if (!off && ck >= 0 && String(x[ck]).trim()) keys[String(x[ck]).trim().toLowerCase()] = id;   // test-door-10 (R1): a removed place keeps no address
       if (cpar >= 0 && String(x[cpar]).trim() === sid && normC_(x[clev]) === 'building') mine[id] = 1; });
     if (!S.remove) {
       if (!name || name.length > 80) why.push('the site needs a name (80 letters at most)');
@@ -463,17 +484,19 @@ function editSite_(b) {
       B.forEach(function (x) { var bid = String(x.id || '').trim(), ad = String(x.address || '').trim();
         if (x.remove) { if (bid) { var r0 = P.rowOf('Place Id', bid); setP(r0, bid, 'Active', 'no'); rulesOfB(bid, 'floors').concat(rulesOfB(bid, 'special')).forEach(function (q) { setR(q.r, q.id, 'Active', 'no'); }); } bidOf.push(bid); return; }
         if (!bid) { bid = nextId(sid + '-B', ids); ids[bid] = 1; P.append({ 'Place Id': bid, 'Level': 'building', 'Parent Id': sid, 'Name': String(x.name).trim(), 'Address': ad, 'Address key': addrKey_(ad).toLowerCase(), 'Active': 'yes', 'Created by': who, 'Created at': at }); made.push(bid); log('Places', bid, 'Place', '', bid + ' (' + String(x.name).trim() + ')'); }
-        else { var r = P.rowOf('Place Id', bid); setP(r, bid, 'Name', String(x.name).trim()); if (normC_(P.get(r, 'Address')) !== normC_(ad)) { setP(r, bid, 'Address', ad); setP(r, bid, 'Address key', addrKey_(ad).toLowerCase()); } }
+        else { var r = P.rowOf('Place Id', bid); setP(r, bid, 'Name', String(x.name).trim()); if (normC_(P.get(r, 'Address')) !== normC_(ad)) { var oldK = String(P.get(r, 'Address key')).trim().toLowerCase(), newK = addrKey_(ad).toLowerCase(); setP(r, bid, 'Address', ad); setP(r, bid, 'Address key', newK);
+          P.all().forEach(function (u, ui) { if (String(u[cpar]).trim() !== bid || (normC_(u[clev]) !== 'unit' && normC_(u[clev]) !== 'special')) return; var uk = String(u[ck]).trim(), lab = String(u[P.head.indexOf('Unit label')]).trim();   // test-door-10 (R1): its units / rooms follow
+            var nk = (newK + ' #' + lab).toLowerCase(); if (uk.toLowerCase() !== nk) setP(ui + 2, String(u[ci]).trim(), 'Address key', nk); }); } }
         bidOf.push(bid);
         var hasF = String(x.floorFrom == null ? '' : x.floorFrom).trim() !== '', fr = rulesOfB(bid, 'floors'), nums = String(x.numbers || '').trim();
         var f0 = Number(x.floorFrom), f1 = Number(x.floorTo === '' || x.floorTo == null ? x.floorFrom : x.floorTo);
         if (hasF && fr.length) { var q = fr[0]; setR(q.r, q.id, 'Floor from', f0); setR(q.r, q.id, 'Floor to', f1); setR(q.r, q.id, 'Units per floor', nums ? '' : Number(x.units)); setR(q.r, q.id, 'Unit numbers', nums); setR(q.r, q.id, 'Prefix', String(x.prefix || '').trim()); }
         else if (hasF) { var rid = nextId(sid + '-R', rids); rids[rid] = 1; PR.append({ 'Rule Id': rid, 'Site Id': sid, 'Building Id': bid, 'Kind': 'floors', 'Label': 'Floors', 'Floor from': f0, 'Floor to': f1, 'Units per floor': nums ? '' : Number(x.units), 'Unit numbers': nums, 'Prefix': String(x.prefix || '').trim(), 'Active': 'yes' }); made.push(rid); log('Place rules', rid, 'Rule', '', rid + ' (floors ' + f0 + '-' + f1 + ')'); }
-        else fr.forEach(function (q) { setR(q.r, q.id, 'Active', 'no'); }); });
+        else if (fr.length) setR(fr[0].r, fr[0].id, 'Active', 'no'); });   // test-door-10 (R6): only the rule the phone shows (the first)
       R.forEach(function (r) { var rid = String(r.ruleId || '').trim(), fl = String(r.floor == null ? '' : r.floor).trim(), bid = bidOf[Number(r.building) - 1];
         if (r.remove) { if (rid) { var rr0 = PR.rowOf('Rule Id', rid); if (rr0) setR(rr0, rid, 'Active', 'no'); } return; }
-        if (rid) { var rr = PR.rowOf('Rule Id', rid); setR(rr, rid, 'Label', String(r.label).trim()); setR(rr, rid, 'Building Id', bid); setR(rr, rid, 'Floor from', fl === '' ? '' : Number(fl)); setR(rr, rid, 'Floor to', fl === '' ? '' : Number(fl)); return; }
-        var nid = nextId(sid + '-R', rids); rids[nid] = 1; PR.append({ 'Rule Id': nid, 'Site Id': sid, 'Building Id': bid, 'Kind': 'special', 'Label': String(r.label).trim(), 'Floor from': fl === '' ? '' : Number(fl), 'Floor to': fl === '' ? '' : Number(fl), 'Active': 'yes' }); made.push(nid); log('Place rules', nid, 'Rule', '', nid + ' (' + String(r.label).trim() + ')'); });
+        if (rid) { var rr = PR.rowOf('Rule Id', rid); setR(rr, rid, 'Label', String(r.label).trim()); setR(rr, rid, 'Building Id', bid); setR(rr, rid, 'Floor from', floorVal_(fl)); setR(rr, rid, 'Floor to', floorVal_(fl)); return; }   // test-door-10 (R2): 'PH' stays text
+        var nid = nextId(sid + '-R', rids); rids[nid] = 1; PR.append({ 'Rule Id': nid, 'Site Id': sid, 'Building Id': bid, 'Kind': 'special', 'Label': String(r.label).trim(), 'Floor from': floorVal_(fl), 'Floor to': floorVal_(fl), 'Active': 'yes' }); made.push(nid); log('Place rules', nid, 'Rule', '', nid + ' (' + String(r.label).trim() + ')'); });
     }
     var hp = P.head, placesNow = P.all().filter(function (x) { var id = String(x[ci]).trim(); return id === sid || String(x[cpar]).trim() === sid; }).map(function (x) { var o = {}; hp.forEach(function (h, i) { o[h] = x[i]; }); return o; });
     var hr = PR.head, rulesNow = PR.all().filter(function (x) { return String(x[rsite]).trim() === sid; }).map(function (x) { var o = {}; hr.forEach(function (h, i) { o[h] = x[i]; }); return o; });
@@ -489,10 +512,12 @@ var LOC_DAILY_LIMIT = 100;
 function locOk_(l) { var lat = Number(l && l.lat), lng = Number(l && l.lng); return l && String(l.lat) !== '' && String(l.lng) !== '' && isFinite(lat) && isFinite(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180 && !(lat === 0 && lng === 0); }
 function whereAmI_(b) {
   if (!locOk_(b)) return { ok: false, error: 'No location was sent.', version: SCRIPT_VERSION };
-  var c = CacheService.getScriptCache(), k = 'loc-' + now_().slice(0, 10) + '-' + String(b.tech || 'tech').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 30), n = Number(c.get(k) || 0);
+  // test-door-10 (R7): the 100 a day per tech is a real day: a script property keyed by the date (CacheService forgot after 6 h), counted only
+  // when Google Maps is really asked; yesterday's counters are cleared.
+  var day = now_().slice(0, 10), pr = PropertiesService.getScriptProperties(), k = 'loc-' + day + '-' + String(b.tech || 'tech').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 30), n = Number(pr.getProperty(k) || 0);
+  try { var all = pr.getProperties(); Object.keys(all).forEach(function (q) { if (/^loc-\d{4}-\d\d-\d\d-/.test(q) && q.indexOf('loc-' + day + '-') !== 0) pr.deleteProperty(q); }); } catch (e) {}
   if (n >= LOC_DAILY_LIMIT) return { ok: false, error: 'Use my location was used ' + LOC_DAILY_LIMIT + ' times today. Type the address.', version: SCRIPT_VERSION };
-  c.put(k, String(n + 1), 21600);
-  var res; try { res = Maps.newGeocoder().reverseGeocode(Number(b.lat), Number(b.lng)); }
+  var res; try { res = Maps.newGeocoder().reverseGeocode(Number(b.lat), Number(b.lng)); pr.setProperty(k, String(n + 1)); }
   catch (e) { var m = String(e && e.message || e);
     if (/permission|authori[sz]|scope/i.test(m)) return { ok: false, error: 'The test script is not yet allowed to look up addresses. Open the script, run authorizeLocation once, then deploy a new version.', version: SCRIPT_VERSION };
     return { ok: false, error: 'Google Maps did not give an address right now. Type the address.', version: SCRIPT_VERSION }; }

@@ -3750,7 +3750,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.40.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.41.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3760,7 +3760,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.40.0', stamp: '2026-11-26 19:49:17', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.41.0', stamp: '2026-11-27 03:22:37', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8437,7 +8437,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.40.0';
+  const PROOF_VERSION = '0.41.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -9467,7 +9467,7 @@ body.light-theme .proof-box{color:#0f172a}
   function condoOpen(P) {   // true when the pick opened the condo picker (a sheet with no condo screen: the old pick)
     if (!condoView || !ONFILE || !P) return false;
     if (P.level === 'site') { const bl = condoBuildingsOf(P); if (!bl.length) return false; condo = { site: P.id, bld: bl.length === 1 ? bl[0].id : '' }; }
-    else if (P.level === 'building' && condoRulesOf(P).length) condo = { site: P.parent || '', bld: P.id };
+    else if (P.level === 'building') condo = { site: P.parent || '', bld: P.id };   // 0.41.0 (R5): a building is never loaded as a house, even with no rules left
     else return false;
     try { closeCard(); } catch (e) {} clearFind(); goView(condoView); return true;
   }
@@ -9490,9 +9490,10 @@ body.light-theme .proof-box{color:#0f172a}
     const fileOf = (lab, pre) => { const n = condoNorm(lab), n2 = pre ? condoNorm(pre + lab) : n, P = onFile.find(o => { const m = condoNorm(o.cols['Unit label']); return m === n || m === n2; }); if (P) used[P.id] = 1; return P || null; };
     const floors = {}, specials = [];
     condoRulesOf(B).forEach(r => { const kd = String(r['Kind'] || '').toLowerCase(), f0 = condoInt(r['Floor from']), f1 = condoInt(r['Floor to']);
-      if (kd === 'special') { const lab = String(r['Label'] || '').trim(); if (lab) specials.push({ label: lab, floor: f0 == null ? '' : f0, level: 'special', note: String(r['Access notes'] || '').trim(), P: fileOf(lab) }); return; }
+      if (kd === 'special') { const lab = String(r['Label'] || '').trim(); if (lab) specials.push({ label: lab, floor: f0 == null ? String(r['Floor from'] == null ? '' : r['Floor from']).trim() : f0, level: 'special', note: String(r['Access notes'] || '').trim(), P: fileOf(lab) }); return; }
       if (kd !== 'floors' || f0 == null) return; const top = f1 == null ? f0 : f1, pre = String(r['Prefix'] || '').trim();
       const nums = expandNums(r['Unit numbers'], r['Units per floor']);   // 0.39.0: '01' with 10 per floor = 01 .. 10
+      if (!nums.length) return;   // 0.41.0 (R5): 0 units = no empty floor lines
       for (let fl = Math.min(f0, top); fl <= Math.max(f0, top) && fl - Math.min(f0, top) < 200; fl++) { floors[fl] = floors[fl] || [];
         nums.forEach(u => { const lab = fl + u; if (!floors[fl].some(x => x.label === lab)) floors[fl].push({ label: lab, floor: fl, level: 'unit', P: fileOf(lab, pre) }); }); } });
     const other = onFile.filter(o => !used[o.id]).map(o => ({ label: o.cols['Unit label'] || o.id, floor: o.cols['Floor'] || '', level: o.level, P: o }));   // on file, not on the grid
@@ -9510,7 +9511,7 @@ body.light-theme .proof-box{color:#0f172a}
     const rows = g.floors.map(r => '<div class="proof-cd-row proof-cd-floor" style="--n:' + Math.max(4, r.units.length) + '"><span class="proof-cd-fl">' + esc(r.floor) + '</span>' + r.units.map(put).join('') + '</div>').join('');   // 0.39.0 (no. 180, 4): one line per floor, all its units side by side
     const sp = g.specials.length ? '<div class="proof-cd-row proof-cd-sprow"><span class="proof-cd-fl">Rooms</span>' + g.specials.map(put).join('') + '</div>' : '';
     const ot = g.other.length ? '<div class="proof-cd-row proof-cd-other"><span class="proof-cd-fl">On file</span>' + g.other.map(put).join('') + '</div>' : '';
-    return '<div class="proof-cd">' + crumb + '<div class="proof-cd-list">' + (rows || '<div class="proof-empty">No floors for this building on the Place rules tab.</div>') + sp + ot + '</div></div>';
+    return '<div class="proof-cd">' + crumb + '<div class="proof-cd-list">' + (rows || '<div class="proof-empty">No floors for this building yet' + (ed ? ': tap Edit site to add them.' : ' on the Place rules tab.') + '</div>') + sp + ot + '</div></div>';
   } };
   function fitCondo() {   // 0.39.0 (no. 180, 4): a floor stays ONE line: the numbers shrink until none is cut (the CSS size first; bigger in landscape)
     document.querySelectorAll('#viewport-canvas-frame .proof-cd-floor').forEach(row => { const us = Array.from(row.querySelectorAll('.proof-cd-u')); if (!us.length) return;
@@ -9561,10 +9562,14 @@ body.light-theme .proof-box{color:#0f172a}
     const bl = condoBuildingsOf(S), rules = (ONFILE.rules || []).filter(r => String(r['Active'] || '').toLowerCase() !== 'no' && r['Site Id'] === S.id), rooms = [];
     const buildings = bl.map((B, i) => { const fr = rules.filter(r => r['Building Id'] === B.id && String(r['Kind']).toLowerCase() === 'floors'), f = fr[0] || {};
       rules.filter(r => r['Building Id'] === B.id && String(r['Kind']).toLowerCase() === 'special').forEach(r => rooms.push({ ruleId: r['Rule Id'], label: String(r['Label'] || ''), building: i + 1, floor: String(r['Floor from'] == null ? '' : r['Floor from']) }));
-      return { id: B.id, name: String(B.cols['Name'] || ''), address: String(B.cols['Address'] || ''), floorFrom: String(f['Floor from'] == null ? '' : f['Floor from']), floorTo: String(f['Floor to'] == null ? '' : f['Floor to']), units: String(f['Units per floor'] == null ? '' : f['Units per floor']), numbers: String(f['Unit numbers'] || ''), prefix: String(f['Prefix'] || ''), more: Math.max(0, fr.length - 1) }; });
+      return { id: B.id, name: String(B.cols['Name'] || ''), address: String(B.cols['Address'] || ''), floorFrom: String(f['Floor from'] == null ? '' : f['Floor from']), floorTo: String(f['Floor to'] == null ? '' : f['Floor to']), units: String(f['Units per floor'] == null || f['Units per floor'] === '' ? (listCount(f['Unit numbers']) >= 2 ? listCount(f['Unit numbers']) : '') : f['Units per floor']), numbers: String(f['Unit numbers'] || ''), prefix: String(f['Prefix'] || ''), more: Math.max(0, fr.length - 1) }; });   // 0.41.0 (B2): a list's count shows in Units per floor
     const d = { edit: S.id, id: S.id, name: String(S.cols['Name'] || ''), access: String(S.cols['Access codes'] || ''), buildings, rooms };
     d.orig = JSON.parse(JSON.stringify({ name: d.name, access: d.access, buildings, rooms })); return d;
   }
+  function paintSiteTitle() {   // 0.41.0 (B1): the builder's title on an EDIT reads 'Edit site: River Palm' (the sheet's words stay for a new site)
+    const sp = document.querySelector('#viewport-canvas-frame [data-pid="ns.title"] span.font-medium'); if (!sp) return;
+    if (!sp.dataset.sheet) sp.dataset.sheet = sp.textContent.trim(); const d = currentView === siteView ? sbGet() : null;
+    sp.textContent = d && d.edit ? 'Edit site: ' + String((d.orig || {}).name || d.name || '').trim() : sp.dataset.sheet; }
   function openSiteEdit(sid) {
     const S = placeById(sid); if (!S || S.level !== 'site' || !siteView) return;
     const old = lsGet(K_SITEEDIT, null); lsSet(K_SBMODE, 'edit');
@@ -9627,7 +9632,7 @@ body.light-theme .proof-box{color:#0f172a}
       + '<div class="proof-sb-two"><label>Floors from' + sbIn('b.' + i + '.floorFrom', x.floorFrom, 'e.g. 1', num) + '</label><label>to' + sbIn('b.' + i + '.floorTo', x.floorTo, 'e.g. 12', num) + '</label></div>'
       + '<div class="proof-sb-two"><label>Units per floor' + sbIn('b.' + i + '.units', x.units, 'e.g. 4', num) + '</label><label>Prefix' + sbIn('b.' + i + '.prefix', x.prefix, 'none') + '</label></div>'
       + '<label>Unit numbers (blank = 01, 02 …; one number = where they start)' + sbIn('b.' + i + '.numbers', x.numbers, 'e.g. 01 or 1 or A') + '</label>' + (x.more ? '<div class="proof-sb-warn">This building has ' + (x.more + 1) + ' floor rules on the sheet; only the first one is shown and changed here.</div>' : '') + '</div>').join('');
-    const opt = (sel) => d.buildings.map((x, i) => '<option value="' + (i + 1) + '"' + (Number(sel) === i + 1 ? ' selected' : '') + '>' + esc(String(x.name || '').trim() || 'Building ' + (i + 1)) + '</option>').join('');
+    const opt = (sel) => d.buildings.map((x, i) => x.remove ? '' : '<option value="' + (i + 1) + '"' + (Number(sel) === i + 1 ? ' selected' : '') + '>' + esc(String(x.name || '').trim() || 'Building ' + (i + 1)) + '</option>').join('');   // 0.41.0 (R6): not a building marked for removal
     const rm = d.rooms.map((r, i) => r.remove ? gone('Room', i, r, 'unr') : '<div class="proof-sb-card"><div class="proof-sb-h"><b>Room ' + (i + 1) + '</b><button type="button" class="proof-sb-x" data-sbx="rmr" data-i="' + i + '">Remove</button></div>'
       + '<label>Name' + sbIn('r.' + i + '.label', r.label, 'e.g. Lobby, Elevator room') + '</label><div class="proof-sb-two"><label>Building<select class="proof-sb-in" data-sb="r.' + i + '.building">' + opt(r.building) + '</select></label><label>Floor' + sbIn('r.' + i + '.floor', r.floor, 'e.g. 1', num) + '</label></div></div>').join('');
     const top = d.edit ? '<div class="proof-sb-edit">Editing ' + esc(String((d.orig || {}).name || d.name)) + '. Nothing is written until Save site.</div>' : '';   // 0.40.0
@@ -9638,7 +9643,9 @@ body.light-theme .proof-box{color:#0f172a}
       + '<div class="proof-sb-sum">' + sbSummary(d) + '</div>' + bottom + '</form></div>';
   } };
   const paintSb = () => { document.querySelectorAll('.proof-sb-sum').forEach(el => { const d = sbGet(); if (d) el.innerHTML = sbSummary(d); }); };
-  const sbSet = (k, v) => { const d = sbGet(); if (!d) return; const m = /^(b|r)\.(\d+)\.(\w+)$/.exec(k); if (m) { const L2 = m[1] === 'b' ? d.buildings : d.rooms, o = L2[+m[2]]; if (o) o[m[3]] = v; } else if (k === 'name' || k === 'access') d[k] = v; sbKeep(); };
+  const sbSet = (k, v) => { const d = sbGet(); if (!d) return; const m = /^(b|r)\.(\d+)\.(\w+)$/.exec(k); if (m) { const L2 = m[1] === 'b' ? d.buildings : d.rooms, o = L2[+m[2]]; if (o) { o[m[3]] = v;
+      if (m[1] === 'b' && m[3] === 'numbers' && listCount(v) >= 2 && !String(o.units || '').trim()) { o.units = String(listCount(v)); const u = document.querySelector('#viewport-canvas-frame [data-sb="b.' + m[2] + '.units"]'); if (u) u.value = o.units; } } }   // 0.41.0 (B2): a list fills an empty Units per floor
+    else if (k === 'name' || k === 'access') d[k] = v; sbKeep(); };
   document.addEventListener('input', e => { const t = e.target; if (t && t.dataset && t.dataset.sb) { sbSet(t.dataset.sb, t.value); paintSb(); } });
   document.addEventListener('change', e => { const t = e.target; if (t && t.dataset && t.dataset.sb) { sbSet(t.dataset.sb, t.value); paintSb(); } });
   document.addEventListener('click', e => {
@@ -9810,7 +9817,7 @@ body.light-theme .proof-box{color:#0f172a}
   let trayPinned = false;
   try { const tt = toggleTray; toggleTray = function () { const sc = document.getElementById('viewport-outer-scroller'); const wasPinned = trayPinned; trayPinned = !document.body.classList.contains('proof-tray-open') && !!(sc && sc.scrollTop > 4);
     if (trayPinned || wasPinned) keepPlace(() => tt.apply(this, arguments)); else tt.apply(this, arguments); }; } catch (e) {}
-  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; try { closeWheel(); closeAsk(); closePick(); } catch (e) {}   /* 0.12.2 (R6) */ try { applyEquip(); } catch (e) {} /* C4b */ const r = rc.apply(this, arguments); try { decorate(); } catch (e) {} try { paintFolds(); } catch (e) {} try { paintInc(); calcCells().forEach(paintCalcBox); paintCm(); } catch (e) {} try { paintClamp(); fitBoxLines(); syncMirrors(); pinTray(); } catch (e) {} /* 0.22.2 */ try { fitContacts(); } catch (e) {} /* 0.34.0 (B6) */ try { paintDebug(); } catch (e) {} /* 0.22.4 */ try { paintEmptyTa(); } catch (e) {} /* 0.23.0 */ try { paintSpec(); } catch (e) {} /* C7a */ try { paintNoCust(); } catch (e) {} /* 0.22.3 */ try { paintMissing(); } catch (e) {} /* 0.26.1 */ try { fitCondo(); } catch (e) {} /* 0.39.0 */ return r; }; }
+  { const rc = renderCanvas; renderCanvas = function () { window.__proofRepaints++; try { closeWheel(); closeAsk(); closePick(); } catch (e) {}   /* 0.12.2 (R6) */ try { applyEquip(); } catch (e) {} /* C4b */ const r = rc.apply(this, arguments); try { decorate(); } catch (e) {} try { paintFolds(); } catch (e) {} try { paintInc(); calcCells().forEach(paintCalcBox); paintCm(); } catch (e) {} try { paintClamp(); fitBoxLines(); syncMirrors(); pinTray(); } catch (e) {} /* 0.22.2 */ try { fitContacts(); } catch (e) {} /* 0.34.0 (B6) */ try { paintDebug(); } catch (e) {} /* 0.22.4 */ try { paintEmptyTa(); } catch (e) {} /* 0.23.0 */ try { paintSpec(); } catch (e) {} /* C7a */ try { paintNoCust(); } catch (e) {} /* 0.22.3 */ try { paintMissing(); } catch (e) {} /* 0.26.1 */ try { fitCondo(); } catch (e) {} /* 0.39.0 */ try { paintSiteTitle(); } catch (e) {} /* 0.41.0 */ return r; }; }
 
   document.addEventListener('input', e => {
     const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b) return;
@@ -9840,13 +9847,18 @@ body.light-theme .proof-box{color:#0f172a}
   }
   function loadSite(x, extra) {
     const cur = (call.__file && call.__file.place) || call.__placeId || '', nid = x ? pidOf(x) : '';
-    if (x && call.__visit && cur && nid && cur !== nid) {
-      ask('This call is saved for ' + placeWord(cur) + '. Start a new call for ' + placeWord(nid, x) + '?', [['Start a new call', () => {
+    if (x && (call.__visit || enteredSomething()) && cur && nid && cur !== nid) {   // 0.41.0 (R8): entries typed but not saved yet ask too
+      ask((call.__visit ? 'This call is saved for ' + placeWord(cur) : 'This call has entries for ' + placeWord(cur) + ' (not saved yet)') + '. Start a new call for ' + placeWord(nid, x) + '?', [['Start a new call', () => {
         const go = () => { freshCall(); loadSiteNow(x, extra); };
         if (allOpenCount()) askAtClose(go); else go(); }], ['Stay on this call', () => {}]]);
       return;
     }
     loadSiteNow(x, extra);
+  }
+  function enteredSomething() {   // 0.41.0 (R8): anything the tech typed (not the place's facts from the file, not untouched defaults or today's date)
+    const fv = (call.__file && call.__file.values) || {};
+    return Object.keys(call).some(k => { if (k.indexOf('__') === 0 || k === 'f:callType' || k === 'f:system') return false; const v = cmpTrim(call[k]); if (!v) return false;   // the call type picked is not an entry
+      if (v === cmpTrim(fv[k] == null ? '' : fv[k])) return false; try { if (untouchedDefault(k)) return false; } catch (e) {} return true; });
   }
   function freshCall() {   // New without the questions: the old call is queued (saved), then a new one with today's date
     try { saveCall('new call'); } catch (e) {} try { closeCard(); } catch (e) {} newArmed = 0; prevCall = null;
@@ -9854,7 +9866,7 @@ body.light-theme .proof-box{color:#0f172a}
   }
   function loadSiteNow(x, extra) {
     if (x && x.nu) call.__newUnit = x.nu; else if (!(x && x.place && x.place.pending)) delete call.__newUnit;   // 0.36.0 (C7e): a unit in waiting only for its own pick
-    try { const lc = call.__loc, pid = x && x.place ? x.place.id : ''; if (lc && ((lc.place && lc.place !== pid) || Date.now() - (lc.at || 0) > LOC_FRESH)) delete call.__loc; } catch (e) {}   // 0.38.0: a location taken for another place, or old, is not this call's
+    try { const lc = call.__loc, pid = x ? pidOf(x) : ''; if (lc && ((lc.place && lc.place !== pid) || Date.now() - (lc.at || 0) > LOC_FRESH)) delete call.__loc; else if (lc && !lc.place && pid) lc.place = pid; } catch (e) {}   // 0.41.0 (R7): a fix taken before the pick belongs to the FIRST place picked   // 0.38.0: a location taken for another place, or old, is not this call's
     try { closeCard(); } catch (e) {} try { flowClose(); addsysFor = null; } catch (e) {}   // 0.30.1 (R7): a new pick closes an open card (0.33.1: and the Add system sheet)
     // 0.13.1 (R6): every house-Scope Field is cleared first (old tabs: the Find fill Fields), then filled from the site
     const hf = houseFields || Object.keys(FIND_FILL_FALLBACK).map(id => ({ id, find: FIND_FILL_FALLBACK[id] }));
@@ -10577,6 +10589,11 @@ body.light-theme .proof-box{color:#0f172a}
   }
   const alnum = t => String(t || '').toLowerCase().replace(/[^a-z0-9]/g, '');
   function editDist(a, b) { const m = a.length, n = b.length; let prev = Array.from({ length: n + 1 }, (_, j) => j); for (let i = 1; i <= m; i++) { const cur = [i]; for (let j = 1; j <= n; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); prev = cur; } return prev[n]; }
+  function ownOnly(r, typed) {   // 0.41.0 (R4): the box minus the building / site parts = the unit's whole own part (its earlier own text included)
+    const like = (a, b) => { const x = alnum(a), y = alnum(b); return x === y || (x && y && editDist(x, y) <= Math.max(2, Math.floor(Math.max(x.length, y.length) / 4))); };
+    const inhParts = []; (r.inh || []).forEach(t => t.split(/\s*\u00b7\s*/).forEach(x => { if (x.trim()) inhParts.push(x.trim()); }));
+    return String(typed || '').split(/\s*\u00b7\s*/).map(x => x.trim()).filter(x => x && !inhParts.some(y => like(x, y))).join(' \u00b7 ');
+  }
   function ownPartOf(r, typed) {   // 0.30.0 (R3a): from what is in the box, only the unit's own new text (the building / site parts, even retyped with a slip, never go to the unit row)
     const like = (a, b) => { const x = alnum(a), y = alnum(b); return x === y || (x && y && editDist(x, y) <= Math.max(2, Math.floor(Math.max(x.length, y.length) / 4))); };
     const inhParts = []; (r.inh || []).forEach(t => t.split(/\s*\u00b7\s*/).forEach(x => { if (x.trim()) inhParts.push(x.trim()); }));
@@ -11327,7 +11344,7 @@ body.light-theme .proof-box{color:#0f172a}
   const badgeText = () => 'v' + PROOF_VERSION + (PRETEND ? ' (acting as ' + PRETEND + ')' : '');
   // 0.30.0 (no. 168, CARRY C7 row 30): the badge also shows the TEST SCRIPT that answers: 'v0.30.0 · D03' (D + two digits = test-door-N, from
   // its answer to the start ping and to every save); the D part is amber when this page needs a newer script; a tap says which and gives the link
-  const DOOR_NEED = 9, K_DOOR = 'proof-containers.door.v1', RAW_GS = 'https://raw.githubusercontent.com/Platts-AC/pmi-inspection/main/proof-containers/test-script/Code.gs';
+  const DOOR_NEED = 10, K_DOOR = 'proof-containers.door.v1', RAW_GS = 'https://raw.githubusercontent.com/Platts-AC/pmi-inspection/main/proof-containers/test-script/Code.gs';
   let doorSeen = String(lsGet(K_DOOR, '') || '');
   const doorNum = v => { const m = /^test-door-(\d+)$/.exec(String(v || '')); return m ? Number(m[1]) : 0; };
   const dd = n => 'D' + String(n).padStart(2, '0');
@@ -11541,6 +11558,10 @@ body.light-theme .proof-box{color:#0f172a}
     const fv = fileValOf(id), ev = call[id] == null ? '' : String(call[id]);
     { const pd = (call.__diffs || {})[id]; if (pd && pd.plan) { if (cmpTrim(ev) !== cmpTrim(pd.entered)) delete call.__diffs[id]; return; } }   // 0.33.1 (R3): a new piece's line the sheet changed: kept until retyped or settled
     if (planLine(F)) { if (call.__adds) delete call.__adds[id]; if (call.__diffs) delete call.__diffs[id]; return; }   // 0.33.1: a NEW piece's line is not compared with the file (its own changes go as addPiece)
+    { const r1 = call.__file && call.__file.records && call.__file.records[id];   // 0.41.0 (R4): an inherited line this call made the unit's own part of: compare only the own part
+      if (r1 && r1.inh && call.__mine && call.__mine[id] != null) { const own = ownOnly(r1, ev), mine = cmpTrim(call.__mine[id]); if (call.__adds) delete call.__adds[id]; call.__diffs = call.__diffs || {};
+        if (own === mine) { delete call.__diffs[id]; return; } const d0 = call.__diffs[id]; if (d0 && d0.mine && d0.entered === own) return;
+        call.__diffs[id] = { id, name: F.name, file: mine, entered: own, rule: 'mine', hint: '', choice: 'typo', mine: true, at: Date.now(), tab: F.saveTab, cols: F.saveCols }; return; } }
     if (call.__mine && call.__mine[id] != null && cmpTrim(call.__mine[id]) === cmpTrim(fv) && cmpTrim(fv)) {   // 0.39.0 (no. 180, 3): the file holds what THIS call sent: a later edit = a quiet correction (no card, never an add)
       if (call.__adds) delete call.__adds[id]; call.__diffs = call.__diffs || {};
       if (!cmpTrim(ev) || cmpTrim(ev) === cmpTrim(fv)) { delete call.__diffs[id]; return; }
@@ -11638,7 +11659,8 @@ body.light-theme .proof-box{color:#0f172a}
     list.forEach(d => { if (d.applied) return; const r = recs[d.id]; if (!r || /^NU-/.test(String(r.id || ''))) return;   /* 0.36.0: a unit not on file yet takes its facts in newPlace */
       let nv = String(d.entered == null ? '' : d.entered).trim(); const fv = String(d.file == null ? '' : d.file).trim();   // 0.30.2: trimmed
       let ov = fv;
-      if (r.inh) { if (d.choice !== 'add') return; nv = ownPartOf(r, nv); ov = r.own || ''; if (!nv) return; }   // 0.30.0 (R3a): a combined field: only the place's own part, guarded by its own old text
+      if (r.inh && d.mine) { ov = fv; }   // 0.41.0 (R4): the unit's own part as a whole, guarded by what this call sent
+      else if (r.inh) { if (d.choice !== 'add') return; nv = ownPartOf(r, nv); ov = r.own || ''; if (!nv) return; }   // 0.30.0 (R3a): a combined field: only the place's own part, guarded by its own old text
       else if (d.choice === 'add' && d.rule === 'add' && fv && !/^(Phone|Email) \d+$/.test(r.col) && nv.indexOf(fv) >= 0) nv = nv.replace(fv, '').replace(/^[\s\u00b7,;]+|[\s\u00b7,;]+$/g, '');   // only the new part is added
       const o = { key: d.id, tab: r.tab, record: r.id, col: r.col, old: ov, new: nv, reason: d.followup && d.choice !== 'add' ? 'Follow-up settled' : REASON[d.choice], choice: d.choice, replace: d.choice === 'add' && d.rule !== 'add' };   // 0.29.0: a settled follow-up
       if (d.choice === 'newEquip') { o.newId = 'EQ-' + String(V.id || '').replace(/^V-/, '') + '-' + String(r.slot || 'piece').replace(/[^A-Za-z0-9]/g, ''); o.piece = {};
@@ -11686,9 +11708,12 @@ body.light-theme .proof-box{color:#0f172a}
     if (f.place === old) f.place = pid;
     Object.keys(f.records || {}).forEach(k => { const r0 = f.records[k]; if (r0.tab !== 'Places' || r0.id !== old) return; r0.id = pid;
       if (sent && !r0.inh) { if (r0.col in sent) { const sv = String(sent[r0.col] == null ? '' : sent[r0.col]); if (f.values) f.values[k] = sv; c.__mine = c.__mine || {}; c.__mine[k] = sv; } redo.push(k); }
+      else if (sent && r0.inh) { const sv = r0.col in sent ? String(sent[r0.col] == null ? '' : sent[r0.col]).trim() : '';   // 0.41.0 (R4): an inherited line (unit codes / notes): on file = the building's part + the own part SENT
+        if (sv) { r0.own = r0.own ? r0.own + ' \u00b7 ' + sv : sv; if (f.values) f.values[k] = [String(f.values[k] == null ? '' : f.values[k]).trim(), sv].filter(Boolean).join(' \u00b7 '); c.__mine = c.__mine || {}; c.__mine[k] = r0.own; } redo.push(k); }
       else if (c[k] != null && String(c[k]).trim()) { const v = String(c[k]).trim(); if (r0.inh) { const own = ownPartOf(r0, v); if (own) r0.own = r0.own ? r0.own + ' \u00b7 ' + own : own; } if (f.values) f.values[k] = String(c[k]); }
       ['__diffs', '__adds'].forEach(b => { if (c[b] && c[b][k]) delete c[b][k]; }); });
-    if (c === call) redo.forEach(k => { try { refreshDiff(k); } catch (e) {} });
+    if (c === call) { redo.forEach(k => { try { refreshDiff(k); } catch (e) {} });
+      if (redo.some(k => (c.__diffs && c.__diffs[k] && c.__diffs[k].mine) || (c.__adds && c.__adds[k]))) setTimeout(() => { try { saveCall('follow-up'); } catch (e) {} }, 0); }   // 0.41.0 (R4): what was typed meanwhile goes at once
     if (ONFILE && !ONFILE.list.find(o => o.id === pid) && nu.parent) { const cols = { 'Place Id': pid, 'Level': nu.level || 'unit', 'Parent Id': nu.parent, 'Unit label': nu.label || '', 'Floor': String(nu.floor == null ? '' : nu.floor) };
       ONFILE.list.push({ id: pid, level: nu.level || 'unit', parent: nu.parent, active: true, row: 0, cols }); }   // shown teal on the grid until the next sheet read brings the real row
     delete c.__newUnit;
@@ -11712,6 +11737,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (c.status === 'applied' || c.status === 'already') { d.applied = true; d.conflict = '';
         if (f.values) f.values[c.key] = String(d.entered);
         if (call.__mine && c.key in call.__mine) call.__mine[c.key] = String(d.entered);   // 0.39.0 (no. 180, 3): still this call's own text
+        { const r2 = f.records && f.records[c.key]; if (r2 && r2.inh && d.mine) { r2.own = String(d.entered); if (f.values) f.values[c.key] = (r2.inh || []).concat([String(d.entered)]).filter(Boolean).join(' \u00b7 '); } }   // 0.41.0 (R4)
         if (c.newId && f.records) { const r0 = f.records[c.key]; if (r0) { const oldId = r0.id; Object.keys(f.records).forEach(k => { const r2 = f.records[k]; if (r2.tab === 'Equipment' && r2.id === oldId) { r2.id = c.newId; if (f.values && call[k] != null) f.values[k] = String(call[k]); if (f.spec) delete f.spec[k]; } });
           if (f.pieces && r0.slot) f.pieces[r0.slot] = c.newId; } }
         if (call.__adds && call.__adds[c.key] === d) delete call.__adds[c.key]; else if (call.__diffs) delete call.__diffs[c.key];
@@ -12009,6 +12035,9 @@ body.light-theme .proof-box{color:#0f172a}
     let lc = null; try { lc = locForSave(); } catch (e) {} if (lc) { fixed['Lat'] = lc.lat; fixed['Lng'] = lc.lng; body.loc = { lat: lc.lat, lng: lc.lng, acc: lc.acc, how: lc.how }; if (!lc.place && fixed['Place Id']) call.__loc.place = fixed['Place Id']; }   // 0.38.0 (C7e): Location at save
     return body;
   }
+  var holdBox = null;   // 0.41.0 (B3): the call box being typed in and its value when entered
+  document.addEventListener('focusin', e => { const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b || !b.dataset.key || b.dataset.key in find || isDraft(b.dataset.key)) return; holdBox = { key: b.dataset.key, val: call[b.dataset.key] }; });
+  document.addEventListener('focusout', e => { const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b || !holdBox || b.dataset.key !== holdBox.key) return; const ch = call[holdBox.key] !== holdBox.val; holdBox = null; if (ch) setTimeout(() => { try { saveCall('left box'); } catch (e2) {} }, 0); });   // leaving the box sends it
   function saveCall(why) {   // queue the call when it changed since its last queued copy; then send
     if (!savingOn() || TAB.passive) return;
     try { silentLoc(); } catch (e) {}   // 0.38.0 (C7e): 'Silent read at save if I did not use GPS'
@@ -12016,7 +12045,13 @@ body.light-theme .proof-box{color:#0f172a}
     try { if (call.__visit) syncFollow(); } catch (e) {}   // 0.29.0 (C7c-3)
     if (!scriptUrl()) { saveSt = { st: 'off', why: '', at: '', missing: [] }; paintChip(); return; }
     const last = lsGet(K_SAVED, {}) || {}; let ob = null;
-    rowBodies(why).forEach(body => {   // 0.32.0 (C7d): one row per system with entries
+    // 0.41.0 (B3): the 30 s timer never sends the box being typed in: that box goes with the value it had when the tech entered it; the new
+    // text goes when the box is left, the chip is tapped, New / Find, or the app is hidden. The phone keeps every letter at once (K.call).
+    const ae = document.activeElement, hk = why === 'timer' && holdBox && ae && ae.classList && ae.classList.contains('proof-box') && ae.dataset.key === holdBox.key && holdBox.key in call && call[holdBox.key] !== holdBox.val ? holdBox.key : '';
+    const keepNow = hk ? call[hk] : null; if (hk) call[hk] = holdBox.val;
+    let bodies = []; try { bodies = rowBodies(why); } finally { if (hk) { call[hk] = keepNow; lsSet(K.call, call); } }
+    if (hk) bodies.forEach(bd => { if (Array.isArray(bd.changes)) bd.changes = bd.changes.filter(c => c.key !== hk); });   // nor its change for the file (a quiet Added / a correction)
+    bodies.forEach(body => {   // 0.32.0 (C7d): one row per system with entries
       const sig = JSON.stringify(body); if (last[body.visitId] === sig && !/^tap/.test(why)) return;
       try { keepPending(body.visitId, body.changes && body.changes.length ? call : null, callView); } catch (e) {}   // 0.30.1 (R9): kept until the door answers
       ob = (ob || outbox()).filter(x => x.vid !== body.visitId || x.inFlight);   // the newest copy per Visit Id
@@ -12383,7 +12418,7 @@ body.light-theme .proof-box{color:#0f172a}
 
   window.PMIProof = { build, fromCsv, load, reload, saveTweaks, clearTweaks, nextProfile, changedFrom: () => changedFrom(base), info: () => info, get device() { return DEVICE; }, PROFILES, HOUSES, version: PROOF_VERSION,
     openBar, closeBar, structChanged, propsOf, checkVersion, say, barSync: () => barSync(),
-    c1: { matchCallType: q => matchCallType(q).map(x => ({ type: x.type, tier: x.tier, via: x.via })) },   // C1b (tests; the photo reader later)
+    c1: { matchCallType: q => matchCallType(q).map(x => ({ type: x.type, tier: x.tier, via: x.via })), saveNow: why => saveCall(why || 'timer') },   // 0.41.0: tests (the 30 s timer)   // C1b (tests; the photo reader later)
     b2: { applyVis, revealSection, hideSection, setTemplate, callView: () => callView },
     store: { ready: () => STORE_READY, state: () => ({ on: STORE.on, booted: STORE.booted, failed: STORE.failed, moved: STORE.moved, fromIdb: STORE.fromIdb, keys: Object.keys(STORE.mem).length }), put: lsSet, get: lsGet } };   // 0.20.0 (tests)   // round B2 (tests)
   window.addEventListener('DOMContentLoaded', () => {
