@@ -1,5 +1,7 @@
 // =====================================================================================================
 // PMI container proof (TEST) - Apps Script web app for the TEST sheet 'PMI container proof (test)' ONLY.
+// test-door-12 (proof 0.47.0, Prompts no. 192): saveVisit keeps a Visits row whose Status is 'Test junk' (like 'Done'): a phone save never
+// turns it back to 'In progress'.
 // test-door-11 (proof 0.42.0, Prompts no. 185, round C7f: HISTORY): op 'history' = the newest visits of some places (a house, a unit, a
 // building and all its units), every filled cell of each row, read only; it reads the Place Id / Date / Time columns to find them and
 // then only those rows, so it stays quick as Visits grows; a tab named 'Visits (legacy)', if there is one, is read the same way and its
@@ -52,7 +54,7 @@ var ACCENTS = { '': 1, cyan: 1, emerald: 1, amber: 1, purple: 1, rose: 1 };
 var MAX_BODY = 20000;          // characters in one save
 var MAX_ROWS_PER_SAVE = 100;   // tweak rows in one save
 var MAX_TOTAL_ROWS = 2000;     // tweak rows on the whole tab
-var SCRIPT_VERSION = 'test-door-11';
+var SCRIPT_VERSION = 'test-door-12';
 var NUM_FMT = 'General';   // test-door-4: the Automatic number format ('35', '2.5'); 0.#### shows a bare dot ('35.')
 var VISITS_TAB = 'Visits';
 var VISITS_FIXED = ['Visit Id', 'Call token', 'Date', 'Time', 'Tech', 'Call type', 'Template', 'Place Id', 'System Id', 'System label', 'Status', 'Team tag', 'Merged into', 'Revision of', 'Follow-up', 'Area temp', 'Lat', 'Lng', 'Created', 'Last saved', 'Report text'];   // test-door-11: + Report text
@@ -215,7 +217,7 @@ function visitsSave_(b, body) {
       if (c === 'Visit Id') return put(i, vid);
       if (c === 'Last saved') return put(i, at);
       if (c === 'Created') return put(i, String(cur[i] || '') || String(fixed[c] || at));
-      if (c === 'Status') { var was = String(cur[i] || ''); return put(i, was === 'Done' ? 'Done' : String(fixed[c] || 'In progress')); }
+      if (c === 'Status') { var was = String(cur[i] || ''); return put(i, was === 'Done' || /^test junk$/i.test(was) ? was : String(fixed[c] || 'In progress')); }   // test-door-12: 'Test junk' is kept like 'Done'
       if (fixed[c] != null) put(i, fixed[c], c === 'Lat' || c === 'Lng' || c === 'Area temp'); });
     vals.forEach(function (x) { if (!x || typeof x !== 'object') return;
       var key = (x.kind === 'rating' ? 'PMI rating ' : 'PMI field ') + String(x.id || ''), i = byNote[key];
