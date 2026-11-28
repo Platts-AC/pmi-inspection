@@ -3794,7 +3794,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.52.0', stamp: '2026-11-28 05:06:11', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.52.0', stamp: '2026-11-28 05:24:30', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -10011,7 +10011,7 @@ body.light-theme .proof-box{color:#0f172a}
   let holdT = null, holdAt = null, holdSwallow = null, holdShown = null;   // 0.52.0 (PART F): holdShown = the button whose bubble shows; its release is swallowed
   function holdBubble(el, text) { let bb = document.getElementById('proof-hold'); if (!bb) { bb = document.createElement('div'); bb.id = 'proof-hold'; bb.setAttribute('role', 'tooltip'); document.body.appendChild(bb); }
     bb.textContent = text; bb.hidden = false; const r = el.getBoundingClientRect(), w = Math.min(innerWidth - 16, Math.max(60, bb.offsetWidth));
-    bb.style.left = Math.max(8, Math.min(innerWidth - w - 8, r.left + r.width / 2 - w / 2)) + 'px'; const h = bb.offsetHeight || 28, above = r.top - h - 8; bb.style.top = (above >= 0 ? above : Math.max(0, r.top - h)) + 'px';   /* above, also on the top row (it may touch the button's top edge, never under the thumb) */   // ABOVE the button (not under the thumb); below only with no room
+    bb.style.left = Math.max(8, Math.min(innerWidth - w - 8, r.left + r.width / 2 - w / 2)) + 'px'; const h = bb.offsetHeight || 28, above = r.top - h - 8; bb.style.top = (above >= 4 ? above : r.bottom + 8) + 'px';   /* above the button; below it only when there is no room (top row), never on the button */   // ABOVE the button (not under the thumb); below only with no room
     clearTimeout(bb.__t); bb.__t = setTimeout(() => { bb.hidden = true; }, 1800); }
   const holdTarget = t => t && t.closest && t.closest('#viewport-canvas-frame button, #viewport-canvas-frame .proof-savechip');
   document.addEventListener('pointerdown', e => { const el = holdTarget(e.target); clearTimeout(holdT); if (!el || el.disabled) return; holdAt = { x: e.clientX, y: e.clientY, el };

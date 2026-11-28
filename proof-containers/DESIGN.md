@@ -400,7 +400,7 @@
 - B: a box left a moment before Find (history) starts is saved first (pendLeft, flushed by saveBeforeHist). Each rating keeps its own source: call.__from['sk:id#col'] (old one-key sources still read).
 - C: the section gear: 40 x 40, fixed (no press jump, no flash), title space reserved (proof-head-title, ellipsis); Text size touches the Section's labels and boxes only; Value width skips the small name box.
 - D: Widths like follows a chain (max 8); a loop, a Line with no widths, other Cells = footer notes.
-- F: press and hold: the bubble shows above the button (also on the top row); only the held button's release is swallowed; a cancelled hold clears it.
+- F: press and hold: the bubble shows above the button (just below it on the top row, never on it); only the held button's release is swallowed; a cancelled hold clears it.
 - G: a busy button with an icon / small name keeps them (no 'Reloading' text swap).
 - H: 'rated N' sits left of the box's unit (sub label).
 - I: Fit text works on multi-line boxes (textarea: scrollHeight vs clientHeight).
