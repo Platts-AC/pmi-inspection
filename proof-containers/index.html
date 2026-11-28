@@ -947,6 +947,17 @@ body.light-theme .proof-hi-tick{background:#fff;border-color:#94a3b8;color:#0f17
 body.light-theme #proof-fmenu,body.light-theme #proof-ask{background:#f8fafc;color:#0f172a}
 body.light-theme #proof-fmenu button,body.light-theme #proof-ask button{background:#fff;color:#0f172a;border-color:#cbd5e1}
 body.light-theme .proof-fh-bar{background:#fef3c7;color:#78350f}
+/* 0.51.0 (no. 195 stage 3): the section gear and its menu (PART G); placeholder lightness (PART I) */
+.proof-gear{position:absolute;right:4px;top:50%;transform:translateY(-50%);z-index:7;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid #2b4f7e;background:#0f213a;color:#94a3b8;padding:0}
+body.light-theme .proof-gear{background:#fff;border-color:#cbd5e1;color:#334155}
+#proof-gmenu{position:fixed;left:8px;right:8px;bottom:12px;z-index:86;display:flex;flex-direction:column;gap:8px;background:#0b1626;border:1px solid #38bdf8;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.6);padding:12px;font:15px system-ui,sans-serif;color:#e2e8f0}
+#proof-gmenu button{min-height:40px;border-radius:8px;border:1px solid #2b4f7e;background:#0f213a;color:#e2e8f0;font:600 15px system-ui,sans-serif;text-align:left;padding:6px 10px}
+#proof-gmenu button small{display:block;font-weight:400;font-size:12px;color:#94a3b8}
+#proof-gmenu .pg-step{display:flex;align-items:center;gap:8px}#proof-gmenu .pg-step span{flex:1}#proof-gmenu .pg-step button{width:48px;text-align:center;font-size:20px;padding:0}
+#proof-gmenu .pg-now{font-size:12px;color:#94a3b8}
+body.light-theme #proof-gmenu{background:#f8fafc;color:#0f172a}body.light-theme #proof-gmenu button{background:#fff;color:#0f172a;border-color:#cbd5e1}
+#viewport-canvas-frame .proof-box::placeholder{color:rgba(148,163,184,var(--ph-a,.55));opacity:1}
+body.light-theme #viewport-canvas-frame .proof-box::placeholder{color:rgba(71,85,105,var(--ph-a,.55))}
 .proof-fh-hide{visibility:hidden!important;pointer-events:none!important}.proof-fh-bar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 8px;padding:6px 10px;border:1px solid #5eead4;border-radius:8px;background:#06302c;color:#ccfbf1;font-size:13px}.proof-fh-bar[hidden]{display:none}.proof-fh-bar button{min-height:30px;padding:2px 12px;border:1px solid #5eead4;border-radius:15px;background:transparent;color:#5eead4;font:600 12px system-ui,sans-serif}#viewport-canvas-frame .proof-systems button.hist{color:#5eead4;background:transparent;padding:2px 10px}
 .proof-results .proof-hit .proof-why{float:right;margin-left:8px;font-style:normal;font-size:11px;line-height:20px;color:#fbbf24}
 .proof-results .proof-hit i{font-size:11px;color:#94a3b8}
@@ -3771,7 +3782,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.50.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.51.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3781,7 +3792,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.50.0', stamp: '2026-11-27 19:30:26', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.51.0', stamp: '2026-11-27 20:22:04', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8458,7 +8469,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.50.0';
+  const PROOF_VERSION = '0.51.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8477,7 +8488,7 @@ body.light-theme .proof-box{color:#0f172a}
   const findFillOf = p => p.proofField ? (p.proofField.find || '') : (FIND_BOX_FILL[p.proofKey] || FIND_FILL_FALLBACK[p.proofKey] || '');
   const TYPES = { button: 1, text: 1, logo: 1, badge: 1, picture: 1 };   // picture: 0.50.0 (no. 195, PART B)
   const TOOL_ACTIONS = { 'reload-layout': 1, 'proof-save-tweaks': 1, 'proof-clear-tweaks': 1, 'proof-profile': 1, 'toggle-tray': 1, 'proof-adjust': 1, 'refresh-page': 1 };
-  const ACTIONS = Object.assign({ 'toggle-theme': 1, 'hist-copy': 1, /* 0.50.0 (PARTS E, L) */ 'proof-badge': 1, 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1, 'new-call': 1, 'reveal-hidden': 1, 'start-new-customer': 1, 'save-new-customer': 1, 'open-call-type': 1, 'call-type-back': 1, 'condo-back': 1, 'history-back': 1, 'open-history': 1, 'site-back': 1, 'save-site': 1, 'use-location': 1, 'location-menu': 1, 'near-me': 1, 'copy-report': 1, 'open-followups': 1 },   /* 0.29.0: open-followups */ TOOL_ACTIONS);   // C2b: copy-report   // 0.14.1: call-type-back   // C1b: open-call-type   // C1a: Blueprint P8 (Stage C)
+  const ACTIONS = Object.assign({ 'toggle-theme': 1, 'hist-copy': 1, 'ph-minus': 1, 'ph-plus': 1, /* 0.51.0 */ /* 0.50.0 (PARTS E, L) */ 'proof-badge': 1, 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1, 'new-call': 1, 'reveal-hidden': 1, 'start-new-customer': 1, 'save-new-customer': 1, 'open-call-type': 1, 'call-type-back': 1, 'condo-back': 1, 'history-back': 1, 'open-history': 1, 'site-back': 1, 'save-site': 1, 'use-location': 1, 'location-menu': 1, 'near-me': 1, 'copy-report': 1, 'open-followups': 1 },   /* 0.29.0: open-followups */ TOOL_ACTIONS);   // C2b: copy-report   // 0.14.1: call-type-back   // C1b: open-call-type   // C1a: Blueprint P8 (Stage C)
   const TPL_NAME = /^[A-Za-z0-9][A-Za-z0-9 _.-]{0,29}$/, TPL_ACTION = /^set-template:([A-Za-z0-9][A-Za-z0-9 _.-]{0,29})?$/;   // round B2: set-template:<name> (set-template: alone = no template)
   // What a tweak can change (DESIGN.md). Each rule turns a value into its normal text form, or returns an error.
   const PLACES = { 'top-left': ['left', 'top'], 'top-center': ['center', 'top'], 'top-right': ['right', 'top'], 'middle-left': ['left', 'middle'], 'middle': ['center', 'middle'],
@@ -8592,8 +8603,9 @@ body.light-theme .proof-box{color:#0f172a}
   // Customer required: no / remind (start value: blank or missing) / yes
   let SETTINGS = {};
   const SETTING_VALUES = { 'customer required': ['no', 'remind', 'yes'], 'debug boxes': ['no', 'yes'], 'report format': ['rated first', 'within range', 'measured first', 'slash'],
-    'script url': '*', 'save chip': '*', 'tech name': '*', 'location at save': ['only when i used gps on the call', 'silent read at save if i did not use gps', 'off'], 'reveal chip': ['on', 'off'] };   // 0.47.0 (no. 192, CARRY 45 (2)): Reveal chip   // 0.38.0 (C7e): Location at save   // '*' = free text, kept as typed (C7b, 0.25.0)   // Debug boxes: 0.22.4; Report format: 0.24.0 (C7a)
-  const SETTING_START = { 'customer required': 'remind', 'debug boxes': 'no', 'report format': 'rated first', 'script url': '', 'save chip': 'Saved {time}', 'tech name': '', 'location at save': 'only when i used gps on the call', 'reveal chip': 'on' };
+    'script url': '*', 'save chip': '*', 'tech name': '*', 'location at save': ['only when i used gps on the call', 'silent read at save if i did not use gps', 'off'], 'reveal chip': ['on', 'off'],
+    'section gear': ['on', 'off'], 'placeholder lightness': ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100'], 'find card main': '*', 'find card lines': '*', 'history card lines': '*' };   // 0.51.0 (no. 195 stage 3, PARTS G, I, K)   // 0.47.0 (no. 192, CARRY 45 (2)): Reveal chip   // 0.38.0 (C7e): Location at save   // '*' = free text, kept as typed (C7b, 0.25.0)   // Debug boxes: 0.22.4; Report format: 0.24.0 (C7a)
+  const SETTING_START = { 'customer required': 'remind', 'debug boxes': 'no', 'report format': 'rated first', 'script url': '', 'save chip': 'Saved {time}', 'tech name': '', 'location at save': 'only when i used gps on the call', 'reveal chip': 'on', 'section gear': 'on', 'placeholder lightness': '50', 'find card main': '', 'find card lines': '', 'history card lines': '' };
   function parseSettings(rows, notes) {
     const out = {}; (rows || []).forEach((r, i) => { const k = g2(r, 'Setting').toLowerCase(), v = g2(r, 'Value').toLowerCase(); if (!k) return;
       if (!SETTING_VALUES[k]) { notes.push('Settings row ' + (i + 2) + ': "' + g2(r, 'Setting') + '" is not a setting this page knows; not used.'); return; }
@@ -8978,7 +8990,7 @@ body.light-theme .proof-box{color:#0f172a}
       const head = bands[ri].querySelector('.grid-stack-row'); if (!head) return;
       let s = head.querySelector(':scope > .proof-fold-status'); if (!s) { s = document.createElement('span'); s.className = 'proof-fold-status'; head.appendChild(s); }
       if (s.textContent !== text) s.textContent = text;
-      const chip = bands[ri].querySelector(':scope > .proof-chip'), right = chip && chip.offsetParent ? (chip.offsetWidth + 16) + 'px' : ''; if (s.style.right !== right) s.style.right = right; });   // beside the '+N hidden' chip, never under it
+      const chip = bands[ri].querySelector(':scope > .proof-chip'), gear = head.querySelector(':scope > .proof-gear'), right = (chip && chip.offsetParent ? chip.offsetWidth + 16 : 0) + (gear ? 34 : 0), rt = right ? right + (chip && chip.offsetParent ? 0 : 10) + 'px' : ''; if (s.style.right !== rt) s.style.right = rt; });   // 0.51.0: and left of the section gear   // beside the '+N hidden' chip, never under it
   }
 
   // ---------- Round C3b / C3c: Comments tab, pick list, defaults, ticks ----------
@@ -9657,6 +9669,16 @@ body.light-theme .proof-box{color:#0f172a}
     const out = []; readingFields().some(F => { const v = hg(r, F.visitsCol); if (v !== '') out.push(shortName(F) + ' ' + v); return out.length >= 3; });
     return out.join(' · ') || hg(r, 'Recap');
   }
+  // 0.51.0 (no. 195, PART K): what a result card shows, set on the Settings tab: 'Find card main' / 'Find card lines' = Places columns
+  // (comma list, in order; a missing or empty one is skipped), 'History card lines' = Visits columns. Blank = as before.
+  const colList = k => String(SETTINGS[k] || '').split(',').map(x => x.trim()).filter(Boolean);
+  const hitCols = h => { if (!(h && h.place && h.place.cols)) return null; try { return placeCols(h.place); } catch (e) { return h.place.cols; } };   // with the building / site values a unit inherits
+  function cardMain(h) { const c = hitCols(h), cols = colList('find card main'); if (!c || !cols.length) return h.name; const v = cols.map(k => String(c[k] == null ? '' : c[k]).trim()).filter(Boolean); return v.length ? v.join(' · ') : h.name; }
+  function cardLines(h) { const c = hitCols(h), cols = colList('find card lines'); if (!c || !cols.length) return '<span>' + esc(h.address) + (h.phone ? ' · ' + esc(h.phone) : '') + '</span>';
+    return cols.map(k => String(c[k] == null ? '' : c[k]).trim()).filter(Boolean).map(v => '<span>' + esc(v) + '</span>').join('') || '<span>' + esc(h.address) + '</span>'; }
+  function histCardLine(r) { const cols = colList('history card lines'); if (!cols.length) return histShort(r); const fu = hg(r, 'Follow-up');
+    const out = cols.map(k => { const v = hg(r, k); if (v === '') return ''; const F = (FCTL || []).find(x => x.visitsCol === k); return (F ? shortName(F) : k) + ' ' + v; }).filter(Boolean);
+    return (fu ? 'Follow-up: ' + fu + (out.length ? ' · ' : '') : '') + out.join(' · ') || histShort(r); }
   function histFilterBar(rows) {
     const sy = {}; rows.forEach(r => { const id = hg(r, 'System Id'); if (id && !sy[id]) sy[id] = sysName(r); });
     if (hist.sys && !sy[hist.sys]) { const s = call.__sys; sy[hist.sys] = (s && s.labels && s.labels[hist.sys]) || 'System ' + hist.sys; }
@@ -9833,7 +9855,7 @@ body.light-theme .proof-box{color:#0f172a}
     const pk = hist.pick || [];
     const junk = r => /^test junk$/i.test(hg(r, 'Status'));   // 0.44.0 (R3): a row marked 'Test junk' on the sheet shows greyed
     const list = rows.map(r => '<button type="button" class="proof-hi-v' + (r._legacy || junk(r) ? ' leg' : '') + (pk.indexOf(hg(r, 'Visit Id')) >= 0 ? ' picked' : '') + '" data-hvid="' + esc(hg(r, 'Visit Id')) + '">' + (junk(r) ? '' : '<span class="proof-hi-tick" role="checkbox" aria-checked="' + (pk.indexOf(hg(r, 'Visit Id')) >= 0) + '" data-htick="' + esc(hg(r, 'Visit Id')) + '">' + (pk.indexOf(hg(r, 'Visit Id')) >= 0 ? '✓' : '') + '</span>') + '<b>' + esc([hg(r, 'Date'), hg(r, 'Call type'), hg(r, 'Tech'), sysName(r)].filter(Boolean).join(' · ')) + '</b>' +
-      (hist.places.length > 1 && hg(r, 'Address') ? '<i>' + esc(hg(r, 'Address')) + '</i>' : '') + '<span>' + esc(histShort(r)) + '</span>' + (eqLine(r) ? '<em class="proof-hi-eq">' + esc(eqLine(r)) + '</em>' : '') + (junk(r) ? '<em>Test junk</em>' : r._legacy ? '<em>Legacy (read only)</em>' : r._mine && histNet.st === 'ok' ? '<em>on this phone, not on the sheet yet</em>' : '') + '</button>').join('');
+      (hist.places.length > 1 && hg(r, 'Address') ? '<i>' + esc(hg(r, 'Address')) + '</i>' : '') + '<span>' + esc(histCardLine(r)) + '</span>' + (eqLine(r) ? '<em class="proof-hi-eq">' + esc(eqLine(r)) + '</em>' : '') + (junk(r) ? '<em>Test junk</em>' : r._legacy ? '<em>Legacy (read only)</em>' : r._mine && histNet.st === 'ok' ? '<em>on this phone, not on the sheet yet</em>' : '') + '</button>').join('');
     const none = histNet.st === 'loading' && !all.length ? '' : '<div class="proof-empty">' + (all.length ? 'No visits for this system yet.' : 'No visits yet.') + '</div>';
     const cmpBar = '<div class="proof-hi-cmpbar">' + (pk.length ? '<button type="button" data-hcmp="1"' + (pk.length < 2 ? ' disabled' : '') + '>Compare ' + pk.length + ' visit' + (pk.length === 1 ? '' : 's') + '</button><button type="button" data-hclear="1">Clear</button>' : '<span>Tick up to 3 visits of one system to compare them.</span>') + '</div>';
     return '<div class="proof-hi">' + head + histFilterBar(all) + (rows.length > 1 ? cmpBar : '') + (st ? '<div class="proof-hi-st">' + esc(st) + '</div>' : '') + '<div class="proof-hi-list">' + (list || none) + '</div></div>';
@@ -9865,6 +9887,56 @@ body.light-theme .proof-box{color:#0f172a}
   }, true);
   document.addEventListener('click', e => { const t = e.target && e.target.closest && e.target.closest('#viewport-canvas-frame .proof-hist [data-huse]'); if (!t || !hist) return; e.preventDefault(); e.stopPropagation(); if (Date.now() < tapGuardUntil) return;
     const id = t.dataset.huse, pk = hist.use || [], i = pk.indexOf(id); if (i >= 0) pk.splice(i, 1); else pk.push(id); hist.use = pk; lsSet(K_HISTNAV, hist); paintHist(); }, true);   // 0.46.0 (PART 5): tick a spec line
+  // 0.51.0 (no. 195, PART G): a small GEAR on each Entry Section's title (Settings 'Section gear' On / Off, blank = On) opens that Section's
+  // menu: the WHOLE Section's text size, label width and value width in steps, or 'One item...' (today's Adjust on a cell you tap); 'Back
+  // to the sheet' puts the Section's sizes back. The changes are ordinary tweaks: kept on this phone and on the sheet by Save tweaks (Tools).
+  const gearOn = () => SETTINGS['section gear'] !== 'off';
+  const titleHead = row => { const st = ((row.containers || [])[0] || {}).stacks, h = st && st[0]; return !!(h && (h.splits || []).length && (h.splits || []).every(p => !p.proofField && !p.slot && (!p.clickAction || p.clickAction === 'none') && p.type !== 'button')); };   // only a title line (never over a line's own buttons)
+  const gearRows = () => (engineState.rows || []).map((row, ri) => ({ row, ri })).filter(x => x.row.view && x.row.view === 'entry' && !x.row.sticky && !x.row.isTray && (row => (row.containers || []).length === 1 && titleHead(row))(x.row));
+  function paintGears() { const bands = document.querySelectorAll('#viewport-canvas-frame .grid-row-band'), want = {};
+    if (gearOn() && isLiveInteraction && currentView === 'entry') gearRows().forEach(({ row, ri }) => { const b = bands[ri], head = b && b.querySelector('.grid-stack-row'); if (!head) return; want[ri] = 1;
+      let g = head.querySelector(':scope > .proof-gear'); if (!g) { g = document.createElement('button'); g.type = 'button'; g.className = 'proof-gear'; g.innerHTML = ICON_GEAR; head.appendChild(g); if (getComputedStyle(head).position === 'static') head.style.position = 'relative'; }
+      g.dataset.row = String(ri); g.setAttribute('aria-label', (row.name || 'Section') + ' settings'); });
+    document.querySelectorAll('#viewport-canvas-frame .proof-gear').forEach(g => { if (!want[g.dataset.row]) g.remove(); }); }
+  const ICON_GEAR = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>';
+  const secCells = ri => { const out = []; const row = engineState.rows[ri]; (row && row.containers || []).forEach(c => (c.stacks || []).forEach(st => (st.splits || []).forEach(p => { if (p.proofId && !isBadge(p)) out.push(p); }))); return out; };
+  const labelPiece = p => !!p.proofLabelOf, valuePiece = p => p.slot === 'box' && !!p.proofField;
+  function secStep(ri, what, d) {   // one step for the whole Section; returns what it now says
+    const cells = secCells(ri); let n = 0, now = '';
+    if (what === 'fs') cells.forEach(p => { if (p.slot && p.slot !== 'box') return; const L = limits(p), v = Math.max(L.lo, Math.min(L.hi, (Number(p.fontSize) || 12) + d)); if (v !== Number(p.fontSize)) { p.fontSize = v; n++; } now = 'text ' + v; });
+    else cells.forEach(p => { if (!(what === 'lw' ? labelPiece(p) : valuePiece(p))) return; const v = Math.max(1, Math.min(20, (Number(p.weight) || 1) + d)); if (v !== Number(p.weight)) { p.weight = v; n++; } now = (what === 'lw' ? 'label width ' : 'value width ') + v; });
+    if (n) { try { renderCanvas(); } catch (e) {} } return { n, now }; }
+  function secReset(ri) { let n = 0; secCells(ri).forEach(p => { const b0 = base && base[p.proofId]; if (!b0) return; ['fontSize', 'weight'].forEach(k => { if (b0[k] != null && String(propsOf(p)[k]) !== b0[k]) { setProp(p, k, b0[k]); n++; } }); }); if (n) { try { renderCanvas(); } catch (e) {} } return n; }
+  function closeGMenu() { const o = document.getElementById('proof-gmenu'); if (o) o.remove(); }
+  function openGMenu(ri) { closeGMenu(); try { closeFMenu(); closeAsk(); } catch (e) {} const row = engineState.rows[ri]; if (!row) return;
+    const el = document.createElement('div'); el.id = 'proof-gmenu'; el.setAttribute('role', 'dialog'); el.dataset.row = String(ri);
+    const st = (w, t) => '<div class="pg-step"><span>' + t + '</span><button type="button" data-g="' + w + ':-1" aria-label="' + t + ' smaller">−</button><button type="button" data-g="' + w + ':1" aria-label="' + t + ' bigger">+</button></div>';
+    el.innerHTML = '<div class="pp-title">' + esc(row.name || 'Section') + ': the whole section</div>' + st('fs', 'Text size') + st('lw', 'Label width') + st('vw', 'Value width') +
+      '<div class="pg-now" aria-live="polite">Changes stay on this phone; Save tweaks (Tools) keeps them on the sheet.</div>' +
+      '<button type="button" data-g="one">One item...<small>Tap a cell to adjust just that one</small></button><button type="button" data-g="reset">Back to the sheet<small>This section\'s text size and widths as the sheet says</small></button><button type="button" data-g="close">Close</button>';
+    el.addEventListener('click', e => { const b = e.target.closest('[data-g]'); if (!b) return; e.stopPropagation(); const g = b.dataset.g;
+      if (g === 'close') { closeGMenu(); return; }
+      if (g === 'one') { closeGMenu(); try { window.EngineActions['proof-adjust'](); } catch (x) {} say('Tap the cell to adjust.', 'info', 4000); return; }
+      if (g === 'reset') { const n = secReset(ri); el.querySelector('.pg-now').textContent = n ? 'Back to the sheet (' + n + ' change' + (n === 1 ? '' : 's') + ').' : 'Already as the sheet says.'; return; }
+      const m = /^(fs|lw|vw):(-?1)$/.exec(g); if (!m) return; const r = secStep(ri, m[1], Number(m[2]));
+      el.querySelector('.pg-now').textContent = r.n ? (row.name || 'Section') + ': ' + r.now + ' (this phone; Save tweaks keeps it).' : 'At its limit.'; });
+    document.body.appendChild(el); }
+  document.addEventListener('click', e => { const g = e.target && e.target.closest && e.target.closest('#viewport-canvas-frame .proof-gear'); if (!g) return; e.preventDefault(); e.stopPropagation(); if (Date.now() < tapGuardUntil) return; blurNow(); openGMenu(Number(g.dataset.row)); }, true);
+  document.addEventListener('pointerdown', e => { const o = document.getElementById('proof-gmenu'); if (o && !o.contains(e.target) && !(e.target.closest && e.target.closest('.proof-gear'))) { e.preventDefault(); e.stopPropagation(); closeGMenu(); } }, true);
+  // 0.51.0 (PART I): how light the grey placeholder text is: Settings 'Placeholder lightness' (0 = dark, 100 = very light; blank = 50), changed on
+  // this phone in steps of 10 with the tray's - / + (kept on the phone; blank on the phone = the sheet's value). No slider.
+  const K_PH = 'proof-containers.phlight.v1';
+  const phNow = () => { const m = lsGet(K_PH, null); if (m != null && isFinite(Number(m))) return Math.max(0, Math.min(100, Number(m))); const s2 = Number(SETTINGS['placeholder lightness']); return isFinite(s2) && String(SETTINGS['placeholder lightness'] || '') !== '' ? s2 : 50; };
+  function phApply() { const a = (1 - phNow() / 100 * 0.9).toFixed(2); if (document.body.style.getPropertyValue('--ph-a') !== a) document.body.style.setProperty('--ph-a', a); }
+  const phStep = d => { const v = Math.max(0, Math.min(100, phNow() + d)); lsSet(K_PH, v); phApply(); say('Placeholder lightness ' + v + ' (this phone).', 'done', 3000); };
+  window.EngineActions['ph-minus'] = () => phStep(-10); window.EngineActions['ph-plus'] = () => phStep(10);
+  // 0.51.0 (PART J): Fields 'Fit text' = yes: the value shrinks (down to the Item's Min size) before the box has to scroll; not while typed in
+  function fitOne(b) { const p = boxCell(b); if (!p || !p.proofField || !p.proofField.fit || document.activeElement === b || b.tagName !== 'INPUT') return;
+    const want = Number(p.fontSize) || 12, lo = Math.min(want, limits(p).lo); let fs = want; b.style.fontSize = fs + 'px'; let g = 0;
+    while (b.scrollWidth > b.clientWidth + 1 && fs > lo && g++ < 60) { fs = Math.max(lo, fs - 0.5); b.style.fontSize = fs + 'px'; } b.dataset.fit = String(fs); }
+  function fitTexts() { document.querySelectorAll('#viewport-canvas-frame .proof-box').forEach(b => { try { fitOne(b); } catch (e) {} }); }
+  document.addEventListener('focusout', e => { const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (b) setTimeout(() => { try { fitOne(b); } catch (x) {} }, 0); }, true);
+  document.addEventListener('input', e => { const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (b && document.activeElement !== b) try { fitOne(b); } catch (x) {} }, true);
   window.EngineActions['hist-copy'] = () => {   // 0.50.0 (PART L): a History-only button: copy the open visit's report text
     const r = hist && hist.mode === 'one' ? histOneRow() : null; if (!r) { say('Open a visit first, then Copy visit.', 'warn', 4000); return; }
     copyText(histReport(r).text || '').then(ok => say(ok ? 'Visit report copied ✓' : 'Copy failed: select the text instead', ok ? 'done' : 'warn', 4000)); };
@@ -10210,8 +10282,8 @@ body.light-theme .proof-box{color:#0f172a}
     if (!all.length) return '<div class="proof-empty">No match. Change what you typed' + (hasNewCustomer() ? ', or tap New customer.' : '.') + '</div>';
     const m = all.slice(0, LIST_MAX);
     const count = (nearMe && !typed().some(Boolean) ? 'Near me, nearest first: ' : '') + (all.length > LIST_MAX ? LIST_MAX + ' of ' + all.length + ': keep typing' : all.length + (all.length === 1 ? ' match' : ' matches'));
-    return '<div class="proof-count">' + count + '</div><div class="proof-list">' + m.map(x => '<button type="button" class="proof-hit" data-i="' + x.i + '">' + (histView && x.h.place && x.h.place.id && !/^NU-/.test(x.h.place.id) ? '<span class="proof-hist-b" role="button" data-hp="' + x.i + '">History</span>' : '') + '<em class="proof-why">Matched: ' + x.why.map(w => PART_WORD[w]).join(', ') + (x.likely ? ' (likely)' : '') + '</em><b>' + esc(x.h.name) + '</b>' + (x.h.onPhone ? ' <i>on this phone</i>' : '') +
-      '<span>' + esc(x.h.address) + (x.h.phone ? ' · ' + esc(x.h.phone) : '') + '</span>' + (x.dist != null ? '<em class="proof-dist">' + esc(miles(x.dist)) + '</em>' : '') + '</button>').join('') + '</div>';
+    return '<div class="proof-count">' + count + '</div><div class="proof-list">' + m.map(x => '<button type="button" class="proof-hit" data-i="' + x.i + '">' + (histView && x.h.place && x.h.place.id && !/^NU-/.test(x.h.place.id) ? '<span class="proof-hist-b" role="button" data-hp="' + x.i + '">History</span>' : '') + '<em class="proof-why">Matched: ' + x.why.map(w => PART_WORD[w]).join(', ') + (x.likely ? ' (likely)' : '') + '</em><b>' + esc(cardMain(x.h)) + '</b>' + (x.h.onPhone ? ' <i>on this phone</i>' : '') +
+      cardLines(x.h) + (x.dist != null ? '<em class="proof-dist">' + esc(miles(x.dist)) + '</em>' : '') + '</button>').join('') + '</div>';
   }
   const paintResults = () => document.querySelectorAll('.proof-results').forEach(el => { el.innerHTML = resultsHtml(); });
   window.__proofRepaints = 0;
@@ -10539,9 +10611,9 @@ body.light-theme .proof-box{color:#0f172a}
   function formulaErrors(r) {
     return Object.keys(r).filter(k => k.charAt(0) !== '_' && FORMULA_ERR.test(String(r[k] == null ? '' : r[k]).trim())).map(k => 'formula error "' + String(r[k]).trim() + '" in ' + k);
   }
-  const STRUCTURE_COLS = ['Screen', 'Section', 'Column', 'Line name', 'Cells', 'Cell widths', 'Line height', 'Column width', 'Freeze', 'Fold'];   // Fold: C2a
+  const STRUCTURE_COLS = ['Screen', 'Section', 'Column', 'Line name', 'Cells', 'Cell widths', 'Line height', 'Column width', 'Freeze', 'Fold', 'Widths like'];   // Widths like: 0.51.0 (PART H)   // Fold: C2a
   const ITEM_SKIP = { 'Id': 1, 'Line': 1, 'Cell': 1, 'Weight': 1, 'Field': 1, 'Recipe': 1, 'Join with': 1, 'Join sep': 1, 'Label size': 1 };   // placing / recipe columns (every other column is look); a cell's width lives on Structure 'Cell widths' (Danny, Q-015)
-  const FIELDS_COLS = ['Field Id', 'Name', 'Short label', 'Aliases', 'Kind', 'Unit', 'Hard min', 'Hard max', 'Report wording', 'Scope', 'Notes', 'Find fill', 'Calc', 'Equipment', 'Pre-fill', 'File check', 'Save to', 'Visits column', 'In report', 'Compare as', 'History view'];   // Compare as: 0.27.0 (C7c-1); History view 0.46.0 (0.50.0: it was missing here)
+  const FIELDS_COLS = ['Field Id', 'Name', 'Short label', 'Aliases', 'Kind', 'Unit', 'Hard min', 'Hard max', 'Report wording', 'Scope', 'Notes', 'Find fill', 'Calc', 'Equipment', 'Pre-fill', 'File check', 'Save to', 'Visits column', 'In report', 'Compare as', 'History view', 'Fit text'];   // Fit text: 0.51.0 (PART J)   // Compare as: 0.27.0 (C7c-1); History view 0.46.0 (0.50.0: it was missing here)
   const CMP_KINDS = ['phone', 'email', 'address', 'name', 'model', 'serial', 'mfg date', 'refrigerant', 'metering', 'rating', 'dual cap', 'filter size', 'tonnage', 'unit label', 'equipment type', 'text'];   // 0.27.0: the same-or-different rule kinds   // the last 5: C7a (0.24.0)   // Equipment: C4b   // Calc: C2a   // Find fill: 0.12.2 (R7)   // Blueprint P7
   const SIZES_COLS = ['Profile', 'Target', 'Font size', 'Line height', 'Pad X', 'Pad Y', 'Min size', 'Max size', 'Notes'];   // Blueprint P12
   const ITEM_B1_COLS = ['Field', 'Recipe', 'Join with', 'Join sep', 'Label size', 'Box lines'];   // Box lines: C3c   // Blueprint P18 (B1) + BD-6
@@ -10648,7 +10720,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (why.length) { msgs.push({ _refuse: where + ' refused: ' + why.join(', ') + '.' }); if (id && !map[id] && !bad[id]) bad[id] = where; return; }
       map[id] = { id, name, short: g2(r, 'Short label'), kind, unit: g2(r, 'Unit'), wording, hmin, hmax, scope, where, find: ff };
       { const st = g2(r, 'Save to'), m = st ? SAVE_TO_RE.exec(st) : null;   // C7a
-        Object.assign(map[id], { compareAs: g2(r, 'Compare as').toLowerCase(), prefill: g2(r, 'Pre-fill').toLowerCase(), fileCheck: g2(r, 'File check').toLowerCase(), inReport: g2(r, 'In report').toLowerCase(), visitsCol: g2(r, 'Visits column'), hview: 'History view' in r ? g2(r, 'History view').toLowerCase() : null,   // 0.46.0 (no. 189, PART 4): specs / readings / blank; null = no column (an older sheet)
+        Object.assign(map[id], { compareAs: g2(r, 'Compare as').toLowerCase(), prefill: g2(r, 'Pre-fill').toLowerCase(), fileCheck: g2(r, 'File check').toLowerCase(), inReport: g2(r, 'In report').toLowerCase(), visitsCol: g2(r, 'Visits column'), fit: /^(yes|y|true|1)$/i.test(g2(r, 'Fit text')), hview: 'History view' in r ? g2(r, 'History view').toLowerCase() : null,   // 0.46.0 (no. 189, PART 4): specs / readings / blank; null = no column (an older sheet)
           saveTab: m ? m[1] : '', saveCols: m ? m[2].split(',').map(x => x.trim()).filter(Boolean) : [] }); }
       { const hv = map[id].hview; if (hv && hv !== 'specs' && hv !== 'readings') { msgs.push({ _note: where + ': History view "' + g2(r, 'History view') + '" must be specs, readings or blank (read as blank).' }); map[id].hview = ''; } }   // 0.48.0 (PART C)
       if (calc) map[id].calc = calc;
@@ -10682,11 +10754,17 @@ body.light-theme .proof-box{color:#0f172a}
     const out = [], lines = {}, order = [], firstOfSection = {}, firstOfColumn = {}, colIndex = {}, lineCount = {};
     const g = g2, missing = {};   // 0.26.1: refused Lines that had Items on them (shown in amber at the top of Entry)
     const okNum = (v, lo, hi) => v === '' || (isFinite(Number(v)) && Number(v) >= lo && Number(v) <= hi);
+    const wsOf = {}; structure.forEach(r => { const n = g(r, 'Line name'); if (n && !(n in wsOf)) wsOf[n] = { ws: g(r, 'Cell widths'), cells: g(r, 'Cells') }; });   // 0.51.0 (PART H): 'Widths like' = take another Line's Cell widths
+    const widthsLike = (r, where) => { const own = g(r, 'Cell widths'), like = g(r, 'Widths like'); if (!like) return own;
+      if (own) { out.push({ _note: where + ': Widths like "' + like + '" not used (this Line has its own Cell widths).' }); return own; }
+      const L0 = wsOf[like]; if (!L0) { out.push({ _note: where + ': Widths like "' + like + '": no Line of that name.' }); return ''; }
+      if (L0.cells !== g(r, 'Cells')) { out.push({ _note: where + ': Widths like "' + like + '" not used (that Line has ' + L0.cells + ' cells, this one ' + g(r, 'Cells') + ').' }); return ''; }
+      return L0.ws; };
     structure.forEach((r, i) => {
       const where = 'Structure row ' + (i + 2), why = formulaErrors(r);
       if (!Object.keys(r).some(c => c.charAt(0) !== '_' && g(r, c)) && !why.length) return;   // an empty row (0.12.2, R11: any column counts)
       const screen = g(r, 'Screen').toLowerCase(), sec = g(r, 'Section'), col = g(r, 'Column') || '1', name = g(r, 'Line name'), cells = g(r, 'Cells');
-      const lh = g(r, 'Line height'), cw = g(r, 'Column width'), frz = g(r, 'Freeze').toLowerCase(), wsRaw = g(r, 'Cell widths'), fold = g(r, 'Fold').toLowerCase();
+      const lh = g(r, 'Line height'), cw = g(r, 'Column width'), frz = g(r, 'Freeze').toLowerCase(), wsRaw = widthsLike(r, 'Structure row ' + (i + 2)), fold = g(r, 'Fold').toLowerCase();
       // round A.2: whole numbers 1 to 20 with ONE space between them (or one number on a 1-cell line); anything else may be a value
       // Google turned into a date, time or fraction, so it is refused with the plain-text hint
       const wsWhole = /^[1-9]\d*( [1-9]\d*)*$/.test(wsRaw) && wsRaw.split(' ').every(x => Number(x) <= 20);
@@ -12654,6 +12732,7 @@ body.light-theme .proof-box{color:#0f172a}
   function applyVis() {
     try { paintFindMode(); paintFromTags(); } catch (e) {}   // 0.45.0; 0.46.0 (PART 5)
     try { paintIcons(); } catch (e) {}   // 0.50.0
+    try { paintGears(); phApply(); fitTexts(); } catch (e) {}   // 0.51.0 (PARTS G, I, J)
     try { paintViewLine(); paintChip(); paintDiffs(); paintFollow(); followNote(); paintPreTags(); paintStrip(); if (cardFor && cardFor.view !== currentView) closeCard(); } catch (e) {}   // 0.30.1 (R7): another screen closes the card   // 0.22.2 (F12); C7b: the save chip
     const frame = document.getElementById('viewport-canvas-frame'); if (!frame || visBusy) return;
     visBusy = true;
