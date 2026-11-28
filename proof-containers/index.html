@@ -936,6 +936,17 @@ body:not(.proof-ready) #reopen-inspector-fab{display:none!important}
 #viewport-canvas-frame button,#viewport-canvas-frame .proof-savechip{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 #proof-hold{position:fixed;z-index:200;max-width:calc(100vw - 16px);padding:6px 10px;border-radius:8px;background:#f8fafc;color:#0f172a;font:600 13px/1.2 system-ui,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.5);pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #proof-hold[hidden]{display:none}
+/* 0.50.0 (no. 195 stage 2): tab icons, the picture Item, light theme for the page's own panels (PARTS A, B, E) */
+#viewport-canvas-frame button svg.proof-icon{flex:0 0 auto;stroke:currentColor}
+.proof-pic{justify-content:center}.proof-pic-svg,.proof-pic-img{display:block;height:100%;max-height:100%;width:auto;max-width:100%;object-fit:contain}
+.proof-iclab{white-space:nowrap}
+body.light-theme .proof-hit,body.light-theme .proof-hi-v,body.light-theme .proof-hi-rep,body.light-theme .proof-hi-kv,body.light-theme .proof-hi-grp{background:#fff!important;color:#0f172a!important;border-color:#cbd5e1!important}
+body.light-theme .proof-hit span,body.light-theme .proof-hi-v span,body.light-theme .proof-hi-kv span{color:#334155!important}
+body.light-theme .proof-hist,body.light-theme .proof-hi,body.light-theme .proof-results{color:#0f172a}
+body.light-theme .proof-hi-tick{background:#fff;border-color:#94a3b8;color:#0f172a}
+body.light-theme #proof-fmenu,body.light-theme #proof-ask{background:#f8fafc;color:#0f172a}
+body.light-theme #proof-fmenu button,body.light-theme #proof-ask button{background:#fff;color:#0f172a;border-color:#cbd5e1}
+body.light-theme .proof-fh-bar{background:#fef3c7;color:#78350f}
 .proof-fh-hide{visibility:hidden!important;pointer-events:none!important}.proof-fh-bar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 8px;padding:6px 10px;border:1px solid #5eead4;border-radius:8px;background:#06302c;color:#ccfbf1;font-size:13px}.proof-fh-bar[hidden]{display:none}.proof-fh-bar button{min-height:30px;padding:2px 12px;border:1px solid #5eead4;border-radius:15px;background:transparent;color:#5eead4;font:600 12px system-ui,sans-serif}#viewport-canvas-frame .proof-systems button.hist{color:#5eead4;background:transparent;padding:2px 10px}
 .proof-results .proof-hit .proof-why{float:right;margin-left:8px;font-style:normal;font-size:11px;line-height:20px;color:#fbbf24}
 .proof-results .proof-hit i{font-size:11px;color:#94a3b8}
@@ -3760,7 +3771,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.49.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.50.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3770,7 +3781,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.49.0', stamp: '2026-11-27 18:28:44', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.50.0', stamp: '2026-11-27 19:30:26', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8447,7 +8458,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.49.0';
+  const PROOF_VERSION = '0.50.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8464,15 +8475,45 @@ body.light-theme .proof-box{color:#0f172a}
   const FIND_FILL_FALLBACK = { 'f:customer': 'name', 'f:address': 'address', 'f:phone': 'phone' };
   const FIND_FILLS = { name: 1, address: 1, phone: 1, email: 1, calltype: 1 } /* email: round C1a; calltype: C1b (the Field that shows the call type) */, FIND_BOX_FILL = { 'find.name': 'name', 'find.address': 'address', 'find.phone': 'phone' };
   const findFillOf = p => p.proofField ? (p.proofField.find || '') : (FIND_BOX_FILL[p.proofKey] || FIND_FILL_FALLBACK[p.proofKey] || '');
-  const TYPES = { button: 1, text: 1, logo: 1, badge: 1 };
+  const TYPES = { button: 1, text: 1, logo: 1, badge: 1, picture: 1 };   // picture: 0.50.0 (no. 195, PART B)
   const TOOL_ACTIONS = { 'reload-layout': 1, 'proof-save-tweaks': 1, 'proof-clear-tweaks': 1, 'proof-profile': 1, 'toggle-tray': 1, 'proof-adjust': 1, 'refresh-page': 1 };
-  const ACTIONS = Object.assign({ 'proof-badge': 1, 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1, 'new-call': 1, 'reveal-hidden': 1, 'start-new-customer': 1, 'save-new-customer': 1, 'open-call-type': 1, 'call-type-back': 1, 'condo-back': 1, 'history-back': 1, 'open-history': 1, 'site-back': 1, 'save-site': 1, 'use-location': 1, 'location-menu': 1, 'near-me': 1, 'copy-report': 1, 'open-followups': 1 },   /* 0.29.0: open-followups */ TOOL_ACTIONS);   // C2b: copy-report   // 0.14.1: call-type-back   // C1b: open-call-type   // C1a: Blueprint P8 (Stage C)
+  const ACTIONS = Object.assign({ 'toggle-theme': 1, 'hist-copy': 1, /* 0.50.0 (PARTS E, L) */ 'proof-badge': 1, 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1, 'new-call': 1, 'reveal-hidden': 1, 'start-new-customer': 1, 'save-new-customer': 1, 'open-call-type': 1, 'call-type-back': 1, 'condo-back': 1, 'history-back': 1, 'open-history': 1, 'site-back': 1, 'save-site': 1, 'use-location': 1, 'location-menu': 1, 'near-me': 1, 'copy-report': 1, 'open-followups': 1 },   /* 0.29.0: open-followups */ TOOL_ACTIONS);   // C2b: copy-report   // 0.14.1: call-type-back   // C1b: open-call-type   // C1a: Blueprint P8 (Stage C)
   const TPL_NAME = /^[A-Za-z0-9][A-Za-z0-9 _.-]{0,29}$/, TPL_ACTION = /^set-template:([A-Za-z0-9][A-Za-z0-9 _.-]{0,29})?$/;   // round B2: set-template:<name> (set-template: alone = no template)
   // What a tweak can change (DESIGN.md). Each rule turns a value into its normal text form, or returns an error.
   const PLACES = { 'top-left': ['left', 'top'], 'top-center': ['center', 'top'], 'top-right': ['right', 'top'], 'middle-left': ['left', 'middle'], 'middle': ['center', 'middle'],
     'middle-right': ['right', 'middle'], 'bottom-left': ['left', 'bottom'], 'bottom-center': ['center', 'bottom'], 'bottom-right': ['right', 'bottom'] };
   const ACCENTS = { '': 1, cyan: 1, emerald: 1, amber: 1, purple: 1, rose: 1 };   // the engine's own accent names (engine/4e-cell-accent.js)
   const ICONS = { pencil: 1, report: 1, copy: 1, bell: 1, mic: 1, help: 1, undo: 1, settings: 1, fullscreen: 1, eye: 1, 'grid-borders': 1, sun: 1, moon: 1 };   // engine/40 getActionIconSvg
+  // 0.50.0 (no. 195, PARTS A, B, E): icons from the sheet's Icons tab (Name | SVG text), kept with the layout copy; the built-in icons above
+  // stay as the fallback (a tab icon with a built-in name wins while the tab is read). Every SVG is cleaned (no scripts, no event handlers, no
+  // outside links). A picture Item (Type picture) shows a small SVG from its Content, or a picture link (a Drive file link shown through Drive's
+  // public picture address; the phone's browser keeps it after the first view).
+  const ICON_NAME = /^[a-z0-9][a-z0-9_-]{0,30}$/;
+  let SHEET_ICONS = {};
+  function cleanSvg(t) { t = String(t == null ? '' : t).trim(); if (!/^<svg[\s>]/i.test(t) || t.length > 20000) return '';
+    let d; try { d = new DOMParser().parseFromString(t, 'image/svg+xml'); } catch (e) { return ''; } const root = d && d.documentElement; if (!root || root.nodeName.toLowerCase() !== 'svg' || d.getElementsByTagName('parsererror').length) return '';
+    root.querySelectorAll('script, foreignObject, iframe, object, embed, a, animate, set').forEach(x => x.remove());
+    [root, ...root.querySelectorAll('*')].forEach(el => Array.from(el.attributes).forEach(at => { const n = at.name.toLowerCase(), v = String(at.value || '');
+      if (/^on/.test(n) || ((n === 'href' || n === 'xlink:href' || n === 'src') && !/^#/.test(v.trim())) || (n === 'style' && /url\s*\(|expression/i.test(v))) el.removeAttribute(at.name); }));
+    root.removeAttribute('width'); root.removeAttribute('height'); return new XMLSerializer().serializeToString(root); }
+  function parseIcons(rows, notes) { const out = {}; (rows || []).forEach((r, i) => { const n = String(r['Name'] == null ? '' : r['Name']).trim().toLowerCase(), raw = r['SVG text']; if (!n && !String(raw || '').trim()) return;
+    const sv = ICON_NAME.test(n) ? cleanSvg(raw) : ''; if (!sv) { notes.push('Icons row ' + (i + 2) + ' refused: ' + (ICON_NAME.test(n) ? 'SVG text must be one <svg ...>...</svg> (up to 20000 letters)' : 'Name must be letters, digits, - _ (31 at most)') + '.'); return; }
+    if (out[n]) notes.push('Icons row ' + (i + 2) + ': "' + n + '" is there twice (the first one is used).'); else out[n] = sv; }); return out; }
+  function picUrl(c) { c = String(c || '').trim(); const m = /drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=\w+&)?id=|thumbnail\?id=)([A-Za-z0-9_-]{10,})/.exec(c);
+    if (m) return 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w600'; return /^https:\/\/[^\s"'<>]+$/.test(c) ? c : ''; }
+  const svgSized = (sv, cls) => sv.replace(/^<svg\b/i, '<svg class="' + cls + '" aria-hidden="true" focusable="false"');
+  function paintIcons() {   // the buttons whose Icon is a tab icon (or the theme button): the icon after each draw
+    const light = document.body.classList.contains('light-theme');
+    eachCell(engineState, p => { if (!p.proofIcon) return; const name = p.proofIcon === 'theme' ? (light ? 'moon' : 'sun') : p.proofIcon, sv = SHEET_ICONS[name], want = sv ? 's:' + name : ICONS[name] ? 'e:' + name : 'l:' + name;
+      document.querySelectorAll('#viewport-canvas-frame .grid-split-partition[data-pid="' + p.proofId + '"] button').forEach(b => { if (b.dataset.icon === want) return;
+        if (!sv && ICONS[name] && p.proofIcon !== 'theme' && !b.dataset.icon) { b.dataset.icon = want; return; }   // the engine already drew the built-in one
+        b.querySelectorAll(':scope > svg, :scope > .proof-iclab').forEach(x => x.remove()); b.dataset.icon = want;
+        if (sv) b.insertAdjacentHTML('afterbegin', svgSized(sv, 'w-4 h-4 proof-icon'));
+        else if (ICONS[name]) { try { b.insertAdjacentHTML('afterbegin', getActionIconSvg(name, 'w-4 h-4')); } catch (e) {} }
+        else b.insertAdjacentHTML('afterbegin', '<span class="proof-iclab">' + esc(p.label || name) + '</span>'); }); }); }   // no such icon: the Label shows
+  window.EngineSlots['picture'] = { render(p) { const c = String(p.proofPic || '').trim(), sv = /^<svg[\s>]/i.test(c) ? cleanSvg(c) : '', u = sv ? '' : picUrl(c);
+    const inner = sv ? svgSized(sv, 'proof-pic-svg') : u ? '<img class="proof-pic-img" src="' + esc(u) + '" alt="' + esc(p.label || 'Picture') + '" loading="lazy" referrerpolicy="no-referrer">' : '';
+    return '<div class="proof-cell proof-pic" role="img" aria-label="' + esc(p.label || 'Picture') + '" style="' + cellStyle(p) + ';display:flex;align-items:center;height:100%;overflow:hidden">' + inner + '</div>'; } };
   const num = (lo, hi, what) => v => { const n = Number(v); return (String(v).trim() !== '' && isFinite(n) && n >= lo && n <= hi) ? { v: String(n) } : { err: what + ' must be a number from ' + lo + ' to ' + hi }; };
   const oneOf = (set, what) => v => { const x = String(v).trim().toLowerCase(); return set[x] ? { v: x } : { err: what + ' must be one of: ' + Object.keys(set).filter(Boolean).join(', ') }; };
   const RULES = {
@@ -8507,7 +8548,7 @@ body.light-theme .proof-box{color:#0f172a}
   }
   const isBadge = p => !!p && p.clickAction === 'proof-badge';
   const BOTH_SWITCH_W = 36;   // 0.12.2 (F1): room for the type / wheel switch in a 'both' value box (switch 30 px + 6 px gap)
-  const VIS_RULES = { always: 1, never: 1, 'when-filled': 1, reserved: 1 };   // Blueprint P9 (round B2 adds when-filled and reserved)
+  const VIS_RULES = { always: 1, never: 1, 'when-filled': 1, reserved: 1, history: 1 };   // history: 0.50.0 (PART L): only while History shows   // Blueprint P9 (round B2 adds when-filled and reserved)
   // Round A.2: the version badge's sheet row is the row with the action proof-badge or the Id below (the one place the Id is named)
   const BADGE_ID = 'badge';
   const isBadgeRow = r => { const v = c => String(r[c] == null ? '' : r[c]).trim(); return v('Content') === 'proof-badge' || v('Id') === BADGE_ID; };
@@ -9824,6 +9865,9 @@ body.light-theme .proof-box{color:#0f172a}
   }, true);
   document.addEventListener('click', e => { const t = e.target && e.target.closest && e.target.closest('#viewport-canvas-frame .proof-hist [data-huse]'); if (!t || !hist) return; e.preventDefault(); e.stopPropagation(); if (Date.now() < tapGuardUntil) return;
     const id = t.dataset.huse, pk = hist.use || [], i = pk.indexOf(id); if (i >= 0) pk.splice(i, 1); else pk.push(id); hist.use = pk; lsSet(K_HISTNAV, hist); paintHist(); }, true);   // 0.46.0 (PART 5): tick a spec line
+  window.EngineActions['hist-copy'] = () => {   // 0.50.0 (PART L): a History-only button: copy the open visit's report text
+    const r = hist && hist.mode === 'one' ? histOneRow() : null; if (!r) { say('Open a visit first, then Copy visit.', 'warn', 4000); return; }
+    copyText(histReport(r).text || '').then(ok => say(ok ? 'Visit report copied ✓' : 'Copy failed: select the text instead', ok ? 'done' : 'warn', 4000)); };
   window.EngineActions['history-back'] = () => {
     if (hist && !hist.only && (hist.mode === 'one' || hist.mode === 'cmp')) { hist.mode = 'list'; hist.vid = ''; lsSet(K_HISTNAV, hist); paintHist(); return; }   // 0.43.0: Back from Compare too (the ticks stay)
     const to = (hist && hist.from) || { view: 'find', top: 0 }; hist = null; lsSet(K_HISTNAV, null);
@@ -10385,7 +10429,7 @@ body.light-theme .proof-box{color:#0f172a}
       const press = g('Press style').toLowerCase();
       if (press && !PRESS[press]) why.push('Press style "' + press + '" must be one of: flash, stay, busy, none');
       const icon = g('Icon').toLowerCase();
-      if (icon && !ICONS[icon]) why.push('Icon "' + icon + '" must be one of: ' + Object.keys(ICONS).join(', '));
+      if (icon && !ICONS[icon] && !ICON_NAME.test(icon)) why.push('Icon "' + icon + '" must be a built-in icon (' + Object.keys(ICONS).join(', ') + ') or a Name on the Icons tab (letters, digits, - _)');   // 0.50.0 (PART A)
       const id = g('Id') || (screen + '/' + rowName + '/' + ci + '.' + si + '.' + pi);
       if (!screen) why.push('no Screen');
       if (!rowName) why.push('no Row');
@@ -10393,11 +10437,12 @@ body.light-theme .proof-box{color:#0f172a}
       if (!(w > 0)) why.push('Weight must be more than 0 (it is ' + (g('Weight') || 'empty') + ')');
       if (g('Align') && !/^(left|center|right)$/i.test(g('Align'))) why.push('Align "' + g('Align') + '" must be left, center or right');   // 0.12.1 (BT-48): no silent center
       if (!TYPES[type]) why.push('unknown Type "' + type + '"');
+      if (type === 'picture' && !(/^<svg[\s>]/i.test(content) ? cleanSvg(content) : picUrl(content))) why.push('a picture needs Content = a small SVG (<svg ...>...</svg>) or a Drive / https picture link');   // 0.50.0 (PART B)
       const fd = r._fieldDef || null;   // round B1: the Field this piece belongs to (made by bundleRows from the Fields tab)
       if (slot && slot !== 'box' && slot !== 'results' && slot !== 'call-types' && slot !== 'condo-grid' && slot !== 'history' && slot !== 'site-builder' && slot !== 'report-body' && slot !== 'view-line' && slot !== 'save-chip' && slot !== 'check-count' && slot !== 'follow-line' && slot !== 'systems' && !((slot === 'unit' || slot === 'report-value' || FIELD_SLOTS[slot]) && fd)) why.push('unknown Slot "' + slot + '"');
       if (slot === 'box' && !fd && !FIELD_FALLBACK[content] && !FIND_KEYS[content]) why.push('unknown field "' + content + '"');
       if (type === 'button') { const a = content; const ok = ACTIONS[a] || (/^set-view:/.test(a) && screens[a.slice(9)]) || /^set-show:(all|template|values)$/.test(a) || TPL_ACTION.test(a); /* round B2 actions */ if (!ok) why.push('unknown action "' + a + '" (this page may be out of date: tap Reload, or refresh the browser)'); }
-      if (!VIS_RULES[vis]) why.push('Visible when must be always, never, when-filled or reserved');   // round B2: when-filled, reserved (Blueprint P9)
+      if (!VIS_RULES[vis]) why.push('Visible when must be always, never, when-filled, reserved or history');   // round B2: when-filled, reserved (Blueprint P9)
       if (!/^[A-Za-z0-9 ._\/-]{1,80}$/.test(id)) why.push('the Id may hold only letters, digits, space . _ / - (80 at most)');
       else if (ids[id]) why.push('the Id "' + id + '" is already used on ' + ids[id]);
       if (why.length) { refused.push(where + ' refused: ' + why.join(', ') + '.');
@@ -10411,7 +10456,8 @@ body.light-theme .proof-box{color:#0f172a}
       const C = R.cont[ci] = R.cont[ci] || {}; const S = C[si] = C[si] || {};
       const cell = { id: 'P' + pi, proofId: id, weight: w, type, fontSize: fs, align: align === 'left' || align === 'right' ? align : 'center', vAlign: 'center', nudgeX: 0, nudgeY: 0, isDisabled: false, wrap: true };
       Object.keys(extra).forEach(k => setProp(cell, k, extra[k]));
-      if (icon && type === 'button') cell.icon = icon;
+      if (icon && type === 'button') { cell.icon = ICONS[icon] ? icon : 'proof-sheet'; cell.proofIcon = icon; }   // 0.50.0 (PART A): an Icons-tab icon is painted after the engine draws (paintIcons)
+      if (type === 'button' && content === 'toggle-theme') { cell.icon = 'proof-sheet'; cell.proofIcon = 'theme'; }   // 0.50.0 (PART E): sun in dark, moon in light
       if (press) cell.pressStyle = press;
       if (minS !== '') cell.minSize = Number(minS);
       if (maxS !== '') cell.maxSize = Number(maxS);
@@ -10425,7 +10471,7 @@ body.light-theme .proof-box{color:#0f172a}
       // round B2: what decides whether the cell shows (Visible when, Templates of the item and of its Line), which item and Line it
       // belongs to, and how its value box is filled (Input style, Wheel)
       if (!r._blank) cell.proofItem = r._item || id; cell.proofLine = r._line || (screen + '/' + rowName + '/' + ci + '.' + si);
-      if (vis === 'when-filled' || vis === 'reserved') cell.proofVis = vis;
+      if (vis === 'when-filled' || vis === 'reserved' || vis === 'history') cell.proofVis = vis;
       if (r._tpl) cell.proofTpl = r._tpl;
       if (r._ltpl) cell.proofLTpl = r._ltpl;
       if (r._input) { cell.proofInput = r._input; cell.proofWheel = r._wheel || null;
@@ -10440,6 +10486,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (slot === 'box') { cell.slot = 'box'; cell.proofKey = fd && draftScreen && screen === draftScreen ? DRAFT + fd.id : content; cell.label = ''; }   // C1a: a draft box
       else if (slot === 'unit' || slot === 'report-value' || FIELD_SLOTS[slot]) { cell.slot = slot; cell.proofKey = content; cell.label = ''; }   // C4b: f-plus, f-menu, f-equip
       else if (slot === 'results' || slot === 'call-types' || slot === 'condo-grid' || slot === 'history' || slot === 'site-builder' || slot === 'report-body' || slot === 'view-line' || slot === 'save-chip' || slot === 'check-count' || slot === 'follow-line' || slot === 'systems') { cell.slot = slot; cell.label = ''; }   // 0.22.3: view-line   // C2b: report-body   // C1b: call-types (a list, like results)
+      else if (type === 'picture') { cell.slot = 'picture'; cell.proofPic = content; cell.label = g('Label') || 'Picture'; }   // 0.50.0 (PART B)
       else if (type === 'button') { cell.label = g('Label') || content;
         // round 9 migration: on older tabs New (Id hdr.newcall) only opened Find (set-view:find); it now clears the call first
         cell.clickAction = (id === 'hdr.newcall' && content === 'set-view:find') ? 'new-call' : content; }
@@ -10494,7 +10541,7 @@ body.light-theme .proof-box{color:#0f172a}
   }
   const STRUCTURE_COLS = ['Screen', 'Section', 'Column', 'Line name', 'Cells', 'Cell widths', 'Line height', 'Column width', 'Freeze', 'Fold'];   // Fold: C2a
   const ITEM_SKIP = { 'Id': 1, 'Line': 1, 'Cell': 1, 'Weight': 1, 'Field': 1, 'Recipe': 1, 'Join with': 1, 'Join sep': 1, 'Label size': 1 };   // placing / recipe columns (every other column is look); a cell's width lives on Structure 'Cell widths' (Danny, Q-015)
-  const FIELDS_COLS = ['Field Id', 'Name', 'Short label', 'Aliases', 'Kind', 'Unit', 'Hard min', 'Hard max', 'Report wording', 'Scope', 'Notes', 'Find fill', 'Calc', 'Equipment', 'Pre-fill', 'File check', 'Save to', 'Visits column', 'In report', 'Compare as'];   // Compare as: 0.27.0 (C7c-1)
+  const FIELDS_COLS = ['Field Id', 'Name', 'Short label', 'Aliases', 'Kind', 'Unit', 'Hard min', 'Hard max', 'Report wording', 'Scope', 'Notes', 'Find fill', 'Calc', 'Equipment', 'Pre-fill', 'File check', 'Save to', 'Visits column', 'In report', 'Compare as', 'History view'];   // Compare as: 0.27.0 (C7c-1); History view 0.46.0 (0.50.0: it was missing here)
   const CMP_KINDS = ['phone', 'email', 'address', 'name', 'model', 'serial', 'mfg date', 'refrigerant', 'metering', 'rating', 'dual cap', 'filter size', 'tonnage', 'unit label', 'equipment type', 'text'];   // 0.27.0: the same-or-different rule kinds   // the last 5: C7a (0.24.0)   // Equipment: C4b   // Calc: C2a   // Find fill: 0.12.2 (R7)   // Blueprint P7
   const SIZES_COLS = ['Profile', 'Target', 'Font size', 'Line height', 'Pad X', 'Pad Y', 'Min size', 'Max size', 'Notes'];   // Blueprint P12
   const ITEM_B1_COLS = ['Field', 'Recipe', 'Join with', 'Join sep', 'Label size', 'Box lines'];   // Box lines: C3c   // Blueprint P18 (B1) + BD-6
@@ -10828,6 +10875,7 @@ body.light-theme .proof-box{color:#0f172a}
   async function readBundle(notes, profile) {
     let st, it, fl, ps, si = null;
     let ct = null, cm = null, sg = null, pl = null, pr = null, eq = null;
+    const icP = gviz('Icons').catch(() => null);   // 0.50.0 (PART A): a missing tab = the built-in icons
     const onFile = Promise.all([gviz('Places').catch(() => null), gviz('Place rules').catch(() => null), gviz('Equipment').catch(() => null)]);   // C7a (a missing tab = null); 0.26.0 (R12): started together with the layout tabs below
     try { [st, it, fl, ps, si, ct, cm, sg, [pl, pr, eq]] = await Promise.all([gviz('Structure'), gviz('Items'), gviz('Fields'), gviz('Profile sizes'), gviz('Sites').catch(() => null), gviz('Call types').catch(() => null), gviz('Comments', 0, true).catch(() => null), gviz('Settings').catch(() => null), onFile.catch(() => [null, null, null])]); }   // Settings: 0.22.3
     catch (e) { return { failed: true, why: e.message }; }
@@ -10845,7 +10893,8 @@ body.light-theme .proof-box{color:#0f172a}
       try { const a = await gviz('Items (Round A)'); if (a.labels.indexOf('Id') >= 0 && a.labels.indexOf('Line') >= 0 && a.labels.indexOf('Field') < 0) { items = a; itemsTab = 'Items (Round A)'; } } catch (e) { return { failed: true, why: e.message }; }
     }
     const opt = { fields: hasF ? fl.rows : null, sizes: hasF && hasP ? ps.rows : null, profile };
-    const rows = bundleRows(st.rows, items.rows, opt);
+    const ic = await icP, icRows = ic && hasCols(ic, ['Name', 'SVG text']) ? ic.rows : null;
+    const rows = bundleRows(st.rows, items.rows, opt); rows._icons = parseIcons(icRows, notes);
     if (!build(rows).used) return { failed: true, why: 'nothing on Structure + Items could be drawn' };
     const knownS = STRUCTURE_COLS.concat(['Templates']), knownI = ['Id', 'Line', 'Cell'].concat(ITEM_B1_COLS, ['Input style', 'Wheel', 'Templates'], COLS.slice(6), Object.keys(COLPROP), ['Icon', 'Press style', 'Min size', 'Max size']);   // no Weight: widths live on Structure
     const unknown = st.labels.filter(l => l && knownS.indexOf(l) < 0).map(l => 'Structure: ' + l).concat(items.labels.filter(l => l && knownI.indexOf(l) < 0).map(l => itemsTab + ': ' + l),
@@ -10862,7 +10911,7 @@ body.light-theme .proof-box{color:#0f172a}
     rows._places = plRows ? parsePlaces(plRows, prRows, eqRows, notes) : null;   // C7a: travels with this copy (offline after one load)
     const cmTab = cm && fl && cm.grid && cm.grid.some(r => r.some(l => l && fl.rows.some(x => cmNf(g2(x, 'Name')) === cmNf(l)))) ? { grid: cm.grid } : null;   // C3b / C3c (a wrong-tab answer matches no Field Name)
     rows._comments = cmTab ? parseComments(cmTab, fl.rows, notes) : null;
-    lsSet(K.bundle, { at: Date.now(), structure: st.rows, items: items.rows, itemsTab, fields: opt.fields, sizes: opt.sizes, sites: sitesRows, ctypes: ctRows, comments: cmTab, settings: sgRows, places: plRows, rules: prRows, equip: eqRows });
+    lsSet(K.bundle, { at: Date.now(), structure: st.rows, items: items.rows, itemsTab, fields: opt.fields, sizes: opt.sizes, sites: sitesRows, ctypes: ctRows, comments: cmTab, settings: sgRows, places: plRows, rules: prRows, equip: eqRows, icons: icRows });
     return { rows, source: 'bundle', sourceText: bundleText(opt, itemsTab, 'Layout read from ') };
   }
   function bundleText(opt, itemsTab, lead) {
@@ -10878,6 +10927,7 @@ body.light-theme .proof-box{color:#0f172a}
     rows._ctypes = Array.isArray(c.ctypes) ? parseCallTypes(c.ctypes, siteNotes) : null;   // C1b
     rows._comments = c.comments && c.fields ? parseComments(c.comments, c.fields, siteNotes) : null;   // C3b
     rows._settings = parseSettings(Array.isArray(c.settings) ? c.settings : null, siteNotes);   // 0.22.3
+    rows._icons = parseIcons(Array.isArray(c.icons) ? c.icons : null, siteNotes);   // 0.50.0
     rows._places = Array.isArray(c.places) ? parsePlaces(c.places, Array.isArray(c.rules) ? c.rules : null, Array.isArray(c.equip) ? c.equip : null, siteNotes) : null;   // C7a
     return build(rows).used ? { rows, at: c.at, notes: siteNotes, text: bundleText(opt, c.itemsTab || 'Items', 'Layout from the last good copy of ') } : null;
   }
@@ -11298,6 +11348,7 @@ body.light-theme .proof-box{color:#0f172a}
     CALL_TYPES = Array.isArray(L.rows._ctypes) ? L.rows._ctypes : null;   // C1b: from the copy that won
     COMMENTS = L.rows._comments || null; try { applyDefaults(); } catch (e) {}   // C3b
     SETTINGS = L.rows._settings || {};   // 0.22.3
+    SHEET_ICONS = L.rows._icons || {};   // 0.50.0 (PART A): from the copy that won (none = the built-in icons)
     ONFILE = L.rows._places || null; FCTL = Array.isArray(L.rows._fctl) ? L.rows._fctl : []; SCOPE = L.rows._scope && typeof L.rows._scope === 'object' ? L.rows._scope : {};   // C7a; 0.32.0 SCOPE
     MISSING = Array.isArray(L.rows._missing) ? L.rows._missing : [];   // 0.26.1
     try { stampDate(); } catch (e) {}   // 0.26.0 (C1)
@@ -12583,6 +12634,7 @@ body.light-theme .proof-box{color:#0f172a}
         const keys = Object.keys(items), filled = (s.splits || []).some(cellFilled), revealed = !noReveal && !!callView.revealed[s.proofLine];
         const focused = !!fpid && (s.splits || []).some(p => p.proofId === fpid);
         const blank = new Set(); let hide = false;
+        { const hk = keys.filter(k => items[k][0].proofVis === 'history'); if (hk.length && !(histView && currentView === histView)) { hk.forEach(k => blank.add(k)); if (hk.length === keys.length) hide = true; } }   // 0.50.0 (PART L): History-only items (a Line of only those folds away)
         if (mode === 'values') { if ((s.splits || []).some(hasField) && !filled) hide = true; }
         else if (mode === 'template' && !revealed) {
           keys.forEach(k => { const first = items[k][0], f = items[k].some(cellFilled);
@@ -12601,6 +12653,7 @@ body.light-theme .proof-box{color:#0f172a}
   let visBusy = false;
   function applyVis() {
     try { paintFindMode(); paintFromTags(); } catch (e) {}   // 0.45.0; 0.46.0 (PART 5)
+    try { paintIcons(); } catch (e) {}   // 0.50.0
     try { paintViewLine(); paintChip(); paintDiffs(); paintFollow(); followNote(); paintPreTags(); paintStrip(); if (cardFor && cardFor.view !== currentView) closeCard(); } catch (e) {}   // 0.30.1 (R7): another screen closes the card   // 0.22.2 (F12); C7b: the save chip
     const frame = document.getElementById('viewport-canvas-frame'); if (!frame || visBusy) return;
     visBusy = true;
