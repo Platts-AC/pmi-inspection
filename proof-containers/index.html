@@ -948,7 +948,7 @@ body.light-theme #proof-fmenu,body.light-theme #proof-ask{background:#f8fafc;col
 body.light-theme #proof-fmenu button,body.light-theme #proof-ask button{background:#fff;color:#0f172a;border-color:#cbd5e1}
 body.light-theme .proof-fh-bar{background:#fef3c7;color:#78350f}
 /* 0.51.0 (no. 195 stage 3): the section gear and its menu (PART G); placeholder lightness (PART I) */
-.proof-gear{position:absolute;right:4px;top:50%;transform:translateY(-50%);z-index:7;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid #2b4f7e;background:#0f213a;color:#94a3b8;padding:0}
+.proof-gear{position:absolute;right:2px;top:0;bottom:0;margin:auto 0;transform:none!important;animation:none!important;z-index:7;width:40px;height:40px;max-height:100%;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid #2b4f7e;background:#0f213a;color:#94a3b8;padding:0}
 body.light-theme .proof-gear{background:#fff;border-color:#cbd5e1;color:#334155}
 #proof-gmenu{position:fixed;left:8px;right:8px;bottom:12px;z-index:86;display:flex;flex-direction:column;gap:8px;background:#0b1626;border:1px solid #38bdf8;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.6);padding:12px;font:15px system-ui,sans-serif;color:#e2e8f0}
 #proof-gmenu button{min-height:40px;border-radius:8px;border:1px solid #2b4f7e;background:#0f213a;color:#e2e8f0;font:600 15px system-ui,sans-serif;text-align:left;padding:6px 10px}
@@ -958,6 +958,8 @@ body.light-theme .proof-gear{background:#fff;border-color:#cbd5e1;color:#334155}
 body.light-theme #proof-gmenu{background:#f8fafc;color:#0f172a}body.light-theme #proof-gmenu button{background:#fff;color:#0f172a;border-color:#cbd5e1}
 #viewport-canvas-frame .proof-box::placeholder{color:rgba(148,163,184,var(--ph-a,.55));opacity:1}
 body.light-theme #viewport-canvas-frame .proof-box::placeholder{color:rgba(71,85,105,var(--ph-a,.55))}
+/* 0.52.0 (no. 198 stage 1): a long Section title is cut before 'N of M filled' (PART C) */
+#viewport-canvas-frame .proof-head-title span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;display:block}
 .proof-fh-hide{visibility:hidden!important;pointer-events:none!important}.proof-fh-bar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 8px;padding:6px 10px;border:1px solid #5eead4;border-radius:8px;background:#06302c;color:#ccfbf1;font-size:13px}.proof-fh-bar[hidden]{display:none}.proof-fh-bar button{min-height:30px;padding:2px 12px;border:1px solid #5eead4;border-radius:15px;background:transparent;color:#5eead4;font:600 12px system-ui,sans-serif}#viewport-canvas-frame .proof-systems button.hist{color:#5eead4;background:transparent;padding:2px 10px}
 .proof-results .proof-hit .proof-why{float:right;margin-left:8px;font-style:normal;font-size:11px;line-height:20px;color:#fbbf24}
 .proof-results .proof-hit i{font-size:11px;color:#94a3b8}
@@ -3782,7 +3784,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.51.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.52.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3792,7 +3794,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.51.0', stamp: '2026-11-27 20:22:04', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.52.0', stamp: '2026-11-28 05:06:11', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8469,7 +8471,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.51.0';
+  const PROOF_VERSION = '0.52.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8501,17 +8503,24 @@ body.light-theme .proof-box{color:#0f172a}
   // public picture address; the phone's browser keeps it after the first view).
   const ICON_NAME = /^[a-z0-9][a-z0-9_-]{0,30}$/;
   let SHEET_ICONS = {};
-  function cleanSvg(t) { t = String(t == null ? '' : t).trim(); if (!/^<svg[\s>]/i.test(t) || t.length > 20000) return '';
+  // 0.52.0 (no. 198, PART A; Task 0.51 R1): an ALLOWLIST: only these elements and attributes stay; anything else is dropped (and named
+  // in the footer); a value with url( / javascript: / data: / a backslash escape is dropped too.
+  const SVG_EL = { svg: 1, g: 1, path: 1, circle: 1, ellipse: 1, rect: 1, line: 1, polyline: 1, polygon: 1, title: 1, defs: 1, lineargradient: 1, radialgradient: 1, stop: 1, clippath: 1, text: 1, tspan: 1 };
+  const SVG_AT = { viewbox: 1, d: 1, cx: 1, cy: 1, r: 1, rx: 1, ry: 1, x: 1, y: 1, x1: 1, y1: 1, x2: 1, y2: 1, dx: 1, dy: 1, width: 1, height: 1, points: 1, fill: 1, 'fill-rule': 1, 'clip-rule': 1, stroke: 1, 'stroke-width': 1, 'stroke-linecap': 1, 'stroke-linejoin': 1,
+    'stroke-miterlimit': 1, 'stroke-dasharray': 1, 'stroke-dashoffset': 1, opacity: 1, 'fill-opacity': 1, 'stroke-opacity': 1, transform: 1, offset: 1, 'stop-color': 1, 'stop-opacity': 1, id: 1, 'text-anchor': 1, 'font-size': 1, 'font-weight': 1, 'font-family': 1,
+    'dominant-baseline': 1, xmlns: 1, version: 1, gradientunits: 1, gradienttransform: 1, fx: 1, fy: 1, preserveaspectratio: 1 };
+  function cleanSvg(t, dropped) { dropped = dropped || []; t = String(t == null ? '' : t).trim(); if (!/^<svg[\s>]/i.test(t) || t.length > 20000) return '';
     let d; try { d = new DOMParser().parseFromString(t, 'image/svg+xml'); } catch (e) { return ''; } const root = d && d.documentElement; if (!root || root.nodeName.toLowerCase() !== 'svg' || d.getElementsByTagName('parsererror').length) return '';
-    root.querySelectorAll('script, foreignObject, iframe, object, embed, a, animate, set').forEach(x => x.remove());
+    const note = w => { if (dropped.indexOf(w) < 0) dropped.push(w); };
+    Array.from(root.querySelectorAll('*')).reverse().forEach(el => { const n = el.nodeName.toLowerCase(); if (!SVG_EL[n]) { note('<' + n + '>'); el.remove(); } });
     [root, ...root.querySelectorAll('*')].forEach(el => Array.from(el.attributes).forEach(at => { const n = at.name.toLowerCase(), v = String(at.value || '');
-      if (/^on/.test(n) || ((n === 'href' || n === 'xlink:href' || n === 'src') && !/^#/.test(v.trim())) || (n === 'style' && /url\s*\(|expression/i.test(v))) el.removeAttribute(at.name); }));
+      if (!SVG_AT[n] || /url\s*\(|javascript:|data:|\\|expression|@import/i.test(v)) { note(at.name); el.removeAttribute(at.name); } }));
     root.removeAttribute('width'); root.removeAttribute('height'); return new XMLSerializer().serializeToString(root); }
   function parseIcons(rows, notes) { const out = {}; (rows || []).forEach((r, i) => { const n = String(r['Name'] == null ? '' : r['Name']).trim().toLowerCase(), raw = r['SVG text']; if (!n && !String(raw || '').trim()) return;
-    const sv = ICON_NAME.test(n) ? cleanSvg(raw) : ''; if (!sv) { notes.push('Icons row ' + (i + 2) + ' refused: ' + (ICON_NAME.test(n) ? 'SVG text must be one <svg ...>...</svg> (up to 20000 letters)' : 'Name must be letters, digits, - _ (31 at most)') + '.'); return; }
+    const dr = [], sv = ICON_NAME.test(n) ? cleanSvg(raw, dr) : ''; if (sv && dr.length) notes.push('Icons row ' + (i + 2) + ' "' + n + '": dropped ' + dr.slice(0, 8).join(', ') + (dr.length > 8 ? ' ...' : '') + ' (only plain shapes are kept).'); if (!sv) { notes.push('Icons row ' + (i + 2) + ' refused: ' + (ICON_NAME.test(n) ? 'SVG text must be one <svg ...>...</svg> (up to 20000 letters)' : 'Name must be letters, digits, - _ (31 at most)') + '.'); return; }
     if (out[n]) notes.push('Icons row ' + (i + 2) + ': "' + n + '" is there twice (the first one is used).'); else out[n] = sv; }); return out; }
   function picUrl(c) { c = String(c || '').trim(); const m = /drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=\w+&)?id=|thumbnail\?id=)([A-Za-z0-9_-]{10,})/.exec(c);
-    if (m) return 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w600'; return /^https:\/\/[^\s"'<>]+$/.test(c) ? c : ''; }
+    if (m) return 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w600'; return /^https:\/\/[a-z0-9-]+\.googleusercontent\.com\/[^\s"'<>]+$/i.test(c) ? c : ''; }   // 0.52.0 (Q6): Drive only
   const svgSized = (sv, cls) => sv.replace(/^<svg\b/i, '<svg class="' + cls + '" aria-hidden="true" focusable="false"');
   function paintIcons() {   // the buttons whose Icon is a tab icon (or the theme button): the icon after each draw
     const light = document.body.classList.contains('light-theme');
@@ -8990,7 +8999,8 @@ body.light-theme .proof-box{color:#0f172a}
       const head = bands[ri].querySelector('.grid-stack-row'); if (!head) return;
       let s = head.querySelector(':scope > .proof-fold-status'); if (!s) { s = document.createElement('span'); s.className = 'proof-fold-status'; head.appendChild(s); }
       if (s.textContent !== text) s.textContent = text;
-      const chip = bands[ri].querySelector(':scope > .proof-chip'), gear = head.querySelector(':scope > .proof-gear'), right = (chip && chip.offsetParent ? chip.offsetWidth + 16 : 0) + (gear ? 34 : 0), rt = right ? right + (chip && chip.offsetParent ? 0 : 10) + 'px' : ''; if (s.style.right !== rt) s.style.right = rt; });   // 0.51.0: and left of the section gear   // beside the '+N hidden' chip, never under it
+      const chip = bands[ri].querySelector(':scope > .proof-chip'), gear = head.querySelector(':scope > .proof-gear'), right = (chip && chip.offsetParent ? chip.offsetWidth + 16 : 0) + (gear ? 44 : 0), rt = right ? right + (chip && chip.offsetParent ? 0 : 6) + 'px' : ''; if (s.style.right !== rt) s.style.right = rt;   // 0.51.0: and left of the section gear
+      const tp = head.querySelector(':scope > .grid-split-partition'); if (tp) { const pr = Math.round((parseFloat(rt) || 6) + s.offsetWidth + 8) + 'px'; tp.classList.add('proof-head-title'); if (tp.style.paddingRight !== pr) tp.style.paddingRight = pr; } });   // 0.52.0 (PART C): a long title is cut with ... before it reaches 'N of M filled'   // beside the '+N hidden' chip, never under it
   }
 
   // ---------- Round C3b / C3c: Comments tab, pick list, defaults, ticks ----------
@@ -9634,7 +9644,7 @@ body.light-theme .proof-box{color:#0f172a}
     walk(P && P.id, 0); return out;
   }
   const placeTitle = P => { const c = (P && P.cols) || {}; return c['Name'] || c['Customer'] || c['Unit label'] || c['Address'] || (P && P.id) || ''; };
-  function saveBeforeHist() { if (histQuiet() || !holdBox) return; const ch = call[holdBox.key] !== holdBox.val; holdBox = null; try { blurNow(); } catch (e) {} if (ch) try { saveCall('left box'); } catch (e) {} }   // 0.49.0 (no. 195, R1 (1)): the Entry edit is saved BEFORE History shows (History itself never saves)
+  function saveBeforeHist() { if (histQuiet()) return; let ch = false; if (holdBox) { ch = call[holdBox.key] !== holdBox.val; holdBox = null; try { blurNow(); } catch (e) {} } if (pendLeft) { pendLeft = false; ch = true; } if (ch) try { saveCall('left box'); } catch (e) {} }   // 0.52.0 (PART B (1)): also a box left a moment ago (its 'left box' save still waiting)   // 0.49.0 (no. 195, R1 (1)): the Entry edit is saved BEFORE History shows (History itself never saves)
   function openHistory(places, title, sys) {
     if (!histView) { say('This sheet has no History screen yet.', 'warn', 6000); return; }
     places = (places || []).filter(Boolean); if (!places.length) return; saveBeforeHist();
@@ -9801,7 +9811,7 @@ body.light-theme .proof-box{color:#0f172a}
       rs.forEach(x => { const F = x.R.F; f.spec = f.spec || {}; const cols = Object.assign({}, ((f.spec[F.id] || {}).cols) || {}); cols[x.R.c] = x.R.v; const col = F.saveCols.find(k => cols[k]) || x.R.c;
         f.spec[F.id] = { cols, v: cols[col], word: /^target/i.test(col) ? 'target' : 'rated', unit: unitText(F.unit).trim() }; });   // (5): a rating, beside the measured box (as the file's own ratings), never in it
       call.__from = call.__from || {}; filled.forEach(id => { call.__from[sk + ':' + id] = Object.assign({ text: src, v: String(call[id]) }, info.card); try { refreshDiff(id); } catch (e) {} });
-      rs.forEach(x => { call.__from[sk + ':' + x.R.F.id] = Object.assign({ text: src, v: String(x.R.v), rate: x.R.c }, info.card); });   // 0.49.0 (R2 (2)): a rating brought in has the same tag + card
+      rs.forEach(x => { delete call.__from[sk + ':' + x.R.F.id]; call.__from[sk + ':' + x.R.F.id + '#' + x.R.c] = Object.assign({ text: src, v: String(x.R.v), rate: x.R.c }, info.card); });   // 0.52.0 (PART B (2)): RLA + LRA each their own   // 0.49.0 (R2 (2)): a rating brought in has the same tag + card
       try { runCalcs(); } catch (e) {} lsSet(K.call, call); const n = filled.length + rs.length;
       histUndo = n ? { until: Date.now() + 10000, sys: sk, before, src: srcB, from: fromB, spec: rs.length ? specB : null, ids: filled.slice() } : null;   // (3): the system and the old sources
       hist.use = []; lsSet(K_HISTNAV, hist); paintHist(); setTimeout(() => { try { paintHist(); } catch (e) {} }, 10100);
@@ -9827,15 +9837,17 @@ body.light-theme .proof-box{color:#0f172a}
       const B = P.parent && placeById(P.parent), pre = B ? unitPrefix(B) : '', S = B && B.parent && placeById(B.parent), nm = (B && String(B.cols['Name'] || '').trim()) || (S && placeTitle(S)) || '';
       return f.date + ' · ' + (pre && u.toUpperCase().indexOf(pre.toUpperCase()) !== 0 ? pre : '') + u + (nm ? ' ' + nm : ''); }
     const m = /^from (.+), (\d{4}-\d{2}-\d{2})$/.exec(String(f.text || '')); return m ? m[2] + ' · ' + m[1].replace(/^#/, '') : String(f.text || '').replace(/^from /, ''); }   // an older tag (0.46.0 / 0.47.0): the same order from its text
-  function fromOf(id) {   // the brought-in value / rating of this line on the system shown, while it still holds it
-    const sk = (call.__sys && call.__sys.cur) || 'A', f = (call.__from || {})[sk + ':' + id]; if (!f) return null;
-    if (f.rate) { const sp = specOf(id); return sp && String(((sp.cols || {})[f.rate]) == null ? '' : sp.cols[f.rate]) === f.v ? f : null; }
+  function fromOne(id, f) { if (!f) return null; if (f.rate) { const sp = specOf(id); return sp && String(((sp.cols || {})[f.rate]) == null ? '' : sp.cols[f.rate]) === f.v ? f : null; }
     return String(call[id] == null ? '' : call[id]) === f.v ? f : null; }
+  function fromOf(id) {   // the brought-in value / rating of this line on the system shown, while it still holds it (0.52.0: a rating has its own key 'A:<id>#<col>')
+    const sk = (call.__sys && call.__sys.cur) || 'A', fr = call.__from || {}, k0 = sk + ':' + id; let f = fromOne(id, fr[k0]); if (f) return f;
+    Object.keys(fr).some(k => k.indexOf(k0 + '#') === 0 && (f = fromOne(id, fr[k]))); return f || null; }
+  const fromIds = sk => { const out = {}; Object.keys(call.__from || {}).forEach(k => { const i = k.indexOf(':'); if (k.slice(0, i) === sk) out[k.slice(i + 1).replace(/#[^#]*$/, '')] = 1; }); return Object.keys(out); };
   function paintFromTags() {   // Entry: '2026-06-12 · N404 Test Oceana North' under a box filled from another place's history (gone once the value changes); the line's ⋯ turns yellow
     const fr = call.__from || {}, sk = (call.__sys && call.__sys.cur) || 'A';
     document.querySelectorAll('#viewport-canvas-frame .proof-fromtag').forEach(t => { if (!fromOf(t.dataset.key)) t.remove(); });
     document.querySelectorAll('#viewport-canvas-frame .proof-fbtn.proof-fb-from').forEach(b => { if (!fromOf(b.dataset.fid)) b.classList.remove('proof-fb-from'); });
-    Object.keys(fr).forEach(k => { const i = k.indexOf(':'); if (k.slice(0, i) !== sk) return; const id = k.slice(i + 1), f = fromOf(id); if (!f) return;
+    fromIds(sk).forEach(id => { const f = fromOf(id); if (!f) return;
       document.querySelectorAll('#viewport-canvas-frame .proof-fbtn[data-fact="menu"][data-fid="' + id + '"]').forEach(b => b.classList.add('proof-fb-from'));
       const b = document.querySelector('#viewport-canvas-frame .proof-box[data-key="' + id + '"]'); if (!b || !b.parentElement) return; const host = b.parentElement;
       let t = host.querySelector('.proof-fromtag'); if (!t) { t = document.createElement('span'); t.className = 'proof-fromtag'; t.dataset.key = id; host.appendChild(t); if (getComputedStyle(host).position === 'static') host.style.position = 'relative'; }
@@ -9897,13 +9909,13 @@ body.light-theme .proof-box{color:#0f172a}
     if (gearOn() && isLiveInteraction && currentView === 'entry') gearRows().forEach(({ row, ri }) => { const b = bands[ri], head = b && b.querySelector('.grid-stack-row'); if (!head) return; want[ri] = 1;
       let g = head.querySelector(':scope > .proof-gear'); if (!g) { g = document.createElement('button'); g.type = 'button'; g.className = 'proof-gear'; g.innerHTML = ICON_GEAR; head.appendChild(g); if (getComputedStyle(head).position === 'static') head.style.position = 'relative'; }
       g.dataset.row = String(ri); g.setAttribute('aria-label', (row.name || 'Section') + ' settings'); });
-    document.querySelectorAll('#viewport-canvas-frame .proof-gear').forEach(g => { if (!want[g.dataset.row]) g.remove(); }); }
+    let gone = 0; document.querySelectorAll('#viewport-canvas-frame .proof-gear').forEach(g => { if (!want[g.dataset.row]) { g.remove(); gone++; } }); if (Object.keys(want).length || gone) try { paintFolds(); } catch (e) {} }   // the 'N of M filled' moves left of a new gear at once
   const ICON_GEAR = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>';
   const secCells = ri => { const out = []; const row = engineState.rows[ri]; (row && row.containers || []).forEach(c => (c.stacks || []).forEach(st => (st.splits || []).forEach(p => { if (p.proofId && !isBadge(p)) out.push(p); }))); return out; };
-  const labelPiece = p => !!p.proofLabelOf, valuePiece = p => p.slot === 'box' && !!p.proofField;
+  const labelPiece = p => !!p.proofLabelOf, valuePiece = p => p.slot === 'box' && !!p.proofField && p.proofPh !== 'name';   // 0.52.0: the small name box of a Contact line is not a value box
   function secStep(ri, what, d) {   // one step for the whole Section; returns what it now says
     const cells = secCells(ri); let n = 0, now = '';
-    if (what === 'fs') cells.forEach(p => { if (p.slot && p.slot !== 'box') return; const L = limits(p), v = Math.max(L.lo, Math.min(L.hi, (Number(p.fontSize) || 12) + d)); if (v !== Number(p.fontSize)) { p.fontSize = v; n++; } now = 'text ' + v; });
+    if (what === 'fs') cells.forEach(p => { if (!(labelPiece(p) || (p.slot === 'box' && p.proofField))) return; /* 0.52.0 (PART C): only the Section's labels and boxes (never its title or empty cells) */ const L = limits(p), v = Math.max(L.lo, Math.min(L.hi, (Number(p.fontSize) || 12) + d)); if (v !== Number(p.fontSize)) { p.fontSize = v; n++; } now = 'text ' + v; });
     else cells.forEach(p => { if (!(what === 'lw' ? labelPiece(p) : valuePiece(p))) return; const v = Math.max(1, Math.min(20, (Number(p.weight) || 1) + d)); if (v !== Number(p.weight)) { p.weight = v; n++; } now = (what === 'lw' ? 'label width ' : 'value width ') + v; });
     if (n) { try { renderCanvas(); } catch (e) {} } return { n, now }; }
   function secReset(ri) { let n = 0; secCells(ri).forEach(p => { const b0 = base && base[p.proofId]; if (!b0) return; ['fontSize', 'weight'].forEach(k => { if (b0[k] != null && String(propsOf(p)[k]) !== b0[k]) { setProp(p, k, b0[k]); n++; } }); }); if (n) { try { renderCanvas(); } catch (e) {} } return n; }
@@ -9931,9 +9943,10 @@ body.light-theme .proof-box{color:#0f172a}
   const phStep = d => { const v = Math.max(0, Math.min(100, phNow() + d)); lsSet(K_PH, v); phApply(); say('Placeholder lightness ' + v + ' (this phone).', 'done', 3000); };
   window.EngineActions['ph-minus'] = () => phStep(-10); window.EngineActions['ph-plus'] = () => phStep(10);
   // 0.51.0 (PART J): Fields 'Fit text' = yes: the value shrinks (down to the Item's Min size) before the box has to scroll; not while typed in
-  function fitOne(b) { const p = boxCell(b); if (!p || !p.proofField || !p.proofField.fit || document.activeElement === b || b.tagName !== 'INPUT') return;
-    const want = Number(p.fontSize) || 12, lo = Math.min(want, limits(p).lo); let fs = want; b.style.fontSize = fs + 'px'; let g = 0;
-    while (b.scrollWidth > b.clientWidth + 1 && fs > lo && g++ < 60) { fs = Math.max(lo, fs - 0.5); b.style.fontSize = fs + 'px'; } b.dataset.fit = String(fs); }
+  function fitOne(b) { const p = boxCell(b); if (!p || !p.proofField || !p.proofField.fit || document.activeElement === b || (b.tagName !== 'INPUT' && b.tagName !== 'TEXTAREA')) return;
+    const want = Number(p.fontSize) || 12, lo = Math.min(want, limits(p).lo), ta = b.tagName === 'TEXTAREA', over = () => ta ? b.scrollHeight > b.clientHeight + 1 : b.scrollWidth > b.clientWidth + 1;   // 0.52.0 (PART I): a 2-line box (textarea) shrinks until its lines hold it
+    let fs = want; b.style.fontSize = fs + 'px'; let g = 0;
+    while (over() && fs > lo && g++ < 80) { fs = Math.max(lo, fs - 0.5); b.style.fontSize = fs + 'px'; } b.dataset.fit = String(fs); }
   function fitTexts() { document.querySelectorAll('#viewport-canvas-frame .proof-box').forEach(b => { try { fitOne(b); } catch (e) {} }); }
   document.addEventListener('focusout', e => { const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (b) setTimeout(() => { try { fitOne(b); } catch (x) {} }, 0); }, true);
   document.addEventListener('input', e => { const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (b && document.activeElement !== b) try { fitOne(b); } catch (x) {} }, true);
@@ -9995,19 +10008,20 @@ body.light-theme .proof-box{color:#0f172a}
   function holdName(el) { const part = el.closest('[data-pid]'); let p = null; if (part) eachCell(engineState, q => { if (!p && q.proofId === part.dataset.pid) p = q; });
     const lab = String((p && p.label) || '').trim() || String(el.getAttribute('aria-label') || '').trim() || String(el.innerText || '').replace(/\s+/g, ' ').trim();
     return lab && lab.length <= 40 ? lab : (p && p.clickAction ? plainAct(p.clickAction) : lab.slice(0, 40)); }
-  let holdT = null, holdAt = null, holdSwallow = 0;
+  let holdT = null, holdAt = null, holdSwallow = null, holdShown = null;   // 0.52.0 (PART F): holdShown = the button whose bubble shows; its release is swallowed
   function holdBubble(el, text) { let bb = document.getElementById('proof-hold'); if (!bb) { bb = document.createElement('div'); bb.id = 'proof-hold'; bb.setAttribute('role', 'tooltip'); document.body.appendChild(bb); }
     bb.textContent = text; bb.hidden = false; const r = el.getBoundingClientRect(), w = Math.min(innerWidth - 16, Math.max(60, bb.offsetWidth));
-    bb.style.left = Math.max(8, Math.min(innerWidth - w - 8, r.left + r.width / 2 - w / 2)) + 'px'; const below = r.top < 70; bb.style.top = (below ? r.bottom + 8 : r.top - bb.offsetHeight - 8) + 'px';
+    bb.style.left = Math.max(8, Math.min(innerWidth - w - 8, r.left + r.width / 2 - w / 2)) + 'px'; const h = bb.offsetHeight || 28, above = r.top - h - 8; bb.style.top = (above >= 0 ? above : Math.max(0, r.top - h)) + 'px';   /* above, also on the top row (it may touch the button's top edge, never under the thumb) */   // ABOVE the button (not under the thumb); below only with no room
     clearTimeout(bb.__t); bb.__t = setTimeout(() => { bb.hidden = true; }, 1800); }
   const holdTarget = t => t && t.closest && t.closest('#viewport-canvas-frame button, #viewport-canvas-frame .proof-savechip');
   document.addEventListener('pointerdown', e => { const el = holdTarget(e.target); clearTimeout(holdT); if (!el || el.disabled) return; holdAt = { x: e.clientX, y: e.clientY, el };
-    holdT = setTimeout(() => { holdT = null; if (!holdAt || holdAt.el !== el) return; holdSwallow = Date.now() + 900; holdBubble(el, holdName(el)); }, HOLD_MS); }, true);
+    holdT = setTimeout(() => { holdT = null; if (!holdAt || holdAt.el !== el) return; holdShown = el; holdBubble(el, holdName(el)); }, HOLD_MS); }, true);
   document.addEventListener('pointermove', e => { if (holdAt && (Math.abs(e.clientX - holdAt.x) > 10 || Math.abs(e.clientY - holdAt.y) > 10)) { clearTimeout(holdT); holdT = null; holdAt = null; } }, true);
-  ['pointerup', 'pointercancel'].forEach(ev => document.addEventListener(ev, () => { clearTimeout(holdT); holdT = null; holdAt = null; }, true));
-  window.addEventListener('click', e => { if (Date.now() < holdSwallow && holdTarget(e.target)) { holdSwallow = 0; e.preventDefault(); e.stopPropagation(); } }, true);
+  document.addEventListener('pointerup', () => { clearTimeout(holdT); holdT = null; holdAt = null; if (holdShown) { holdSwallow = { el: holdShown, until: Date.now() + 600 }; holdShown = null; } }, true);   // however long the hold: the release does nothing
+  document.addEventListener('pointercancel', () => { clearTimeout(holdT); holdT = null; holdAt = null; holdShown = null; holdSwallow = null; }, true);   // a cancelled hold never swallows the next tap
+  window.addEventListener('click', e => { const hs = holdSwallow; if (!hs) return; holdSwallow = null; if (Date.now() < hs.until && holdTarget(e.target) === hs.el) { e.preventDefault(); e.stopPropagation(); } }, true);
   document.addEventListener('contextmenu', e => { if (holdTarget(e.target)) e.preventDefault(); }, true);
-  window.__proofHist = { open: openHistory, go: () => goView(histView), undo: undoUse, dropCache: () => lsSet(K_HIST, { rows: {}, at: {} }), state: () => hist, net: () => histNet, cache: histCache, rows: histRows, title: id => placeTitle(placeById(id)), findHist: () => findHist };   // for the tests only
+  window.__proofHist = { open: openHistory, findMode: () => startFindHist(), go: () => goView(histView), undo: undoUse, dropCache: () => lsSet(K_HIST, { rows: {}, at: {} }), state: () => hist, net: () => histNet, cache: histCache, rows: histRows, title: id => placeTitle(placeById(id)), findHist: () => findHist };   // for the tests only
   // 0.37.0 (C7e stage 2, Prompts no. 179): the site builder (New customer -> 'A condo / site'). A draft on this phone until Save site:
   // the site's name, its buildings (name, address, floors from-to, units per floor or the unit numbers, prefix; uneven buildings allowed;
   // a building with no floors = rooms only), the special rooms (name, building, floor), a summary. Save site = one 'newSite' request to the
@@ -10509,7 +10523,7 @@ body.light-theme .proof-box{color:#0f172a}
       if (!(w > 0)) why.push('Weight must be more than 0 (it is ' + (g('Weight') || 'empty') + ')');
       if (g('Align') && !/^(left|center|right)$/i.test(g('Align'))) why.push('Align "' + g('Align') + '" must be left, center or right');   // 0.12.1 (BT-48): no silent center
       if (!TYPES[type]) why.push('unknown Type "' + type + '"');
-      if (type === 'picture' && !(/^<svg[\s>]/i.test(content) ? cleanSvg(content) : picUrl(content))) why.push('a picture needs Content = a small SVG (<svg ...>...</svg>) or a Drive / https picture link');   // 0.50.0 (PART B)
+      if (type === 'picture') { const dr = []; if (!(/^<svg[\s>]/i.test(content) ? cleanSvg(content, dr) : picUrl(content))) why.push('a picture needs Content = a small SVG (<svg ...>...</svg>) or a Drive picture link'); else if (dr.length) notes.push(where + ': picture: dropped ' + dr.slice(0, 8).join(', ') + ' (only plain shapes are kept).'); }   // 0.50.0 (PART B); 0.52.0 (PART A)
       const fd = r._fieldDef || null;   // round B1: the Field this piece belongs to (made by bundleRows from the Fields tab)
       if (slot && slot !== 'box' && slot !== 'results' && slot !== 'call-types' && slot !== 'condo-grid' && slot !== 'history' && slot !== 'site-builder' && slot !== 'report-body' && slot !== 'view-line' && slot !== 'save-chip' && slot !== 'check-count' && slot !== 'follow-line' && slot !== 'systems' && !((slot === 'unit' || slot === 'report-value' || FIELD_SLOTS[slot]) && fd)) why.push('unknown Slot "' + slot + '"');
       if (slot === 'box' && !fd && !FIELD_FALLBACK[content] && !FIND_KEYS[content]) why.push('unknown field "' + content + '"');
@@ -10755,11 +10769,15 @@ body.light-theme .proof-box{color:#0f172a}
     const g = g2, missing = {};   // 0.26.1: refused Lines that had Items on them (shown in amber at the top of Entry)
     const okNum = (v, lo, hi) => v === '' || (isFinite(Number(v)) && Number(v) >= lo && Number(v) <= hi);
     const wsOf = {}; structure.forEach(r => { const n = g(r, 'Line name'); if (n && !(n in wsOf)) wsOf[n] = { ws: g(r, 'Cell widths'), cells: g(r, 'Cells') }; });   // 0.51.0 (PART H): 'Widths like' = take another Line's Cell widths
+    structure.forEach(r => { const n = g(r, 'Line name'); if (n && wsOf[n] && !('like' in wsOf[n])) wsOf[n].like = g(r, 'Widths like'); });
     const widthsLike = (r, where) => { const own = g(r, 'Cell widths'), like = g(r, 'Widths like'); if (!like) return own;
       if (own) { out.push({ _note: where + ': Widths like "' + like + '" not used (this Line has its own Cell widths).' }); return own; }
-      const L0 = wsOf[like]; if (!L0) { out.push({ _note: where + ': Widths like "' + like + '": no Line of that name.' }); return ''; }
-      if (L0.cells !== g(r, 'Cells')) { out.push({ _note: where + ': Widths like "' + like + '" not used (that Line has ' + L0.cells + ' cells, this one ' + g(r, 'Cells') + ').' }); return ''; }
-      return L0.ws; };
+      const seen = [g(r, 'Line name')]; let cur = like;   // 0.52.0 (PART D): follow a chain (C -> B -> A); a loop or a Line with no widths = a note
+      for (let hop = 0; hop < 12; hop++) { const L0 = wsOf[cur]; if (!L0) { out.push({ _note: where + ': Widths like "' + cur + '": no Line of that name (equal widths).' }); return ''; }
+        if (seen.indexOf(cur) >= 0) { out.push({ _note: where + ': Widths like goes in a loop (' + seen.concat(cur).join(' -> ') + '); equal widths.' }); return ''; } seen.push(cur);
+        if (L0.cells !== g(r, 'Cells')) { out.push({ _note: where + ': Widths like "' + cur + '" not used (that Line has ' + L0.cells + ' cells, this one ' + g(r, 'Cells') + ').' }); return ''; }
+        if (L0.ws) return L0.ws; if (!L0.like) { out.push({ _note: where + ': Widths like "' + cur + '": that Line has no Cell widths either (equal widths).' }); return ''; } cur = L0.like; }
+      out.push({ _note: where + ': Widths like: the chain is too long (equal widths).' }); return ''; };
     structure.forEach((r, i) => {
       const where = 'Structure row ' + (i + 2), why = formulaErrors(r);
       if (!Object.keys(r).some(c => c.charAt(0) !== '_' && g(r, c)) && !why.length) return;   // an empty row (0.12.2, R11: any column counts)
@@ -11143,7 +11161,9 @@ body.light-theme .proof-box{color:#0f172a}
     document.querySelectorAll('#viewport-canvas-frame .proof-spec').forEach(x => { const p = boxCell(x.closest('.proof-cell') && x.closest('.proof-cell').querySelector('.proof-box')); if (!p || !p.proofField || !specOf(p.proofField.id)) x.remove(); });
     document.querySelectorAll('#viewport-canvas-frame .proof-box').forEach(bx => { const p = boxCell(bx); if (!p || !p.proofField || edOf(p)) return; const sp = specOf(p.proofField.id); if (!sp) return;
       const cell = bx.closest('.proof-cell'); if (!cell) return; let el = cell.querySelector('.proof-spec'); if (!el) { el = document.createElement('span'); el.className = 'proof-spec'; el.setAttribute('aria-label', 'from file'); cell.appendChild(el); }
-      const t = sp.word + ' ' + sp.v + (sp.unit ? ' ' + sp.unit : ''); if (el.textContent !== t) el.textContent = t; bx.classList.add('has-spec'); });
+      const t = sp.word + ' ' + sp.v + (sp.unit ? ' ' + sp.unit : ''); if (el.textContent !== t) el.textContent = t; bx.classList.add('has-spec');
+      const part = cell.closest('.grid-split-partition'), u = part && part.querySelector('span.font-mono.text-cyan-400'), cr = cell.getBoundingClientRect();   // 0.52.0 (PART H): left of the box's own unit (the corner sub label)
+      let rt = 6; if (u && u.getClientRects().length) { const ur = u.getBoundingClientRect(); if (ur.right > cr.right - 40 && ur.width < 60) rt = Math.max(6, Math.round(cr.right - ur.left + 6)); } const rs = rt + 'px'; if (el.style.right !== rs) el.style.right = rs; });
   }
   function specLine(x) {   // the report line from rating + measured (the main app's styled(): Rated first / Within range / Measured first / Slash)
     const sp = specOf(x.id); if (!sp || !x.v) return null;
@@ -11761,7 +11781,7 @@ body.light-theme .proof-box{color:#0f172a}
       const a = cell.clickAction || '';
       if (style !== 'stay' && cell.pressStyle) btn.classList.remove('ctl-on');   // the tab said: no stays-highlighted look for this one
       if (style === 'stay' && ((a === 'proof-adjust' && barOpen) || (!ENGINE_STAY(a) && a !== 'proof-adjust' && stayLast && stayLast === cell.proofId))) btn.classList.add('ctl-on');
-      if (busy[a]) { const sp = btn.querySelector('span') || btn; if (!btn.dataset.orig) btn.dataset.orig = sp.textContent; sp.textContent = busy[a]; btn.classList.add('proof-busy'); }
+      if (busy[a]) { if (!(cell.icon || cell.proofIcon || (cell.subLabel && cell.subLabel.enabled))) { const sp = btn.querySelector('span') || btn; if (!btn.dataset.orig) btn.dataset.orig = sp.textContent; sp.textContent = busy[a]; } btn.classList.add('proof-busy'); }   // 0.52.0 (PART G): an icon button keeps its icon + small name (the message line says 'Reloading...')
       if (doneUntil[a] > Date.now()) btn.classList.add('proof-done');
     });
     // round 7: a text cell with no text (e.g. hdr.spacer1 / hdr.spacer2) is drawn empty: no border, no box (still a cell: selectable in Adjust)
@@ -11792,7 +11812,7 @@ body.light-theme .proof-box{color:#0f172a}
   }
   const ASYNC = { 'reload-layout': 1, 'proof-save-tweaks': 1, 'proof-clear-tweaks': 1, 'refresh-page': 1 };   // these show their own busy look
   document.addEventListener('pointerdown', e => {
-    const btn = e.target && e.target.closest && e.target.closest('button'); if (!btn) return;
+    const btn = e.target && e.target.closest && e.target.closest('button'); if (!btn || btn.classList.contains('proof-gear')) return;   // 0.52.0 (PART C): the gear never flashes (its jump made a tap fold the Section on iPhone)
     const part = btn.closest('.grid-split-partition'), style = part ? part.getAttribute('data-press') : 'flash';
     if (style === 'none') return;
     btn.classList.remove('proof-flash'); void btn.offsetWidth; btn.classList.add('proof-flash'); setTimeout(() => btn.classList.remove('proof-flash'), 400);
@@ -12540,7 +12560,8 @@ body.light-theme .proof-box{color:#0f172a}
   }
   var holdBox = null;   // 0.41.0 (B3): the call box being typed in and its value when entered
   document.addEventListener('focusin', e => { const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b || !b.dataset.key || b.dataset.key in find || isDraft(b.dataset.key)) return; holdBox = { key: b.dataset.key, val: call[b.dataset.key] }; });
-  document.addEventListener('focusout', e => { const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b || !holdBox || b.dataset.key !== holdBox.key) return; const ch = call[holdBox.key] !== holdBox.val; holdBox = null; if (ch) setTimeout(() => { try { saveCall('left box'); } catch (e2) {} }, 0); });   // leaving the box sends it
+  var pendLeft = false;   // 0.52.0 (PART B (1)): a 'left box' save waiting for the next tick (saveBeforeHist sends it at once)
+  document.addEventListener('focusout', e => { const b = e.target && e.target.closest && e.target.closest('.proof-box'); if (!b || !holdBox || b.dataset.key !== holdBox.key) return; const ch = call[holdBox.key] !== holdBox.val; holdBox = null; if (ch) { pendLeft = true; setTimeout(() => { if (!pendLeft) return; pendLeft = false; try { saveCall('left box'); } catch (e2) {} }, 0); } });   // leaving the box sends it
   function saveCall(why) {   // queue the call when it changed since its last queued copy; then send
     if (!savingOn() || TAB.passive) return;
     if (histQuiet()) return;   // 0.47.0 (no. 192, PART A, Task R1): nothing is saved while History, Find (history) or the grid in history mode shows

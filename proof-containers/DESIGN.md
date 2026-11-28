@@ -394,3 +394,15 @@
 - PART K: Settings 'Find card main' / 'Find card lines' = Places columns (with the inherited building / site values), 'History card lines' = Visits columns (Field short names; a follow-up still first). Blank = as before.
 - Test sheet: Settings rows 10-14; Structure 'Widths like' (Contact 1-6 = Job details 7, the same widths), Line Tools 7 (Placeholder lightness - / +); Fields 'Fit text' yes on Customer Name, Address. Fixture tools/convert-to-0510.js, S51.
 - Tests: r67 (G1, G3, G2, H1, I1, J1, K1, K2, P1 x2, UPG; fails on 0.50.0: 9 of 10, G2 passes there as there is no gear at all).
+
+## 0.52.0 (Prompts no. 198 stage 1: the 0.51.0 review + iPhone-check fixes)
+- A: icon and picture SVG is an ALLOWLIST (cleanSvg): only plain shapes (svg, g, path, circle, ellipse, rect, line, polyline, polygon, title, defs, gradients, stop, clipPath, text, tspan) and plain shape attributes stay; style, animate*, image, use, filters, foreignObject, url(...), javascript:, data:, backslash escapes, expression and @import are dropped and named in the footer. A picture link is kept only for Drive or *.googleusercontent.com.
+- B: a box left a moment before Find (history) starts is saved first (pendLeft, flushed by saveBeforeHist). Each rating keeps its own source: call.__from['sk:id#col'] (old one-key sources still read).
+- C: the section gear: 40 x 40, fixed (no press jump, no flash), title space reserved (proof-head-title, ellipsis); Text size touches the Section's labels and boxes only; Value width skips the small name box.
+- D: Widths like follows a chain (max 8); a loop, a Line with no widths, other Cells = footer notes.
+- F: press and hold: the bubble shows above the button (also on the top row); only the held button's release is swallowed; a cancelled hold clears it.
+- G: a busy button with an icon / small name keeps them (no 'Reloading' text swap).
+- H: 'rated N' sits left of the box's unit (sub label).
+- I: Fit text works on multi-line boxes (textarea: scrollHeight vs clientHeight).
+- Test sheet: the NEW header (Header 1 Entry / Report / New / Find / History; Header 2 Reload / Tools / Edit / Theme; Header 3 logo / save chip / badge / view text / check; Header 4 Copy visit). Fixture tools/convert-to-0520.js, S52.
+- Tests: r68 (A1, B1, B2, C1, C3, D1, F1, G1, H1, I1, P1 x2, UPG; fails on 0.51.0: all 10 new checks; P1 and UPG pass there).
