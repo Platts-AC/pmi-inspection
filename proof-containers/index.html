@@ -783,6 +783,7 @@
 .proof-tray-pinned{position:fixed!important;left:0;right:0;z-index:58;max-height:60vh;overflow-y:auto;background:#060c16;box-shadow:0 6px 18px rgba(0,0,0,.55)}
 body:not(.proof-ready) #reopen-inspector-fab{display:none!important}
 #viewport-canvas-frame textarea.proof-box.proof-ro-src{color:transparent!important;-webkit-text-fill-color:transparent;caret-color:transparent}
+#viewport-canvas-frame textarea.proof-box.proof-ro-src::placeholder{-webkit-text-fill-color:rgba(148,163,184,var(--ph-a,.55));color:rgba(148,163,184,var(--ph-a,.55))}   /* 0.53.0 (O, CARRY 50 (12)): an empty editor box (Capacitor) shows its placeholder */
 #viewport-canvas-frame .proof-face:has(.proof-ro-text){position:relative}
 #viewport-canvas-frame .proof-ro-text{position:absolute;box-sizing:border-box;overflow-y:auto;overflow-x:hidden;white-space:normal;overflow-wrap:break-word;word-break:normal;pointer-events:none;color:#e2e8f0;margin:0}
 #viewport-canvas-frame .proof-cell:has(.proof-dbg){position:relative}
@@ -1041,8 +1042,236 @@ body.proof-autofill-mode > *:not(#proof-autofill){display:none !important}
 #proof-bar.pb-change-only .pb-mid .pb-chg{font-size:18px;color:inherit}
 #proof-bar .pb-dot{flex:0 0 44px;display:flex;align-items:center;justify-content:center;padding:0}
 #proof-bar .pb-dot i{display:block;width:12px;height:12px;border-radius:50%;background:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,.25)}
+/* 0.53.0 (no. 198 stage 2, PART M): the systems strip scrolls sideways by touch; a fade shows more on that side */
+#viewport-canvas-frame .proof-sys-list{touch-action:pan-x;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+#viewport-canvas-frame .proof-sys-list.more-r{-webkit-mask-image:linear-gradient(to right,#000 82%,transparent);mask-image:linear-gradient(to right,#000 82%,transparent)}
+#viewport-canvas-frame .proof-sys-list.more-l{-webkit-mask-image:linear-gradient(to left,#000 82%,transparent);mask-image:linear-gradient(to left,#000 82%,transparent)}
+#viewport-canvas-frame .proof-sys-list.more-l.more-r{-webkit-mask-image:linear-gradient(to right,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(to right,transparent,#000 14%,#000 86%,transparent)}
 body.light-theme .proof-face{background:#fff}
 body.light-theme .proof-box{color:#0f172a}
+/* 0.53.0 light theme, made by lightgen.py from the rules above */
+body.light-theme #viewport-canvas-frame .proof-face{border:1px solid #bacade!important;background-color:#f0f5fc!important}
+body.light-theme #viewport-canvas-frame .proof-piece{color:#415670!important}
+body.light-theme .grid-row-band > .proof-chip{background-color:#fbf1eb!important;color:#675202!important}
+body.light-theme #viewport-canvas-frame .proof-limit{color:#6d4f02!important}
+body.light-theme #viewport-canvas-frame .proof-mode{border:1px solid #bacade!important;background-color:#eef3fb!important;color:#0352ab!important}
+body.light-theme .proof-ct .proof-ct-filter{border:1px solid #bacade!important;background-color:#eef3fb!important;color:#3d5677!important}
+body.light-theme .proof-ct .proof-ct-item{border:1px solid #bacade!important;background-color:#eef3fb!important;color:#3d5677!important}
+body.light-theme .proof-ct .proof-ct-item.ct-on{background-color:#fcf6ee!important}
+body.light-theme .proof-ct .proof-ct-item i{color:#6d4f02!important}
+body.light-theme .proof-ct .proof-empty{color:#6d4f02!important}
+body.light-theme .proof-cd .proof-cd-crumb{color:#0352ab!important}
+body.light-theme .proof-cd .proof-cd-b{border:1px solid #bacade!important;background-color:#eef3fb!important;color:#3d5677!important}
+body.light-theme .proof-cd .proof-cd-b i{color:#47556a!important}
+body.light-theme .proof-cd .proof-cd-fl{color:#47556a!important}
+body.light-theme .proof-cd .proof-cd-u{border:1px solid #bacade!important;background-color:#eef3fb!important;color:#3d5677!important}
+body.light-theme .proof-cd .proof-cd-u.cd-on{background-color:#ecfcfa!important;color:#08604e!important}
+body.light-theme .proof-cd .proof-cd-u i{color:#47556a!important}
+body.light-theme .proof-cd .proof-cd-sprow,body.light-theme .proof-cd .proof-cd-other{border-top:1px solid #bacade!important}
+body.light-theme .proof-sb .proof-sb-warn{color:#6d4f02!important}
+body.light-theme .proof-cd .proof-cd-edit{border:1px solid #bacade!important;background-color:#eef3fb!important;color:#0352ab!important}
+body.light-theme .proof-sb .proof-sb-edit{color:#6d4f02!important}
+body.light-theme .proof-sb .proof-sb-ch{color:#6d4f02!important}
+body.light-theme .proof-cd .proof-empty{color:#6d4f02!important}
+body.light-theme .proof-sb{color:#3d5677!important}
+body.light-theme .proof-sb label{color:#47556a!important}
+body.light-theme .proof-sb .proof-sb-in{border:1px solid #bacade!important;background-color:#eef3fb!important;color:#3d5677!important}
+body.light-theme .proof-sb .proof-sb-sec{color:#0352ab!important}
+body.light-theme .proof-sb .proof-sb-card{border:1px solid #bacade!important}
+body.light-theme .proof-sb .proof-sb-x{border:1px solid #debaba!important;background-color:#fbefef!important;color:#ad0303!important}
+body.light-theme .proof-sb .proof-sb-add{border:1px dashed #bacade!important;color:#0352ab!important}
+body.light-theme .proof-sb .proof-sb-sum{border-top:1px solid #bacade!important}
+body.light-theme .proof-sb .proof-empty{color:#6d4f02!important}
+body.light-theme .proof-hit .proof-dist{color:#0c5f52!important}
+body.light-theme #proof-badge .proof-viewline{color:#035a84!important}
+body.light-theme .proof-tray-pinned{background-color:#f2f5fb!important;box-shadow:0 6px 18px rgba(0,0,0,0.19)!important}
+body.light-theme #viewport-canvas-frame .proof-ro-text{color:#3d5677!important}
+body.light-theme #viewport-canvas-frame .proof-spec{color:#47556a!important}
+body.light-theme #viewport-canvas-frame .proof-dbg{color:#4e5561!important;background-color:#eff2f9!important}
+body.light-theme #viewport-canvas-frame .proof-viewcell{color:#035a84!important}
+body.light-theme #viewport-canvas-frame .proof-box.proof-namebox{color:#43566d!important}
+body.light-theme #viewport-canvas-frame .proof-box.proof-namebox:focus{background-color:#f1f4fa!important;border-color:#bfcad9!important}
+body.light-theme #viewport-canvas-frame .proof-checkcount{color:#6d4f02!important}
+body.light-theme #viewport-canvas-frame .proof-systems button.add{color:#0c5f52!important}
+body.light-theme #proof-addsys{background-color:#f1f4fa!important;color:#4d5564!important;box-shadow:0 -8px 24px rgba(0,0,0,0.17)!important}
+body.light-theme #proof-addsys .pa-title{color:#0c5f52!important}
+body.light-theme #proof-addsys button{border:1px solid #bfcad9!important;background-color:#eff2f6!important;color:#34577a!important}
+body.light-theme #proof-addsys button small{color:#47556a!important}
+body.light-theme #proof-addsys button[data-a=cancel]{color:#415670!important}
+body.light-theme #viewport-canvas-frame .proof-viewcell button.proof-chip-pin{background-color:#fbf1eb!important;color:#675202!important}
+body.light-theme #viewport-canvas-frame .proof-systems button.same{color:#0c5f52!important}
+body.light-theme #viewport-canvas-frame .proof-systems button{border:1px solid #bfcad9!important;background-color:#f0f3f9!important;color:#4d5564!important}
+body.light-theme #viewport-canvas-frame .proof-systems button small{color:#47556a!important}
+body.light-theme #viewport-canvas-frame .proof-systems button.on{background-color:#d4f7f5!important;color:#0d604d!important}
+body.light-theme .proof-rp-head{color:#0c5f52!important}
+body.light-theme #proof-fmenu button.on{color:#0c5f52!important}
+body.light-theme #proof-storewarn{background-color:#fcf7f0!important;color:#6d4f02!important}
+body.light-theme #proof-badge .proof-door.old{color:#754c05!important}
+body.light-theme #proof-badge .proof-door.wait{color:#47556a!important}
+body.light-theme #viewport-canvas-frame .proof-followline{color:#6d4f02!important}
+body.light-theme #proof-follownote{background-color:#fcf7f0!important;color:#6d4f02!important}
+body.light-theme #proof-follow{background-color:#f1f4fa!important;color:#4d5564!important}
+body.light-theme #proof-follow .pf-title{color:#6d4f02!important}
+body.light-theme #proof-follow .pf-item{background-color:#eff2f6!important;color:#34577a!important}
+body.light-theme #proof-follow .pf-none{color:#47556a!important}
+body.light-theme #proof-follow .pf-close{border:1px solid #bfcad9!important;color:#415670!important}
+body.light-theme #proof-diff{background-color:#f0f3f9!important;color:#4d5564!important;box-shadow:0 -8px 24px rgba(0,0,0,0.17)!important}
+body.light-theme #proof-diff .pd-title{color:#6d4f02!important}
+body.light-theme #proof-diff .pd-h{color:#47556a!important}
+body.light-theme #proof-diff .pd-hint{color:#6a5102!important}
+body.light-theme #proof-diff .pd-btns button,body.light-theme #proof-diff .pd-photo{border:1px solid #bfcad9!important;background-color:#eff2f6!important;color:#34577a!important}
+body.light-theme #proof-diff .pd-btns .pd-back{color:#47556a!important}
+body.light-theme #viewport-canvas-frame .proof-savechip{color:#0d612c!important}
+body.light-theme #viewport-canvas-frame .proof-savechip[data-st=wait],body.light-theme #viewport-canvas-frame .proof-savechip[data-st=saving]{color:#6a5102!important}
+body.light-theme #viewport-canvas-frame .proof-savechip[data-st=err]{color:#ac0606!important}
+body.light-theme #viewport-canvas-frame .proof-savechip[data-st=off]{color:#47556a!important}
+body.light-theme #proof-missing{background-color:#fcf7f0!important;color:#6d4f02!important}
+body.light-theme #proof-nocust{background-color:#fcf7f0!important;color:#6d4f02!important}
+body.light-theme #proof-nocust b{color:#085d6b!important}
+body.light-theme #proof-tabcover{background-color:#f1f3fd!important;color:#3d5677!important}
+body.light-theme #proof-tabcover .ptc-box{background-color:#eff4fa!important}
+body.light-theme #proof-tabcover button{background-color:#ecf2fa!important;color:#085d6b!important}
+body.light-theme #proof-fmenu{background-color:#eff4fa!important;box-shadow:0 8px 24px rgba(0,0,0,0.21)!important;color:#3d5677!important}
+body.light-theme #proof-fmenu button{border:1px solid #bacade!important;background-color:#ecf2fa!important;color:#3d5677!important}
+body.light-theme #proof-fmenu small{color:#47556a!important}
+body.light-theme .proof-fbtn{border:1px solid #bacade!important;background-color:#ecf2fa!important;color:#3d5677!important}
+body.light-theme #proof-cap,body.light-theme #proof-filter,body.light-theme #proof-ctwheel{background-color:#eff4fa!important;box-shadow:0 8px 24px rgba(0,0,0,0.21)!important;color:#3d5677!important}
+body.light-theme #proof-cap button,body.light-theme #proof-filter button,body.light-theme #proof-ctwheel button{border:1px solid #bacade!important;background-color:#ecf2fa!important;color:#3d5677!important}
+body.light-theme #proof-cap select{background-color:#ecf2fa!important;color:#3d5677!important;border:1px solid #bacade!important}
+body.light-theme #proof-cap .pc-top{background-color:#eff4fa!important}
+body.light-theme #proof-cap .pc-tab.on{color:#085d6b!important}
+body.light-theme #proof-cap .pc-add{color:#47556a!important}
+body.light-theme #proof-cap .pc-bar{border:1px solid #bacade!important}
+body.light-theme #proof-cap .pc-sum.pc-pass{color:#086043!important}
+body.light-theme #proof-cap .pc-sum.pc-fail{color:#aa0f0f!important}
+body.light-theme #proof-cap .pc-info{color:#47556a!important}
+body.light-theme #proof-cap .pc-settings{color:#47556a!important}
+body.light-theme #proof-cap .pc-lbl{color:#47556a!important}
+body.light-theme #proof-cap .pc-rt{color:#47556a!important}
+body.light-theme .pc-primary{color:#085d6b!important}
+body.light-theme .pc-item{color:#3d5677!important}
+body.light-theme #proof-filter .pf-col{color:#47556a!important}
+body.light-theme #proof-filter .pf-type{border:1px solid #bacade!important;background-color:#ecf2fa!important;color:#3d5677!important}
+body.light-theme #proof-pick{background-color:#eff4fa!important;box-shadow:0 8px 24px rgba(0,0,0,0.21)!important;color:#3d5677!important}
+body.light-theme #proof-pick .pp-item{border:1px solid #bacade!important;background-color:#eef3fb!important;color:#3d5677!important}
+body.light-theme #proof-pick .pp-item.on{background-color:#eaf4fb!important}
+body.light-theme #proof-pick .pp-btns button{border:1px solid #bacade!important;background-color:#ecf2fa!important;color:#3d5677!important}
+body.light-theme .proof-report-body .proof-rp-all{background-color:#fcf6ee!important;color:#6d4f02!important}
+body.light-theme .proof-report-body .proof-rp-row.pending .proof-rp-text{color:#055a81!important}
+body.light-theme .proof-report-body .proof-rp-btns button{border:1px solid #bacade!important;background-color:#ecf2fa!important;color:#3d5677!important}
+body.light-theme .proof-report-body .proof-rp-open{background-color:#eaf4fb!important}
+body.light-theme .proof-report-body .proof-rp-open button{border:1px solid #bacade!important;background-color:#ecf2fa!important;color:#3d5677!important}
+body.light-theme #proof-ask{background-color:#eff4fa!important;box-shadow:0 8px 24px rgba(0,0,0,0.21)!important;color:#3d5677!important}
+body.light-theme #proof-ask .pa-btns button{border:1px solid #bacade!important;background-color:#ecf2fa!important;color:#3d5677!important}
+body.light-theme #proof-wheel{background-color:#eff4fa!important;border-top:1px solid #bacade!important;box-shadow:0 -8px 24px rgba(0,0,0,0.17)!important;color:#3d5677!important}
+body.light-theme #proof-wheel .pw-top{border-bottom:1px solid #bacade!important}
+body.light-theme #proof-wheel .pw-top button{border:1px solid #bacade!important;background-color:#ecf2fa!important;color:#3d5677!important}
+body.light-theme #proof-wheel .pw-top .pw-done{color:#085d6b!important}
+body.light-theme #proof-wheel .pw-title{color:#47556a!important}
+body.light-theme #proof-wheel .pw-item{color:#3d5677!important}
+body.light-theme #viewport-canvas-frame .proof-box{color:#3d5677!important}
+body.light-theme #viewport-canvas-frame .grid-split-partition.proof-inc{color:#545454!important}
+body.light-theme #viewport-canvas-frame .proof-face.proof-cm{border-color:#c2cad6!important;background-color:#eff2f9!important}
+body.light-theme #viewport-canvas-frame .proof-face.proof-cm.is-approved .proof-box{color:#0d613b!important}
+body.light-theme .proof-cm-edit{border:1px solid #bacade!important;background-color:#ecf2fa!important;color:#47556a!important}
+body.light-theme #proof-pick .pp-who{color:#47556a!important}
+body.light-theme #proof-pick .pp-add .pp-new{border:1px solid #bacade!important;background-color:#eef3fb!important;color:#3d5677!important}
+body.light-theme #proof-pick .pp-add button{border:1px solid #bacade!important;background-color:#ecf2fa!important;color:#3d5677!important}
+body.light-theme .proof-calc-mark{color:#6d4f02!important}
+body.light-theme .proof-fold-status{color:#47556a!important}
+body.light-theme .proof-report-body{color:#3d5677!important}
+body.light-theme .proof-results .proof-list{border-top:1px solid #bacade!important}
+body.light-theme .proof-results .proof-count{color:#47556a!important}
+body.light-theme .proof-results .proof-hit{border:1px solid #bacade!important;background-color:#eef3fb!important;color:#3d5677!important}
+body.light-theme .proof-results .proof-hit span{color:#47556a!important}
+body.light-theme .proof-hit span.proof-hist-b{border:1px solid #bfcad9!important;background-color:#f0f3f9!important;color:#0c5f52!important}
+body.light-theme .proof-hist{color:#3d5677!important}
+body.light-theme .proof-hi-title{color:#0c5f52!important}
+body.light-theme .proof-hi-sys button,body.light-theme .proof-hi-tog button{border:1px solid #bfcad9!important;background-color:#f0f3f9!important;color:#4d5564!important}
+body.light-theme .proof-hi-sys button.on,body.light-theme .proof-hi-tog button.on{background-color:#d4f7f5!important;color:#0d604d!important}
+body.light-theme .proof-hi-st{color:#6d4f02!important}
+body.light-theme .proof-hi-v{border:1px solid #bacade!important;background-color:#eef3fb!important;color:#3d5677!important}
+body.light-theme .proof-hi-v i{color:#0352ab!important}
+body.light-theme .proof-hi-v span{color:#47556a!important}
+body.light-theme .proof-hi-v em{color:#47556a!important}
+body.light-theme .proof-hi-v.leg,body.light-theme .proof-hi-one.leg .proof-hi-body{border-color:#c2cad6!important;background-color:#f0f3f9!important}
+body.light-theme .proof-hi-leg,body.light-theme .proof-hi-mine{color:#47556a!important}
+body.light-theme .proof-hi-note{color:#6d4f02!important}
+body.light-theme .proof-hi-rep{background-color:#f1f4fa!important;border:1px solid #becada!important}
+body.light-theme .proof-hi-gh{color:#0c5f52!important}
+body.light-theme .proof-hi-kv{border-bottom:1px solid #becada!important}
+body.light-theme .proof-hi-kv span{color:#47556a!important}
+body.light-theme .proof-hi-v .proof-hi-tick{border:1px solid #c2cad6!important;background-color:#f1f4fa!important;color:#0c5f52!important}
+body.light-theme .proof-hi-v em.proof-hi-eq,body.light-theme .proof-hi-eq{color:#6d4f02!important}
+body.light-theme .proof-hi-cmpbar{color:#47556a!important}
+body.light-theme .proof-hi-cmpbar button{background-color:#d4f7f5!important;color:#0d604d!important}
+body.light-theme .proof-hi-cmpbar button[data-hclear]{color:#4d5564!important;border-color:#bfcad9!important}
+body.light-theme .proof-hi-tab th,body.light-theme .proof-hi-tab td{border-bottom:1px solid #becada!important}
+body.light-theme .proof-hi-tab th:first-child,body.light-theme .proof-hi-tab td:first-child{color:#47556a!important}
+body.light-theme .proof-hi-tab th{color:#0c5f52!important}
+body.light-theme .proof-hi-tab th i{color:#47556a!important}
+body.light-theme .proof-hi-tab td.diff{background-color:#fbf1eb!important;color:#675202!important}
+body.light-theme .proof-hi-kv.tk .proof-hi-tick{border:1px solid #c2cad6!important;background-color:#f1f4fa!important;color:#0c5f52!important}
+body.light-theme .proof-hi-usebar button{background-color:#d4f7f5!important;color:#0d604d!important}
+body.light-theme .proof-hi-usebar button[data-huseall],body.light-theme .proof-hi-usebar button[data-huseundo]{color:#0c5f52!important}
+body.light-theme .proof-hi-usebar i{color:#47556a!important}
+body.light-theme .proof-fbtn.proof-fb-from{color:#6d4f02!important}
+body.light-theme #proof-fmenu .pp-from{color:#675202!important;background-color:#fcf8f0!important;border:1px solid #dec8ba!important}
+body.light-theme #proof-fmenu .pp-sub{color:#47556a!important}
+body.light-theme .proof-hi-note{color:#6d4f02!important}
+body.light-theme #viewport-canvas-frame .grid-split-partition button#proof-badge.cur{color:#12612f!important;border-color:#badec8!important}
+body.light-theme #proof-badge .proof-door.cur{color:#12612f!important}
+body.light-theme #proof-hold{box-shadow:0 4px 14px rgba(0,0,0,0.17)!important}
+body.light-theme .proof-gear{border:1px solid #bacade!important;background-color:#ecf2fa!important;color:#47556a!important}
+body.light-theme #proof-gmenu{background-color:#eff4fa!important;box-shadow:0 8px 24px rgba(0,0,0,0.21)!important;color:#3d5677!important}
+body.light-theme #proof-gmenu button{border:1px solid #bacade!important;background-color:#ecf2fa!important;color:#3d5677!important}
+body.light-theme #proof-gmenu button small{color:#47556a!important}
+body.light-theme #proof-gmenu .pg-now{color:#47556a!important}
+body.light-theme .proof-fh-bar{background-color:#edfcfa!important;color:#08604e!important}
+body.light-theme .proof-fh-bar button{color:#0c5f52!important}
+body.light-theme #viewport-canvas-frame .proof-systems button.hist{color:#0c5f52!important}
+body.light-theme .proof-results .proof-hit .proof-why{color:#6d4f02!important}
+body.light-theme .proof-results .proof-hit i{color:#47556a!important}
+body.light-theme .proof-results .proof-empty{color:#6d4f02!important}
+body.light-theme #proof-notes{background-color:#eff2f9!important;color:#47556a!important;border-top:1px solid #bfcad9!important}
+body.light-theme #proof-notes b{color:#415670!important}
+body.light-theme #proof-notes .proof-last{color:#6d4f02!important}
+body.light-theme #proof-save-now{background-color:#f7e0d3!important;color:#545454!important}
+body.light-theme #proof-notes .proof-warn{color:#ac0419!important}
+body.light-theme #proof-bar{background-color:#eff4fa!important;color:#3d5677!important;box-shadow:0 -6px 18px rgba(0,0,0,0.17)!important}
+body.light-theme #proof-bar button{border:1px solid #bacade!important;background-color:#eef3fa!important;color:#3d5677!important}
+body.light-theme #proof-bar button.on{background-color:#d3eef7!important;color:#545454!important}
+body.light-theme #proof-bar .pb-top{color:#47556a!important}
+body.light-theme #proof-bar .pb-hint{color:#47556a!important}
+body.light-theme #proof-bar #pb-label{background-color:#f2f5fb!important;color:#545454!important}
+body.light-theme #proof-bar #pb-status{color:#47556a!important}
+body.light-theme #proof-bar #pb-status.done{color:#106041!important}
+body.light-theme #proof-bar #pb-status.warn{color:#ac0419!important}
+body.light-theme #proof-bar .pb-save{background-color:#f7e0d3!important}
+body.light-theme #viewport-canvas-frame .grid-split-partition button#proof-badge{color:#47556a!important;background-color:#eff2f9!important;border:1px solid #bfcad9!important}
+body.light-theme #viewport-canvas-frame .grid-split-partition button#proof-badge.stale{color:#545454!important;background-color:#f5dbc8!important}
+body.light-theme #proof-autofill{color:#3d5677!important}
+body.light-theme #proof-autofill .af-note{color:#675202!important}
+body.light-theme #proof-autofill .af-label{color:#415670!important}
+body.light-theme #proof-autofill .af-label b{color:#6d4f02!important}
+body.light-theme #proof-autofill .af-face{border:1px solid #bacade!important;background-color:#f0f5fc!important}
+body.light-theme #proof-autofill .af-box{color:#3d5677!important}
+body.light-theme #proof-autofill .af-h2{color:#0352ab!important}
+body.light-theme #proof-autofill .af-key{color:#47556a!important}
+body.light-theme #proof-autofill a{color:#045d69!important}
+body.light-theme #proof-status{background-color:#eff2f9!important;border:1px solid #bfcad9!important;color:#415670!important}
+body.light-theme #proof-status.done{color:#106041!important;border-color:#baded4!important}
+body.light-theme #proof-status.warn{color:#675202!important}
+body.light-theme #proof-bar .pb-mid .pb-chg{color:#47556a!important}
+body.light-theme #proof-bar .pb-mid.changed{background-color:#f7dbd2!important}
+body.light-theme #proof-bar .pb-mid.changed .pb-chg{color:#804602!important}
+/* 0.53.0 light theme: hand-set */
+html body.light-theme .proof-fh-bar{background:#fef3c7!important;color:#78350f!important;border-color:#d97706!important}
+html body.light-theme .proof-fh-bar button{background:#fff!important;color:#0f766e!important;border-color:#0f766e!important}
+html body.light-theme #viewport-canvas-frame .proof-face{background:#fff!important;border-color:#94a3b8!important}
+html body.light-theme #viewport-canvas-frame .proof-box{color:#0f172a!important}
+html body.light-theme #viewport-canvas-frame .proof-box::placeholder{color:rgba(51,65,85,var(--ph-a,.55))!important}
+html body.light-theme #viewport-canvas-frame textarea.proof-box.proof-ro-src::placeholder{-webkit-text-fill-color:rgba(51,65,85,var(--ph-a,.55))!important}
 </style>
 </head>
 <body class="flex flex-col antialiased select-none clean-preview-mode">
@@ -3784,7 +4013,7 @@ body.light-theme .proof-box{color:#0f172a}
   </div>
 
   <!-- Dedicated Storage Node for Portable Offline Snapshots -->
-  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.52.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
+  <script type="application/json" id="embedded-layout-state">{"layoutVersion": "proof-0.53.0", "viewportWidth": "auto", "showWireframes": false, "activeSelection": null, "rows": [{"id": "PR1", "name": "Loading", "heightPx": 60, "isAutoHeight": false, "containers": [{"id": "C1", "weight": 1, "stacks": [{"id": "S1", "weight": 1, "splits": [{"id": "P1", "weight": 1, "type": "text", "label": "Loading the layout ...", "fontSize": 13, "align": "center", "vAlign": "center", "nudgeX": 0, "nudgeY": 0, "isDisabled": false}]}]}]}]}</script>
 
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script>
@@ -3794,7 +4023,7 @@ body.light-theme .proof-box{color:#0f172a}
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    const ENGINE_BUILD = { version: 'proof-0.52.0', stamp: '2026-11-28 05:24:30', name: 'pmi-container-proof' };
+    const ENGINE_BUILD = { version: 'proof-0.53.0', stamp: '2026-11-28 06:02:02', name: 'pmi-container-proof' };
     // Visitor mode: a published page (data-visitor-mode="1" on <body>) hides the editor.
     // Add #edit to the page address to open the full editor again.
     const IS_VISITOR_MODE = document.body.getAttribute('data-visitor-mode') === '1' && location.hash !== '#edit';
@@ -8471,7 +8700,7 @@ body.light-theme .proof-box{color:#0f172a}
 // results cell. That is what keeps the phone keyboard up.
 // =====================================================================================================
 (function () {
-  const PROOF_VERSION = '0.52.0';
+  const PROOF_VERSION = '0.53.0';
   const SHEET_ID = '1VUKpTWuBC5iZw8kTxFuuRcqJphrt4mW6FGZJo1b2hB8';
   const TOKEN = 'd8a44855c9e7e7f923a3bfcf4d753fd66e3040b1';   // also in test-script/Code.gs; the sheet holds fake data only (DESIGN.md)
   const PROFILES = ['phone', 'wide', 'android', 'iphone'];
@@ -8491,6 +8720,7 @@ body.light-theme .proof-box{color:#0f172a}
   const TYPES = { button: 1, text: 1, logo: 1, badge: 1, picture: 1 };   // picture: 0.50.0 (no. 195, PART B)
   const TOOL_ACTIONS = { 'reload-layout': 1, 'proof-save-tweaks': 1, 'proof-clear-tweaks': 1, 'proof-profile': 1, 'toggle-tray': 1, 'proof-adjust': 1, 'refresh-page': 1 };
   const ACTIONS = Object.assign({ 'toggle-theme': 1, 'hist-copy': 1, 'ph-minus': 1, 'ph-plus': 1, /* 0.51.0 */ /* 0.50.0 (PARTS E, L) */ 'proof-badge': 1, 'proof-find': 1, 'proof-cancel': 1, 'toggle-inspector': 1, 'toggle-live': 1, 'new-call': 1, 'reveal-hidden': 1, 'start-new-customer': 1, 'save-new-customer': 1, 'open-call-type': 1, 'call-type-back': 1, 'condo-back': 1, 'history-back': 1, 'open-history': 1, 'site-back': 1, 'save-site': 1, 'use-location': 1, 'location-menu': 1, 'near-me': 1, 'copy-report': 1, 'open-followups': 1 },   /* 0.29.0: open-followups */ TOOL_ACTIONS);   // C2b: copy-report   // 0.14.1: call-type-back   // C1b: open-call-type   // C1a: Blueprint P8 (Stage C)
+  const tplName = x => { const t = String(x == null ? '' : x).trim(); return /^pm$/i.test(t) ? 'PMI' : t; };   // 0.53.0 (no. 198 stage 2, PART N): the template PM is called PMI now; an old 'PM' (phone, old rows) reads as PMI
   const TPL_NAME = /^[A-Za-z0-9][A-Za-z0-9 _.-]{0,29}$/, TPL_ACTION = /^set-template:([A-Za-z0-9][A-Za-z0-9 _.-]{0,29})?$/;   // round B2: set-template:<name> (set-template: alone = no template)
   // What a tweak can change (DESIGN.md). Each rule turns a value into its normal text form, or returns an error.
   const PLACES = { 'top-left': ['left', 'top'], 'top-center': ['center', 'top'], 'top-right': ['right', 'top'], 'middle-left': ['left', 'middle'], 'middle': ['center', 'middle'],
@@ -8613,8 +8843,8 @@ body.light-theme .proof-box{color:#0f172a}
   let SETTINGS = {};
   const SETTING_VALUES = { 'customer required': ['no', 'remind', 'yes'], 'debug boxes': ['no', 'yes'], 'report format': ['rated first', 'within range', 'measured first', 'slash'],
     'script url': '*', 'save chip': '*', 'tech name': '*', 'location at save': ['only when i used gps on the call', 'silent read at save if i did not use gps', 'off'], 'reveal chip': ['on', 'off'],
-    'section gear': ['on', 'off'], 'placeholder lightness': ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100'], 'find card main': '*', 'find card lines': '*', 'history card lines': '*' };   // 0.51.0 (no. 195 stage 3, PARTS G, I, K)   // 0.47.0 (no. 192, CARRY 45 (2)): Reveal chip   // 0.38.0 (C7e): Location at save   // '*' = free text, kept as typed (C7b, 0.25.0)   // Debug boxes: 0.22.4; Report format: 0.24.0 (C7a)
-  const SETTING_START = { 'customer required': 'remind', 'debug boxes': 'no', 'report format': 'rated first', 'script url': '', 'save chip': 'Saved {time}', 'tech name': '', 'location at save': 'only when i used gps on the call', 'reveal chip': 'on', 'section gear': 'on', 'placeholder lightness': '50', 'find card main': '', 'find card lines': '', 'history card lines': '' };
+    'section gear': ['on', 'off'], 'placeholder lightness': ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100'], 'placeholder boldness': ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100'], 'system label': '*', 'find card main': '*', 'find card lines': '*', 'history card lines': '*' };   // 0.51.0 (no. 195 stage 3, PARTS G, I, K)   // 0.47.0 (no. 192, CARRY 45 (2)): Reveal chip   // 0.38.0 (C7e): Location at save   // '*' = free text, kept as typed (C7b, 0.25.0)   // Debug boxes: 0.22.4; Report format: 0.24.0 (C7a)
+  const SETTING_START = { 'customer required': 'remind', 'debug boxes': 'no', 'report format': 'rated first', 'script url': '', 'save chip': 'Saved {time}', 'tech name': '', 'location at save': 'only when i used gps on the call', 'reveal chip': 'on', 'section gear': 'on', 'placeholder lightness': '', 'placeholder boldness': '', 'system label': '', 'find card main': '', 'find card lines': '', 'history card lines': '' };
   function parseSettings(rows, notes) {
     const out = {}; (rows || []).forEach((r, i) => { const k = g2(r, 'Setting').toLowerCase(), v = g2(r, 'Value').toLowerCase(); if (!k) return;
       if (!SETTING_VALUES[k]) { notes.push('Settings row ' + (i + 2) + ': "' + g2(r, 'Setting') + '" is not a setting this page knows; not used.'); return; }
@@ -9030,7 +9260,7 @@ body.light-theme .proof-box{color:#0f172a}
   const okOf = id => !!(call.__ok || {})[id];
   const tplKey = () => callView.tpl || '';
   const myComments = id => { const o = lsGet(K.mycm, {}); return o && Array.isArray(o[id]) ? o[id] : []; };
-  const phoneDefs = () => { const o = lsGet(K.defs, {}); return o && typeof o === 'object' ? o : {}; };
+  const phoneDefs = () => { const o = lsGet(K.defs, {}); if (o && typeof o === 'object' && o.PM && !o.PMI) { o.PMI = o.PM; delete o.PM; lsSet(K.defs, o); } return o && typeof o === 'object' ? o : {}; };   // 0.53.0 (PART N): defaults saved under PM move to PMI
   function defaultsFor(F) {   // this phone's default for this template wins; then the sheet's block for this phone, 'everyone', the old '*'
     const c = commentOf(F); if (!c) return [];
     const ph = (phoneDefs()[tplKey()] || {})[F.id]; if (Array.isArray(ph)) return ph.slice();
@@ -9459,7 +9689,7 @@ body.light-theme .proof-box{color:#0f172a}
       const n = i + 2, g = c => g2(r, c);
       if (!Object.keys(r).some(c => c.charAt(0) !== '_' && g(c))) return;
       const fe = formulaErrors(r); if (fe.length) { notes.push('Call types row ' + n + ' refused: ' + fe.join(', ') + '.'); return; }
-      const why = [], type = g('Call type'), tpl = g('Template'), act = g('Active').toLowerCase(), order = g('Order'), aliases = g('Aliases').split('|').map(x => x.trim()).filter(Boolean);
+      const why = [], type = g('Call type'), tpl = tplName(g('Template')), act = g('Active').toLowerCase(), order = g('Order'), aliases = g('Aliases').split('|').map(x => x.trim()).filter(Boolean);
       if (!type) why.push('no Call type'); else if (seen[type.toLowerCase()]) why.push('the Call type "' + type + '" is already used on row ' + seen[type.toLowerCase()]);
       if (type && converted(r, 'Call type')) why.push('Call type "' + type + '" looks like a date, time or number. ' + PT_HINT('Call type'));
       if (tpl && !TPL_NAME.test(tpl)) why.push('Template "' + tpl + '" is not a template name (letters, numbers, spaces, . _ -; at most 30)');
@@ -9673,7 +9903,9 @@ body.light-theme .proof-box{color:#0f172a}
   let histLab = {};   // System Id -> its label, from the rows that have one (an old / legacy row may lack it)
   const sysName = r => hg(r, 'System label') || histLab[hg(r, 'System Id')] || (hg(r, 'System Id') ? 'System ' + hg(r, 'System Id') : '');
   const readingFields = () => (FCTL || []).filter(F => F.visitsCol && (F.kind === 'number' || F.kind === 'calculated'));
-  const shortName = F => String(F.short || F.name || F.visitsCol).replace(/\s*\(.*\)\s*$/, '');
+  const shortName = F => String(F.card || F.short || F.name || F.visitsCol).replace(/\s*\(.*\)\s*$/, '');   // 0.53.0 (PART J): Fields 'Card label' first (SH / SC / SUC)
+  const lateNote = t => { if (notes.indexOf(t) >= 0) return; notes.push(t); try { paintNotes(); } catch (e) {} };   // 0.53.0 (R7): a note found while drawing
+  const unknownCols = (k, cols, has) => { const bad = cols.filter(c => !has(c)); if (bad.length) lateNote('Settings "' + k.replace(/^./, x => x.toUpperCase()) + '": no column named ' + bad.map(x => '"' + x + '"').join(', ') + ' (check the spelling; skipped).'); };
   function histShort(r) {   // the follow-up if any, else the first 3 readings
     const fu = hg(r, 'Follow-up'); if (fu) return 'Follow-up: ' + fu;
     const out = []; readingFields().some(F => { const v = hg(r, F.visitsCol); if (v !== '') out.push(shortName(F) + ' ' + v); return out.length >= 3; });
@@ -9683,17 +9915,17 @@ body.light-theme .proof-box{color:#0f172a}
   // (comma list, in order; a missing or empty one is skipped), 'History card lines' = Visits columns. Blank = as before.
   const colList = k => String(SETTINGS[k] || '').split(',').map(x => x.trim()).filter(Boolean);
   const hitCols = h => { if (!(h && h.place && h.place.cols)) return null; try { return placeCols(h.place); } catch (e) { return h.place.cols; } };   // with the building / site values a unit inherits
-  function cardMain(h) { const c = hitCols(h), cols = colList('find card main'); if (!c || !cols.length) return h.name; const v = cols.map(k => String(c[k] == null ? '' : c[k]).trim()).filter(Boolean); return v.length ? v.join(' · ') : h.name; }
-  function cardLines(h) { const c = hitCols(h), cols = colList('find card lines'); if (!c || !cols.length) return '<span>' + esc(h.address) + (h.phone ? ' · ' + esc(h.phone) : '') + '</span>';
+  function cardMain(h) { const c = hitCols(h), cols = colList('find card main'); if (!c || !cols.length) return h.name; unknownCols('find card main', cols, k => k in c); const v = cols.map(k => String(c[k] == null ? '' : c[k]).trim()).filter(Boolean); return v.length ? v.join(' · ') : h.name; }
+  function cardLines(h) { const c = hitCols(h), cols = colList('find card lines'); if (!c || !cols.length) return '<span>' + esc(h.address) + (h.phone ? ' · ' + esc(h.phone) : '') + '</span>'; unknownCols('find card lines', cols, k => k in c);
     return cols.map(k => String(c[k] == null ? '' : c[k]).trim()).filter(Boolean).map(v => '<span>' + esc(v) + '</span>').join('') || '<span>' + esc(h.address) + '</span>'; }
-  function histCardLine(r) { const cols = colList('history card lines'); if (!cols.length) return histShort(r); const fu = hg(r, 'Follow-up');
+  function histCardLine(r) { const cols = colList('history card lines'); if (!cols.length) return histShort(r); const fu = hg(r, 'Follow-up'); unknownCols('history card lines', cols, k => k in r);
     const out = cols.map(k => { const v = hg(r, k); if (v === '') return ''; const F = (FCTL || []).find(x => x.visitsCol === k); return (F ? shortName(F) : k) + ' ' + v; }).filter(Boolean);
     return (fu ? 'Follow-up: ' + fu + (out.length ? ' · ' : '') : '') + out.join(' · ') || histShort(r); }
   function histFilterBar(rows) {
     const sy = {}; rows.forEach(r => { const id = hg(r, 'System Id'); if (id && !sy[id]) sy[id] = sysName(r); });
     if (hist.sys && !sy[hist.sys]) { const s = call.__sys; sy[hist.sys] = (s && s.labels && s.labels[hist.sys]) || 'System ' + hist.sys; }
     const ids = Object.keys(sy).sort(); if (ids.length < 2 && !hist.sys) return '';
-    return '<div class="proof-hi-sys">' + ['<button type="button" data-hsys=""' + (!hist.sys ? ' class="on"' : '') + '>All</button>'].concat(ids.map(id => '<button type="button" data-hsys="' + esc(id) + '"' + (hist.sys === id ? ' class="on"' : '') + '>' + esc(sy[id]) + '</button>')).join('') + '</div>';
+    return '<div class="proof-hi-sys">' + ['<button type="button" data-hsys=""' + (!hist.sys ? ' class="on"' : '') + '>All</button>'].concat(ids.map(id => '<button type="button" data-hsys="' + esc(id) + '"' + (hist.sys === id ? ' class="on"' : '') + '>' + esc(sysShow(sy[id])) + '</button>')).join('') + '</div>';
   }
   function histStatus(rows) {
     if (histNet.st === 'loading') return rows.length ? 'Looking for newer visits… (showing the ones saved on this phone)' : 'Looking up the visits…';
@@ -9756,13 +9988,17 @@ body.light-theme .proof-box{color:#0f172a}
   }
   const cmpDiff = (a, b) => { const x = String(a == null ? '' : a).trim(), y = String(b == null ? '' : b).trim(); if (!x || !y) return false;   // 0.44.0 (R9): a blank never amber; 10.0 = 10
     const nx = numOf(x), ny = numOf(y); return nx !== null && ny !== null ? nx !== ny : x.toLowerCase() !== y.toLowerCase(); };
+  function cmpTitle(r) {   // 0.53.0 (O, CARRY 48 (2)): the title names the COMPARED visits' system, never the one History was opened on
+    const sn = sysName(r), t = String(hist.title || ''), ss = (call.__sys && call.__sys.labels) || {}, labs = Object.keys(ss).map(k => ss[k]).concat(['System 1']);
+    let base = t; labs.concat(sn ? [sn] : []).forEach(l => { if (l && base.endsWith(' · ' + l)) base = base.slice(0, -(l.length + 3)); });
+    return sn ? base + ' · ' + sysShow(sn) : base; }
   function cmpHtml() {
     const all = histRows(), rs = (hist.pick || []).map(id => all.find(r => hg(r, 'Visit Id') === id)).filter(Boolean).sort((a, b) => histKey(b).localeCompare(histKey(a)));
     if (rs.length < 2) { hist.mode = 'list'; return null; }
     const head = '<tr><th></th>' + rs.map(r => '<th>' + esc(hg(r, 'Date')) + '<i>' + esc([hg(r, 'Call type'), hg(r, 'Tech')].filter(Boolean).join(' · ')) + '</i>' + (r._legacy ? '<i>Legacy</i>' : '') + '</th>').join('') + '</tr>';
     const body = cmpRows(rs).map(x => '<tr' + (x.name === 'Equipment that day' ? ' class="eq"' : '') + '><td>' + esc(x.name) + (x.unit ? ' <small>' + esc(x.unit) + '</small>' : '') + '</td>' +
       x.vals.map((v, i) => '<td' + (i > 0 && cmpDiff(v, x.vals[0]) ? ' class="diff"' : '') + '>' + esc(v === '' ? '–' : v) + '</td>').join('') + '</tr>').join('');
-    return '<div class="proof-hi proof-hi-cmp"><div class="proof-hi-title">' + esc(hist.title) + (hist.title.indexOf(sysName(rs[0])) >= 0 ? '' : ' · ' + esc(sysName(rs[0]))) + '</div><div class="proof-hi-note">Side by side, newest first. Amber = different from the newest visit.</div><table class="proof-hi-tab">' + head + body + '</table></div>';
+    return '<div class="proof-hi proof-hi-cmp"><div class="proof-hi-title">' + esc(cmpTitle(rs[0])) + '</div><div class="proof-hi-note">Side by side, newest first. Amber = different from the newest visit.</div><table class="proof-hi-tab">' + head + body + '</table></div>';
   }
   // 0.46.0 (no. 189, PART 4 + 5): the view chips of one visit and 'USE IN THIS CALL'. Which Field shows in 'Equipment & specs' / 'Readings'
   // is the Fields column 'History view' (specs / readings; blank = Everything only). With no such column: specs = a Field with an
@@ -9937,10 +10173,15 @@ body.light-theme .proof-box{color:#0f172a}
   document.addEventListener('pointerdown', e => { const o = document.getElementById('proof-gmenu'); if (o && !o.contains(e.target) && !(e.target.closest && e.target.closest('.proof-gear'))) { e.preventDefault(); e.stopPropagation(); closeGMenu(); } }, true);
   // 0.51.0 (PART I): how light the grey placeholder text is: Settings 'Placeholder lightness' (0 = dark, 100 = very light; blank = 50), changed on
   // this phone in steps of 10 with the tray's - / + (kept on the phone; blank on the phone = the sheet's value). No slider.
-  const K_PH = 'proof-containers.phlight.v1';
-  const phNow = () => { const m = lsGet(K_PH, null); if (m != null && isFinite(Number(m))) return Math.max(0, Math.min(100, Number(m))); const s2 = Number(SETTINGS['placeholder lightness']); return isFinite(s2) && String(SETTINGS['placeholder lightness'] || '') !== '' ? s2 : 50; };
-  function phApply() { const a = (1 - phNow() / 100 * 0.9).toFixed(2); if (document.body.style.getPropertyValue('--ph-a') !== a) document.body.style.setProperty('--ph-a', a); }
-  const phStep = d => { const v = Math.max(0, Math.min(100, phNow() + d)); lsSet(K_PH, v); phApply(); say('Placeholder lightness ' + v + ' (this phone).', 'done', 3000); };
+  // 0.53.0 (no. 198 stage 2, PART L): it is 'Placeholder boldness' now (0 = faint ... 100 = bold; + = bolder; blank = 50). An old 'Placeholder
+  // lightness' row and an old phone value (phlight.v1) are read as 100 - value (the same look), the phone's value moves to phbold.v1.
+  const K_PH = 'proof-containers.phlight.v1', K_PB = 'proof-containers.phbold.v1';
+  const sNum = k => { const v = String(SETTINGS[k] == null ? '' : SETTINGS[k]).trim(), n = Number(v); return v !== '' && isFinite(n) ? Math.max(0, Math.min(100, n)) : null; };
+  const phNow = () => { let m = lsGet(K_PB, null); if (m == null) { const o = lsGet(K_PH, null); if (o != null && isFinite(Number(o))) { m = 100 - Math.max(0, Math.min(100, Number(o))); lsSet(K_PB, m); try { localStorage.removeItem(K_PH); } catch (e) {} } }
+    if (m != null && isFinite(Number(m))) return Math.max(0, Math.min(100, Number(m)));
+    const b = sNum('placeholder boldness'); if (b != null) return b; const l = sNum('placeholder lightness'); return l != null ? 100 - l : 50; };
+  function phApply() { const a = (0.1 + phNow() / 100 * 0.9).toFixed(2); if (document.body.style.getPropertyValue('--ph-a') !== a) document.body.style.setProperty('--ph-a', a); }
+  const phStep = d => { const v = Math.max(0, Math.min(100, phNow() + d)); lsSet(K_PB, v); phApply(); say('Placeholder boldness ' + v + ' (this phone).', 'done', 3000); };
   window.EngineActions['ph-minus'] = () => phStep(-10); window.EngineActions['ph-plus'] = () => phStep(10);
   // 0.51.0 (PART J): Fields 'Fit text' = yes: the value shrinks (down to the Item's Min size) before the box has to scroll; not while typed in
   function fitOne(b) { const p = boxCell(b); if (!p || !p.proofField || !p.proofField.fit || document.activeElement === b || (b.tagName !== 'INPUT' && b.tagName !== 'TEXTAREA')) return;
@@ -10627,7 +10868,7 @@ body.light-theme .proof-box{color:#0f172a}
   }
   const STRUCTURE_COLS = ['Screen', 'Section', 'Column', 'Line name', 'Cells', 'Cell widths', 'Line height', 'Column width', 'Freeze', 'Fold', 'Widths like'];   // Widths like: 0.51.0 (PART H)   // Fold: C2a
   const ITEM_SKIP = { 'Id': 1, 'Line': 1, 'Cell': 1, 'Weight': 1, 'Field': 1, 'Recipe': 1, 'Join with': 1, 'Join sep': 1, 'Label size': 1 };   // placing / recipe columns (every other column is look); a cell's width lives on Structure 'Cell widths' (Danny, Q-015)
-  const FIELDS_COLS = ['Field Id', 'Name', 'Short label', 'Aliases', 'Kind', 'Unit', 'Hard min', 'Hard max', 'Report wording', 'Scope', 'Notes', 'Find fill', 'Calc', 'Equipment', 'Pre-fill', 'File check', 'Save to', 'Visits column', 'In report', 'Compare as', 'History view', 'Fit text'];   // Fit text: 0.51.0 (PART J)   // Compare as: 0.27.0 (C7c-1); History view 0.46.0 (0.50.0: it was missing here)
+  const FIELDS_COLS = ['Field Id', 'Name', 'Short label', 'Aliases', 'Kind', 'Unit', 'Hard min', 'Hard max', 'Report wording', 'Scope', 'Notes', 'Find fill', 'Calc', 'Equipment', 'Pre-fill', 'File check', 'Save to', 'Visits column', 'In report', 'Compare as', 'History view', 'Fit text', 'Card label'];   // Card label: 0.53.0 (PART J)   // Fit text: 0.51.0 (PART J)   // Compare as: 0.27.0 (C7c-1); History view 0.46.0 (0.50.0: it was missing here)
   const CMP_KINDS = ['phone', 'email', 'address', 'name', 'model', 'serial', 'mfg date', 'refrigerant', 'metering', 'rating', 'dual cap', 'filter size', 'tonnage', 'unit label', 'equipment type', 'text'];   // 0.27.0: the same-or-different rule kinds   // the last 5: C7a (0.24.0)   // Equipment: C4b   // Calc: C2a   // Find fill: 0.12.2 (R7)   // Blueprint P7
   const SIZES_COLS = ['Profile', 'Target', 'Font size', 'Line height', 'Pad X', 'Pad Y', 'Min size', 'Max size', 'Notes'];   // Blueprint P12
   const ITEM_B1_COLS = ['Field', 'Recipe', 'Join with', 'Join sep', 'Label size', 'Box lines'];   // Box lines: C3c   // Blueprint P18 (B1) + BD-6
@@ -10732,7 +10973,7 @@ body.light-theme .proof-box{color:#0f172a}
         { const ca = g2(r, 'Compare as').toLowerCase(); if (ca && CMP_KINDS.indexOf(ca) < 0) why.push('Compare as "' + g2(r, 'Compare as') + '" must be one of ' + CMP_KINDS.join(', ') + ' (or blank)'); }   // 0.27.0 (C7c-1)
       }
       if (why.length) { msgs.push({ _refuse: where + ' refused: ' + why.join(', ') + '.' }); if (id && !map[id] && !bad[id]) bad[id] = where; return; }
-      map[id] = { id, name, short: g2(r, 'Short label'), kind, unit: g2(r, 'Unit'), wording, hmin, hmax, scope, where, find: ff };
+      map[id] = { id, name, short: g2(r, 'Short label'), card: g2(r, 'Card label'), kind, unit: g2(r, 'Unit'), wording, hmin, hmax, scope, where, find: ff };
       { const st = g2(r, 'Save to'), m = st ? SAVE_TO_RE.exec(st) : null;   // C7a
         Object.assign(map[id], { compareAs: g2(r, 'Compare as').toLowerCase(), prefill: g2(r, 'Pre-fill').toLowerCase(), fileCheck: g2(r, 'File check').toLowerCase(), inReport: g2(r, 'In report').toLowerCase(), visitsCol: g2(r, 'Visits column'), fit: /^(yes|y|true|1)$/i.test(g2(r, 'Fit text')), hview: 'History view' in r ? g2(r, 'History view').toLowerCase() : null,   // 0.46.0 (no. 189, PART 4): specs / readings / blank; null = no column (an older sheet)
           saveTab: m ? m[1] : '', saveCols: m ? m[2].split(',').map(x => x.trim()).filter(Boolean) : [] }); }
@@ -10817,7 +11058,7 @@ body.light-theme .proof-box{color:#0f172a}
     if (FD) FD.msgs.forEach(m => out.push(m));
     out._house = FD ? Object.keys(FD.map).map(k => FD.map[k]).filter(f => f.scope === 'house').map(f => ({ id: f.id, find: f.find || '' })) : null;   // 0.13.1 (R6)
     out._scope = FD ? Object.fromEntries(Object.keys(FD.map).map(k => [k, FD.map[k].scope || ''])) : null;   // 0.32.0 (C7d)
-    out._fctl = FD ? Object.keys(FD.map).map(k => FD.map[k]).filter(f => f.saveTab || f.inReport || f.visitsCol).map(f => ({ id: f.id, name: f.name, short: f.short || '', unit: f.unit, equip: f.equip || '', prefill: f.prefill, saveTab: f.saveTab, saveCols: f.saveCols, inReport: f.inReport, kind: f.kind, visitsCol: f.visitsCol || '', fileCheck: f.fileCheck || '', compareAs: f.compareAs || '', hview: f.hview == null ? null : f.hview })) : null;   // C7a; C7b: every Field with a Visits column
+    out._fctl = FD ? Object.keys(FD.map).map(k => FD.map[k]).filter(f => f.saveTab || f.inReport || f.visitsCol).map(f => ({ id: f.id, name: f.name, short: f.short || '', card: f.card || '', unit: f.unit, equip: f.equip || '', prefill: f.prefill, saveTab: f.saveTab, saveCols: f.saveCols, inReport: f.inReport, kind: f.kind, visitsCol: f.visitsCol || '', fileCheck: f.fileCheck || '', compareAs: f.compareAs || '', hview: f.hview == null ? null : f.hview })) : null;   // C7a; C7b: every Field with a Visits column
     const ids = {};
     items.forEach((r, i) => {
       const where = 'Items row ' + (i + 2), why = formulaErrors(r);
@@ -12352,10 +12593,15 @@ body.light-theme .proof-box{color:#0f172a}
   }
   const sysHeading = () => { const s = call.__sys; if (!s || s.order.length < 2) return ''; return (s.labels[s.cur] || 'System') + (s.areas[s.cur] ? ' · ' + s.areas[s.cur] : ''); };
   window.EngineSlots['systems'] = { render(p) { return '<div class="proof-cell proof-systems" style="font-size:' + (p.fontSize || 13) + 'px"></div>'; } };
+  // 0.53.0 (no. 198 stage 2, PART M): Settings 'System label' (e.g. SYS) shortens the pills: 'System 2' shows as 'SYS 2' (the saved name stays);
+  // the strip scrolls sideways (touch), and a fade at an edge shows there is more (never a silently cut pill).
+  const sysShow = t => { const L = String(SETTINGS['system label'] == null ? '' : SETTINGS['system label']).trim(); return L ? String(t).replace(/^System(?=\s|$)/i, L) : t; };
+  function stripEdges(l) { if (!l) return; const more = l.scrollWidth > l.clientWidth + 2, r = more && l.scrollLeft + l.clientWidth < l.scrollWidth - 2, lf = more && l.scrollLeft > 2;
+    l.classList.toggle('more-r', !!r); l.classList.toggle('more-l', !!lf); if (!l.dataset.edg) { l.dataset.edg = '1'; l.addEventListener('scroll', () => stripEdges(l), { passive: true }); } }
   function paintStrip() {
     const els = document.querySelectorAll('#viewport-canvas-frame .proof-systems'); if (!els.length) return;
     const s = call.__file || call.__placeId || call.__sys ? ensureSys() : null, ids = s ? s.order : ['A'], cur = s ? s.cur : 'A';   // 0.33.1 (R7): a phone customer too
-    const btns = ids.map(id => '<button type="button" data-sys="' + esc(id) + '" class="' + (id === cur ? 'on' : '') + (s && sysHasEntries(id) ? ' has' : '') + '">' + esc(s ? s.labels[id] : 'System 1') +
+    const btns = ids.map(id => '<button type="button" data-sys="' + esc(id) + '" class="' + (id === cur ? 'on' : '') + (s && sysHasEntries(id) ? ' has' : '') + '">' + esc(sysShow(s ? s.labels[id] : 'System 1')) +
       (s && s.areas[id] ? '<small>' + esc(s.areas[id]) + '</small>' : '') + '</button>').join('');
     const add = s && ((call.__file && call.__file.place) || call.__placeId) ? '<button type="button" class="add">+ Add system</button>' : '';
     const hb = '';   // 0.44.0 (no. 189, Q2): History left the systems strip (the top-row History button, 0.45.0)   // 0.33.0: the flow (0.33.1, R7: a phone customer too)
@@ -12363,14 +12609,14 @@ body.light-theme .proof-box{color:#0f172a}
     els.forEach(e => { const rep = !!e.closest('[data-pid="systems.report"]'), html = '<div class="proof-sys-list">' + btns + '</div><div class="proof-sys-end">' + (rep ? same : add + hb) + '</div>';   /* 0.35.0: the '+N hidden' chip no longer comes here (it took the system buttons' room) */   // 0.34.0 (B5): the end buttons stay whole at the right
       if (e.dataset.h !== html) { e.innerHTML = html; e.dataset.h = html; }
       const l = e.querySelector('.proof-sys-list'), on = l && l.querySelector('button.on'); if (l && on) { const a = on.offsetLeft - l.offsetLeft, z = a + on.offsetWidth;   // the selected one scrolled into view (sideways only)
-        if (a < l.scrollLeft) l.scrollLeft = Math.max(0, a - 4); else if (z > l.scrollLeft + l.clientWidth) l.scrollLeft = z - l.clientWidth + 4; } });
+        if (a < l.scrollLeft) l.scrollLeft = Math.max(0, a - 4); else if (z > l.scrollLeft + l.clientWidth) l.scrollLeft = z - l.clientWidth + 4; } stripEdges(l); });
   }
   function switchSystem(id, quiet) {
     const s = ensureSys(); if (!s || id === s.cur || s.order.indexOf(id) < 0) return;
     try { blurNow(); if (!quiet) closeCard(); closeFMenu(); } catch (e) {} try { saveCall('switch'); } catch (e) {}
     swapTo(id); if (!s.store[id]) { try { applyDefaults(); } catch (e) {} } runCalcs(); lsSet(K.call, call); try { saveView(); } catch (e) {}   // 0.34.0 (B1): the report choices moved too   // (R4 (3) of the 0.33.0 review: not reproduced, a comment the tech cleared stays cleared; unchanged)
     if (quiet) { try { renderCanvas(); paintStrip(); paintDiffs(); } catch (e) {} } else goView(currentView === 'report' ? 'report' : 'entry');
-    say(s.labels[id] + (s.areas[id] ? ' · ' + s.areas[id] : ''), 'done', 1500);
+    say(sysShow(s.labels[id]) + (s.areas[id] ? ' · ' + s.areas[id] : ''), 'done', 1500);
   }
   document.addEventListener('click', e => { const b = e.target && e.target.closest && e.target.closest('#viewport-canvas-frame .proof-systems button[data-sys]'); if (!b || !isLiveInteraction) return;
     e.preventDefault(); e.stopPropagation(); switchSystem(b.dataset.sys); }, true);
@@ -12711,8 +12957,9 @@ body.light-theme .proof-box{color:#0f172a}
   let callView = Object.assign(VIEW_DEFAULT(), lsGet(K_VIEW, {}) || {});
   if (!/^(all|template|values)$/.test(callView.view)) callView.view = 'template';
   if (!callView.revealed || typeof callView.revealed !== 'object') callView.revealed = {};
+  if (callView.tpl && tplName(callView.tpl) !== callView.tpl) { callView.tpl = tplName(callView.tpl); try { lsSet(K_VIEW, callView); } catch (e) {} }   // 0.53.0 (PART N)
   const saveView = () => lsSet(K_VIEW, callView);
-  const sameName = (a, b) => String(a).toLowerCase() === String(b).toLowerCase();
+  const sameName = (a, b) => tplName(a).toLowerCase() === tplName(b).toLowerCase();   // 0.53.0: PM = PMI
   const tplOk = (t, active) => !t ? true : t.only ? (!!active && t.only.some(n => sameName(n, active))) : !(active && t.except.some(n => sameName(n, active)));
   const callVal = k => String(call[k] == null ? '' : call[k]).trim();
   function cellFilled(p) {
@@ -12721,8 +12968,14 @@ body.light-theme .proof-box{color:#0f172a}
   }
   const hasField = p => !!p.proofField || (p.slot === 'box' && !!p.proofKey && !FIND_KEYS[p.proofKey]);
   let usesB2 = false;   // the layout uses a B2 setting (then the footer shows the View and Template)
+  function histOnlyPlan(plan) { if (histView && currentView === histView) return plan;
+    (engineState.rows || []).forEach(row => { const multi = (row.containers || []).length !== 1; (row.containers || []).forEach(c => (c.stacks || []).forEach(s => {
+      const items = {}; (s.splits || []).forEach(p => { if (p.proofItem) (items[p.proofItem] = items[p.proofItem] || []).push(p); });
+      const keys = Object.keys(items), hk = keys.filter(k => items[k][0].proofVis === 'history'); if (!hk.length) return;
+      plan.set(s, { hide: !multi && hk.length === keys.length, blank: new Set(hk) }); })); });
+    return plan; }
   function visPlan(noReveal) {   // Map stack -> { hide, blank: Set of item keys }; noReveal (0.12.3, F4): as if nothing was revealed
-    const plan = new Map(); if (!isLiveInteraction) return plan;
+    const plan = new Map(); if (!isLiveInteraction) return histOnlyPlan(plan);   // 0.53.0 (PART K): History-only items stay hidden outside History in edit mode too
     const mode = callView.view, active = callView.tpl;
     const a = document.activeElement, fpart = a && a.closest && a.closest('.grid-split-partition'), fpid = fpart ? fpart.getAttribute('data-pid') : '';
     (engineState.rows || []).forEach(row => {
@@ -12839,7 +13092,7 @@ body.light-theme .proof-box{color:#0f172a}
   function markActive() { document.querySelectorAll('#viewport-canvas-frame .grid-split-partition').forEach(part => { const c = cellOfPart(part), a = c && c.clickAction || '', btn = part.querySelector('button.rounded-lg'); if (!btn) return;
     if (/^set-show:/.test(a)) btn.classList.toggle('ctl-on', a === 'set-show:' + callView.view);
     else if (TPL_ACTION.test(a)) btn.classList.toggle('ctl-on', sameName(a.slice(13).trim(), callView.tpl)); }); }
-  function setTemplate(name) { whenFree(() => { callView.tpl = name; saveView(); try { applyDefaults(); } catch (e) {} applyVis(); paintNotes(); markActive(); paintInc(); say('Template: ' + (name || 'none'), 'done'); }); }
+  function setTemplate(name) { name = tplName(name); whenFree(() => { callView.tpl = name; saveView(); try { applyDefaults(); } catch (e) {} applyVis(); paintNotes(); markActive(); paintInc(); say('Template: ' + (name || 'none'), 'done'); }); }
   window.EngineActions['reveal-hidden'] = (cell) => { let ri = -1; (engineState.rows || []).forEach((r, i) => r.containers.forEach(c => c.stacks.forEach(s => { if (s.splits.indexOf(cell) >= 0) ri = i; }))); if (ri >= 0) revealSection(ri); };
   function registerTemplateActions(state) {   // set-template:<name> buttons named on the sheet
     eachCell(state, p => { const a = p.clickAction || ''; if (TPL_ACTION.test(a) && !window.EngineActions[a]) window.EngineActions[a] = () => setTemplate(a.slice(13).trim()); });

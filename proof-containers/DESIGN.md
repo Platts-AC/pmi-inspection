@@ -406,3 +406,21 @@
 - I: Fit text works on multi-line boxes (textarea: scrollHeight vs clientHeight).
 - Test sheet: the NEW header (Header 1 Entry / Report / New / Find / History; Header 2 Reload / Tools / Edit / Theme; Header 3 logo / save chip / badge / view text / check; Header 4 Copy visit). Fixture tools/convert-to-0520.js, S52.
 - Tests: r68 (A1, B1, B2, C1, C3, D1, F1, G1, H1, I1, P1 x2, UPG; fails on 0.51.0: all 10 new checks; P1 and UPG pass there).
+
+## 0.53.0 (Prompts no. 198 stage 2)
+- E: the light theme is MADE at build time (lightgen.py): every dark rule of the page's own CSS gets a 'body.light-theme' copy with
+  !important colours (dark backgrounds -> very light of the same hue; text under 4.5 : 1 on white -> dark of the same hue; dark frames ->
+  light grey-blue; shadows softer). Hand-set ones in lightgen.TUNE ('html body.light-theme ...' wins). Test r69 E1 reads every visible text
+  on 12 screens (test-contrast.js).
+- J: Fields 'Card label' = the name on History cards (SH / SC / SUC); blank = Short label, else Name.
+- K: Visible when 'history' is kept also in edit mode (histOnlyPlan); the test sheet's Copy visit + Header 4 are gone.
+- L: 'Placeholder boldness' (0 faint ... 100 bold; + = bolder); --ph-a = 0.1 + B x 0.9 / 100; old 'Placeholder lightness' rows and the old phone
+  value (phlight.v1) are read as 100 - value (the phone value moves to phbold.v1).
+- M: Settings 'System label' (SYS) shortens the pills at display time (sysShow); the strip scrolls sideways (touch-action pan-x) and fades
+  (mask) on the side with more.
+- N: tplName(): 'PM' reads as PMI everywhere a template name comes in (Call types, Templates lists via sameName, set-template, the phone's
+  callView.tpl, phone defaults); the test sheet says PMI.
+- O: Compare title = the compared visits' system (cmpTitle); the empty Capacitor box's placeholder shows (-webkit-text-fill-color);
+  r16 R3, r66 L1 (WebKit), r57 (test-touch launch) updated. R7: an unknown card column = a footer note (lateNote).
+- Test sheet: Fields 'Card label'; Settings Placeholder boldness 40, System label SYS; Items tools.phlabel; hist.copyvisit + Header 4
+  removed; PM -> PMI. Fixture tools/convert-to-0530.js, S53. Tests: r69 (fails on 0.52.0: all 11).
